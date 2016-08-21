@@ -1,10 +1,9 @@
-# Loco Gettext template
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: WooCommerce - APG NIF/CIF/NIE field\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: Tue Aug 09 2016 14:50:28 GMT+0200 (CEST)\n"
+"POT-Creation-Date: 2016-08-21 22:05+0000\n"
 "POT-Revision-Date: Wed Aug 10 2016 13:39:45 GMT+0200 (CEST)\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: \n"
@@ -24,148 +23,137 @@ msgstr ""
 "esc_html_x:1,2c;comments_number_link:2,3;t:1;st:1;trans:1;transChoice:1,2\n"
 "X-Generator: Loco - https://localise.biz/"
 
-#. Name of the plugin
-msgid "WC - APG NIF/CIF/NIE Field"
+#: apg-nif.php:49 includes/cuadro-informacion.php:7
+msgid "Make a donation by "
 msgstr ""
 
-#. URI of the plugin
-msgid "http://wordpress.org/plugins/wc-apg-nifcifnie-field"
+#: apg-nif.php:51 apg-nif.php:51 apg-nif.php:51 apg-nif.php:51 
+#: includes/cuadro-informacion.php:19 includes/cuadro-informacion.php:19 
+#: includes/cuadro-informacion.php:19 includes/cuadro-informacion.php:19
+msgid "Follow us on "
+msgstr ""
+
+#: apg-nif.php:52 includes/cuadro-informacion.php:25
+msgid "More plugins on "
+msgstr ""
+
+#: apg-nif.php:53 apg-nif.php:53 includes/cuadro-informacion.php:33 
+#: includes/cuadro-informacion.php:33
+msgid "Contact with us by "
+msgstr ""
+
+#: apg-nif.php:66
+msgid "Settings of "
+msgstr ""
+
+#: apg-nif.php:66
+msgid "Settings"
+msgstr ""
+
+#: apg-nif.php:67
+msgid "Support of "
+msgstr ""
+
+#: apg-nif.php:67 includes/cuadro-informacion.php:39
+msgid "Support"
+msgstr ""
+
+#: apg-nif.php:87
+msgid "APG NIF/CIF/NIE field"
+msgstr ""
+
+#: apg-nif.php:87
+msgid "NIF/CIF/NIE field"
+msgstr ""
+
+#: apg-nif.php:111 apg-nif.php:215
+msgctxt "placeholder"
+msgid "NIF/CIF/NIE number"
+msgstr ""
+
+#: apg-nif.php:478
+msgid "Please enter a valid NIF/CIF/NIE."
+msgstr ""
+
+#: apg-nif.php:494
+msgid "This plugin require WooCommerce active to run!"
+msgstr ""
+
+#: apg-nif.php:533 includes/cuadro-informacion.php:44
+msgid "Please, rate %s:"
+msgstr ""
+
+#: includes/cuadro-informacion.php:5
+msgid "If you enjoyed and find helpful this plugin, please make a donation:"
+msgstr ""
+
+#: includes/cuadro-informacion.php:17
+msgid "Follow us:"
+msgstr ""
+
+#: includes/cuadro-informacion.php:23
+msgid "More plugins:"
+msgstr ""
+
+#: includes/cuadro-informacion.php:31
+msgid "Contact with us:"
+msgstr ""
+
+#: includes/cuadro-informacion.php:37
+msgid "Documentation and Support:"
+msgstr ""
+
+#: includes/formulario.php:5
+msgid "APG NIF/CIF/NIE field Options."
+msgstr ""
+
+#. Description of the plugin
+#: includes/formulario.php:14
+msgid ""
+"Add to WooCommerce a NIF/CIF/NIE field, validate the field before submit and "
+"let to the admin configure the billing and shipping forms."
+msgstr ""
+
+#: includes/formulario.php:23
+msgid "Require billing field?"
+msgstr ""
+
+#: includes/formulario.php:25 includes/formulario.php:32
+msgid "Check if you need to require the field"
+msgstr ""
+
+#: includes/formulario.php:30
+msgid "Require shipping field?"
+msgstr ""
+
+#: includes/formulario.php:37
+msgid "Validate field?"
+msgstr ""
+
+#: includes/formulario.php:39
+msgid "Check if you want to validate the field before submit"
+msgstr ""
+
+#: includes/formulario.php:44
+msgid "Save Changes"
+msgstr ""
+
+#. Name of the plugin
+msgid "WC - APG NIF/CIF/NIE Field"
 msgstr ""
 
 #. Description of the plugin
 msgid "Add to WooCommerce a NIF/CIF/NIE field."
 msgstr ""
 
-#. Author URI of the plugin
-msgid "http://www.artprojectgroup.es"
+#. URI of the plugin
+msgid "https://wordpress.org/plugins/wc-apg-nifcifnie-field/"
 msgstr ""
 
 #. Author of the plugin
 msgid "Art Project Group"
 msgstr ""
 
-#: ../../apg-nif.php:49 ../../includes/cuadro-informacion.php:7
-msgid "Make a donation by "
-msgstr ""
-
-#: ../../apg-nif.php:51 ../../apg-nif.php:51 ../../apg-nif.php:51 ../../apg-nif.
-#: php:51 ../../includes/cuadro-informacion.php:19 ../../includes/cuadro-
-#: informacion.php:19 ../../includes/cuadro-informacion.php:19 ../..
-#: /includes/cuadro-informacion.php:19
-msgid "Follow us on "
-msgstr ""
-
-#: ../../apg-nif.php:52 ../../includes/cuadro-informacion.php:25
-msgid "More plugins on "
-msgstr ""
-
-#: ../../apg-nif.php:53 ../../apg-nif.php:53 ../../includes/cuadro-informacion.
-#: php:33 ../../includes/cuadro-informacion.php:33
-msgid "Contact with us by "
-msgstr ""
-
-#: ../../apg-nif.php:66
-msgid "Settings of "
-msgstr ""
-
-#: ../../apg-nif.php:66
-msgid "Settings"
-msgstr ""
-
-#: ../../apg-nif.php:67
-msgid "Support of "
-msgstr ""
-
-#: ../../apg-nif.php:67 ../../includes/cuadro-informacion.php:39
-msgid "Support"
-msgstr ""
-
-#: ../../apg-nif.php:87
-msgid "APG NIF/CIF/NIE field"
-msgstr ""
-
-#: ../../apg-nif.php:87
-msgid "NIF/CIF/NIE field"
-msgstr ""
-
-#: ../../apg-nif.php:109
-msgctxt "placeholder"
-msgid "CIF/NIF/NIE number"
-msgstr ""
-
-#: ../../apg-nif.php:117 ../../apg-nif.php:212
-msgid "Email Address"
-msgstr ""
-
-#: ../../apg-nif.php:128 ../../apg-nif.php:222
-msgid "Phone"
-msgstr ""
-
-#: ../../apg-nif.php:230 ../../apg-nif.php:231 ../../apg-nif.php:250 ../../apg-
-#: nif.php:251
-msgid "Postcode / Zip"
-msgstr ""
-
-#: ../../apg-nif.php:279
-msgid "Email"
-msgstr ""
-
-#: ../../apg-nif.php:286 ../../apg-nif.php:374
-msgid "Telephone"
-msgstr ""
-
-#: ../../apg-nif.php:461
-msgid "Please enter a valid NIF/CIF/NIE."
-msgstr ""
-
-#: ../../apg-nif.php:477
-msgid "This plugin require WooCommerce active to run!"
-msgstr ""
-
-#: ../../apg-nif.php:516 ../../includes/cuadro-informacion.php:44
-#, php-format
-msgid "Please, rate %s:"
-msgstr ""
-
-#: ../../includes/cuadro-informacion.php:5
-msgid "If you enjoyed and find helpful this plugin, please make a donation:"
-msgstr ""
-
-#: ../../includes/cuadro-informacion.php:17
-msgid "Follow us:"
-msgstr ""
-
-#: ../../includes/cuadro-informacion.php:23
-msgid "More plugins:"
-msgstr ""
-
-#: ../../includes/cuadro-informacion.php:31
-msgid "Contact with us:"
-msgstr ""
-
-#: ../../includes/cuadro-informacion.php:37
-msgid "Documentation and Support:"
-msgstr ""
-
-#: ../../includes/formulario.php:5
-msgid "APG NIF/CIF/NIE field Options."
-msgstr ""
-
-#. Description of the plugin
-#: ../../includes/formulario.php:14
-msgid ""
-"Add to WooCommerce a NIF/CIF/NIE field, validate the field before submit and "
-"let to the admin configure the billing and shipping forms."
-msgstr ""
-
-#: ../../includes/formulario.php:23
-msgid "Validate field?"
-msgstr ""
-
-#: ../../includes/formulario.php:25
-msgid "Check if you want to validate the field before submit"
-msgstr ""
-
-#: ../../includes/formulario.php:30
-msgid "Save Changes"
+#. Author URI of the plugin
+msgid "http://www.artprojectgroup.es/"
 msgstr ""

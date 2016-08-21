@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: WC - APG NIF/CIF/NIE Field
-Version: 0.1
+Version: 0.2
 Plugin URI: https://wordpress.org/plugins/wc-apg-nifcifnie-field/
 Description: Add to WooCommerce a NIF/CIF/NIE field.
 Author URI: http://www.artprojectgroup.es/
@@ -104,10 +104,12 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 	
 	//Arreglamos la dirección predeterminada
 	function apg_nif_campos_de_direccion( $campos ) {
+		$configuracion = get_option( 'apg_nif_settings' );
+
 		$campos['nif']		= array( 
-			'label'			=> '<abbr title="Código de Identificación Fiscal" lang="es">CIF</abbr>/<abbr title="Número de Identificación Fiscal" lang="es">NIF</abbr>/<abbr title="Número de Identificación de Extranjeros" lang="es">NIE</abbr>',
-			'placeholder'	=> _x( 'CIF/NIF/NIE number', 'placeholder', 'apg_nif' ),
-			'required'		=> false,
+			'label'			=> 'NIF/CIF/NIE',
+			'placeholder'	=> _x( 'NIF/CIF/NIE number', 'placeholder', 'apg_nif' ),
+			'required'		=> ( isset( $configuracion['requerido'] ) && $configuracion['requerido'] == "1" ) ? true : false,
 			'class'			=> array( 
 				'form-row-last' 
 			),
@@ -208,6 +210,15 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 	 
 	//Arreglamos el formulario de envío
 	function apg_nif_formulario_de_envio( $campos ) {
+		$campos['shipping_nif']		= array( 
+			'label'			=> 'NIF/CIF/NIE',
+			'placeholder'	=> _x( 'NIF/CIF/NIE number', 'placeholder', 'apg_nif' ),
+			'required'		=> ( isset( $configuracion['requerido_envio'] ) && $configuracion['requerido_envio'] == "1" ) ? true : false,
+			'class'			=> array( 
+				'form-row-last' 
+			),
+			'clear'			=> true,
+		);
 		$campos['shipping_email']		= array( 
 			'label'				=> __( 'Email Address', 'woocommerce' ),
 			'required'			=> false,
@@ -227,8 +238,7 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 			'clear'				=> true,
 		);
 		$campos['shipping_postcode']		= array( 
-			'label'				=> __( 'Postcode / Zip', 'woocommerce' ),
-			'placeholder'		=> __( 'Postcode / Zip', 'woocommerce' ),
+			'label'				=> __( 'Postcode / ZIP', 'woocommerce' ),
 			'required'			=> true,
 			'class'				=> array( 
 				'form-row-wide', 
@@ -247,8 +257,7 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 	//Arreglamos el formulario de facturación
 	function apg_nif_formulario_de_facturacion( $campos ) {
 		$campos['billing_postcode']	= array( 
-			'label'				=> __( 'Postcode / Zip', 'woocommerce' ),
-			'placeholder'		=> __( 'Postcode / Zip', 'woocommerce' ),
+			'label'				=> __( 'Postcode / ZIP', 'woocommerce' ),
 			'required'			=> true,
 			'class'				=> array( 
 				'form-row-wide', 
@@ -267,12 +276,12 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 	//Añade el campo CIF/NIF a usuarios
 	function apg_nif_anade_campos_administracion_usuarios( $campos ) {
 		$campos['billing']['fields']['billing_nif']		= array( 
-				'label'			=> '<abbr title="Código de Identificación Fiscal" lang="es">CIF</abbr>/<abbr title="Número de Identificación Fiscal" lang="es">NIF</abbr>/<abbr title="Número de Identificación de Extranjeros" lang="es">NIE</abbr>',
+				'label'			=> 'NIF/CIF/NIE',
 				'description'	=> ''
 		);
 	 
 		$campos['shipping']['fields']['shipping_nif']	= array( 
-				'label'			=> '<abbr title="Código de Identificación Fiscal" lang="es">CIF</abbr>/<abbr title="Número de Identificación Fiscal" lang="es">NIF</abbr>/<abbr title="Número de Identificación de Extranjeros" lang="es">NIE</abbr>',
+				'label'			=> 'NIF/CIF/NIE',
 				'description'	=> ''
 		);
 		$campos['shipping']['fields']['shipping_email']	= array( 
@@ -367,7 +376,7 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 	//Añade el campo NIF a Detalles del pedido
 	function apg_nif_anade_campo_nif_editar_direccion_pedido( $campos ) {
 		$campos['nif'] = array( 
-			'label'	=> '<abbr title="Código de Identificación Fiscal" lang="es">CIF</abbr>/<abbr title="Número de Identificación Fiscal" lang="es">NIF</abbr>/<abbr title="Número de Identificación de Extranjeros" lang="es">NIE</abbr>',
+			'label'	=> 'NIF/CIF/NIE',
 			'show'	=> false
 		);
 		$campos['phone'] = array( 
@@ -399,65 +408,73 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 	<pre>';
 	}
 	add_action( 'woocommerce_admin_order_data_after_billing_address', 'apg_nif_carga_hoja_de_estilo_editar_direccion_pedido' );
-	 
-	//Validando el campo NIF/CIF
-	function apg_nif_validacion_de_campo() {
+	
+	//Validando el campo NIF/CIF/NIE
+	function apg_nif_validacion( $nif ) {
 		$falso = true;
-	 
-		if ( isset( $_POST['billing_nif'] ) && strlen( $_POST['billing_nif'] ) == 9 ) {
-			$nif = strtoupper( $_POST['billing_nif'] );
-	 
-			for ( $i = 0; $i < 9; $i ++ ) {
-				$num[$i] = substr( $nif, $i, 1 );
-			}
-	 
-			if ( !preg_match( '/((^[A-Z]{1}[0-9]{7}[A-Z0-9]{1}$|^[T]{1}[A-Z0-9]{8}$)|^[0-9]{8}[A-Z]{1}$)/', $nif ) ) { //No tiene formato válido
-				$falso = true;
-			}
-	 
-			if ( preg_match( '/(^[0-9]{8}[A-Z]{1}$)/', $nif ) ) {
-				if ( $num[8] == substr( 'TRWAGMYFPDXBNJZSQVHLCKE', substr( $nif, 0, 8 ) % 23, 1 ) ) { //NIF válido
-					$falso = false;
-				}
-			}
-	 
-			$suma = $num[2] + $num[4] + $num[6];
-			for ( $i = 1; $i < 8; $i += 2 ) {
-				$suma += substr( ( 2 * $num[$i] ), 0, 1 ) + substr( ( 2 * $num[$i] ), 1, 1 );
-			}
-			$n = 10 - substr( $suma, strlen( $suma ) - 1, 1 );
-	 
-			if ( preg_match( '/^[KLM]{1}/', $nif ) ) { //NIF especial válido
-				if ( $num[8] == chr( 64 + $n ) ) {
-					$falso = false;
-				}
-			}
-	 
-			if ( preg_match( '/^[ABCDEFGHJNPQRSUVW]{1}/', $nif ) && isset ( $num[8] ) ) {
-				echo $num[8] ." == ".chr( 64 + $n )." - " . substr( $n, strlen( $n ) - 1, 1 );
-				if ( $num[8] == chr( 64 + $n ) || $num[8] == substr( $n, strlen( $n ) - 1, 1 ) ) { //CIF válido
-					$falso = false;
-				}
-			}
-	 
-			if ( preg_match( '/^[T]{1}/', $nif ) ) {
-				if ( $num[8] == preg_match( '/^[T]{1}[A-Z0-9]{8}$/', $nif ) ) { //NIE válido (T)
-					$falso = false;
-				}
-			}
-	 
-			if ( preg_match( '/^[XYZ]{1}/', $nif ) ) { //NIE válido (XYZ)
-				if ( $num[8] == substr( 'TRWAGMYFPDXBNJZSQVHLCKE', substr( str_replace( array( 'X','Y','Z' ), array( '0','1','2' ), $nif ), 0, 8 ) % 23, 1 ) ) {
-					$falso = false;
-				}
+
+		for ( $i = 0; $i < 9; $i ++ ) {
+			$num[$i] = substr( $nif, $i, 1 );
+		}
+ 
+		if ( !preg_match( '/((^[A-Z]{1}[0-9]{7}[A-Z0-9]{1}$|^[T]{1}[A-Z0-9]{8}$)|^[0-9]{8}[A-Z]{1}$)/', $nif ) ) { //No tiene formato válido
+			$falso = true;
+		}
+ 
+		if ( preg_match( '/(^[0-9]{8}[A-Z]{1}$)/', $nif ) ) {
+			if ( $num[8] == substr( 'TRWAGMYFPDXBNJZSQVHLCKE', substr( $nif, 0, 8 ) % 23, 1 ) ) { //NIF válido
+				$falso = false;
 			}
 		}
+ 
+		$suma = $num[2] + $num[4] + $num[6];
+		for ( $i = 1; $i < 8; $i += 2 ) {
+			$suma += substr( ( 2 * $num[$i] ), 0, 1 ) + substr( ( 2 * $num[$i] ), 1, 1 );
+		}
+		$n = 10 - substr( $suma, strlen( $suma ) - 1, 1 );
+ 
+		if ( preg_match( '/^[KLM]{1}/', $nif ) ) { //NIF especial válido
+			if ( $num[8] == chr( 64 + $n ) ) {
+				$falso = false;
+			}
+		}
+ 
+		if ( preg_match( '/^[ABCDEFGHJNPQRSUVW]{1}/', $nif ) && isset ( $num[8] ) ) {
+			echo $num[8] ." == ".chr( 64 + $n )." - " . substr( $n, strlen( $n ) - 1, 1 );
+			if ( $num[8] == chr( 64 + $n ) || $num[8] == substr( $n, strlen( $n ) - 1, 1 ) ) { //CIF válido
+				$falso = false;
+			}
+		}
+ 
+		if ( preg_match( '/^[T]{1}/', $nif ) ) {
+			if ( $num[8] == preg_match( '/^[T]{1}[A-Z0-9]{8}$/', $nif ) ) { //NIE válido (T)
+				$falso = false;
+			}
+		}
+ 
+		if ( preg_match( '/^[XYZ]{1}/', $nif ) ) { //NIE válido (XYZ)
+			if ( $num[8] == substr( 'TRWAGMYFPDXBNJZSQVHLCKE', substr( str_replace( array( 'X','Y','Z' ), array( '0','1','2' ), $nif ), 0, 8 ) % 23, 1 ) ) {
+				$falso = false;
+			}
+		}
+		
+		return $falso;
+	}
+	
+	//Validando el campo NIF/CIF/NIE
+	function apg_nif_validacion_de_campo() {
+		$facturacion = $envio = true;
+
+		if ( isset( $_POST['billing_nif'] ) && strlen( $_POST['billing_nif'] ) == 9 ) {
+			$facturacion = apg_nif_validacion( strtoupper( $_POST['billing_nif'] ) );
+		}
+
+		if ( isset( $_POST['shipping_nif'] ) && strlen( $_POST['shipping_nif'] ) == 9 ) {
+			$envio = apg_nif_validacion( strtoupper( $_POST['shipping_nif'] ) );
+		}
 	 
-		if ( $falso ) {
-			if ( empty( $_POST['billing_nif'] ) ) {
-				add_action( 'woocommerce_checkout_process', 'apg_nif_validacion_de_campo' );
-	 
-			} else {
+		if ( $facturacion || $envio ) {
+			if ( ( $facturacion && !empty( $_POST['billing_nif'] ) ) || ( $envio && !empty( $_POST['shipping_nif'] ) ) ) {
 				wc_add_notice( __( 'Please enter a valid NIF/CIF/NIE.', 'apg_nif' ), 'error' );
 			}
 		}
