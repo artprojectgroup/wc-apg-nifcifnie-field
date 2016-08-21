@@ -77,11 +77,12 @@ Si necesitas ayuda para configurar o instalar **WC - APG NIF/CIF/NIE Field**, **
 *En ningún caso **Art Project Group** proporciona ningún tipo de soporte técnico gratuito.*
 
 ## Changelog
-### 0.2
+###0.2
 * Añadidas nuevas opciones de configuración.
 * Actualización de traducción.
 * Actualización de captura de pantalla.
-### 0.1
+
+###0.1
 * Versión inicial.
 
 ## Traducciones
