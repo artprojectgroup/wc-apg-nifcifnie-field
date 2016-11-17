@@ -1,13 +1,13 @@
 <?php
 /*
 Plugin Name: WC - APG NIF/CIF/NIE Field
-Version: 0.2
+Version: 0.3
 Plugin URI: https://wordpress.org/plugins/wc-apg-nifcifnie-field/
 Description: Add to WooCommerce a NIF/CIF/NIE field.
 Author URI: http://www.artprojectgroup.es/
 Author: Art Project Group
 Requires at least: 3.8
-Tested up to: 4.6
+Tested up to: 4.7
 
 Text Domain: apg_nif
 Domain Path: /i18n/languages
@@ -45,13 +45,13 @@ function apg_nif_enlaces( $enlaces, $archivo ) {
 	global $apg_nif;
 
 	if ( $archivo == DIRECCION_apg_nif ) {
-		$plugin = apg_nif_plugin( $apg_nif['plugin_uri'] );
-		$enlaces[] = '<a href="' . $apg_nif['donacion'] . '" target="_blank" title="' . __( 'Make a donation by ', 'apg_nif' ) . 'APG"><span class="genericon genericon-cart"></span></a>';
-		$enlaces[] = '<a href="'. $apg_nif['plugin_url'] . '" target="_blank" title="' . $apg_nif['plugin'] . '"><strong class="artprojectgroup">APG</strong></a>';
-		$enlaces[] = '<a href="https://www.facebook.com/artprojectgroup" title="' . __( 'Follow us on ', 'apg_nif' ) . 'Facebook" target="_blank"><span class="genericon genericon-facebook-alt"></span></a> <a href="https://twitter.com/artprojectgroup" title="' . __( 'Follow us on ', 'apg_nif' ) . 'Twitter" target="_blank"><span class="genericon genericon-twitter"></span></a> <a href="https://plus.google.com/+ArtProjectGroupES" title="' . __( 'Follow us on ', 'apg_nif' ) . 'Google+" target="_blank"><span class="genericon genericon-googleplus-alt"></span></a> <a href="http://es.linkedin.com/in/artprojectgroup" title="' . __( 'Follow us on ', 'apg_nif' ) . 'LinkedIn" target="_blank"><span class="genericon genericon-linkedin"></span></a>';
-		$enlaces[] = '<a href="https://profiles.wordpress.org/artprojectgroup/" title="' . __( 'More plugins on ', 'apg_nif' ) . 'WordPress" target="_blank"><span class="genericon genericon-wordpress"></span></a>';
-		$enlaces[] = '<a href="mailto:info@artprojectgroup.es" title="' . __( 'Contact with us by ', 'apg_nif' ) . 'e-mail"><span class="genericon genericon-mail"></span></a> <a href="skype:artprojectgroup" title="' . __( 'Contact with us by ', 'apg_nif' ) . 'Skype"><span class="genericon genericon-skype"></span></a>';
-		$enlaces[] = apg_nif_plugin( $apg_nif['plugin_uri'] );
+		$plugin		= apg_nif_plugin( $apg_nif['plugin_uri'] );
+		$enlaces[]	= '<a href="' . $apg_nif['donacion'] . '" target="_blank" title="' . __( 'Make a donation by ', 'apg_nif' ) . 'APG"><span class="genericon genericon-cart"></span></a>';
+		$enlaces[]	= '<a href="'. $apg_nif['plugin_url'] . '" target="_blank" title="' . $apg_nif['plugin'] . '"><strong class="artprojectgroup">APG</strong></a>';
+		$enlaces[]	= '<a href="https://www.facebook.com/artprojectgroup" title="' . __( 'Follow us on ', 'apg_nif' ) . 'Facebook" target="_blank"><span class="genericon genericon-facebook-alt"></span></a> <a href="https://twitter.com/artprojectgroup" title="' . __( 'Follow us on ', 'apg_nif' ) . 'Twitter" target="_blank"><span class="genericon genericon-twitter"></span></a> <a href="https://plus.google.com/+ArtProjectGroupES" title="' . __( 'Follow us on ', 'apg_nif' ) . 'Google+" target="_blank"><span class="genericon genericon-googleplus-alt"></span></a> <a href="http://es.linkedin.com/in/artprojectgroup" title="' . __( 'Follow us on ', 'apg_nif' ) . 'LinkedIn" target="_blank"><span class="genericon genericon-linkedin"></span></a>';
+		$enlaces[]	= '<a href="https://profiles.wordpress.org/artprojectgroup/" title="' . __( 'More plugins on ', 'apg_nif' ) . 'WordPress" target="_blank"><span class="genericon genericon-wordpress"></span></a>';
+		$enlaces[]	= '<a href="mailto:info@artprojectgroup.es" title="' . __( 'Contact with us by ', 'apg_nif' ) . 'e-mail"><span class="genericon genericon-mail"></span></a> <a href="skype:artprojectgroup" title="' . __( 'Contact with us by ', 'apg_nif' ) . 'Skype"><span class="genericon genericon-skype"></span></a>';
+		$enlaces[]	= apg_nif_plugin( $apg_nif['plugin_uri'] );
 	}
 	
 	return $enlaces;
@@ -115,7 +115,7 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 			),
 			'clear'			=> true,
 		);
-		$campos['email']		= array( 
+		$campos['email']	= array( 
 			'label'			=> __( 'Email Address', 'woocommerce' ),
 			'required'		=> true,
 			'class'			=> array( 
@@ -126,7 +126,7 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 			),
 			'clear'			=> true,
 		);
-		$campos['phone']		= array( 
+		$campos['phone']	= array( 
 			'label'			=> __( 'Phone', 'woocommerce' ),
 			'required'		=> true,
 			'class'			=> array( 
@@ -136,12 +136,12 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 	 
 		$campos['company']['class'][0]	= 'form-row-first';
 		$campos['city']['class'][0]		= 'form-row-first';
-		$campos['state']['class'][0]		= 'form-row-last update_totals_on_change';
+		$campos['state']['class'][0]	= 'form-row-last update_totals_on_change';
 		$campos['postcode']['class'][0]	.= ' update_totals_on_change';
 	 
 		//Reordenamos los campos
 		$campos_nuevos['country']		= $campos['country'];
-		$campos_nuevos['first_name']		= $campos['first_name'];
+		$campos_nuevos['first_name']	= $campos['first_name'];
 		$campos_nuevos['last_name']		= $campos['last_name'];
 		$campos_nuevos['company']		= $campos['company'];
 		$campos_nuevos['nif']			= $campos['nif'];
@@ -157,10 +157,10 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 			$campos_nuevos['phone']['required'] = true;
 			$campos_nuevos['phone'] = $campos['phone'];
 		}
-		 
+
 		return $campos_nuevos;
 	}
-	add_filter( 'woocommerce_default_address_fields' , 'apg_nif_campos_de_direccion' );
+	add_filter( 'woocommerce_default_address_fields', 'apg_nif_campos_de_direccion' );
 	 
 	//Nueva función para hacer compatible el código con WooCommerce 2.1
 	function apg_nif_dame_campo_personalizado( $campo, $pedido ) {
@@ -175,29 +175,29 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 	//Añadimos el NIF y el teléfono a la dirección de facturación y envío
 	function apg_nif_anade_campo_nif_direccion_facturacion( $campos, $pedido ) {
 		$campos['nif']		= apg_nif_dame_campo_personalizado( '_billing_nif', $pedido->id );
-		$campos['phone']		= apg_nif_dame_campo_personalizado( '_billing_phone', $pedido->id );
+		$campos['phone']	= apg_nif_dame_campo_personalizado( '_billing_phone', $pedido->id );
 		 
 		return $campos;
 	}
-	add_filter( 'woocommerce_order_formatted_billing_address','apg_nif_anade_campo_nif_direccion_facturacion', 1, 2 );
+	add_filter( 'woocommerce_order_formatted_billing_address', 'apg_nif_anade_campo_nif_direccion_facturacion', 1, 2 );
 	 
 	function apg_nif_anade_campo_nif_direccion_envio( $campos, $pedido ) {
 		$campos['nif']		= apg_nif_dame_campo_personalizado( '_shipping_nif', $pedido->id );
-		$campos['phone']		= apg_nif_dame_campo_personalizado( '_shipping_phone', $pedido->id );
+		$campos['phone']	= apg_nif_dame_campo_personalizado( '_shipping_phone', $pedido->id );
 		 
 		return $campos;
 	}
-	add_filter( 'woocommerce_order_formatted_shipping_address','apg_nif_anade_campo_nif_direccion_envio', 1, 2 );
+	add_filter( 'woocommerce_order_formatted_shipping_address', 'apg_nif_anade_campo_nif_direccion_envio', 1, 2 );
 	 
 	function apg_nif_formato_direccion_de_facturacion( $campos, $argumentos ) {
-		$campos['{nif}']				= $argumentos['nif'];
+		$campos['{nif}']			= $argumentos['nif'];
 		$campos['{nif_upper}']		= strtoupper( $argumentos['nif'] );
 		$campos['{phone}']			= $argumentos['phone'];
-		$campos['{phone_upper}']		= strtoupper( $argumentos['phone'] );
+		$campos['{phone_upper}']	= strtoupper( $argumentos['phone'] );
 		 
 		return $campos;
 	}
-	add_filter( 'woocommerce_formatted_address_replacements','apg_nif_formato_direccion_de_facturacion', 1, 2 );
+	add_filter( 'woocommerce_formatted_address_replacements', 'apg_nif_formato_direccion_de_facturacion', 1, 2 );
 	 
 	//Reordenamos los campos de la dirección predeterminada
 	function apg_nif_formato_direccion_localizacion( $campos ) {
@@ -206,11 +206,11 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 		 
 		return $campos;
 	}
-	add_filter( 'woocommerce_localisation_address_formats','apg_nif_formato_direccion_localizacion' );
+	add_filter( 'woocommerce_localisation_address_formats', 'apg_nif_formato_direccion_localizacion' );
 	 
 	//Arreglamos el formulario de envío
 	function apg_nif_formulario_de_envio( $campos ) {
-		$campos['shipping_nif']		= array( 
+		$campos['shipping_nif']			= array( 
 			'label'			=> 'NIF/CIF/NIE',
 			'placeholder'	=> _x( 'NIF/CIF/NIE number', 'placeholder', 'apg_nif' ),
 			'required'		=> ( isset( $configuracion['requerido_envio'] ) && $configuracion['requerido_envio'] == "1" ) ? true : false,
@@ -237,7 +237,7 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 			),
 			'clear'				=> true,
 		);
-		$campos['shipping_postcode']		= array( 
+		$campos['shipping_postcode']	= array( 
 			'label'				=> __( 'Postcode / ZIP', 'woocommerce' ),
 			'required'			=> true,
 			'class'				=> array( 
@@ -252,7 +252,7 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 		  
 		return $campos;
 	}
-	add_filter( 'woocommerce_shipping_fields' , 'apg_nif_formulario_de_envio' );
+	add_filter( 'woocommerce_shipping_fields', 'apg_nif_formulario_de_envio' );
 	 
 	//Arreglamos el formulario de facturación
 	function apg_nif_formulario_de_facturacion( $campos ) {
@@ -271,7 +271,7 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 		 
 		return $campos;
 	}
-	add_filter( 'woocommerce_billing_fields' , 'apg_nif_formulario_de_facturacion' );
+	add_filter( 'woocommerce_billing_fields', 'apg_nif_formulario_de_facturacion' );
 	 
 	//Añade el campo CIF/NIF a usuarios
 	function apg_nif_anade_campos_administracion_usuarios( $campos ) {
@@ -302,29 +302,29 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 		//Reordenamos los campos
 		$campos_nuevos['billing']['title']							= $campos['billing']['title'];
 		$campos_nuevos['billing']['fields']['billing_first_name']	= $campos['billing']['fields']['billing_first_name'];
-		$campos_nuevos['billing']['fields']['billing_last_name']		= $campos['billing']['fields']['billing_last_name'];
+		$campos_nuevos['billing']['fields']['billing_last_name']	= $campos['billing']['fields']['billing_last_name'];
 		$campos_nuevos['billing']['fields']['billing_company']		= $campos['billing']['fields']['billing_company'];
 		$campos_nuevos['billing']['fields']['billing_nif']			= $campos['billing']['fields']['billing_nif'];
-		$campos_nuevos['billing']['fields']['billing_address_1']		= $campos['billing']['fields']['billing_address_1'];
-		$campos_nuevos['billing']['fields']['billing_address_2']		= $campos['billing']['fields']['billing_address_2'];
+		$campos_nuevos['billing']['fields']['billing_address_1']	= $campos['billing']['fields']['billing_address_1'];
+		$campos_nuevos['billing']['fields']['billing_address_2']	= $campos['billing']['fields']['billing_address_2'];
 		$campos_nuevos['billing']['fields']['billing_postcode']		= $campos['billing']['fields']['billing_postcode'];
 		$campos_nuevos['billing']['fields']['billing_city']			= $campos['billing']['fields']['billing_city'];
-		$campos_nuevos['billing']['fields']['billing_state']			= $campos['billing']['fields']['billing_state'];
+		$campos_nuevos['billing']['fields']['billing_state']		= $campos['billing']['fields']['billing_state'];
 		$campos_nuevos['billing']['fields']['billing_country']		= $campos['billing']['fields']['billing_country'];
-		$campos_nuevos['billing']['fields']['billing_phone']			= $campos['billing']['fields']['billing_phone'];
-		$campos_nuevos['billing']['fields']['billing_email']			= $campos['billing']['fields']['billing_email'];
+		$campos_nuevos['billing']['fields']['billing_phone']		= $campos['billing']['fields']['billing_phone'];
+		$campos_nuevos['billing']['fields']['billing_email']		= $campos['billing']['fields']['billing_email'];
 	 
 		$campos_nuevos['shipping']['title']							= $campos['shipping']['title'];
 		$campos_nuevos['shipping']['fields']['shipping_first_name']	= $campos['shipping']['fields']['shipping_first_name'];
 		$campos_nuevos['shipping']['fields']['shipping_last_name']	= $campos['shipping']['fields']['shipping_last_name'];
-		$campos_nuevos['shipping']['fields']['shipping_company']		= $campos['shipping']['fields']['shipping_company'];
-		$campos_nuevos['shipping']['fields']['shipping_nif']			= $campos['shipping']['fields']['shipping_nif'];
+		$campos_nuevos['shipping']['fields']['shipping_company']	= $campos['shipping']['fields']['shipping_company'];
+		$campos_nuevos['shipping']['fields']['shipping_nif']		= $campos['shipping']['fields']['shipping_nif'];
 		$campos_nuevos['shipping']['fields']['shipping_address_1']	= $campos['shipping']['fields']['shipping_address_1'];
 		$campos_nuevos['shipping']['fields']['shipping_address_2']	= $campos['shipping']['fields']['shipping_address_2'];
 		$campos_nuevos['shipping']['fields']['shipping_postcode']	= $campos['shipping']['fields']['shipping_postcode'];
 		$campos_nuevos['shipping']['fields']['shipping_city']		= $campos['shipping']['fields']['shipping_city'];
 		$campos_nuevos['shipping']['fields']['shipping_state']		= $campos['shipping']['fields']['shipping_state'];
-		$campos_nuevos['shipping']['fields']['shipping_country']		= $campos['shipping']['fields']['shipping_country'];
+		$campos_nuevos['shipping']['fields']['shipping_country']	= $campos['shipping']['fields']['shipping_country'];
 		$campos_nuevos['shipping']['fields']['shipping_phone']		= $campos['shipping']['fields']['shipping_phone'];
 		$campos_nuevos['shipping']['fields']['shipping_email']		= $campos['shipping']['fields']['shipping_email'];
 	 
@@ -337,27 +337,27 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 	//Añadimos el NIF a la dirección de facturación y envío
 	function apg_nif_anade_campo_nif_usuario_direccion_facturacion( $campos, $usuario ) {
 		$campos['nif']		= get_user_meta( $usuario, 'billing_nif', true );
-		$campos['phone']		= get_user_meta( $usuario, 'billing_phone', true );
+		$campos['phone']	= get_user_meta( $usuario, 'billing_phone', true );
 		
 		return $campos;
 	}
-	add_filter( 'woocommerce_user_column_billing_address','apg_nif_anade_campo_nif_usuario_direccion_facturacion', 1, 2 );
+	add_filter( 'woocommerce_user_column_billing_address', 'apg_nif_anade_campo_nif_usuario_direccion_facturacion', 1, 2 );
 	 
 	function apg_nif_anade_campo_nif_usuario_direccion_envio( $campos, $usuario ) {
 		$campos['nif']		= get_user_meta( $usuario, 'shipping_nif', true );
-		$campos['phone']		= get_user_meta( $usuario, 'shipping_phone', true );
+		$campos['phone']	= get_user_meta( $usuario, 'shipping_phone', true );
 		
 		return $campos;
 	}
-	add_filter( 'woocommerce_user_column_shipping_address','apg_nif_anade_campo_nif_usuario_direccion_envio', 1, 2 );
+	add_filter( 'woocommerce_user_column_shipping_address', 'apg_nif_anade_campo_nif_usuario_direccion_envio', 1, 2 );
 	 
 	//Añade el campo NIF a Editar mi dirección
 	function apg_nif_anade_campo_nif_editar_direccion( $campos, $usuario, $nombre ) {
 		$campos['nif']		= get_user_meta( $usuario, $nombre . '_nif', true );
-		$campos['phone']		= get_user_meta( $usuario, $nombre . '_phone', true );
+		$campos['phone']	= get_user_meta( $usuario, $nombre . '_phone', true );
 	 
 		//Ordena los campos
-		$campos_nuevos['first_name']		= $campos['first_name'];
+		$campos_nuevos['first_name']	= $campos['first_name'];
 		$campos_nuevos['last_name']		= $campos['last_name'];
 		$campos_nuevos['company']		= $campos['company'];
 		$campos_nuevos['nif']			= $campos['nif'];
@@ -385,7 +385,7 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 		);
 	 
 		//Ordena los campos
-		$campos_nuevos['first_name']		= $campos['first_name'];
+		$campos_nuevos['first_name']	= $campos['first_name'];
 		$campos_nuevos['last_name']		= $campos['last_name'];
 		$campos_nuevos['company']		= $campos['company'];
 		$campos_nuevos['nif']			= $campos['nif'];
@@ -401,7 +401,18 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 	}
 	add_filter( 'woocommerce_admin_billing_fields', 'apg_nif_anade_campo_nif_editar_direccion_pedido' );
 	add_filter( 'woocommerce_admin_shipping_fields', 'apg_nif_anade_campo_nif_editar_direccion_pedido' );
-	 
+
+	//Carga el campo NIF en los pedidos creados manualmente
+	function apg_nif_ajax( $datos_cliente ) {
+		$usuario	= ( int )trim( stripslashes( $_POST[ 'user_id' ] ) );
+		$formulario	= esc_attr( trim( stripslashes( $_POST[ 'type_to_load' ] ) ) );
+
+		$datos_cliente[$formulario . '_nif'] = get_user_meta( $usuario, $formulario . '_nif', true );
+
+		return $datos_cliente;
+	}
+	add_filter( 'woocommerce_found_customer_details', 'apg_nif_ajax' );
+
 	function apg_nif_carga_hoja_de_estilo_editar_direccion_pedido() {
 		echo '</pre>
 	<style type="text/css"><!-- #order_data .order_data_column ._billing_company_field, #order_data .order_data_column ._shipping_company_field { float: left; margin: 9px 0 0; padding: 0; width: 48%; } #order_data .order_data_column ._billing_nif_field, #order_data .order_data_column ._shipping_nif_field { float: right; margin: 9px 0 0; padding: 0; width: 48%; } --></style>
@@ -453,7 +464,7 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 		}
  
 		if ( preg_match( '/^[XYZ]{1}/', $nif ) ) { //NIE válido (XYZ)
-			if ( $num[8] == substr( 'TRWAGMYFPDXBNJZSQVHLCKE', substr( str_replace( array( 'X','Y','Z' ), array( '0','1','2' ), $nif ), 0, 8 ) % 23, 1 ) ) {
+			if ( $num[8] == substr( 'TRWAGMYFPDXBNJZSQVHLCKE', substr( str_replace( array( 'X', 'Y', 'Z' ), array( '0', '1', '2' ), $nif ), 0, 8 ) % 23, 1 ) ) {
 				$falso = false;
 			}
 		}
@@ -503,9 +514,9 @@ function apg_nif_plugin( $nombre ) {
 		'slug' => $nombre 
 	);
 	$consulta = array( 
-		'action' => 'plugin_information', 
-		'timeout' => 15, 
-		'request' => serialize( $argumentos )
+		'action'	=> 'plugin_information', 
+		'timeout'	=> 15, 
+		'request'	=> serialize( $argumentos )
 	);
 	$respuesta = get_transient( 'apg_nif_plugin' );
 	if ( false === $respuesta ) {
