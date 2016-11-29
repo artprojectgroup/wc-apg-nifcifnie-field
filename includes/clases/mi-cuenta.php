@@ -14,10 +14,10 @@ class APG_Campo_NIF_en_Cuenta {
 	}
 	
 	//Añade el campo NIF a Editar mi dirección
-	function apg_nif_anade_campo_nif_editar_direccion( $campos, $usuario, $formulario ) {
-		$campos['nif']		= get_user_meta( $usuario, $formulario . '_nif', true );
-		$campos['email']	= get_user_meta( $usuario, $formulario . '_email', true );
-		$campos['phone']	= get_user_meta( $usuario, $formulario . '_phone', true );
+	function apg_nif_anade_campo_nif_editar_direccion( $campos, $cliente, $formulario ) {
+		$campos['nif']		= get_user_meta( $cliente, $formulario . '_nif', true );
+		$campos['email']	= get_user_meta( $cliente, $formulario . '_email', true );
+		$campos['phone']	= get_user_meta( $cliente, $formulario . '_phone', true );
 		
 		//Ordena los campos
 		$orden_de_campos = array(

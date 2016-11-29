@@ -85,10 +85,10 @@ class APG_Campo_NIF_en_Admin_Pedidos {
 
 	//Carga el campo NIF en los pedidos creados manualmente
 	public function apg_nif_ajax( $datos_cliente ) {
-		$usuario	= ( int )trim( stripslashes( $_POST[ 'user_id' ] ) );
+		$cliente	= ( int ) trim( stripslashes( $_POST[ 'user_id' ] ) );
 		$formulario	= esc_attr( trim( stripslashes( $_POST[ 'type_to_load' ] ) ) );
 
-		$datos_cliente[$formulario . '_nif'] = get_user_meta( $usuario, $formulario . '_nif', true );
+		$datos_cliente[$formulario . '_nif'] = get_user_meta( $cliente, $formulario . '_nif', true );
 
 		return $datos_cliente;
 	}

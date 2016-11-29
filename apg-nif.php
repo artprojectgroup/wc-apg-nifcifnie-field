@@ -1,16 +1,16 @@
 <?php
 /*
 Plugin Name: WC - APG NIF/CIF/NIE Field
-Version: 1.0
+Version: 1.0.1
 Plugin URI: https://wordpress.org/plugins/wc-apg-nifcifnie-field/
 Description: Add to WooCommerce a NIF/CIF/NIE field.
-Author URI: http://www.artprojectgroup.es/
+Author URI: http://artprojectgroup.es/
 Author: Art Project Group
 Requires at least: 3.8
 Tested up to: 4.7
 
 Text Domain: apg_nif
-Domain Path: /i18n/languages
+Domain Path: /languages
 
 @package WC - APG NIF/CIF/NIE Field
 @category Core
@@ -29,16 +29,16 @@ define( 'DIRECCION_apg_nif', plugin_basename( __FILE__ ) );
 $apg_nif = array(	
 	'plugin' 		=> 'WC - APG NIF/CIF/NIE Field', 
 	'plugin_uri' 	=> 'wc-apg-nifcifnie-field', 
-	'donacion' 		=> 'http://www.artprojectgroup.es/tienda/donacion',
-	'soporte' 		=> 'http://www.wcprojectgroup.es/tienda/ticket-de-soporte',
-	'plugin_url' 	=> 'http://www.artprojectgroup.es/plugins-para-wordpress/plugins-para-woocommerce/wc-apg-nifcifnie-field', 
+	'donacion' 		=> 'http://artprojectgroup.es/tienda/donacion',
+	'soporte' 		=> 'http://wcprojectgroup.es/tienda/ticket-de-soporte',
+	'plugin_url' 	=> 'http://artprojectgroup.es/plugins-para-wordpress/plugins-para-woocommerce/wc-apg-nifcifnie-field', 
 	'ajustes' 		=> 'admin.php?page=apg_nif', 
-	'puntuacion' 	=> 'https://wordpress.org/support/view/plugin-reviews/wc-apg-nifcifnie-field'
+	'puntuacion' 	=> 'https://www.wordpress.org/support/view/plugin-reviews/wc-apg-nifcifnie-field'
 );
 $envios_adicionales = $limpieza = NULL;
 
 //Carga el idioma
-load_plugin_textdomain( 'apg_nif', null, dirname( DIRECCION_apg_nif ) . '/i18n/languages' );
+load_plugin_textdomain( 'apg_nif', null, dirname( DIRECCION_apg_nif ) . '/languages' );
 
 //Enlaces adicionales personalizados
 function apg_nif_enlaces( $enlaces, $archivo ) {
