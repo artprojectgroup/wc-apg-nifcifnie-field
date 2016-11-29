@@ -1,7 +1,7 @@
 WC - APG NIF/CIF/NIE Field# WC - APG NIF/CIF/NIE Field
 Contributors: artprojectgroup
 
-Donate link: http://www.artprojectgroup.es/tienda/donacion
+Donate link: http://artprojectgroup.es/tienda/donacion
 
 Tags: woocommerce, commerce, e-commerce, commerce, shop, virtual shop, nif, cif, nie, shipping form, billing form
 
@@ -9,7 +9,7 @@ Requires at least: 3.8
 
 Tested up to: 4.7
 
-Stable tag: 0.3
+Stable tag: 1.0
 
 WC requires at least: 2.4
 
@@ -30,30 +30,31 @@ Añade a WooCommerce un campo NIF/CIF/NIE.
 * Puedes hacer obligatorio el campo NIF/CIF/NIE en el formulario de facturación.
 * Puedes hacer obligatorio el campo NIF/CIF/NIE en el formulario de envío.
 * Puedes validar el campo NIF/CIF/NIE.
+* Añade como requeridos los campos teléfono y correo electrónico al formulario de envío.
 
 ### Traducciones
-* Español ([**Art Project Group**](http://www.artprojectgroup.es/)).
-* English ([**Art Project Group**](http://www.artprojectgroup.es/)).
+* Español ([**Art Project Group**](http://artprojectgroup.es/)).
+* English ([**Art Project Group**](http://artprojectgroup.es/)).
 
 ### Soporte técnico
-**Art Project Group** te ofrece [**Soporte técnico**](http://www.wcprojectgroup.es/tienda/ticket-de-soporte) para configurar o instalar ***WC - APG NIF/CIF/NIE Field***.
+**Art Project Group** te ofrece [**Soporte técnico**](http://wcprojectgroup.es/tienda/ticket-de-soporte) para configurar o instalar ***WC - APG NIF/CIF/NIE Field***.
 
 ### Origen
-**WC - APG NIF/CIF/NIE Field** ha sido programado a partir del código publicado en [*¿Cómo añadir un campo NIF o CIF con validación a WooCommerce 2.4?*](http://www.artprojectgroup.es/como-anadir-un-campo-nif-o-cif-con-validacion-a-woocommerce-2-4) de [Art Project Group](http://www.artprojectgroup.es/).
+**WC - APG NIF/CIF/NIE Field** ha sido programado a partir del código publicado en [*¿Cómo añadir un campo NIF o CIF con validación a WooCommerce 2.4?*](http://artprojectgroup.es/como-anadir-un-campo-nif-o-cif-con-validacion-a-woocommerce-2-4) de [Art Project Group](http://artprojectgroup.es/).
 
 ### Más información
-En nuestro sitio web oficial puede obtener más información sobre [**WC - APG NIF/CIF/NIE Field**](http://www.artprojectgroup.es/plugins-para-wordpress/plugins-para-woocommerce/wc-apg-nifcifnie-field). 
+En nuestro sitio web oficial puede obtener más información sobre [**WC - APG NIF/CIF/NIE Field**](http://artprojectgroup.es/plugins-para-wordpress/plugins-para-woocommerce/wc-apg-nifcifnie-field). 
 
 ### Comentarios
 No olvides dejarnos tu comentario en:
 
-* [WC - APG NIF/CIF/NIE Field](http://www.artprojectgroup.es/plugins-para-wordpress/plugins-para-woocommerce/wc-apg-nifcifnie-field) en Art Project Group.
+* [WC - APG NIF/CIF/NIE Field](http://artprojectgroup.es/plugins-para-wordpress/plugins-para-woocommerce/wc-apg-nifcifnie-field) en Art Project Group.
 * [Art Project Group](https://www.facebook.com/artprojectgroup) en Facebook.
 * [@artprojectgroup](https://twitter.com/artprojectgroup) en Twitter.
 * [+ArtProjectGroupES](https://plus.google.com/+ArtProjectGroupES/) en Google+.
 
 ### Más plugins
-Recuerda que puedes encontrar más [plugins para WordPress](http://www.artprojectgroup.es/plugins-para-wordpress) y más [plugins para WooCommerce](http://www.artprojectgroup.es/plugins-para-wordpress/plugins-para-woocommerce) en [Art Project Group](http://www.artprojectgroup.es) y en nuestro perfil en [WordPress](http://profiles.wordpress.org/artprojectgroup/).
+Recuerda que puedes encontrar más [plugins para WordPress](http://artprojectgroup.es/plugins-para-wordpress) y más [plugins para WooCommerce](http://artprojectgroup.es/plugins-para-wordpress/plugins-para-woocommerce) en [Art Project Group](http://artprojectgroup.es) y en nuestro perfil en [WordPress](http://profiles.wordpress.org/artprojectgroup/).
 
 ### GitHub
 Puedes seguir el desarrollo de este plugin en [Github](https://github.com/artprojectgroup/wc-apg-nifcifnie-field).
@@ -65,18 +66,24 @@ Puedes seguir el desarrollo de este plugin en [Github](https://github.com/artpro
  * Buscar **WC - APG NIF/CIF/NIE Field** en el buscador disponible en *Plugins -> Añadir nuevo* y pulsar el botón *Instalar ahora*.
 2. Activar el plugin a través del menú *Plugins* en el Panel de Administración de WordPress.
 3. Configurar el plugin en *WooCommerce -> Ajustes -> Envío* o a través del botón *Ajustes*.
-4. Listo, ahora ya puedes disfrutar de él, y si te gusta y te resulta útil, hacer una [*donación*](http://www.artprojectgroup.es/tienda/donacion).
+4. Listo, ahora ya puedes disfrutar de él, y si te gusta y te resulta útil, hacer una [*donación*](http://artprojectgroup.es/tienda/donacion).
 
 ## Preguntas frecuentes
 ### ¿Cómo se configura?
 La configuración del plugin es un muy simple, tan sólo debes indicar si quieres que se valide el campo NIF/CIF/NIE o no.
 
 ### Soporte técnico
-Si necesitas ayuda para configurar o instalar **WC - APG NIF/CIF/NIE Field**, **Art Project Group** te ofrece su servicio de [**Soporte técnico**](http://www.wcprojectgroup.es/tienda/ticket-de-soporte). 
+Si necesitas ayuda para configurar o instalar **WC - APG NIF/CIF/NIE Field**, **Art Project Group** te ofrece su servicio de [**Soporte técnico**](http://wcprojectgroup.es/tienda/ticket-de-soporte). 
 
 *En ningún caso **Art Project Group** proporciona ningún tipo de soporte técnico gratuito.*
 
 ## Changelog
+### 1.0
+* Muestra el campo correo en los pedidos creados manualmente.
+* Muestra el correo electrónico en los datos de cliente.
+* Eliminadas todas las clases personalizadas de los campos para mejorar la compatibilidad universal con las plantillas.
+* Estructura interna del plugin totalmente reescrita para facilitar su mantenimiento.
+
 ### 0.3
 * Carga del valor del campo NIF/CIF/NIE en los pedidos creados manualmente.
 
@@ -89,14 +96,14 @@ Si necesitas ayuda para configurar o instalar **WC - APG NIF/CIF/NIE Field**, **
 * Versión inicial.
 
 ## Traducciones
-* *English*: by [**Art Project Group**](http://www.artprojectgroup.es/) (default language).
-* *Español*: por [**Art Project Group**](http://www.artprojectgroup.es/).
+* *English*: by [**Art Project Group**](http://artprojectgroup.es/) (default language).
+* *Español*: por [**Art Project Group**](http://artprojectgroup.es/).
 
 ## Soporte técnico
-Dado que **WC - APG NIF/CIF/NIE Field** es totalmente gratuito, **Art Project Group** sólo proporciona el servicio de [**Soporte técnico**](http://www.wcprojectgroup.es/tienda/ticket-de-soporte) previo pago. En ningún caso **Art Project Group** proporciona ningún tipo de soporte técnico gratuito.
+Dado que **WC - APG NIF/CIF/NIE Field** es totalmente gratuito, **Art Project Group** sólo proporciona el servicio de [**Soporte técnico**](http://wcprojectgroup.es/tienda/ticket-de-soporte) previo pago. En ningún caso **Art Project Group** proporciona ningún tipo de soporte técnico gratuito.
 
 ## Donación
-¿Te ha gustado y te ha resultado útil **WC - APG NIF/CIF/NIE Field** en tu sitio web? Te agradeceríamos una [pequeña donación](http://www.artprojectgroup.es/tienda/donacion) que nos ayudará a seguir mejorando este plugin y a crear más plugins totalmente gratuitos para toda la comunidad WordPress.
+¿Te ha gustado y te ha resultado útil **WC - APG NIF/CIF/NIE Field** en tu sitio web? Te agradeceríamos una [pequeña donación](http://artprojectgroup.es/tienda/donacion) que nos ayudará a seguir mejorando este plugin y a crear más plugins totalmente gratuitos para toda la comunidad WordPress.
 
 ## Gracias
 * A todos los que lo usáis.

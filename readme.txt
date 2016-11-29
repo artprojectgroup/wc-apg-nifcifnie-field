@@ -1,10 +1,10 @@
 === WC - APG NIF/CIF/NIE Field ===
 Contributors: artprojectgroup
-Donate link: http://www.artprojectgroup.es/tienda/donacion
+Donate link: http://artprojectgroup.es/tienda/donacion
 Tags: woocommerce, commerce, e-commerce, commerce, shop, virtual shop, nif, cif, nie, shipping form, billing form
 Requires at least: 3.8
 Tested up to: 4.7
-Stable tag: 0.3
+Stable tag: 1.0
 WC requires at least: 2.4
 WC tested up to: 2.6.8
 License: GPLv3
@@ -21,30 +21,31 @@ Add to WooCommerce a NIF/CIF/NIE field.
 * You can require the NIF/CIF/NIE field in billing form.
 * You can require the NIF/CIF/NIE field in shipping form.
 * You can validate the NIF/CIF/NIE field.
+* Add and require phone and email fields in shipping form.
 
 = Translations =
-* Español ([**Art Project Group**](http://www.artprojectgroup.es/)).
-* English ([**Art Project Group**](http://www.artprojectgroup.es/)).
+* Español ([**Art Project Group**](http://artprojectgroup.es/)).
+* English ([**Art Project Group**](http://artprojectgroup.es/)).
 
 = Technical support =
-**Art Project Group** offers [**Technical support**](http://www.wcprojectgroup.es/tienda/ticket-de-soporte) to configure or install ***WC - APG NIF/CIF/NIE field***.
+**Art Project Group** offers [**Technical support**](http://wcprojectgroup.es/tienda/ticket-de-soporte) to configure or install ***WC - APG NIF/CIF/NIE field***.
 
 = Origin =
-**WC - APG NIF/CIF/NIE field** has been programmed from code published on [*¿Cómo añadir un campo NIF o CIF con validación a WooCommerce 2.4?*](http://www.artprojectgroup.es/como-anadir-un-campo-nif-o-cif-con-validacion-a-woocommerce-2-4) from [Art Project Group](http://www.artprojectgroup.es/).
+**WC - APG NIF/CIF/NIE field** has been programmed from code published on [*¿Cómo añadir un campo NIF o CIF con validación a WooCommerce 2.4?*](http://artprojectgroup.es/como-anadir-un-campo-nif-o-cif-con-validacion-a-woocommerce-2-4) from [Art Project Group](http://artprojectgroup.es/).
 
 = More information =
-On our official website you can learn more about [**WC - APG NIF/CIF/NIE field**](http://www.artprojectgroup.es/plugins-para-wordpress/plugins-para-woocommerce/wc-apg-nifcifnie-field).
+On our official website you can learn more about [**WC - APG NIF/CIF/NIE field**](http://artprojectgroup.es/plugins-para-wordpress/plugins-para-woocommerce/wc-apg-nifcifnie-field).
 
 = Comments =
 Don’t forget to leave us your comment on:
 
-* [WC - APG NIF/CIF/NIE field](http://www.artprojectgroup.es/plugins-para-wordpress/plugins-para-woocommerce/wc-apg-nifcifnie-field) on Art Project Group.
+* [WC - APG NIF/CIF/NIE field](http://artprojectgroup.es/plugins-para-wordpress/plugins-para-woocommerce/wc-apg-nifcifnie-field) on Art Project Group.
 * [Art Project Group](https://www.facebook.com/artprojectgroup) on Facebook.
 * [@artprojectgroup](https://twitter.com/artprojectgroup) on Twitter.
 * [+ArtProjectGroupES](https://plus.google.com/+ArtProjectGroupES/) on Google+.
 
 = More plugins =
-Remember that you can find more [plugins for WordPress](http://www.artprojectgroup.es/plugins-para-wordpress) and more [plugins for WooCommerce](http://www.artprojectgroup.es/plugins-para-wordpress/plugins-para-woocommerce) on [Art Project Group](http://www.artprojectgroup.es) and our profile on [WordPress](http://profiles.wordpress.org/artprojectgroup/).
+Remember that you can find more [plugins for WordPress](http://artprojectgroup.es/plugins-para-wordpress) and more [plugins for WooCommerce](http://artprojectgroup.es/plugins-para-wordpress/plugins-para-woocommerce) on [Art Project Group](http://artprojectgroup.es) and our profile on [WordPress](http://profiles.wordpress.org/artprojectgroup/).
 
 = GitHub =
 You can follow the development of this plugin on [Github](https://github.com/artprojectgroup/wc-apg-nifcifnie-field).
@@ -56,14 +57,14 @@ You can follow the development of this plugin on [Github](https://github.com/art
  * Search **WC - APG NIF/CIF/NIE field** in the search engine available on *Plugins -> Add New* and press *Install Now* button.
 2. Activate plugin through *Plugins* menu on WordPress Administration Panel.
 3. Set up plugin on *WooCommerce -> NIF/CIF/NIE field* or through *Settings* button.
-4. Ready, now you can enjoy it, and if you like it and find it useful, make a [*donation*](http://www.artprojectgroup.es/tienda/donacion).
+4. Ready, now you can enjoy it, and if you like it and find it useful, make a [*donation*](http://artprojectgroup.es/tienda/donacion).
 
 == Frequently asked questions ==
 = How do you set up? =
 The plugin settings is very simple, you just must indicate if you want NIF/CIF/NIE field is validated or not.
 
 = Support =
-If you need help to configuring or installing **WC - APG NIF/CIF/NIE field**, **Art Project Group** offers its service [**Technical Support**](http://www.wcprojectgroup.es/tienda/ticket-de-soporte). 
+If you need help to configuring or installing **WC - APG NIF/CIF/NIE field**, **Art Project Group** offers its service [**Technical Support**](http://wcprojectgroup.es/tienda/ticket-de-soporte). 
 
 *In any case **Art Project Group** provides any kind of free technical support.*
 
@@ -72,8 +73,13 @@ If you need help to configuring or installing **WC - APG NIF/CIF/NIE field**, **
 2. Screenshot of WC - APG NIF/CIF/NIE field. Billing and shipping forms.
 
 == Changelog ==
+= 1.0 =
+* Display the email field in manually created orders.
+* Display the email in customer data.
+* Removed all custom classes from fields to improve universal compatibility with templates.
+* Internal plugin structure fully rewritten for easy maintenance.
 = 0.3 =
-* Load the NIF/CIF/NIE field value in orders manually created.
+* Load the NIF/CIF/NIE field value in manually created orders.
 = 0.2 =
 * Added new setting options.
 * Updated tranlation.
@@ -82,18 +88,21 @@ If you need help to configuring or installing **WC - APG NIF/CIF/NIE field**, **
 * Initial version.
 
 == Upgrade Notice ==
-= 0.3 =
-* Load the NIF/CIF/NIE field value in orders manually created.
+= 1.0 =
+* Display the email field in manually created orders.
+* Display the email in customer data.
+* Removed all custom classes from fields to improve universal compatibility with templates.
+* Internal plugin structure fully rewritten for easy maintenance.
 
 == Translations ==
-* *English*: by [**Art Project Group**](http://www.artprojectgroup.es/) (default language).
-* *Español*: por [**Art Project Group**](http://www.artprojectgroup.es/).
+* *English*: by [**Art Project Group**](http://artprojectgroup.es/) (default language).
+* *Español*: por [**Art Project Group**](http://artprojectgroup.es/).
 
 == Support ==
-Since **WC - APG NIF/CIF/NIE field** is totally free, **Art Project Group** only provides payment [**Technical Support**](http://www.wcprojectgroup.es/tienda/ticket-de-soporte) service. In any case **Art Project Group** provide any kind of free technical support.
+Since **WC - APG NIF/CIF/NIE field** is totally free, **Art Project Group** only provides payment [**Technical Support**](http://wcprojectgroup.es/tienda/ticket-de-soporte) service. In any case **Art Project Group** provide any kind of free technical support.
 
 == Donation ==
-Did you liked and you have proved useful **WC - APG NIF/CIF/NIE field** on your website? We would appreciate a [small donation](http://www.artprojectgroup.es/tienda/donacion) that will help us to continue improving this plugin and create more plugins totally free for the entire WordPress community.
+Did you liked and you have proved useful **WC - APG NIF/CIF/NIE field** on your website? We would appreciate a [small donation](http://artprojectgroup.es/tienda/donacion) that will help us to continue improving this plugin and create more plugins totally free for the entire WordPress community.
 
 == Thanks ==
 * To all that use it.
