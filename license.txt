@@ -19,10 +19,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 This program incorporates work covered by the following copyright and
 permission notices:
 
-  WooCommerce - APG NIF/CIF/NIE field is Copyright (c) 2016 Art Project Group
-  http://artprojectgroup.es - http://artprojectgroup.es/plugins-para-wordpress/plugins-para-woocommerce/wc-apg-nifcifnie-field
+  WC - APG NIF/CIF/NIE field is Copyright (c) 2016 Art Project Group
+  https://artprojectgroup.es - https://artprojectgroup.es/plugins-para-wordpress/plugins-para-woocommerce/wc-apg-nifcifnie-field
 
-  WooCommerce - APG NIF/CIF/NIE field is released under the GPL
+  WC - APG NIF/CIF/NIE field is released under the GPL
 
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
