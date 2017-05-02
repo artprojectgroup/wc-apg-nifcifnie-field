@@ -30,17 +30,19 @@ class APG_Campo_NIF_en_Admin_Pedidos {
 
 	//Añadimos el NIF y el teléfono a la dirección de facturación y envío
 	public function apg_nif_anade_campo_nif_direccion_facturacion( $campos, $pedido ) {
-		$campos['nif']		= $this->apg_nif_dame_campo_personalizado( '_billing_nif', $pedido->id );
-		$campos['phone']	= $this->apg_nif_dame_campo_personalizado( '_billing_phone', $pedido->id );
-		$campos['email']	= $this->apg_nif_dame_campo_personalizado( '_billing_email', $pedido->id );
+	    $numero_de_pedido	= is_callable( array( $pedido, 'get_id' ) ) ? $pedido->get_id() : $pedido->id;
+		$campos['nif']		= $this->apg_nif_dame_campo_personalizado( '_billing_nif', $numero_de_pedido );
+		$campos['phone']	= $this->apg_nif_dame_campo_personalizado( '_billing_phone', $numero_de_pedido );
+		$campos['email']	= $this->apg_nif_dame_campo_personalizado( '_billing_email', $numero_de_pedido );
 		 
 		return $campos;
 	}
 	 
 	public function apg_nif_anade_campo_nif_direccion_envio( $campos, $pedido ) {
-		$campos['nif']		= $this->apg_nif_dame_campo_personalizado( '_shipping_nif', $pedido->id );
-		$campos['phone']	= $this->apg_nif_dame_campo_personalizado( '_shipping_phone', $pedido->id );
-		$campos['email']	= $this->apg_nif_dame_campo_personalizado( '_shipping_email', $pedido->id );
+	    $numero_de_pedido	= is_callable( array( $pedido, 'get_id' ) ) ? $pedido->get_id() : $pedido->id;
+		$campos['nif']		= $this->apg_nif_dame_campo_personalizado( '_shipping_nif', $numero_de_pedido );
+		$campos['phone']	= $this->apg_nif_dame_campo_personalizado( '_shipping_phone', $numero_de_pedido );
+		$campos['email']	= $this->apg_nif_dame_campo_personalizado( '_shipping_email', $numero_de_pedido );
 		 
 		return $campos;
 	}
@@ -96,7 +98,7 @@ class APG_Campo_NIF_en_Admin_Pedidos {
 	//Carga hoja de estilo personalizada a Detalles del pedido
 	public function apg_nif_carga_hoja_de_estilo_editar_direccion_pedido( $pedido ) {
 		echo '</pre>
-	<style type="text/css"><!-- #order_data .order_data_column ._billing_company_field, #order_data .order_data_column ._shipping_company_field { float: left; margin: 9px 0 0; padding: 0; width: 48%; } #order_data .order_data_column ._billing_nif_field, #order_data .order_data_column ._shipping_nif_field, #order_data .order_data_column ._shipping_email_field { float: right; margin: 9px 0 0; padding: 0; width: 48%; } --></style>
+	<style type="text/css"><!-- #order_data .order_data_column ._billing_company_field, #order_data .order_data_column ._shipping_company_field, #order_data .order_data_column ._billing_phone_field { float: left; margin: 9px 0 0; padding: 0; width: 48%; } #order_data .order_data_column ._billing_nif_field, #order_data .order_data_column ._shipping_nif_field { float: right; margin: 9px 0 0; padding: 0; width: 48%; } --></style>
 	<pre>';
 	}
 }

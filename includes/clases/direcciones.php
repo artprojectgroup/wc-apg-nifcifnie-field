@@ -18,18 +18,20 @@ class APG_Campo_NIF_en_Direcciones {
 
 	//Añade los campos en la dirección de facturarión del pedido y correo electrónico
 	public function apg_nif_formato_direccion_facturacion_pedido( $campos, $pedido ) {
-		$campos['nif']		= get_post_meta( $pedido->id, '_billing_nif', true );
-		$campos['email']	= get_post_meta( $pedido->id, '_billing_email', true );
-		$campos['phone']	= get_post_meta( $pedido->id, '_billing_phone', true );
+		$numero_de_pedido	= is_callable( array( $pedido, 'get_id' ) ) ? $pedido->get_id() : $pedido->id;
+		$campos['nif']		= get_post_meta( $numero_de_pedido, '_billing_nif', true );
+		$campos['email']	= get_post_meta( $numero_de_pedido, '_billing_email', true );
+		$campos['phone']	= get_post_meta( $numero_de_pedido, '_billing_phone', true );
 	
 		return $campos;
 	}
 	
 	//Añade los campos en la dirección de envío del pedido y correo electrónico
 	public function apg_nif_formato_direccion_envio_pedido( $campos, $pedido ) {
-		$campos['nif']		= get_post_meta( $pedido->id, '_shipping_nif', true );
-		$campos['email']	= get_post_meta( $pedido->id, '_shipping_email', true );
-		$campos['phone']	= get_post_meta( $pedido->id, '_shipping_phone', true );
+		$numero_de_pedido	= is_callable( array( $pedido, 'get_id' ) ) ? $pedido->get_id() : $pedido->id;
+		$campos['nif']		= get_post_meta( $numero_de_pedido, '_shipping_nif', true );
+		$campos['email']	= get_post_meta( $numero_de_pedido, '_shipping_email', true );
+		$campos['phone']	= get_post_meta( $numero_de_pedido, '_shipping_phone', true );
 	
 		return $campos;
 	}
