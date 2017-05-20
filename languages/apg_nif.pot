@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WooCommerce - APG NIF/CIF/NIE field\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-08-21 22:05+0000\n"
+"POT-Creation-Date: 2017-05-20 10:39+0000\n"
 "POT-Revision-Date: Wed Aug 10 2016 13:39:45 GMT+0200 (CEST)\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: \n"
@@ -27,18 +27,18 @@ msgstr ""
 msgid "Make a donation by "
 msgstr ""
 
-#: apg-nif.php:51 apg-nif.php:51 apg-nif.php:51 apg-nif.php:51 
-#: includes/cuadro-informacion.php:19 includes/cuadro-informacion.php:19 
-#: includes/cuadro-informacion.php:19 includes/cuadro-informacion.php:19
+#: apg-nif.php:51 apg-nif.php:51 apg-nif.php:51 apg-nif.php:51
+#: includes/cuadro-informacion.php:21 includes/cuadro-informacion.php:21
+#: includes/cuadro-informacion.php:21 includes/cuadro-informacion.php:21
 msgid "Follow us on "
 msgstr ""
 
-#: apg-nif.php:52 includes/cuadro-informacion.php:25
+#: apg-nif.php:52 includes/cuadro-informacion.php:28
 msgid "More plugins on "
 msgstr ""
 
-#: apg-nif.php:53 apg-nif.php:53 includes/cuadro-informacion.php:33 
-#: includes/cuadro-informacion.php:33
+#: apg-nif.php:53 apg-nif.php:53 includes/cuadro-informacion.php:37
+#: includes/cuadro-informacion.php:37
 msgid "Contact with us by "
 msgstr ""
 
@@ -54,32 +54,24 @@ msgstr ""
 msgid "Support of "
 msgstr ""
 
-#: apg-nif.php:67 includes/cuadro-informacion.php:39
+#: apg-nif.php:67 includes/cuadro-informacion.php:44
 msgid "Support"
 msgstr ""
 
-#: apg-nif.php:87
+#: apg-nif.php:101
 msgid "APG NIF/CIF/NIE field"
 msgstr ""
 
-#: apg-nif.php:87
+#: apg-nif.php:101
 msgid "NIF/CIF/NIE field"
 msgstr ""
 
-#: apg-nif.php:111 apg-nif.php:215
-msgctxt "placeholder"
-msgid "NIF/CIF/NIE number"
-msgstr ""
-
-#: apg-nif.php:478
-msgid "Please enter a valid NIF/CIF/NIE."
-msgstr ""
-
-#: apg-nif.php:494
+#: apg-nif.php:129
 msgid "This plugin require WooCommerce active to run!"
 msgstr ""
 
-#: apg-nif.php:533 includes/cuadro-informacion.php:44
+#: apg-nif.php:168 includes/cuadro-informacion.php:51
+#, php-format
 msgid "Please, rate %s:"
 msgstr ""
 
@@ -87,19 +79,19 @@ msgstr ""
 msgid "If you enjoyed and find helpful this plugin, please make a donation:"
 msgstr ""
 
-#: includes/cuadro-informacion.php:17
+#: includes/cuadro-informacion.php:19
 msgid "Follow us:"
 msgstr ""
 
-#: includes/cuadro-informacion.php:23
+#: includes/cuadro-informacion.php:26
 msgid "More plugins:"
 msgstr ""
 
-#: includes/cuadro-informacion.php:31
+#: includes/cuadro-informacion.php:35
 msgid "Contact with us:"
 msgstr ""
 
-#: includes/cuadro-informacion.php:37
+#: includes/cuadro-informacion.php:42
 msgid "Documentation and Support:"
 msgstr ""
 
@@ -114,28 +106,49 @@ msgid ""
 "let to the admin configure the billing and shipping forms."
 msgstr ""
 
-#: includes/formulario.php:23
+#: includes/formulario.php:24
 msgid "Require billing field?"
 msgstr ""
 
-#: includes/formulario.php:25 includes/formulario.php:32
+#: includes/formulario.php:26 includes/formulario.php:35
 msgid "Check if you need to require the field"
 msgstr ""
 
-#: includes/formulario.php:30
+#: includes/formulario.php:33
 msgid "Require shipping field?"
 msgstr ""
 
-#: includes/formulario.php:37
+#: includes/formulario.php:42
 msgid "Validate field?"
 msgstr ""
 
-#: includes/formulario.php:39
+#: includes/formulario.php:44
 msgid "Check if you want to validate the field before submit"
 msgstr ""
 
-#: includes/formulario.php:44
+#: includes/formulario.php:51
+msgid "Allow VIES VAT number?"
+msgstr ""
+
+#: includes/formulario.php:53
+msgid "Check if you want to allow and validate VIES VAT number."
+msgstr ""
+
+#: includes/formulario.php:59
 msgid "Save Changes"
+msgstr ""
+
+#: includes/clases/pedido.php:37
+msgctxt "placeholder"
+msgid "NIF/CIF/NIE number"
+msgstr ""
+
+#: includes/clases/pedido.php:210
+msgid "Please enter a valid NIF/CIF/NIE."
+msgstr ""
+
+#: includes/clases/pedido.php:257
+msgid "Please enter a valid VIES VAT number."
 msgstr ""
 
 #. Name of the plugin
@@ -155,5 +168,5 @@ msgid "Art Project Group"
 msgstr ""
 
 #. Author URI of the plugin
-msgid "http://www.artprojectgroup.es/"
+msgid "https://artprojectgroup.es/"
 msgstr ""

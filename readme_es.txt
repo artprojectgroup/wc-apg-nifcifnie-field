@@ -3,10 +3,10 @@ Contributors: artprojectgroup
 Donate link: https://artprojectgroup.es/tienda/donacion
 Tags: woocommerce, commerce, e-commerce, commerce, shop, virtual shop, nif, cif, nie, shipping form, billing form
 Requires at least: 3.8
-Tested up to: 4.7.4
-Stable tag: 1.0.1.3
+Tested up to: 4.8
+Stable tag: 1.1
 WC requires at least: 2.4
-WC tested up to: 3.0.5
+WC tested up to: 3.0.7
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -21,6 +21,7 @@ Añade a WooCommerce un campo NIF/CIF/NIE.
 * Puedes hacer obligatorio el campo NIF/CIF/NIE en el formulario de facturación.
 * Puedes hacer obligatorio el campo NIF/CIF/NIE en el formulario de envío.
 * Puedes validar el campo NIF/CIF/NIE.
+* Puedes validar el campo VIES VAT number para excluir los impuestos.
 * Añade como requeridos los campos teléfono y correo electrónico al formulario de envío.
 
 = Traducciones =
@@ -73,6 +74,8 @@ Si necesitas ayuda para configurar o instalar **WC - APG NIF/CIF/NIE Field**, **
 2. Captura de pantalla de WC - APG NIF/CIF/NIE Field. Formularios de facturación y envío.
 
 == Changelog ==
+= 1.1 =
+* Añadida opción de validación del número VIES.
 = 1.0.1.3 =
 * Ajuste para optimizar la compatibilidad con WooCommerce 3.0.
 = 1.0.1.2 =
@@ -97,8 +100,8 @@ Si necesitas ayuda para configurar o instalar **WC - APG NIF/CIF/NIE Field**, **
 * Versión inicial.
 
 == Upgrade Notice ==
-= 1.0.1.3 =
-* Ajuste para optimizar la compatibilidad con WooCommerce 3.0.
+= 1.1 =
+* Añadida opción de validación del número VIES.
 
 ==Traducciones ==
 * *English*: by [**Art Project Group**](https://artprojectgroup.es/) (default language).

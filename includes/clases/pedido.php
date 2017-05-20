@@ -8,21 +8,32 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Añade los campos en el Pedido.
  */
 class APG_Campo_NIF_en_Pedido {
+	public $nombre_nif = 'NIF/CIF/NIE'; //Nombre original del campo
+	
 	//Inicializa las acciones de Pedido
-	public function __construct() {
+	public function __construct() {	
 		add_filter( 'woocommerce_default_address_fields', array( $this, 'apg_nif_campos_de_direccion' ) );
 		add_filter( 'woocommerce_billing_fields', array( $this, 'apg_nif_formulario_de_facturacion' ) );
 		add_filter( 'woocommerce_shipping_fields', array( $this, 'apg_nif_formulario_de_envio' ) );
 		$configuracion = get_option( 'apg_nif_settings' );
+		//Valida el campo NIF/CIF/NIE
 		if ( isset( $configuracion['validacion'] ) && $configuracion['validacion'] == "1" ) {	
 			add_action( 'woocommerce_checkout_process', array( $this, 'apg_nif_validacion_de_campo' ) );
+		}
+		//Añade el número VIES
+		if ( isset( $configuracion['validacion_vies'] ) && $configuracion['validacion_vies'] == "1" ) {	
+			add_action( 'wp_enqueue_scripts', array( $this, 'apg_nif_carga_ajax' ) );
+			add_action( 'wp_ajax_nopriv_apg_nif_valida_VIES', array( $this, 'apg_nif_valida_VIES' ) );
+			add_action( 'wp_ajax_apg_nif_valida_VIES', array( $this, 'apg_nif_valida_VIES' ) );
+			add_action( 'init', array( $this, 'apg_nif_quita_iva' ) );
+			$this->nombre_nif = 'NIF/CIF/NIE/VAT number'; //Nombre modificado del campo
 		}
 	}
 
 	//Arreglamos la dirección predeterminada
 	public function apg_nif_campos_de_direccion( $campos ) {
 		$campos['nif']		= array( 
-			'label'			=> 'NIF/CIF/NIE',
+			'label'			=> $this->nombre_nif,
 			'placeholder'	=> _x( 'NIF/CIF/NIE number', 'placeholder', 'apg_nif' ),
 		);
 		$campos['email']	= array( 
@@ -125,19 +136,19 @@ class APG_Campo_NIF_en_Pedido {
 
 	//Validando el campo NIF/CIF/NIE
 	public function apg_nif_validacion( $nif ) {
-		$falso = true;
+		$nif_falso = true;
 
 		for ( $i = 0; $i < 9; $i ++ ) {
 			$num[$i] = substr( $nif, $i, 1 );
 		}
  
 		if ( !preg_match( '/((^[A-Z]{1}[0-9]{7}[A-Z0-9]{1}$|^[T]{1}[A-Z0-9]{8}$)|^[0-9]{8}[A-Z]{1}$)/', $nif ) ) { //No tiene formato válido
-			$falso = true;
+			$nif_falso = true;
 		}
  
 		if ( preg_match( '/(^[0-9]{8}[A-Z]{1}$)/', $nif ) ) {
 			if ( $num[8] == substr( 'TRWAGMYFPDXBNJZSQVHLCKE', substr( $nif, 0, 8 ) % 23, 1 ) ) { //NIF válido
-				$falso = false;
+				$nif_falso = false;
 			}
 		}
  
@@ -149,36 +160,42 @@ class APG_Campo_NIF_en_Pedido {
  
 		if ( preg_match( '/^[KLM]{1}/', $nif ) ) { //NIF especial válido
 			if ( $num[8] == chr( 64 + $n ) ) {
-				$falso = false;
+				$nif_falso = false;
 			}
 		}
  
 		if ( preg_match( '/^[ABCDEFGHJNPQRSUVW]{1}/', $nif ) && isset ( $num[8] ) ) {
-			echo $num[8] ." == ".chr( 64 + $n )." - " . substr( $n, strlen( $n ) - 1, 1 );
 			if ( $num[8] == chr( 64 + $n ) || $num[8] == substr( $n, strlen( $n ) - 1, 1 ) ) { //CIF válido
-				$falso = false;
+				$nif_falso = false;
 			}
 		}
  
 		if ( preg_match( '/^[T]{1}/', $nif ) ) {
 			if ( $num[8] == preg_match( '/^[T]{1}[A-Z0-9]{8}$/', $nif ) ) { //NIE válido (T)
-				$falso = false;
+				$nif_falso = false;
 			}
 		}
  
 		if ( preg_match( '/^[XYZ]{1}/', $nif ) ) { //NIE válido (XYZ)
 			if ( $num[8] == substr( 'TRWAGMYFPDXBNJZSQVHLCKE', substr( str_replace( array( 'X', 'Y', 'Z' ), array( '0', '1', '2' ), $nif ), 0, 8 ) % 23, 1 ) ) {
-				$falso = false;
+				$nif_falso = false;
 			}
 		}
 		
-		return $falso;
+		return $nif_falso;
 	}
 	
 	//Validando el campo NIF/CIF/NIE
 	public function apg_nif_validacion_de_campo() {
 		$facturacion	= true;
 		$envio			= true;
+		
+		//Comprobamos si es un número VIES
+		$pais	= strtoupper( substr( $_POST['billing_nif'], 0, 2 ) );
+		$nif	= substr( $_POST['billing_nif'], 2 );
+		if ( $pais == $_POST['billing_country'] || isset( $_SESSION['apg_nif'] ) ) {
+			$_POST['billing_nif'] = $nif;
+		}
 
 		if ( isset( $_POST['billing_nif'] ) && strlen( $_POST['billing_nif'] ) == 9 ) {
 			$facturacion = $this->apg_nif_validacion( strtoupper( $_POST['billing_nif'] ) );
@@ -191,6 +208,64 @@ class APG_Campo_NIF_en_Pedido {
 		if ( $facturacion || $envio ) {
 			if ( ( $facturacion && !empty( $_POST['billing_nif'] ) ) || ( $envio && !empty( $_POST['shipping_nif'] ) ) ) {
 				wc_add_notice( __( 'Please enter a valid NIF/CIF/NIE.', 'apg_nif' ), 'error' );
+			}
+		}
+	}
+	
+	//
+	public function apg_nif_carga_ajax() {
+		wp_enqueue_script( 'apg_nif_vies', plugin_dir_url( DIRECCION_apg_nif ) . '/assets/js/valida-vies.js', array() );
+		wp_localize_script( 'apg_nif_vies', 'apg_nif_ajax', admin_url( 'admin-ajax.php' ) );
+	}
+	
+	//Validando el campo VIES
+	public function apg_nif_valida_VIES() {
+		$_SESSION['apg_nif']	= false;
+		$valido					= true;
+	
+		if ( isset( $_POST['billing_nif'] ) ) {
+			$pais	= strtoupper( substr( $_POST['billing_nif'], 0, 2 ) );
+			$nif	= substr( $_POST['billing_nif'], 2 );
+			if ( $pais == $_POST['billing_country'] ) {
+				$validacion = new SoapClient( "http://ec.europa.eu/taxation_customs/vies/checkVatService.wsdl" );
+
+				if ( $validacion ) {
+					$parametros = array(
+						'countryCode' => $pais, 
+						'vatNumber' => $nif
+					);
+					try {
+						$respuesta = $validacion->checkVat( $parametros );
+						if ( $respuesta->valid == true ) {
+							$valido = true;
+						} else {
+							$valido = false;
+						}
+					} catch( SoapFault $e ) {
+						$valido = false;
+					}
+				} else {
+					$valido = false;
+				}
+				if ( $valido && $_POST['billing_country'] != "ES" ) {
+					$_SESSION['apg_nif'] = true;
+				}
+			}
+		}
+		
+		if ( !$valido ) {
+			wc_add_notice( __( 'Please enter a valid VIES VAT number.', 'apg_nif' ), 'error' );
+		}
+	}
+	
+	//Quita impuestos a VIES válido
+	public function apg_nif_quita_iva( $carro ) {
+		if ( is_checkout() || is_cart() || defined( 'WOOCOMMERCE_CHECKOUT' ) || defined( 'WOOCOMMERCE_CART' ) || ( defined( 'DOING_AJAX' ) && DOING_AJAX ) ) {
+			if ( !session_id() ) {
+				session_start();
+			}
+			if ( isset( $_SESSION['apg_nif'] ) ) {
+				WC()->customer->set_is_vat_exempt( $_SESSION['apg_nif'] );
 			}
 		}
 	}

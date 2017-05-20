@@ -45,6 +45,15 @@
 				<td class="forminp"><input id="apg_nif_settings[validacion]" name="apg_nif_settings[validacion]" type="checkbox" value="1" <?php echo ( isset( $configuracion['validacion'] ) && $configuracion['validacion']=="1" ? 'checked="checked"' : '' ); ?> tabindex="
 					<?php echo $tab++; ?>" /></td>
 			</tr>
+			<tr valign="top">
+				<th scope="row" class="titledesc">
+					<label for="apg_nif_settings[validacion_vies]">
+						<?php _e( 'Allow VIES VAT number?', 'apg_nif' ); ?>
+					</label>
+					<span class="woocommerce-help-tip" data-tip="<?php _e( "Check if you want to allow and validate VIES VAT number.", 'apg_nif' ); ?>"></span> </th>
+				<td class="forminp"><input id="apg_nif_settings[validacion_vies]" name="apg_nif_settings[validacion_vies]" type="checkbox" value="1" <?php echo ( isset( $configuracion['validacion_vies'] ) && $configuracion['validacion_vies']=="1" ? 'checked="checked"' : '' ); ?> tabindex="
+					<?php echo $tab++; ?>" /></td>
+			</tr>
 		</table>
 		<p class="submit">
 			<input class="button-primary" type="submit" value="<?php _e( 'Save Changes', 'apg_nif' ); ?>" name="submit" id="submit" tabindex="<?php echo $tab++; ?>"/>
