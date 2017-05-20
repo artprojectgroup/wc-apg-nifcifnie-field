@@ -247,12 +247,12 @@ class APG_Campo_NIF_en_Pedido {
 				} else {
 					$valido = false;
 				}
-				if ( $valido && $_POST['billing_country'] != "ES" ) {
+				if ( $valido && $_POST['billing_country'] != WC()->countries->get_base_country() ) {
 					$_SESSION['apg_nif'] = true;
 				}
 			}
 		}
-		
+
 		if ( !$valido ) {
 			wc_add_notice( __( 'Please enter a valid VIES VAT number.', 'apg_nif' ), 'error' );
 		}
