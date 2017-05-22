@@ -3,13 +3,13 @@ jQuery( function( $ ) {
 	ValidaVIES();
 
 	//Valida al cambiar
-	$( 'input[name="billing_nif"]' ).on( 'change', function() {
+	$( '#billing_nif' ).on( 'change', function() {
 		ValidaVIES();
 	} );
 
 	//Valida el VIES
 	function ValidaVIES() {
-		if ( $( 'input[name="billing_nif"]' ).val() != '' ) {
+		if ( $( '#billing_nif' ).val() != '' ) {
 			var datos = {
 				'action'			: 'apg_nif_valida_VIES',
 				'billing_nif'		: $( '#billing_nif' ).val(),
@@ -17,9 +17,14 @@ jQuery( function( $ ) {
 			};
 			$.ajax( {
 				type: "POST",
-				url: apg_nif_ajax,
+				url: apg_nif_ajax.url,
 				data: datos,
 				success: function( response ) {
+					if ( response == 0 && $( '#error_vies' ).length == 0 ) {
+						$( '#billing_nif_field' ).append( '<div id="error_vies"><strong>' + apg_nif_ajax.error + '</strong></div>' );
+					} else if ( response != 0 && $( '#error_vies' ).length ) {
+						$( '#error_vies' ).remove();
+					}
 					$( 'body' ).trigger( 'update_checkout' );
 				},
 			} );
