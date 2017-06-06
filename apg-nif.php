@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: WC - APG NIF/CIF/NIE Field
-Version: 1.1.0.2
+Version: 1.1.0.3
 Plugin URI: https://wordpress.org/plugins/wc-apg-nifcifnie-field/
 Description: Add to WooCommerce a NIF/CIF/NIE field.
 Author URI: https://artprojectgroup.es/
@@ -9,7 +9,7 @@ Author: Art Project Group
 Requires at least: 3.8
 Tested up to: 4.8
 
-Text Domain: apg_nif
+Text Domain: wc-apg-nifcifnie-field
 Domain Path: /languages
 
 @package WC - APG NIF/CIF/NIE Field
@@ -38,7 +38,7 @@ $apg_nif = array(
 $envios_adicionales = $limpieza = NULL;
 
 //Carga el idioma
-load_plugin_textdomain( 'apg_nif', null, dirname( DIRECCION_apg_nif ) . '/languages' );
+load_plugin_textdomain( 'wc-apg-nifcifnie-field', null, dirname( DIRECCION_apg_nif ) . '/languages' );
 
 //Enlaces adicionales personalizados
 function apg_nif_enlaces( $enlaces, $archivo ) {
@@ -46,11 +46,11 @@ function apg_nif_enlaces( $enlaces, $archivo ) {
 
 	if ( $archivo == DIRECCION_apg_nif ) {
 		$plugin		= apg_nif_plugin( $apg_nif['plugin_uri'] );
-		$enlaces[]	= '<a href="' . $apg_nif['donacion'] . '" target="_blank" title="' . __( 'Make a donation by ', 'apg_nif' ) . 'APG"><span class="genericon genericon-cart"></span></a>';
+		$enlaces[]	= '<a href="' . $apg_nif['donacion'] . '" target="_blank" title="' . __( 'Make a donation by ', 'wc-apg-nifcifnie-field' ) . 'APG"><span class="genericon genericon-cart"></span></a>';
 		$enlaces[]	= '<a href="'. $apg_nif['plugin_url'] . '" target="_blank" title="' . $apg_nif['plugin'] . '"><strong class="artprojectgroup">APG</strong></a>';
-		$enlaces[]	= '<a href="https://www.facebook.com/artprojectgroup" title="' . __( 'Follow us on ', 'apg_nif' ) . 'Facebook" target="_blank"><span class="genericon genericon-facebook-alt"></span></a> <a href="https://twitter.com/artprojectgroup" title="' . __( 'Follow us on ', 'apg_nif' ) . 'Twitter" target="_blank"><span class="genericon genericon-twitter"></span></a> <a href="https://plus.google.com/+ArtProjectGroupES" title="' . __( 'Follow us on ', 'apg_nif' ) . 'Google+" target="_blank"><span class="genericon genericon-googleplus-alt"></span></a> <a href="http://es.linkedin.com/in/artprojectgroup" title="' . __( 'Follow us on ', 'apg_nif' ) . 'LinkedIn" target="_blank"><span class="genericon genericon-linkedin"></span></a>';
-		$enlaces[]	= '<a href="https://profiles.wordpress.org/artprojectgroup/" title="' . __( 'More plugins on ', 'apg_nif' ) . 'WordPress" target="_blank"><span class="genericon genericon-wordpress"></span></a>';
-		$enlaces[]	= '<a href="mailto:info@artprojectgroup.es" title="' . __( 'Contact with us by ', 'apg_nif' ) . 'e-mail"><span class="genericon genericon-mail"></span></a> <a href="skype:artprojectgroup" title="' . __( 'Contact with us by ', 'apg_nif' ) . 'Skype"><span class="genericon genericon-skype"></span></a>';
+		$enlaces[]	= '<a href="https://www.facebook.com/artprojectgroup" title="' . __( 'Follow us on ', 'wc-apg-nifcifnie-field' ) . 'Facebook" target="_blank"><span class="genericon genericon-facebook-alt"></span></a> <a href="https://twitter.com/artprojectgroup" title="' . __( 'Follow us on ', 'wc-apg-nifcifnie-field' ) . 'Twitter" target="_blank"><span class="genericon genericon-twitter"></span></a> <a href="https://plus.google.com/+ArtProjectGroupES" title="' . __( 'Follow us on ', 'wc-apg-nifcifnie-field' ) . 'Google+" target="_blank"><span class="genericon genericon-googleplus-alt"></span></a> <a href="http://es.linkedin.com/in/artprojectgroup" title="' . __( 'Follow us on ', 'wc-apg-nifcifnie-field' ) . 'LinkedIn" target="_blank"><span class="genericon genericon-linkedin"></span></a>';
+		$enlaces[]	= '<a href="https://profiles.wordpress.org/artprojectgroup/" title="' . __( 'More plugins on ', 'wc-apg-nifcifnie-field' ) . 'WordPress" target="_blank"><span class="genericon genericon-wordpress"></span></a>';
+		$enlaces[]	= '<a href="mailto:info@artprojectgroup.es" title="' . __( 'Contact with us by ', 'wc-apg-nifcifnie-field' ) . 'e-mail"><span class="genericon genericon-mail"></span></a> <a href="skype:artprojectgroup" title="' . __( 'Contact with us by ', 'wc-apg-nifcifnie-field' ) . 'Skype"><span class="genericon genericon-skype"></span></a>';
 		$enlaces[]	= apg_nif_plugin( $apg_nif['plugin_uri'] );
 	}
 	
@@ -63,8 +63,8 @@ function apg_nif_enlace_de_ajustes( $enlaces ) {
 	global $apg_nif;
 
 	$enlaces_de_ajustes = array(
-		'<a href="' . $apg_nif['ajustes'] . '" title="' . __( 'Settings of ', 'apg_nif' ) . $apg_nif['plugin'] .'">' . __( 'Settings', 'apg_nif' ) . '</a>', 
-		'<a href="' . $apg_nif['soporte'] . '" title="' . __( 'Support of ', 'apg_nif' ) . $apg_nif['plugin'] .'">' . __( 'Support', 'apg_nif' ) . '</a>'
+		'<a href="' . $apg_nif['ajustes'] . '" title="' . __( 'Settings of ', 'wc-apg-nifcifnie-field' ) . $apg_nif['plugin'] .'">' . __( 'Settings', 'wc-apg-nifcifnie-field' ) . '</a>', 
+		'<a href="' . $apg_nif['soporte'] . '" title="' . __( 'Support of ', 'wc-apg-nifcifnie-field' ) . $apg_nif['plugin'] .'">' . __( 'Support', 'wc-apg-nifcifnie-field' ) . '</a>'
 	);
 	foreach ( $enlaces_de_ajustes as $enlace_de_ajustes ) {
 		array_unshift( $enlaces, $enlace_de_ajustes );
@@ -98,7 +98,7 @@ if ( is_plugin_active( 'woocommerce/woocommerce.php' ) || is_network_only_plugin
 
 		//Añade en el menú a WooCommerce
 		public function apg_nif_admin_menu() {
-			add_submenu_page( 'woocommerce', __( 'APG NIF/CIF/NIE field', 'apg_nif' ),  __( 'NIF/CIF/NIE field', 'apg_nif' ) , 'manage_woocommerce', 'apg_nif',  array( $this, 'apg_nif_tab' ) );
+			add_submenu_page( 'woocommerce', __( 'APG NIF/CIF/NIE field', 'wc-apg-nifcifnie-field' ),  __( 'NIF/CIF/NIE field', 'wc-apg-nifcifnie-field' ) , 'manage_woocommerce', 'wc-apg-nifcifnie-field',  array( $this, 'apg_nif_tab' ) );
 		}
 
 		//Registra las opciones
@@ -126,7 +126,7 @@ if ( is_plugin_active( 'woocommerce/woocommerce.php' ) || is_network_only_plugin
 function apg_nif_requiere_wc() {
 	global $apg_nif;
 		
-	echo '<div class="error fade" id="message"><h3>' . $apg_nif['plugin'] . '</h3><h4>' . __( "This plugin require WooCommerce active to run!", 'apg_nif' ) . '</h4></div>';
+	echo '<div class="error fade" id="message"><h3>' . $apg_nif['plugin'] . '</h3><h4>' . __( 'This plugin require WooCommerce active to run!', 'wc-apg-nifcifnie-field' ) . '</h4></div>';
 	deactivate_plugins( DIRECCION_apg_nif );
 }
 
@@ -165,7 +165,7 @@ function apg_nif_plugin( $nombre ) {
 	$estrellas = ob_get_contents();
 	ob_end_clean();
 
-	return '<a title="' . sprintf( __( 'Please, rate %s:', 'apg_nif' ), $apg_nif['plugin'] ) . '" href="' . $apg_nif['puntuacion'] . '?rate=5#postform" class="estrellas">' . $estrellas . '</a>';
+	return '<a title="' . sprintf( __( 'Please, rate %s:', 'wc-apg-nifcifnie-field' ), $apg_nif['plugin'] ) . '" href="' . $apg_nif['puntuacion'] . '?rate=5#postform" class="estrellas">' . $estrellas . '</a>';
 }
 
 //Carga la hoja de estilo

@@ -34,7 +34,7 @@ class APG_Campo_NIF_en_Pedido {
 	public function apg_nif_campos_de_direccion( $campos ) {
 		$campos['nif']		= array( 
 			'label'			=> $this->nombre_nif,
-			'placeholder'	=> _x( 'NIF/CIF/NIE number', 'placeholder', 'apg_nif' ),
+			'placeholder'	=> _x( 'NIF/CIF/NIE number', 'placeholder', 'wc-apg-nifcifnie-field' ),
 		);
 		$campos['email']	= array( 
 			'label'			=> __( 'Email Address', 'woocommerce' ),
@@ -335,7 +335,7 @@ class APG_Campo_NIF_en_Pedido {
 	 
 		if ( $facturacion || $envio ) {
 			if ( ( $facturacion && !empty( $_POST['billing_nif'] ) ) || ( $envio && !empty( $_POST['shipping_nif'] ) ) ) {
-				wc_add_notice( __( 'Please enter a valid NIF/CIF/NIE.', 'apg_nif' ), 'error' );
+				wc_add_notice( __( 'Please enter a valid NIF/CIF/NIE.', 'wc-apg-nifcifnie-field' ), 'error' );
 			}
 		}
 	}
@@ -345,7 +345,7 @@ class APG_Campo_NIF_en_Pedido {
 		wp_enqueue_script( 'apg_nif_vies', plugin_dir_url( DIRECCION_apg_nif ) . '/assets/js/valida-vies.js', array() );
 		wp_localize_script( 'apg_nif_vies', 'apg_nif_ajax', array(
 			'url'	=> admin_url( 'admin-ajax.php' ),
-			'error'	=> __( 'Please enter a valid VIES VAT number.', 'apg_nif' ),
+			'error'	=> __( 'Please enter a valid VIES VAT number.', 'wc-apg-nifcifnie-field' ),
 		) );
 
 	}
