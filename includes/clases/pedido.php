@@ -342,12 +342,13 @@ class APG_Campo_NIF_en_Pedido {
 	
 	//
 	public function apg_nif_carga_ajax() {
-		wp_enqueue_script( 'apg_nif_vies', plugin_dir_url( DIRECCION_apg_nif ) . '/assets/js/valida-vies.js', array() );
-		wp_localize_script( 'apg_nif_vies', 'apg_nif_ajax', array(
-			'url'	=> admin_url( 'admin-ajax.php' ),
-			'error'	=> __( 'Please enter a valid VIES VAT number.', 'wc-apg-nifcifnie-field' ),
-		) );
-
+		if ( is_checkout() || is_cart() ) {
+			wp_enqueue_script( 'apg_nif_vies', plugin_dir_url( DIRECCION_apg_nif ) . '/assets/js/valida-vies.js', array() );
+			wp_localize_script( 'apg_nif_vies', 'apg_nif_ajax', array(
+				'url'	=> admin_url( 'admin-ajax.php' ),
+				'error'	=> __( 'Please enter a valid VIES VAT number.', 'wc-apg-nifcifnie-field' ),
+			) );
+		}
 	}
 	
 	//Validando el campo VIES
