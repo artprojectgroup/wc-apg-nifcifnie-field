@@ -50,7 +50,7 @@ class APG_Campo_NIF_en_Admin_Pedidos {
 	//Añade el campo NIF a Detalles del pedido
 	public function apg_nif_anade_campo_nif_editar_direccion_pedido( $campos ) {
 		$campos['nif']		= array( 
-			'label'	=> 'NIF/CIF/NIE',
+			'label'	=> __( 'NIF/CIF/NIE', 'wc-apg-nifcifnie-field' ),
 			'show'	=> false
 		);
 		$campos['phone']	= array( 

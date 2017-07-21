@@ -2,9 +2,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WooCommerce - APG NIF/CIF/NIE field\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-06-06 10:57+0000\n"
-"PO-Revision-Date: 2017-06-06 10:57+0000\n"
-"Last-Translator: artprojectgroup <artprojectgroup@gmail.com>\n"
+"POT-Creation-Date: 2017-07-21 14:26+0000\n"
+"PO-Revision-Date: 2017-07-21 14:26+0000\n"
+"Last-Translator: Emilio José Calvo Carrasco <artprojectgroup@gmail.com>\n"
 "Language-Team: Spanish (Spain)\n"
 "Language: es-ES\n"
 "Plural-Forms: nplurals=2; plural=n != 1\n"
@@ -21,6 +21,15 @@ msgstr ""
 "esc_html_x:1,2c;comments_number_link:2,3;t:1;st:1;trans:1;transChoice:1,2\n"
 "X-Generator: Loco - https://localise.biz/\n"
 "X-Loco-Target-Locale: es_ES"
+
+#: includes/clases/pedido.php:15 includes/clases/admin/pedidos.php:53
+#: includes/clases/admin/usuario.php:21 includes/clases/admin/usuario.php:26
+msgid "NIF/CIF/NIE"
+msgstr "NIF/CIF/NIE"
+
+#: includes/clases/pedido.php:31
+msgid "NIF/CIF/NIE/VAT number"
+msgstr "NIF/CIF/NIE/VAT number"
 
 #: apg-nif.php:49
 msgid "Make a donation by "
@@ -136,16 +145,16 @@ msgstr "Márcalo si quieres permitir y validar números VIES."
 msgid "Save Changes"
 msgstr "Guardar cambios"
 
-#: includes/clases/pedido.php:37
+#: includes/clases/pedido.php:39
 msgctxt "placeholder"
 msgid "NIF/CIF/NIE number"
 msgstr "Código NIF/CIF/NIE"
 
-#: includes/clases/pedido.php:338
+#: includes/clases/pedido.php:340
 msgid "Please enter a valid NIF/CIF/NIE."
 msgstr "Por favor, introduzca un campo NIF/CIF/NIE válido."
 
-#: includes/clases/pedido.php:348
+#: includes/clases/pedido.php:351
 msgid "Please enter a valid VIES VAT number."
 msgstr "Por favor, introduce un número VIES válido."
 

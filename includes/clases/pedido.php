@@ -8,10 +8,12 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Añade los campos en el Pedido.
  */
 class APG_Campo_NIF_en_Pedido {
-	public $nombre_nif = 'NIF/CIF/NIE'; //Nombre original del campo
+	public $nombre_nif;
 	
 	//Inicializa las acciones de Pedido
 	public function __construct() {	
+		$this->nombre_nif = __( 'NIF/CIF/NIE', 'wc-apg-nifcifnie-field' ); //Nombre original del campo
+		
 		add_filter( 'woocommerce_default_address_fields', array( $this, 'apg_nif_campos_de_direccion' ) );
 		add_filter( 'woocommerce_billing_fields', array( $this, 'apg_nif_formulario_de_facturacion' ) );
 		add_filter( 'woocommerce_shipping_fields', array( $this, 'apg_nif_formulario_de_envio' ) );
@@ -26,7 +28,7 @@ class APG_Campo_NIF_en_Pedido {
 			add_action( 'wp_ajax_nopriv_apg_nif_valida_VIES', array( $this, 'apg_nif_valida_VIES' ) );
 			add_action( 'wp_ajax_apg_nif_valida_VIES', array( $this, 'apg_nif_valida_VIES' ) );
 			add_action( 'init', array( $this, 'apg_nif_quita_iva' ) );
-			$this->nombre_nif = 'NIF/CIF/NIE/VAT number'; //Nombre modificado del campo
+			$this->nombre_nif = __( 'NIF/CIF/NIE/VAT number', 'wc-apg-nifcifnie-field' ); //Nombre modificado del campo
 		}
 	}
 

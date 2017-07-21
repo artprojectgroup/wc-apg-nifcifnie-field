@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WooCommerce - APG NIF/CIF/NIE field\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-06-06 10:56+0000\n"
+"POT-Creation-Date: 2017-07-21 14:25+0000\n"
 "POT-Revision-Date: Wed Aug 10 2016 13:39:45 GMT+0200 (CEST)\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: \n"
@@ -134,16 +134,25 @@ msgstr ""
 msgid "Save Changes"
 msgstr ""
 
-#: includes/clases/pedido.php:37
+#: includes/clases/pedido.php:15 includes/clases/admin/pedidos.php:53
+#: includes/clases/admin/usuario.php:21 includes/clases/admin/usuario.php:26
+msgid "NIF/CIF/NIE"
+msgstr ""
+
+#: includes/clases/pedido.php:31
+msgid "NIF/CIF/NIE/VAT number"
+msgstr ""
+
+#: includes/clases/pedido.php:39
 msgctxt "placeholder"
 msgid "NIF/CIF/NIE number"
 msgstr ""
 
-#: includes/clases/pedido.php:338
+#: includes/clases/pedido.php:340
 msgid "Please enter a valid NIF/CIF/NIE."
 msgstr ""
 
-#: includes/clases/pedido.php:348
+#: includes/clases/pedido.php:351
 msgid "Please enter a valid VIES VAT number."
 msgstr ""
 

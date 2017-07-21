@@ -18,12 +18,12 @@ class APG_Campo_NIF_en_Usuarios {
 	//Añade el campo CIF/NIF a usuarios
 	public function apg_nif_anade_campos_administracion_usuarios( $campos ) {
 		$campos['billing']['fields']['billing_nif']		= array( 
-				'label'			=> 'NIF/CIF/NIE',
+				'label'			=> __( 'NIF/CIF/NIE', 'wc-apg-nifcifnie-field' ),
 				'description'	=> ''
 		);
 	 
 		$campos['shipping']['fields']['shipping_nif']	= array( 
-				'label'			=> 'NIF/CIF/NIE',
+				'label'			=> __( 'NIF/CIF/NIE', 'wc-apg-nifcifnie-field' ),
 				'description'	=> ''
 		);
 		$campos['shipping']['fields']['shipping_email']	= array( 
