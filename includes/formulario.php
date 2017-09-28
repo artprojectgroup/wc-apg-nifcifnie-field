@@ -36,7 +36,7 @@
 				<td class="forminp"><input id="apg_nif_settings[requerido_envio]" name="apg_nif_settings[requerido_envio]" type="checkbox" value="1" <?php echo ( isset( $configuracion['requerido_envio'] ) && $configuracion['requerido_envio']=="1" ? 'checked="checked"' : '' ); ?> tabindex="
 					<?php echo $tab++; ?>" /></td>
 			</tr>
-			<tr valign="top">
+			<tr valign="top" id="requerido">
 				<th scope="row" class="titledesc">
 					<label for="apg_nif_settings[validacion]">
 						<?php _e( 'Validate field?', 'wc-apg-nifcifnie-field' ); ?>
@@ -45,7 +45,7 @@
 				<td class="forminp"><input id="apg_nif_settings[validacion]" name="apg_nif_settings[validacion]" type="checkbox" value="1" <?php echo ( isset( $configuracion['validacion'] ) && $configuracion['validacion']=="1" ? 'checked="checked"' : '' ); ?> tabindex="
 					<?php echo $tab++; ?>" /></td>
 			</tr>
-			<tr valign="top">
+			<tr valign="top" id="vies">
 				<th scope="row" class="titledesc">
 					<label for="apg_nif_settings[validacion_vies]">
 						<?php _e( 'Allow VIES VAT number?', 'wc-apg-nifcifnie-field' ); ?>
@@ -60,3 +60,27 @@
 		</p>
 	</form>
 </div>
+<script type="text/javascript">
+jQuery( document ).ready( function( $ ) {
+	$( '#requerido input' ).change( function() {
+        if ( $( '#vies input' ).prop('checked') ) {  
+            $( '#vies input' ).prop( 'checked', false );   
+        }
+		if ( $( this ).prop('checked') ) {
+			$( '#vies' ).hide();
+		} else {
+			$( '#vies' ).show();
+		}
+    } );
+	$( '#vies input' ).change( function() {  
+        if ( $( '#requerido input' ).prop('checked') ) {  
+            $( '#requerido input' ).prop( 'checked', false );   
+        } 
+		if ( $( this ).prop('checked') ) {
+			$( '#requerido' ).hide();
+		} else {
+			$( '#requerido' ).show();
+		}
+    } );
+} );
+</script>

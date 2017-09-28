@@ -14,7 +14,11 @@ class APG_Campo_NIF_en_Admin_Pedidos {
 		add_filter( 'woocommerce_order_formatted_shipping_address', array( $this, 'apg_nif_anade_campo_nif_direccion_envio' ), 1, 2 );
 		add_filter( 'woocommerce_admin_billing_fields', array( $this, 'apg_nif_anade_campo_nif_editar_direccion_pedido' ) );
 		add_filter( 'woocommerce_admin_shipping_fields', array( $this, 'apg_nif_anade_campo_nif_editar_direccion_pedido' ) );
-		add_filter( 'woocommerce_found_customer_details', array( $this, 'apg_nif_ajax' ) );
+		if ( version_compare( WC_VERSION, '2.7', '<' ) ) { 
+			add_filter( 'woocommerce_found_customer_details', array( $this, 'apg_nif_ajax' ) );
+      	} else { 
+        	add_filter( 'woocommerce_ajax_get_customer_details', array( $this, 'apg_dame_nif_ajax' ), 10, 2 ); 
+      	} 
 		add_action( 'woocommerce_admin_order_data_after_billing_address', array( $this, 'apg_nif_carga_hoja_de_estilo_editar_direccion_pedido' ) );
 	}
 	
@@ -94,6 +98,12 @@ class APG_Campo_NIF_en_Admin_Pedidos {
 
 		return $datos_cliente;
 	}
+	public function apg_dame_nif_ajax( $datos_cliente, $cliente ) { 
+		$datos_cliente['billing']['nif']	= $cliente->get_meta( 'billing_nif' );
+		$datos_cliente['shipping']['nif']	= $cliente->get_meta( 'shipping_nif' );
+ 
+		return $datos_cliente; 
+	} 
 
 	//Carga hoja de estilo personalizada a Detalles del pedido
 	public function apg_nif_carga_hoja_de_estilo_editar_direccion_pedido( $pedido ) {

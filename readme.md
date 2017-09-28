@@ -9,11 +9,11 @@ Requires at least: 3.8
 
 Tested up to: 4.9
 
-Stable tag: 1.1.0.5
+Stable tag: 1.1.0.6
 
 WC requires at least: 2.4
 
-WC tested up to: 3.1.1
+WC tested up to: 3.2
 
 License: GPLv3
 
@@ -79,6 +79,10 @@ Si necesitas ayuda para configurar o instalar **WC - APG NIF/CIF/NIE Field**, **
 *En ningún caso **Art Project Group** proporciona ningún tipo de soporte técnico gratuito.*
 
 ## Changelog
+### 1.1.0.6
+* Muestra el campo correo en los pedidos creados manualmente en WooCommerce 3.x.
+* Imposibilita la validación del campo NIF/CIF/NIE junto con la validación del número VIES.
+
 ### 1.1.0.5
 * Nombre de campo de texto traducible.
 
