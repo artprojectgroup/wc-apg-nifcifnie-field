@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WooCommerce - APG NIF/CIF/NIE field\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-07-21 14:25+0000\n"
+"POT-Creation-Date: 2017-11-10 09:45+0000\n"
 "POT-Revision-Date: Wed Aug 10 2016 13:39:45 GMT+0200 (CEST)\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: \n"
@@ -23,54 +23,54 @@ msgstr ""
 "esc_html_x:1,2c;comments_number_link:2,3;t:1;st:1;trans:1;transChoice:1,2\n"
 "X-Generator: Loco - https://localise.biz/"
 
-#: apg-nif.php:49
+#: apg-nif.php:51
 msgid "Make a donation by "
 msgstr ""
 
-#: apg-nif.php:51 apg-nif.php:51 apg-nif.php:51 apg-nif.php:51
+#: apg-nif.php:53 apg-nif.php:53 apg-nif.php:53 apg-nif.php:53
 #: includes/cuadro-informacion.php:21 includes/cuadro-informacion.php:21
 #: includes/cuadro-informacion.php:21 includes/cuadro-informacion.php:21
 msgid "Follow us on "
 msgstr ""
 
-#: apg-nif.php:52 includes/cuadro-informacion.php:28
+#: apg-nif.php:54 includes/cuadro-informacion.php:28
 msgid "More plugins on "
 msgstr ""
 
-#: apg-nif.php:53 apg-nif.php:53 includes/cuadro-informacion.php:37
+#: apg-nif.php:55 apg-nif.php:55 includes/cuadro-informacion.php:37
 #: includes/cuadro-informacion.php:37
 msgid "Contact with us by "
 msgstr ""
 
-#: apg-nif.php:66
+#: apg-nif.php:68
 msgid "Settings of "
 msgstr ""
 
-#: apg-nif.php:66
+#: apg-nif.php:68
 msgid "Settings"
 msgstr ""
 
-#: apg-nif.php:67
+#: apg-nif.php:69
 msgid "Support of "
 msgstr ""
 
-#: apg-nif.php:67 includes/cuadro-informacion.php:44
+#: apg-nif.php:69 includes/cuadro-informacion.php:44
 msgid "Support"
 msgstr ""
 
-#: apg-nif.php:101
+#: apg-nif.php:103
 msgid "APG NIF/CIF/NIE field"
 msgstr ""
 
-#: apg-nif.php:101
+#: apg-nif.php:103
 msgid "NIF/CIF/NIE field"
 msgstr ""
 
-#: apg-nif.php:129
+#: apg-nif.php:131
 msgid "This plugin require WooCommerce active to run!"
 msgstr ""
 
-#: apg-nif.php:168 includes/cuadro-informacion.php:51
+#: apg-nif.php:170 includes/cuadro-informacion.php:51
 #, php-format
 msgid "Please, rate %s:"
 msgstr ""
@@ -106,35 +106,35 @@ msgstr ""
 msgid "Require billing field?"
 msgstr ""
 
-#: includes/formulario.php:26 includes/formulario.php:35
-msgid "Check if you need to require the field"
+#: includes/formulario.php:26 includes/formulario.php:34
+msgid "Check if you need to require the field."
 msgstr ""
 
-#: includes/formulario.php:33
+#: includes/formulario.php:32
 msgid "Require shipping field?"
 msgstr ""
 
-#: includes/formulario.php:42
+#: includes/formulario.php:40
 msgid "Validate field?"
 msgstr ""
 
-#: includes/formulario.php:44
-msgid "Check if you want to validate the field before submit"
+#: includes/formulario.php:42
+msgid "Check if you want to validate the field before submit."
 msgstr ""
 
-#: includes/formulario.php:51
+#: includes/formulario.php:48
 msgid "Allow VIES VAT number?"
 msgstr ""
 
-#: includes/formulario.php:53
+#: includes/formulario.php:50
 msgid "Check if you want to allow and validate VIES VAT number."
 msgstr ""
 
-#: includes/formulario.php:59
+#: includes/formulario.php:55
 msgid "Save Changes"
 msgstr ""
 
-#: includes/clases/pedido.php:15 includes/clases/admin/pedidos.php:53
+#: includes/clases/pedido.php:15 includes/clases/admin/pedidos.php:57
 #: includes/clases/admin/usuario.php:21 includes/clases/admin/usuario.php:26
 msgid "NIF/CIF/NIE"
 msgstr ""
@@ -148,11 +148,11 @@ msgctxt "placeholder"
 msgid "NIF/CIF/NIE number"
 msgstr ""
 
-#: includes/clases/pedido.php:340
+#: includes/clases/pedido.php:342
 msgid "Please enter a valid NIF/CIF/NIE."
 msgstr ""
 
-#: includes/clases/pedido.php:351
+#: includes/clases/pedido.php:353
 msgid "Please enter a valid VIES VAT number."
 msgstr ""
 

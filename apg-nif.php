@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: WC - APG NIF/CIF/NIE Field
-Version: 1.1.0.6
+Version: 1.2
 Plugin URI: https://wordpress.org/plugins/wc-apg-nifcifnie-field/
 Description: Add to WooCommerce a NIF/CIF/NIE field.
 Author URI: https://artprojectgroup.es/
@@ -9,7 +9,7 @@ Author: Art Project Group
 Requires at least: 3.8
 Tested up to: 4.9
 WC requires at least: 2.4
-WC tested up to: 3.2
+WC tested up to: 3.2.3
 
 Text Domain: wc-apg-nifcifnie-field
 Domain Path: /languages
@@ -34,7 +34,7 @@ $apg_nif = array(
 	'donacion' 		=> 'https://artprojectgroup.es/tienda/donacion',
 	'soporte' 		=> 'https://wcprojectgroup.es/tienda/ticket-de-soporte',
 	'plugin_url' 	=> 'https://artprojectgroup.es/plugins-para-wordpress/plugins-para-woocommerce/wc-apg-nifcifnie-field', 
-	'ajustes' 		=> 'admin.php?page=apg_nif', 
+	'ajustes' 		=> 'admin.php?page=wc-apg-nifcifnie-field', 
 	'puntuacion' 	=> 'https://www.wordpress.org/support/view/plugin-reviews/wc-apg-nifcifnie-field'
 );
 $envios_adicionales = $limpieza = NULL;
@@ -114,7 +114,7 @@ if ( is_plugin_active( 'woocommerce/woocommerce.php' ) || is_network_only_plugin
 
 		//Carga los scripts y CSS de WooCommerce
 		public function apg_nif_screen_id( $woocommerce_screen_ids ) {
-			$woocommerce_screen_ids[] = 'woocommerce_page_apg_nif';
+			$woocommerce_screen_ids[] = 'woocommerce_page_wc-apg-nifcifnie-field';
 
 			return $woocommerce_screen_ids;
 		}
@@ -182,4 +182,3 @@ function apg_nif_desinstalar() {
 	delete_transient( 'apg_nif_plugin' );
 }
 register_uninstall_hook( __FILE__, 'apg_nif_desinstalar' );
-?>
