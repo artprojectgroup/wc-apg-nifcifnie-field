@@ -170,7 +170,7 @@ class APG_Campo_NIF_en_Pedido {
 		}
  
 		if ( preg_match( '/^[ABCDEFGHJNPQRSUVW]{1}/', $nif ) && isset ( $numero[8] ) ) {
-			if ( $numero[8] == chr( 64 + $suma_numero ) || $numero[8] == substr( $n, strlen( $suma_numero ) - 1, 1 ) ) { //CIF válido
+			if ( $numero[8] == chr( 64 + $suma_numero ) || $numero[8] == substr( $suma_numero, strlen( $suma_numero ) - 1, 1 ) ) { //CIF válido
 				$nif_falso = false;
 			}
 		}
@@ -344,7 +344,7 @@ class APG_Campo_NIF_en_Pedido {
 		}
 	}
 	
-	//
+	//Carga el JavaScript necesario
 	public function apg_nif_carga_ajax() {
 		if ( is_checkout() || is_cart() ) {
 			wp_enqueue_script( 'apg_nif_vies', plugin_dir_url( DIRECCION_apg_nif ) . '/assets/js/valida-vies.js', array() );
