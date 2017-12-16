@@ -4,9 +4,9 @@ Donate link: https://artprojectgroup.es/tienda/donacion
 Tags: woocommerce, commerce, e-commerce, commerce, shop, virtual shop, nif, cif, nie, shipping form, billing form
 Requires at least: 3.8
 Tested up to: 4.9.1
-Stable tag: 1.2.0.1
+Stable tag: 1.2.0.2
 WC requires at least: 2.4
-WC tested up to: 3.2.5
+WC tested up to: 3.3
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -29,7 +29,7 @@ Add to WooCommerce a NIF/CIF/NIE field.
 * English ([**Art Project Group**](https://artprojectgroup.es/)).
 
 = Technical support =
-**Art Project Group** offers [**Technical support**](https://wcprojectgroup.es/tienda/ticket-de-soporte) to configure or install ***WC - APG NIF/CIF/NIE field***.
+**Art Project Group** offers [**Technical support**](https://artprojectgroup.es/tienda/ticket-de-soporte) to configure or install ***WC - APG NIF/CIF/NIE field***.
 
 = Origin =
 **WC - APG NIF/CIF/NIE field** has been programmed from code published on [*¿Cómo añadir un campo NIF o CIF con validación a WooCommerce 2.4?*](https://artprojectgroup.es/como-anadir-un-campo-nif-o-cif-con-validacion-a-woocommerce-2-4) from [Art Project Group](https://artprojectgroup.es/).
@@ -65,7 +65,7 @@ You can follow the development of this plugin on [Github](https://github.com/art
 The plugin settings is very simple, you just must indicate if you want NIF/CIF/NIE field is validated or not.
 
 = Support =
-If you need help to configuring or installing **WC - APG NIF/CIF/NIE field**, **Art Project Group** offers its service [**Technical Support**](https://wcprojectgroup.es/tienda/ticket-de-soporte). 
+If you need help to configuring or installing **WC - APG NIF/CIF/NIE field**, **Art Project Group** offers its service [**Technical Support**](https://artprojectgroup.es/tienda/ticket-de-soporte). 
 
 *In any case **Art Project Group** provides any kind of free technical support.*
 
@@ -74,6 +74,10 @@ If you need help to configuring or installing **WC - APG NIF/CIF/NIE field**, **
 2. Screenshot of WC - APG NIF/CIF/NIE field. Billing and shipping forms.
 
 == Changelog ==
+= 1.2.0.2 =
+* Header updated.
+* Stylesheet updated.
+* Screenshot updated.
 = 1.2.0.1 =
 * Fixed CIF number validation.
 = 1.2 =
@@ -118,15 +122,17 @@ If you need help to configuring or installing **WC - APG NIF/CIF/NIE field**, **
 * Initial version.
 
 == Upgrade Notice ==
-= 1.2.0.1 =
-* Fixed CIF number validation.
+= 1.2.0.2 =
+* Header updated.
+* Stylesheet updated.
+* Screenshot updated.
 
 == Translations ==
 * *English*: by [**Art Project Group**](https://artprojectgroup.es/) (default language).
 * *Español*: por [**Art Project Group**](https://artprojectgroup.es/).
 
 == Support ==
-Since **WC - APG NIF/CIF/NIE field** is totally free, **Art Project Group** only provides payment [**Technical Support**](https://wcprojectgroup.es/tienda/ticket-de-soporte) service. In any case **Art Project Group** provide any kind of free technical support.
+Since **WC - APG NIF/CIF/NIE field** is totally free, **Art Project Group** only provides payment [**Technical Support**](https://artprojectgroup.es/tienda/ticket-de-soporte) service. In any case **Art Project Group** provide any kind of free technical support.
 
 == Donation ==
 Did you liked and you have proved useful **WC - APG NIF/CIF/NIE field** on your website? We would appreciate a [small donation](https://artprojectgroup.es/tienda/donacion) that will help us to continue improving this plugin and create more plugins totally free for the entire WordPress community.
