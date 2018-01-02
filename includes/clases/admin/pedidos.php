@@ -32,7 +32,7 @@ class APG_Campo_NIF_en_Admin_Pedidos {
 		return NULL;
 	}
 
-	//Añadimos el NIF y el teléfono a la dirección de facturación y envío
+	//Añade el NIF y el teléfono a la dirección de facturación y envío
 	public function apg_nif_anade_campo_nif_direccion_facturacion( $campos, $pedido ) {
 	    $numero_de_pedido	= is_callable( array( $pedido, 'get_id' ) ) ? $pedido->get_id() : $pedido->id;
 		$campos['nif']		= $this->apg_nif_dame_campo_personalizado( '_billing_nif', $numero_de_pedido );

@@ -63,7 +63,7 @@ class APG_Campo_NIF_en_Usuarios {
 		return $campos_ordenados;
 	}
 	
-	//Añadimos el NIF a la dirección de facturación y envío
+	//Añade el NIF a la dirección de facturación
 	public function apg_nif_anade_campo_nif_usuario_direccion_facturacion( $campos, $cliente ) {
 		$campos['nif']		= get_user_meta( $cliente, 'billing_nif', true );
 		$campos['phone']	= get_user_meta( $cliente, 'billing_phone', true );
@@ -72,8 +72,8 @@ class APG_Campo_NIF_en_Usuarios {
 		return $campos;
 	}
 	 
-	//Añadimos el NIF a la dirección de envío
-	function apg_nif_anade_campo_nif_usuario_direccion_envio( $campos, $cliente ) {
+	//Añade el NIF a la dirección de envío
+	public function apg_nif_anade_campo_nif_usuario_direccion_envio( $campos, $cliente ) {
 		$campos['nif']		= get_user_meta( $cliente, 'shipping_nif', true );
 		$campos['phone']	= get_user_meta( $cliente, 'shipping_phone', true );
 		$campos['email']	= get_user_meta( $cliente, 'shipping_email', true );

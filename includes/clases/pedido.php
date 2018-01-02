@@ -32,7 +32,7 @@ class APG_Campo_NIF_en_Pedido {
 		}
 	}
 
-	//Arreglamos la dirección predeterminada
+	//Arregla la dirección predeterminada
 	public function apg_nif_campos_de_direccion( $campos ) {
 		$campos['nif']		= array( 
 			'label'			=> $this->nombre_nif,
@@ -106,7 +106,7 @@ class APG_Campo_NIF_en_Pedido {
 		return $campos_ordenados;
 	}
 	
-	//Arreglamos el formulario de envío
+	//Arregla el formulario de envío
 	public function apg_nif_formulario_de_envio( $campos ) {
 		$apg_nif_settings = get_option( 'apg_nif_settings' );
 		
@@ -136,7 +136,7 @@ class APG_Campo_NIF_en_Pedido {
 		return $campos;
 	}
 
-	//Validando el campo NIF/CIF/NIE
+	//Valida el campo NIF/CIF/NIE
 	public function apg_nif_validacion( $nif ) {
 		$nif_falso	= true;
 		$nif		= preg_replace( '/[ -,.]/', '', $nif );
@@ -317,12 +317,12 @@ class APG_Campo_NIF_en_Pedido {
 		return $eu_valido; 
 	} 
 	
-	//Validando el campo NIF/CIF/NIE
+	//Valida el campo NIF/CIF/NIE
 	public function apg_nif_validacion_de_campo() {
 		$facturacion	= true;
 		$envio			= true;
 		
-		//Comprobamos si es un número VIES
+		//Comprueba si es un número VIES
 		$pais	= strtoupper( substr( $_POST['billing_nif'], 0, 2 ) );
 		$nif	= substr( $_POST['billing_nif'], 2 );
 		if ( $pais == $_POST['billing_country'] || isset( $_SESSION['apg_nif'] ) ) {
@@ -355,7 +355,7 @@ class APG_Campo_NIF_en_Pedido {
 		}
 	}
 	
-	//Validando el campo VIES
+	//Valida el campo VIES
 	public function apg_nif_valida_VIES() {
 		$_SESSION['apg_nif']	= false;
 		$valido					= true;
