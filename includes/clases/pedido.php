@@ -138,56 +138,59 @@ class APG_Campo_NIF_en_Pedido {
 
 	//Valida el campo NIF/CIF/NIE
 	public function apg_nif_validacion( $nif ) {
-		$nif_falso	= true;
+		$nif_valido	= false;
 		$nif		= preg_replace( '/[ -,.]/', '', $nif );
+		$nif		= str_replace( 'ES', '', $nif );
 
 		for ( $i = 0; $i < 9; $i ++ ) {
 			$numero[$i] = substr( $nif, $i, 1 );
 		}
  
 		if ( !preg_match( '/((^[A-Z]{1}[0-9]{7}[A-Z0-9]{1}$|^[T]{1}[A-Z0-9]{8}$)|^[0-9]{8}[A-Z]{1}$)/', $nif ) ) { //No tiene formato válido
-			$nif_falso = true;
+			return false;
 		}
  
 		if ( preg_match( '/(^[0-9]{8}[A-Z]{1}$)/', $nif ) ) {
 			if ( $numero[8] == substr( 'TRWAGMYFPDXBNJZSQVHLCKE', substr( $nif, 0, 8 ) % 23, 1 ) ) { //NIF válido
-				$nif_falso = false;
+				$nif_valido = true;
 			}
 		}
  
 		$suma = $numero[2] + $numero[4] + $numero[6];
 		for ( $i = 1; $i < 8; $i += 2 ) {
-			if ( is_numeric( $numero[$i] ) ) {
+			if ( 2 * $numero[$i] >= 10 ) {
 				$suma += substr( ( 2 * $numero[$i] ), 0, 1 ) + substr( ( 2 * $numero[$i] ), 1, 1 );
+			} else {
+				$suma += 2 * $numero[$i];
 			}
 		}
 		$suma_numero = 10 - substr( $suma, strlen( $suma ) - 1, 1 );
  
 		if ( preg_match( '/^[KLM]{1}/', $nif ) ) { //NIF especial válido
 			if ( $numero[8] == chr( 64 + $suma_numero ) ) {
-				$nif_falso = false;
+				$nif_valido = true;
 			}
 		}
  
 		if ( preg_match( '/^[ABCDEFGHJNPQRSUVW]{1}/', $nif ) && isset ( $numero[8] ) ) {
 			if ( $numero[8] == chr( 64 + $suma_numero ) || $numero[8] == substr( $suma_numero, strlen( $suma_numero ) - 1, 1 ) ) { //CIF válido
-				$nif_falso = false;
+				$nif_valido = true;
 			}
 		}
  
 		if ( preg_match( '/^[T]{1}/', $nif ) ) {
 			if ( $numero[8] == preg_match( '/^[T]{1}[A-Z0-9]{8}$/', $nif ) ) { //NIE válido (T)
-				$nif_falso = false;
+				$nif_valido = true;
 			}
 		}
  
 		if ( preg_match( '/^[XYZ]{1}/', $nif ) ) { //NIE válido (XYZ)
 			if ( $numero[8] == substr( 'TRWAGMYFPDXBNJZSQVHLCKE', substr( str_replace( array( 'X', 'Y', 'Z' ), array( '0', '1', '2' ), $nif ), 0, 8 ) % 23, 1 ) ) {
-				$nif_falso = false;
+				$nif_valido = true;
 			}
 		}
 		
-		return $nif_falso;
+		return $nif_valido;
 	}
 	
 	/** 
@@ -321,24 +324,25 @@ class APG_Campo_NIF_en_Pedido {
 	public function apg_nif_validacion_de_campo() {
 		$facturacion	= true;
 		$envio			= true;
+		$pais			= strtoupper( substr( $_POST['billing_nif'], 0, 2 ) );
 		
-		//Comprueba si es un número VIES
-		$pais	= strtoupper( substr( $_POST['billing_nif'], 0, 2 ) );
-		$nif	= substr( $_POST['billing_nif'], 2 );
-		if ( $pais == $_POST['billing_country'] || isset( $_SESSION['apg_nif'] ) ) {
+		//Comprueba si es un número VIES válido
+		if ( $pais == $_POST['billing_country'] ) {
 			$facturacion = $this->apg_nif_validacion_eu( strtoupper( $_POST['billing_nif'] ) );
 		}
-
-		if ( $_POST['billing_country'] == "ES" && isset( $_POST['billing_nif'] ) && strlen( $_POST['billing_nif'] ) == 9 ) {
+		
+		//Comprueba el formulario de facturación
+		if ( $_POST['billing_country'] == "ES" && isset( $_POST['billing_nif'] ) ) {
 			$facturacion = $this->apg_nif_validacion( strtoupper( $_POST['billing_nif'] ) );
 		}
 
-		if ( $_POST['shipping_country'] == "ES" && isset( $_POST['shipping_nif'] ) && strlen( $_POST['shipping_nif'] ) == 9 ) {
+		//Comprueba el formulario de envío
+		if ( $_POST['shipping_country'] == "ES" && isset( $_POST['shipping_nif'] ) ) {
 			$envio = $this->apg_nif_validacion( strtoupper( $_POST['shipping_nif'] ) );
 		}
 	 
-		if ( $facturacion || $envio ) {
-			if ( ( $facturacion && !empty( $_POST['billing_nif'] ) ) || ( $envio && !empty( $_POST['shipping_nif'] ) ) ) {
+		if ( !$facturacion || !$envio ) {
+			if ( ( !$facturacion && !empty( $_POST['billing_nif'] ) ) || ( !$envio && !empty( $_POST['shipping_nif'] ) ) ) {
 				wc_add_notice( __( 'Please enter a valid NIF/CIF/NIE.', 'wc-apg-nifcifnie-field' ), 'error' );
 			}
 		}

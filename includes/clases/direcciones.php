@@ -10,11 +10,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 class APG_Campo_NIF_en_Direcciones {
 	//Inicializa las acciones de Direcciones
 	public function __construct() {
-		add_filter( 'woocommerce_order_formatted_billing_address', array( $this, 'apg_nif_formato_direccion_facturacion_pedido' ), 10,2 );
-		add_filter( 'woocommerce_order_formatted_shipping_address', array( $this, 'apg_nif_formato_direccion_envio_pedido' ), 10,2 );
+		add_filter( 'woocommerce_order_formatted_billing_address', array( $this, 'apg_nif_formato_direccion_facturacion_pedido' ), 10, 2 );
+		add_filter( 'woocommerce_order_formatted_shipping_address', array( $this, 'apg_nif_formato_direccion_envio_pedido' ), 10, 2 );
 		add_filter( 'woocommerce_formatted_address_replacements', array( $this, 'apg_nif_formato_direccion_de_facturacion' ), 1, 2 );
 		add_filter( 'woocommerce_localisation_address_formats', array( $this, 'apg_nif_formato_direccion_localizacion' ) );
-		add_action( 'woocommerce_email_customer_details', array( $this, 'apg_nif_controla_los_correos' ) );		
 	}
 
 	//Añade los campos en la dirección de facturarión del pedido y correo electrónico
@@ -55,17 +54,6 @@ class APG_Campo_NIF_en_Direcciones {
 		$campos['ES']		= "{name}\n{company}\n{nif}\n{address_1}\n{address_2}\n{postcode} {city}\n{state}\n{country}\n{phone}\n{email}";
 		 
 		return $campos;
-	}
-	
-	//Previene que salga el teléfono y el correo electrónico doble en los correos electrónicos
-	public function apg_nif_controla_los_correos() {
-		add_filter( 'woocommerce_order_get_billing_email', array( $this, 'apg_nif_prevencion_de_duplicacion_de_datos' ) );
-		add_filter( 'woocommerce_order_get_billing_phone', array( $this, 'apg_nif_prevencion_de_duplicacion_de_datos' ) );
-	}
-	
-	//Devuelve los datos en blanco
-	public function apg_nif_prevencion_de_duplicacion_de_datos() {
-		return "";
 	}
 }
 new APG_Campo_NIF_en_Direcciones();
