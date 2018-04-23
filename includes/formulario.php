@@ -22,33 +22,41 @@
 				<th scope="row" class="titledesc">
 					<label for="apg_nif_settings[requerido]">
 						<?php _e( 'Require billing field?', 'wc-apg-nifcifnie-field' ); ?>
+						<span class="woocommerce-help-tip" data-tip="<?php _e( 'Check if you need to require the field.', 'wc-apg-nifcifnie-field' ); ?>"></span>
 					</label>
-					<span class="woocommerce-help-tip" data-tip="<?php _e( 'Check if you need to require the field.', 'wc-apg-nifcifnie-field' ); ?>"></span> </th>
-				<td class="forminp"><input id="apg_nif_settings[requerido]" name="apg_nif_settings[requerido]" type="checkbox" value="1" <?php echo ( isset( $apg_nif_settings[ 'requerido'] ) && $apg_nif_settings[ 'requerido']=="1" ? 'checked="checked"' : '' ); ?> tabindex="<?php echo $tab++; ?>" /></td>
+				</th>
+				<td class="forminp"><input id="apg_nif_settings[requerido]" name="apg_nif_settings[requerido]" type="checkbox" value="1" <?php echo ( isset( $apg_nif_settings[ 'requerido'] ) && $apg_nif_settings[ 'requerido']=="1" ? 'checked="checked"' : '' ); ?> tabindex="
+					<?php echo $tab++; ?>" /></td>
 			</tr>
 			<tr valign="top">
 				<th scope="row" class="titledesc">
 					<label for="apg_nif_settings[requerido_envio]">
 						<?php _e( 'Require shipping field?', 'wc-apg-nifcifnie-field' ); ?>
+						<span class="woocommerce-help-tip" data-tip="<?php _e( 'Check if you need to require the field.', 'wc-apg-nifcifnie-field' ); ?>"></span>
 					</label>
-					<span class="woocommerce-help-tip" data-tip="<?php _e( 'Check if you need to require the field.', 'wc-apg-nifcifnie-field' ); ?>"></span> </th>
-				<td class="forminp"><input id="apg_nif_settings[requerido_envio]" name="apg_nif_settings[requerido_envio]" type="checkbox" value="1" <?php echo ( isset( $apg_nif_settings[ 'requerido_envio'] ) && $apg_nif_settings[ 'requerido_envio']=="1" ? 'checked="checked"' : '' ); ?> tabindex="<?php echo $tab++; ?>" /></td>
+				</th>
+				<td class="forminp"><input id="apg_nif_settings[requerido_envio]" name="apg_nif_settings[requerido_envio]" type="checkbox" value="1" <?php echo ( isset( $apg_nif_settings[ 'requerido_envio'] ) && $apg_nif_settings[ 'requerido_envio']=="1" ? 'checked="checked"' : '' ); ?> tabindex="
+					<?php echo $tab++; ?>" /></td>
 			</tr>
 			<tr valign="top" id="requerido">
 				<th scope="row" class="titledesc">
 					<label for="apg_nif_settings[validacion]">
 						<?php _e( 'Validate field?', 'wc-apg-nifcifnie-field' ); ?>
+						<span class="woocommerce-help-tip" data-tip="<?php _e( 'Check if you want to validate the field before submit.', 'wc-apg-nifcifnie-field' ); ?>"></span>
 					</label>
-					<span class="woocommerce-help-tip" data-tip="<?php _e( 'Check if you want to validate the field before submit.', 'wc-apg-nifcifnie-field' ); ?>"></span> </th>
-				<td class="forminp"><input id="apg_nif_settings[validacion]" name="apg_nif_settings[validacion]" type="checkbox" value="1" <?php echo ( isset( $apg_nif_settings[ 'validacion'] ) && $apg_nif_settings[ 'validacion']=="1" ? 'checked="checked"' : '' ); ?> tabindex="<?php echo $tab++; ?>" /></td>
+				</th>
+				<td class="forminp"><input id="apg_nif_settings[validacion]" name="apg_nif_settings[validacion]" type="checkbox" value="1" <?php echo ( isset( $apg_nif_settings[ 'validacion'] ) && $apg_nif_settings[ 'validacion']=="1" ? 'checked="checked"' : '' ); ?> tabindex="
+					<?php echo $tab++; ?>" /></td>
 			</tr>
 			<tr valign="top" id="vies">
 				<th scope="row" class="titledesc">
 					<label for="apg_nif_settings[validacion_vies]">
 						<?php _e( 'Allow VIES VAT number?', 'wc-apg-nifcifnie-field' ); ?>
+						<span class="woocommerce-help-tip" data-tip="<?php _e( 'Check if you want to allow and validate VIES VAT number.', 'wc-apg-nifcifnie-field' ); ?>"></span>
 					</label>
-					<span class="woocommerce-help-tip" data-tip="<?php _e( 'Check if you want to allow and validate VIES VAT number.', 'wc-apg-nifcifnie-field' ); ?>"></span> </th>
-				<td class="forminp"><input id="apg_nif_settings[validacion_vies]" name="apg_nif_settings[validacion_vies]" type="checkbox" value="1" <?php echo ( isset( $apg_nif_settings[ 'validacion_vies'] ) && $apg_nif_settings[ 'validacion_vies']=="1" ? 'checked="checked"' : '' ); ?> tabindex="<?php echo $tab++; ?>" /></td>
+				</th>
+				<td class="forminp"><input id="apg_nif_settings[validacion_vies]" name="apg_nif_settings[validacion_vies]" type="checkbox" value="1" <?php echo ( isset( $apg_nif_settings[ 'validacion_vies'] ) && $apg_nif_settings[ 'validacion_vies']=="1" ? 'checked="checked"' : '' ); ?> tabindex="
+					<?php echo $tab++; ?>" /></td>
 			</tr>
 		</table>
 		<p class="submit">
