@@ -9,7 +9,7 @@ Requires at least: 3.8
 
 Tested up to: 5.0
 
-Stable tag: 1.2.1.1
+Stable tag: 1.2.1.2
 
 WC requires at least: 2.4
 
@@ -22,7 +22,7 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 Añade a WooCommerce un campo NIF/CIF/NIE.
 
 ## Description
-**IMPORTANTE: *WC - APG NIF/CIF/NIE Field* requiere WooCommerce 2.4.0 o superior.**
+**IMPORTANTE: *WC - APG NIF/CIF/NIE Field* requiere WooCommerce 2.4.0 o superior y la clase PHP <a href="http://php.net/manual/es/class.soapclient.php">SoapClient</a>.**
 
 **WC - APG NIF/CIF/NIE Field** añade a tu tienda WooCommerce un nuevo campo NIF/CIF/NIE a todos los formularios de facturación y envío disponibles tanto para el administrador como para el cliente en WooCommerce.
 
@@ -79,6 +79,9 @@ Si necesitas ayuda para configurar o instalar **WC - APG NIF/CIF/NIE Field**, **
 *En ningún caso **Art Project Group** proporciona ningún tipo de soporte técnico gratuito.*
 
 ## Changelog
+### 1.2.1.2
+* Añadido mensaje de error y desactivación cuando la clase PHP SoapClient no existe.
+
 ### 1.2.1.1
 * Añadida compatibilidad con WooCommerce 3.4.
 

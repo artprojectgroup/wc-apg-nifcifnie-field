@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: WC - APG NIF/CIF/NIE Field
-Version: 1.2.1.1
+Version: 1.2.1.2
 Plugin URI: https://wordpress.org/plugins/wc-apg-nifcifnie-field/
 Description: Add to WooCommerce a NIF/CIF/NIE field.
 Author URI: https://artprojectgroup.es/
@@ -82,6 +82,17 @@ if ( is_plugin_active( 'woocommerce/woocommerce.php' ) || is_network_only_plugin
 function apg_nif_requiere_wc() {
 	global $apg_nif;
 		
-	echo '<div class="error fade" id="message"><h3>' . $apg_nif['plugin'] . '</h3><h4>' . __( 'This plugin require WooCommerce active to run!', 'wc-apg-nifcifnie-field' ) . '</h4></div>';
+	echo '<div class="error fade" id="message"><h3>' . $apg_nif['plugin'] . '</h3><h4>' . __( 'This plugin requires WooCommerce active to run!', 'wc-apg-nifcifnie-field' ) . '</h4></div>';
 	deactivate_plugins( DIRECCION_apg_nif );
+}
+
+//Muestra el mensaje de requerimiento de SOAP y desactiva el plugin
+function apg_nif_requiere_soap() {
+	global $apg_nif;
+		
+	echo '<div class="error fade" id="message"><h3>' . $apg_nif['plugin'] . '</h3><h4>' . __( 'This plugin requires the <a href="http://php.net/manual/en/class.soapclient.php">SoapClient</a> PHP class active to run!', 'wc-apg-nifcifnie-field' ) . '</h4></div>';
+	deactivate_plugins( DIRECCION_apg_nif );
+}
+if ( !class_exists('Soapclient') ) {
+	add_action( 'admin_notices', 'apg_nif_requiere_soap' );
 }

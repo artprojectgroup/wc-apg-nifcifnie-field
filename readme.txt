@@ -4,7 +4,7 @@ Donate link: https://artprojectgroup.es/tienda/donacion
 Tags: woocommerce, commerce, e-commerce, commerce, shop, virtual shop, nif, cif, nie, shipping form, billing form
 Requires at least: 3.8
 Tested up to: 5.0
-Stable tag: 1.2.1.1
+Stable tag: 1.2.1.2
 WC requires at least: 2.4
 WC tested up to: 3.4
 License: GPLv3
@@ -13,7 +13,7 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 Add to WooCommerce a NIF/CIF/NIE field.
 
 == Description ==
-**IMPORTANT: *WC - APG NIF/CIF/NIE field* required WooCommerce 2.4.0 or higher.**
+**IMPORTANT: *WC - APG NIF/CIF/NIE field* required WooCommerce 2.4.0 or higher and the <a href="http://php.net/manual/en/class.soapclient.php">SoapClient</a> PHP class.**
 
 **WC - APG NIF/CIF/NIE field** add to your WooCommerce shop a new NIF/CIF/NIE field to all billing and shipping forms available to admin and customer in WooCommerce.
 
@@ -74,6 +74,8 @@ If you need help to configuring or installing **WC - APG NIF/CIF/NIE field**, **
 2. Screenshot of WC - APG NIF/CIF/NIE field. Billing and shipping forms.
 
 == Changelog ==
+= 1.2.1.2 =
+* Added error message and deactivation when SoapClient PHP class doesn't exist.
 = 1.2.1.1 =
 * Added WooCommerce 3.4 compatibility.
 = 1.2.1 =
@@ -131,8 +133,8 @@ If you need help to configuring or installing **WC - APG NIF/CIF/NIE field**, **
 * Initial version.
 
 == Upgrade Notice ==
-= 1.2.1.1 =
-* Added WooCommerce 3.4 compatibility.
+= 1.2.1.2 =
+* Added error message and deactivation when SoapClient PHP class doesn't exist.
 
 == Translations ==
 * *English*: by [**Art Project Group**](https://artprojectgroup.es/) (default language).
