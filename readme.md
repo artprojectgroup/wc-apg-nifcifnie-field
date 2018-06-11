@@ -9,11 +9,11 @@ Requires at least: 3.8
 
 Tested up to: 5.0
 
-Stable tag: 1.2.1.2
+Stable tag: 1.2.1.3
 
 WC requires at least: 2.4
 
-WC tested up to: 3.4
+WC tested up to: 3.4.2
 
 License: GPLv3
 
@@ -79,6 +79,9 @@ Si necesitas ayuda para configurar o instalar **WC - APG NIF/CIF/NIE Field**, **
 *En ningún caso **Art Project Group** proporciona ningún tipo de soporte técnico gratuito.*
 
 ## Changelog
+### 1.2.1.3
+* Pequeños arreglos.
+
 ### 1.2.1.2
 * Añadido mensaje de error y desactivación cuando la clase PHP SoapClient no existe.
 

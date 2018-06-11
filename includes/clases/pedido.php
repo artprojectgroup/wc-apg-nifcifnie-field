@@ -350,7 +350,7 @@ class APG_Campo_NIF_en_Pedido {
 	
 	//Carga el JavaScript necesario
 	public function apg_nif_carga_ajax() {
-		if ( is_checkout() || is_cart() ) {
+		if ( is_checkout() ) {
 			wp_enqueue_script( 'apg_nif_vies', plugin_dir_url( DIRECCION_apg_nif ) . '/assets/js/valida-vies.js', array() );
 			wp_localize_script( 'apg_nif_vies', 'apg_nif_ajax', array(
 				'url'	=> admin_url( 'admin-ajax.php' ),
@@ -399,7 +399,7 @@ class APG_Campo_NIF_en_Pedido {
 	
 	//Quita impuestos a VIES válido
 	public function apg_nif_quita_iva( $carro ) {
-		if ( is_checkout() || is_cart() || defined( 'WOOCOMMERCE_CHECKOUT' ) || defined( 'WOOCOMMERCE_CART' ) || ( defined( 'DOING_AJAX' ) && DOING_AJAX ) ) {
+		if ( is_checkout() || defined( 'WOOCOMMERCE_CHECKOUT' ) || ( defined( 'DOING_AJAX' ) && DOING_AJAX ) ) {
 			if ( !session_id() ) {
 				session_start();
 			}

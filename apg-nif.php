@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: WC - APG NIF/CIF/NIE Field
-Version: 1.2.1.2
+Version: 1.2.1.3
 Plugin URI: https://wordpress.org/plugins/wc-apg-nifcifnie-field/
 Description: Add to WooCommerce a NIF/CIF/NIE field.
 Author URI: https://artprojectgroup.es/
@@ -91,8 +91,8 @@ function apg_nif_requiere_soap() {
 	global $apg_nif;
 		
 	echo '<div class="error fade" id="message"><h3>' . $apg_nif['plugin'] . '</h3><h4>' . __( 'This plugin requires the <a href="http://php.net/manual/en/class.soapclient.php">SoapClient</a> PHP class active to run!', 'wc-apg-nifcifnie-field' ) . '</h4></div>';
-	deactivate_plugins( DIRECCION_apg_nif );
 }
-if ( !class_exists('Soapclient') ) {
+$apg_nif_settings = get_option( 'apg_nif_settings' );
+if ( isset( $apg_nif_settings['validacion_vies'] ) && $apg_nif_settings['validacion_vies'] == "1" && ! class_exists( 'Soapclient' ) ) {
 	add_action( 'admin_notices', 'apg_nif_requiere_soap' );
 }
