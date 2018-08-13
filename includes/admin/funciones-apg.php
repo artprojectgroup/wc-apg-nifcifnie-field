@@ -6,7 +6,7 @@ $apg_nif = array(
 	'plugin_uri' 	=> 'wc-apg-nifcifnie-field', 
 	'donacion' 		=> 'https://artprojectgroup.es/tienda/donacion',
 	'soporte' 		=> 'https://artprojectgroup.es/tienda/ticket-de-soporte',
-	'plugin_url' 	=> 'https://artprojectgroup.es/plugins-para-wordpress/plugins-para-woocommerce/wc-apg-nifcifnie-field', 
+	'plugin_url' 	=> 'https://artprojectgroup.es/plugins-para-woocommerce/wc-apg-nifcifnie-field', 
 	'ajustes' 		=> 'admin.php?page=wc-apg-nifcifnie-field', 
 	'puntuacion' 	=> 'https://www.wordpress.org/support/view/plugin-reviews/wc-apg-nifcifnie-field'
 );

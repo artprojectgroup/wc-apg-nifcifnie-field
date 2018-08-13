@@ -14,6 +14,7 @@ class APG_Campo_NIF_en_Direcciones {
 		add_filter( 'woocommerce_order_formatted_shipping_address', array( $this, 'apg_nif_formato_direccion_envio_pedido' ), 10, 2 );
 		add_filter( 'woocommerce_formatted_address_replacements', array( $this, 'apg_nif_formato_direccion_de_facturacion' ), 1, 2 );
 		add_filter( 'woocommerce_localisation_address_formats', array( $this, 'apg_nif_formato_direccion_localizacion' ) );
+		add_filter( 'wpo_wcpdf_billing_address', array( $this, 'apg_nif_direccion_factura_pdf' ), 1, 2 );
 	}
 
 	//Añade los campos en la dirección de facturarión del pedido y correo electrónico
@@ -54,6 +55,17 @@ class APG_Campo_NIF_en_Direcciones {
 		$campos['ES']		= "{name}\n{company}\n{nif}\n{address_1}\n{address_2}\n{postcode} {city}\n{state}\n{country}\n{phone}\n{email}";
 		 
 		return $campos;
+	}
+	
+	//Añade los campos en WooCommerce PDF Invoices & Packing Slips para facturas con direcciones fuera de España
+	public function apg_nif_direccion_factura_pdf( $direccion, $pedido ) {
+		if ( $pedido->order->get_billing_country() != 'ES' ) {
+			$direccion .= "<br />" . get_post_meta( $pedido->order->get_id(), '_billing_nif', true );
+			$direccion .= "<br />" . get_post_meta( $pedido->order->get_id(), '_billing_email', true );
+			$direccion .= "<br />" . get_post_meta( $pedido->order->get_id(), '_billing_phone', true );
+		}
+
+		return $direccion;
 	}
 }
 new APG_Campo_NIF_en_Direcciones();
