@@ -36,18 +36,18 @@ Add to WooCommerce a NIF/CIF/NIE field.
 **WC - APG NIF/CIF/NIE field** has been programmed from code published on [*¿Cómo añadir un campo NIF o CIF con validación a WooCommerce 2.4?*](https://artprojectgroup.es/como-anadir-un-campo-nif-o-cif-con-validacion-a-woocommerce-2-4) from [Art Project Group](https://artprojectgroup.es/).
 
 = More information =
-On our official website you can learn more about [**WC - APG NIF/CIF/NIE field**](https://artprojectgroup.es/plugins-para-wordpress/plugins-para-woocommerce/wc-apg-nifcifnie-field).
+On our official website you can learn more about [**WC - APG NIF/CIF/NIE field**](https://artprojectgroup.es/plugins-para-woocommerce/wc-apg-nifcifnie-field).
 
 = Comments =
 Don’t forget to leave us your comment on:
 
-* [WC - APG NIF/CIF/NIE field](https://artprojectgroup.es/plugins-para-wordpress/plugins-para-woocommerce/wc-apg-nifcifnie-field) on Art Project Group.
+* [WC - APG NIF/CIF/NIE field](https://artprojectgroup.es/plugins-para-woocommerce/wc-apg-nifcifnie-field) on Art Project Group.
 * [Art Project Group](https://www.facebook.com/artprojectgroup) on Facebook.
 * [@artprojectgroup](https://twitter.com/artprojectgroup) on Twitter.
 * [+ArtProjectGroupES](https://plus.google.com/+ArtProjectGroupES/) on Google+.
 
 = More plugins =
-Remember that you can find more [plugins for WordPress](https://artprojectgroup.es/plugins-para-wordpress) and more [plugins for WooCommerce](https://artprojectgroup.es/plugins-para-wordpress/plugins-para-woocommerce) on [Art Project Group](https://artprojectgroup.es) and our profile on [WordPress](http://profiles.wordpress.org/artprojectgroup/).
+Remember that you can find more [plugins for WordPress](https://artprojectgroup.es/plugins-para-wordpress) and more [plugins for WooCommerce](https://artprojectgroup.es/plugins-para-woocommerce) on [Art Project Group](https://artprojectgroup.es) and our profile on [WordPress](https://profiles.wordpress.org/artprojectgroup/).
 
 = GitHub =
 You can follow the development of this plugin on [Github](https://github.com/artprojectgroup/wc-apg-nifcifnie-field).

@@ -45,18 +45,18 @@ Añade a WooCommerce un campo NIF/CIF/NIE.
 **WC - APG NIF/CIF/NIE Field** ha sido programado a partir del código publicado en [*¿Cómo añadir un campo NIF o CIF con validación a WooCommerce 2.4?*](https://artprojectgroup.es/como-anadir-un-campo-nif-o-cif-con-validacion-a-woocommerce-2-4) de [Art Project Group](https://artprojectgroup.es/).
 
 ### Más información
-En nuestro sitio web oficial puede obtener más información sobre [**WC - APG NIF/CIF/NIE Field**](https://artprojectgroup.es/plugins-para-wordpress/plugins-para-woocommerce/wc-apg-nifcifnie-field). 
+En nuestro sitio web oficial puede obtener más información sobre [**WC - APG NIF/CIF/NIE Field**](https://artprojectgroup.es/plugins-para-woocommerce/wc-apg-nifcifnie-field). 
 
 ### Comentarios
 No olvides dejarnos tu comentario en:
 
-* [WC - APG NIF/CIF/NIE Field](https://artprojectgroup.es/plugins-para-wordpress/plugins-para-woocommerce/wc-apg-nifcifnie-field) en Art Project Group.
+* [WC - APG NIF/CIF/NIE Field](https://artprojectgroup.es/plugins-para-woocommerce/wc-apg-nifcifnie-field) en Art Project Group.
 * [Art Project Group](https://www.facebook.com/artprojectgroup) en Facebook.
 * [@artprojectgroup](https://twitter.com/artprojectgroup) en Twitter.
 * [+ArtProjectGroupES](https://plus.google.com/+ArtProjectGroupES/) en Google+.
 
 ### Más plugins
-Recuerda que puedes encontrar más [plugins para WordPress](https://artprojectgroup.es/plugins-para-wordpress) y más [plugins para WooCommerce](https://artprojectgroup.es/plugins-para-wordpress/plugins-para-woocommerce) en [Art Project Group](https://artprojectgroup.es) y en nuestro perfil en [WordPress](http://profiles.wordpress.org/artprojectgroup/).
+Recuerda que puedes encontrar más [plugins para WordPress](https://artprojectgroup.es/plugins-para-wordpress) y más [plugins para WooCommerce](https://artprojectgroup.es/plugins-para-woocommerce) en [Art Project Group](https://artprojectgroup.es) y en nuestro perfil en [WordPress](https://profiles.wordpress.org/artprojectgroup/).
 
 ### GitHub
 Puedes seguir el desarrollo de este plugin en [Github](https://github.com/artprojectgroup/wc-apg-nifcifnie-field).
