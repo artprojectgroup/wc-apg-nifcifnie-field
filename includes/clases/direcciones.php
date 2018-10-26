@@ -39,12 +39,12 @@ class APG_Campo_NIF_en_Direcciones {
 	
 	//Reemplaza los nombres de los campos con sus datos
 	public function apg_nif_formato_direccion_de_facturacion( $campos, $argumentos ) {
-		$campos['{nif}']			= $argumentos['nif'];
-		$campos['{nif_upper}']		= strtoupper( $argumentos['nif'] );
-		$campos['{phone}']			= $argumentos['phone'];
-		$campos['{phone_upper}']	= strtoupper( $argumentos['phone'] );
-		$campos['{email}']			= $argumentos['email'];
-		$campos['{email_upper}']	= strtoupper( $argumentos['email'] );
+		$campos['{nif}']			= ( isset( $argumentos['nif'] ) ) ? $argumentos['nif'] : '';
+		$campos['{nif_upper}']		= ( isset( $argumentos['nif'] ) ) ? strtoupper( $argumentos['nif'] ) : '';
+		$campos['{phone}']			= ( isset( $argumentos['nif'] ) ) ? $argumentos['phone'] : '';
+		$campos['{phone_upper}']	= ( isset( $argumentos['nif'] ) ) ? strtoupper( $argumentos['phone'] ) : '';
+		$campos['{email}']			= ( isset( $argumentos['nif'] ) ) ? $argumentos['email'] : '';
+		$campos['{email_upper}']	= ( isset( $argumentos['nif'] ) ) ? strtoupper( $argumentos['email'] ) : '';
 		
 		return $campos;
 	}

@@ -9,11 +9,11 @@ Requires at least: 3.8
 
 Tested up to: 5.0
 
-Stable tag: 1.3
+Stable tag: 1.3.0.1
 
 WC requires at least: 2.4
 
-WC tested up to: 3.4.4
+WC tested up to: 3.5
 
 License: GPLv3
 
@@ -80,6 +80,9 @@ Si necesitas ayuda para configurar o instalar **WC - APG NIF/CIF/NIE Field**, **
 *En ningún caso **Art Project Group** proporciona ningún tipo de soporte técnico gratuito.*
 
 ## Changelog
+### 1.3.0.1
+* Pequeños arreglos.
+
 ### 1.3
 * Añadidos los campos en WooCommerce PDF Invoices & Packing Slips para facturas con direcciones fuera de España.
 

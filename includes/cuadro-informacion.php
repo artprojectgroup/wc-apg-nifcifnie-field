@@ -2,9 +2,9 @@
 	<div class="fila">
 		<div class="columna">
 			<p>
-				<?php _e( 'If you enjoyed and find helpful this plugin, please make a donation:', 'apg_nif' ); ?>
+				<?php _e( 'If you enjoyed and find helpful this plugin, please make a donation:', 'wc-apg-nifcifnie-field' ); ?>
 			</p>
-			<p><a href="<?php echo $apg_nif['donacion']; ?>" target="_blank" title="<?php _e( 'Make a donation by ', 'apg_nif' ); ?>APG"><span class="genericon genericon-cart"></span></a>
+			<p><a href="<?php echo $apg_nif['donacion']; ?>" target="_blank" title="<?php _e( 'Make a donation by ', 'wc-apg-nifcifnie-field' ); ?>APG"><span class="genericon genericon-cart"></span></a>
 			</p>
 		</div>
 		<div class="columna">
