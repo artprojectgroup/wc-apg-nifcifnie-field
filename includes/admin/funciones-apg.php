@@ -98,5 +98,6 @@ add_action( 'admin_init', 'apg_nif_muestra_mensaje' );
 //Eliminamos todo rastro del plugin al desinstalarlo
 function apg_nif_desinstalar() {
 	delete_transient( 'apg_nif_plugin' );
+	delete_option( 'apg_nif_settings' );
 }
 register_uninstall_hook( __FILE__, 'apg_nif_desinstalar' );

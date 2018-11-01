@@ -37,101 +37,51 @@ class APG_Campo_NIF_en_Pedido {
 		$campos['nif']		= array( 
 			'label'			=> $this->nombre_nif,
 			'placeholder'	=> _x( 'NIF/CIF/NIE number', 'placeholder', 'wc-apg-nifcifnie-field' ),
+			'priority'      => $campos['company']['priority'] + 1,
 		);
 		$campos['email']	= array( 
 			'label'			=> __( 'Email Address', 'woocommerce' ),
 			'required'		=> true,
+			'type'			=> 'email',
 			'validate'		=> array( 
 				'email'
 			),
+			'autocomplete'	=> 'email username',
 		);
 		$campos['phone']	= array( 
 			'label'			=> __( 'Phone', 'woocommerce' ),
 			'required'		=> true,
+			'type'			=> 'tel',
+			'validate'		=> array( 
+				'phone'
+			),
+			'autocomplete'	=> 'tel',
 		);
 
 		$campos['postcode']['class'][]	= 'update_totals_on_change';
 		$campos['state']['class'][]		= 'update_totals_on_change';
 
-		//Ordena los campos
-		$orden_de_campos = array(
-			"country", 
-			"first_name", 
-			"last_name", 
-			"company", 
-			"nif", 
-			"email",
-			"phone",
-			"address_1", 
-			"address_2", 
-			"postcode", 
-			"city",
-			"state",
-		);
-		
-		foreach( $orden_de_campos as $campo ) {
-			$campos_ordenados[$campo] = $campos[$campo];
-		}
-		
-		return $campos_ordenados;
+		return $campos;
 	}
-	
+		
 	//Arreglamos el formulario de facturación
 	function apg_nif_formulario_de_facturacion( $campos ) {
 		$apg_nif_settings = get_option( 'apg_nif_settings' );
 		
 		$campos['billing_nif']['required']	= ( isset( $apg_nif_settings['requerido'] ) && $apg_nif_settings['requerido'] == "1" ) ? true : false;
-		$campos['billing_state']['clear']	= true;
-		
-		//Ordena los campos
-		$orden_de_campos = array(
-			"billing_country", 
-			"billing_first_name", 
-			"billing_last_name", 
-			"billing_company", 
-			"billing_nif", 
-			"billing_email",
-			"billing_phone",
-			"billing_address_1", 
-			"billing_address_2", 
-			"billing_postcode", 
-			"billing_city",
-			"billing_state",
-		);
-		
-		foreach( $orden_de_campos as $campo ) {
-			$campos_ordenados[$campo] = $campos[$campo];
-		}
 
-		return $campos_ordenados;
+		return $campos;
 	}
 	
 	//Arregla el formulario de envío
 	public function apg_nif_formulario_de_envio( $campos ) {
 		$apg_nif_settings = get_option( 'apg_nif_settings' );
 		
+		$facturacion = WC()->countries->get_address_fields( WC()->countries->get_base_country(), 'billing_' );
+		
 		$campos['shipping_nif']['required'] = ( isset( $apg_nif_settings['requerido_envio'] ) && $apg_nif_settings['requerido_envio'] == "1" ) ? true : false;
-		$campos['shipping_state']['clear'] = true;
-		
-		//Ordena los campos
-		$orden_de_campos = array(
-			"shipping_country", 
-			"shipping_first_name", 
-			"shipping_last_name", 
-			"shipping_company", 
-			"shipping_nif", 
-			"shipping_email",
-			"shipping_phone",
-			"shipping_address_1", 
-			"shipping_address_2", 
-			"shipping_postcode", 
-			"shipping_city",
-			"shipping_state",
-		);
-		
-		foreach( $orden_de_campos as $campo ) {
-			$campos_ordenados[$campo] = $campos[$campo];
-		}
+		$campos['shipping_email']['priority'] = $facturacion['billing_email']['priority'];
+		$campos['shipping_phone']['priority'] = $facturacion['billing_phone']['priority'];
 		
 		return $campos;
 	}
