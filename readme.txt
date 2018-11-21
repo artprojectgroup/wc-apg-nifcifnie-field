@@ -75,6 +75,7 @@ If you need help to configuring or installing **WC - APG NIF/CIF/NIE field**, **
 2. Screenshot of WC - APG NIF/CIF/NIE field. Billing and shipping forms.
 
 == Changelog ==
+= 1.3.0.2 =
 * Small fixes.
 * Removed all the changes of fields order.
 = 1.3.0.1 =
