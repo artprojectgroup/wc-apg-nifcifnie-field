@@ -3,10 +3,10 @@ Contributors: artprojectgroup
 Donate link: https://artprojectgroup.es/tienda/donacion
 Tags: woocommerce, commerce, e-commerce, commerce, shop, virtual shop, nif, cif, nie, shipping form, billing form, wooCommerce pdf invoices & packing slips
 Requires at least: 3.8
-Tested up to: 5.0
-Stable tag: 1.3.0.2
+Tested up to: 5.2
+Stable tag: 1.4
 WC requires at least: 2.4
-WC tested up to: 3.5
+WC tested up to: 3.6
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -22,6 +22,7 @@ Add to WooCommerce a NIF/CIF/NIE field.
 * You can require the NIF/CIF/NIE field in shipping form.
 * You can validate the NIF/CIF/NIE field.
 * You can validate the VIES VAT number field to exempt the taxes.
+* You can customize the NIF/CIF/NIE or VIES VAT number field label and placeholder. 
 * Add and require phone and email fields in shipping form.
 * 100% compatible with [WooCommerce PDF Invoices & Packing Slips](https://es.wordpress.org/plugins/woocommerce-pdf-invoices-packing-slips/).
 
@@ -75,6 +76,9 @@ If you need help to configuring or installing **WC - APG NIF/CIF/NIE field**, **
 2. Screenshot of WC - APG NIF/CIF/NIE field. Billing and shipping forms.
 
 == Changelog ==
+= 1.4 =
+* Added customization for the field label and placeholder.
+* Updated screenshot.
 = 1.3.0.2 =
 * Small fixes.
 * Removed all the changes of fields order.
@@ -137,15 +141,15 @@ If you need help to configuring or installing **WC - APG NIF/CIF/NIE field**, **
 * Load the NIF/CIF/NIE field value in manually created orders.
 = 0.2 =
 * Added new setting options.
-* Updated tranlation.
+* Updated translation.
 * Updated screenshot.
 = 0.1 =
 * Initial version.
 
 == Upgrade Notice ==
-= 1.3.0.2 =
-* Small fixes.
-* Removed all the changes of fields order.
+= 1.4 =
+* Added customization for the field label and placeholder.
+* Updated screenshot.
 
 == Translations ==
 * *English*: by [**Art Project Group**](https://artprojectgroup.es/) (default language).

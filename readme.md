@@ -7,13 +7,13 @@ Tags: woocommerce, commerce, e-commerce, commerce, shop, virtual shop, nif, cif,
 
 Requires at least: 3.8
 
-Tested up to: 5.0
+Tested up to: 5.2
 
-Stable tag: 1.3.0.2
+Stable tag: 1.4
 
 WC requires at least: 2.4
 
-WC tested up to: 3.5
+WC tested up to: 3.6
 
 License: GPLv3
 
@@ -31,6 +31,7 @@ Añade a WooCommerce un campo NIF/CIF/NIE.
 * Puedes hacer obligatorio el campo NIF/CIF/NIE en el formulario de envío.
 * Puedes validar el campo NIF/CIF/NIE.
 * Puedes validar el campo VIES VAT number para excluir los impuestos.
+* Puedes personalizar la etiqueta y el marcador de posición del campo NIF/CIF/NIE o VIES VAT number. 
 * Añade como requeridos los campos teléfono y correo electrónico al formulario de envío.
 * 100% compatible con [WooCommerce PDF Invoices & Packing Slips](https://es.wordpress.org/plugins/woocommerce-pdf-invoices-packing-slips/).
 
@@ -80,6 +81,10 @@ Si necesitas ayuda para configurar o instalar **WC - APG NIF/CIF/NIE Field**, **
 *En ningún caso **Art Project Group** proporciona ningún tipo de soporte técnico gratuito.*
 
 ## Changelog
+### 1.4
+* Añadida personalización de la etiqueta y marcador de posición del campo.
+* Actualización de captura de pantalla.
+
 ### 1.3.0.2
 * Pequeños arreglos.
 * Eliminados todos los cambios de orden de los campos.

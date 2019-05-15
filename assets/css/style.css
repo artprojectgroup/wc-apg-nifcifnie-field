@@ -1,23 +1,23 @@
 @charset "UTF-8";
 @import url(../fonts/stylesheet.css);
 /*General*/
-table.apg-table, .cabecera {
-    clear: none;
-    width: 79%;
-    max-width: 586px;
+table.apg-table, .cabecera, .banner {
+	clear: none;
+	width: 79%;
+	max-width: 586px;
 }
 .imagen {
-    border-left: 4px solid #07628c;
-    box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);
-    max-width: 100%;
-    display: block;
+	border-left: 4px solid #07628c;
+	box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);
+	max-width: 100%;
+	display: block;
 }
 .imagen:hover, .estrellas .star-rating .star:hover, div.informacion a:hover {
-    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";
-    filter: alpha(opacity=80);
-    -moz-opacity: 0.8;
-    -khtml-opacity: 0.8;
-    opacity: 0.8;
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";
+	filter: alpha(opacity=80);
+	-moz-opacity: 0.8;
+	-khtml-opacity: 0.8;
+	opacity: 0.8;
 }
 .estrellas div {
     display: inline!important;
@@ -28,10 +28,10 @@ table.apg-table, .cabecera {
 div.informacion .estrellas .star-rating .star {
     color: #fff;
 }
-div.informacion .genericon, div.informacion .estrellas .star-rating .star, div.informacion .artprojectgroup {
-    width: 15px;
-    height: 15px;
-    font-size: 15px;
+.genericon, div.informacion .estrellas .star-rating .star, div.informacion .artprojectgroup {
+	width: 15px;
+	height: 15px;
+	font-size: 15px;
 }
 div.informacion {
     background-color: rgba(7,98,140,0.8);
@@ -70,15 +70,13 @@ div.informacion a {
 .woocommerce table.form-table.apg-table .select2-container {
     min-width: auto!important;
 }
-table.apg-table .select2-container, table.apg-table textarea, table.apg-table input[type=text] {
+table.apg-table .select2-container, table.apg-table textarea, table.apg-table input[type=text], table.apg-table input[type=number] {
     min-width: auto;
     max-width: 100%;
-}
-table.apg-table td.horas .select2-container {
-    max-width: 49.41%!important;
+	width: 100%!important;
 }
 table.apg-table textarea {
-    min-height: 200px;
+	min-height: 200px;
 }
 
 @media screen and (max-width: 806px) {

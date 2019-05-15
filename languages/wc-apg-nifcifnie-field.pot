@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WooCommerce - APG NIF/CIF/NIE field\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-26 09:54+0000\n"
+"POT-Creation-Date: 2019-05-15 08:27+0000\n"
 "POT-Revision-Date: Wed Aug 10 2016 13:39:45 GMT+0200 (CEST)\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: \n"
@@ -23,19 +23,19 @@ msgstr ""
 "esc_html_x:1,2c;comments_number_link:2,3;t:1;st:1;trans:1;transChoice:1,2\n"
 "X-Generator: Loco https://localise.biz/"
 
-#: apg-nif.php:57
+#: apg-nif.php:55
 msgid "APG NIF/CIF/NIE field"
 msgstr ""
 
-#: apg-nif.php:57
+#: apg-nif.php:55
 msgid "NIF/CIF/NIE field"
 msgstr ""
 
-#: apg-nif.php:85
+#: apg-nif.php:83
 msgid "This plugin requires WooCommerce active to run!"
 msgstr ""
 
-#: apg-nif.php:93
+#: apg-nif.php:91
 msgid ""
 "This plugin requires the <a href=\"http://php.net/manual/en/class.soapclient."
 "php\">SoapClient</a> PHP class active to run!"
@@ -89,46 +89,78 @@ msgstr ""
 msgid "Please, rate %s:"
 msgstr ""
 
-#: includes/formulario.php:5
+#: includes/formulario.php:11
 msgid "APG NIF/CIF/NIE field Options."
 msgstr ""
 
 #. Description of the plugin
-#: includes/formulario.php:14
+#: includes/formulario.php:15
 msgid ""
 "Add to WooCommerce a NIF/CIF/NIE field, validate the field before submit and "
 "let to the admin configure the billing and shipping forms."
 msgstr ""
 
-#: includes/formulario.php:24
-msgid "Require billing field?"
+#: includes/formulario.php:25
+msgid "Field label"
 msgstr ""
 
-#: includes/formulario.php:25 includes/formulario.php:35
-msgid "Check if you need to require the field."
+#: includes/formulario.php:26
+msgid "Type your own field label."
 msgstr ""
 
 #: includes/formulario.php:34
+msgid "Field placeholder"
+msgstr ""
+
+#: includes/formulario.php:35
+msgid "Type your own field placeholder."
+msgstr ""
+
+#: includes/formulario.php:43
+msgid "Require billing field?"
+msgstr ""
+
+#: includes/formulario.php:44 includes/formulario.php:53
+msgid "Check if you need to require the field."
+msgstr ""
+
+#: includes/formulario.php:52
 msgid "Require shipping field?"
 msgstr ""
 
-#: includes/formulario.php:44
+#: includes/formulario.php:61
 msgid "Validate field?"
 msgstr ""
 
-#: includes/formulario.php:45
+#: includes/formulario.php:62
 msgid "Check if you want to validate the field before submit."
 msgstr ""
 
-#: includes/formulario.php:55
+#: includes/formulario.php:71
 msgid "Allow VIES VAT number?"
 msgstr ""
 
-#: includes/formulario.php:56
+#: includes/formulario.php:72
 msgid "Check if you want to allow and validate VIES VAT number."
 msgstr ""
 
-#: includes/formulario.php:65
+#: includes/formulario.php:80
+msgid "VIES VAT number field label"
+msgstr ""
+
+#: includes/formulario.php:81
+msgid "Type your own VIES VAT number field label."
+msgstr ""
+
+#: includes/formulario.php:89
+msgid "VIES VAT number field placeholder"
+msgstr ""
+
+#: includes/formulario.php:90
+msgid "Type your own VIES VAT number field placeholder."
+msgstr ""
+
+#: includes/formulario.php:98
 msgid "Save Changes"
 msgstr ""
 
@@ -144,25 +176,11 @@ msgstr ""
 msgid "Support of "
 msgstr ""
 
-#: includes/clases/pedido.php:15 includes/clases/admin/pedidos.php:57
-#: includes/clases/admin/usuario.php:21 includes/clases/admin/usuario.php:26
-msgid "NIF/CIF/NIE"
-msgstr ""
-
-#: includes/clases/pedido.php:31
-msgid "NIF/CIF/NIE/VAT number"
-msgstr ""
-
-#: includes/clases/pedido.php:39
-msgctxt "placeholder"
-msgid "NIF/CIF/NIE number"
-msgstr ""
-
-#: includes/clases/pedido.php:346
+#: includes/clases/pedido.php:298
 msgid "Please enter a valid NIF/CIF/NIE."
 msgstr ""
 
-#: includes/clases/pedido.php:357
+#: includes/clases/pedido.php:309
 msgid "Please enter a valid VIES VAT number."
 msgstr ""
 

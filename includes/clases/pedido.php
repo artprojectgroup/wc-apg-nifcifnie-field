@@ -8,38 +8,40 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Añade los campos en el Pedido.
  */
 class APG_Campo_NIF_en_Pedido {
-	public $nombre_nif;
+	public $nombre_nif, $placeholder;
 	
 	//Inicializa las acciones de Pedido
 	public function __construct() {	
-		$this->nombre_nif = __( 'NIF/CIF/NIE', 'wc-apg-nifcifnie-field' ); //Nombre original del campo
+		$apg_nif_settings	= get_option( 'apg_nif_settings' );
+		$this->nombre_nif	= __( ( isset( $apg_nif_settings[ 'etiqueta' ] ) ? $apg_nif_settings[ 'etiqueta' ] : 'NIF/CIF/NIE' ), 'wc-apg-nifcifnie-field' ); //Nombre original del campo
+		$this->placeholder	= _x( ( isset( $apg_nif_settings[ 'placeholder' ] ) ? $apg_nif_settings[ 'placeholder' ] : 'NIF/CIF/NIE number' ), 'placeholder', 'wc-apg-nifcifnie-field' ); //Nombre original del placeholder
 		
 		add_filter( 'woocommerce_default_address_fields', array( $this, 'apg_nif_campos_de_direccion' ) );
 		add_filter( 'woocommerce_billing_fields', array( $this, 'apg_nif_formulario_de_facturacion' ) );
 		add_filter( 'woocommerce_shipping_fields', array( $this, 'apg_nif_formulario_de_envio' ) );
-		$apg_nif_settings = get_option( 'apg_nif_settings' );
 		//Valida el campo NIF/CIF/NIE
-		if ( isset( $apg_nif_settings['validacion'] ) && $apg_nif_settings['validacion'] == "1" ) {	
+		if ( isset( $apg_nif_settings[ 'validacion' ] ) && $apg_nif_settings[ 'validacion' ] == "1" ) {	
 			add_action( 'woocommerce_checkout_process', array( $this, 'apg_nif_validacion_de_campo' ) );
 		}
 		//Añade el número VIES
-		if ( isset( $apg_nif_settings['validacion_vies'] ) && $apg_nif_settings['validacion_vies'] == "1" ) {	
+		if ( isset( $apg_nif_settings[ 'validacion_vies' ] ) && $apg_nif_settings[ 'validacion_vies' ] == "1" ) {	
 			add_action( 'wp_enqueue_scripts', array( $this, 'apg_nif_carga_ajax' ) );
 			add_action( 'wp_ajax_nopriv_apg_nif_valida_VIES', array( $this, 'apg_nif_valida_VIES' ) );
 			add_action( 'wp_ajax_apg_nif_valida_VIES', array( $this, 'apg_nif_valida_VIES' ) );
 			add_action( 'init', array( $this, 'apg_nif_quita_iva' ) );
-			$this->nombre_nif = __( 'NIF/CIF/NIE/VAT number', 'wc-apg-nifcifnie-field' ); //Nombre modificado del campo
+			$this->nombre_nif	= __( ( isset( $apg_nif_settings[ 'etiqueta_vies' ] ) ? $apg_nif_settings[ 'etiqueta_vies' ] : 'NIF/CIF/NIE/VAT number' ), 'wc-apg-nifcifnie-field' ); //Nombre modificado del campo
+			$this->placeholder	= _x( ( isset( $apg_nif_settings[ 'placeholder_vies' ] ) ? $apg_nif_settings[ 'placeholder_vies' ] : 'NIF/CIF/NIE/VAT number' ), 'placeholder', 'wc-apg-nifcifnie-field' ); //Nombre modificado del placeholder
 		}
 	}
 
 	//Arregla la dirección predeterminada
 	public function apg_nif_campos_de_direccion( $campos ) {
-		$campos['nif']		= array( 
+		$campos[ 'nif' ]		= array( 
 			'label'			=> $this->nombre_nif,
-			'placeholder'	=> _x( 'NIF/CIF/NIE number', 'placeholder', 'wc-apg-nifcifnie-field' ),
-			'priority'      => $campos['company']['priority'] + 1,
+			'placeholder'	=> $this->placeholder,
+			'priority'      => $campos[ 'company' ][ 'priority' ] + 1,
 		);
-		$campos['email']	= array( 
+		$campos[ 'email' ]	= array( 
 			'label'			=> __( 'Email Address', 'woocommerce' ),
 			'required'		=> true,
 			'type'			=> 'email',
@@ -48,7 +50,7 @@ class APG_Campo_NIF_en_Pedido {
 			),
 			'autocomplete'	=> 'email username',
 		);
-		$campos['phone']	= array( 
+		$campos[ 'phone' ]	= array( 
 			'label'			=> __( 'Phone', 'woocommerce' ),
 			'required'		=> true,
 			'type'			=> 'tel',
@@ -58,8 +60,8 @@ class APG_Campo_NIF_en_Pedido {
 			'autocomplete'	=> 'tel',
 		);
 
-		$campos['postcode']['class'][]	= 'update_totals_on_change';
-		$campos['state']['class'][]		= 'update_totals_on_change';
+		$campos[ 'postcode' ][ 'class' ][]	= 'update_totals_on_change';
+		$campos[ 'state' ][ 'class' ][]		= 'update_totals_on_change';
 
 		return $campos;
 	}
@@ -68,7 +70,7 @@ class APG_Campo_NIF_en_Pedido {
 	function apg_nif_formulario_de_facturacion( $campos ) {
 		$apg_nif_settings = get_option( 'apg_nif_settings' );
 		
-		$campos['billing_nif']['required']	= ( isset( $apg_nif_settings['requerido'] ) && $apg_nif_settings['requerido'] == "1" ) ? true : false;
+		$campos[ 'billing_nif' ][ 'required' ]	= ( isset( $apg_nif_settings[ 'requerido' ] ) && $apg_nif_settings[ 'requerido' ] == "1" ) ? true : false;
 
 		return $campos;
 	}
@@ -79,9 +81,9 @@ class APG_Campo_NIF_en_Pedido {
 		
 		$facturacion = WC()->countries->get_address_fields( WC()->countries->get_base_country(), 'billing_' );
 		
-		$campos['shipping_nif']['required'] = ( isset( $apg_nif_settings['requerido_envio'] ) && $apg_nif_settings['requerido_envio'] == "1" ) ? true : false;
-		$campos['shipping_email']['priority'] = $facturacion['billing_email']['priority'];
-		$campos['shipping_phone']['priority'] = $facturacion['billing_phone']['priority'];
+		$campos[ 'shipping_nif' ][ 'required' ] = ( isset( $apg_nif_settings[ 'requerido_envio' ] ) && $apg_nif_settings[ 'requerido_envio' ] == "1" ) ? true : false;
+		$campos[ 'shipping_email' ][ 'priority' ] = $facturacion[ 'billing_email' ][ 'priority' ];
+		$campos[ 'shipping_phone' ][ 'priority' ] = $facturacion[ 'billing_phone' ][ 'priority' ];
 		
 		return $campos;
 	}
@@ -274,25 +276,25 @@ class APG_Campo_NIF_en_Pedido {
 	public function apg_nif_validacion_de_campo() {
 		$facturacion	= true;
 		$envio			= true;
-		$pais			= strtoupper( substr( $_POST['billing_nif'], 0, 2 ) );
+		$pais			= strtoupper( substr( $_POST[ 'billing_nif' ], 0, 2 ) );
 		
 		//Comprueba si es un número VIES válido
-		if ( $pais == $_POST['billing_country'] ) {
-			$facturacion = $this->apg_nif_validacion_eu( strtoupper( $_POST['billing_nif'] ) );
+		if ( $pais == $_POST[ 'billing_country' ] ) {
+			$facturacion = $this->apg_nif_validacion_eu( strtoupper( $_POST[ 'billing_nif' ] ) );
 		}
 		
 		//Comprueba el formulario de facturación
-		if ( $_POST['billing_country'] == "ES" && isset( $_POST['billing_nif'] ) ) {
-			$facturacion = $this->apg_nif_validacion( strtoupper( $_POST['billing_nif'] ) );
+		if ( $_POST[ 'billing_country' ] == "ES" && isset( $_POST[ 'billing_nif' ] ) ) {
+			$facturacion = $this->apg_nif_validacion( strtoupper( $_POST[ 'billing_nif' ] ) );
 		}
 
 		//Comprueba el formulario de envío
-		if ( $_POST['shipping_country'] == "ES" && isset( $_POST['shipping_nif'] ) ) {
-			$envio = $this->apg_nif_validacion( strtoupper( $_POST['shipping_nif'] ) );
+		if ( $_POST[ 'shipping_country' ] == "ES" && isset( $_POST[ 'shipping_nif' ] ) ) {
+			$envio = $this->apg_nif_validacion( strtoupper( $_POST[ 'shipping_nif' ] ) );
 		}
 	 
 		if ( !$facturacion || !$envio ) {
-			if ( ( !$facturacion && !empty( $_POST['billing_nif'] ) ) || ( !$envio && !empty( $_POST['shipping_nif'] ) ) ) {
+			if ( ( !$facturacion && !empty( $_POST[ 'billing_nif' ] ) ) || ( !$envio && !empty( $_POST[ 'shipping_nif' ] ) ) ) {
 				wc_add_notice( __( 'Please enter a valid NIF/CIF/NIE.', 'wc-apg-nifcifnie-field' ), 'error' );
 			}
 		}
@@ -311,13 +313,13 @@ class APG_Campo_NIF_en_Pedido {
 	
 	//Valida el campo VIES
 	public function apg_nif_valida_VIES() {
-		$_SESSION['apg_nif']	= false;
+		$_SESSION[ 'apg_nif' ]	= false;
 		$valido					= true;
 	
-		if ( isset( $_POST['billing_nif'] ) ) {
-			$pais	= strtoupper( substr( $_POST['billing_nif'], 0, 2 ) );
-			$nif	= substr( $_POST['billing_nif'], 2 );
-			if ( $pais == $_POST['billing_country'] ) {
+		if ( isset( $_POST[ 'billing_nif' ] ) ) {
+			$pais	= strtoupper( substr( $_POST[ 'billing_nif' ], 0, 2 ) );
+			$nif	= substr( $_POST[ 'billing_nif' ], 2 );
+			if ( $pais == $_POST[ 'billing_country' ] ) {
 				$validacion = new SoapClient( "http://ec.europa.eu/taxation_customs/vies/checkVatService.wsdl" );
 
 				if ( $validacion ) {
@@ -338,8 +340,8 @@ class APG_Campo_NIF_en_Pedido {
 				} else {
 					$valido = false;
 				}
-				if ( $valido && $_POST['billing_country'] != WC()->countries->get_base_country() ) {
-					$_SESSION['apg_nif'] = true;
+				if ( $valido && $_POST[ 'billing_country' ] != WC()->countries->get_base_country() ) {
+					$_SESSION[ 'apg_nif' ] = true;
 				}
 			}
 		}
@@ -353,8 +355,8 @@ class APG_Campo_NIF_en_Pedido {
 			if ( !session_id() ) {
 				session_start();
 			}
-			if ( isset( $_SESSION['apg_nif'] ) ) {
-				WC()->customer->set_is_vat_exempt( $_SESSION['apg_nif'] );
+			if ( isset( $_SESSION[ 'apg_nif' ] ) ) {
+				WC()->customer->set_is_vat_exempt( $_SESSION[ 'apg_nif' ] );
 			}
 		}
 	}
