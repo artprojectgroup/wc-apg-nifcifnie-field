@@ -88,12 +88,12 @@ function apg_nif_plugin( $nombre ) {
 	return '<a title="' . sprintf( __( 'Please, rate %s:', 'wc-apg-nifcifnie-field' ), $apg_nif['plugin'] ) . '" href="' . $apg_nif['puntuacion'] . '?rate=5#postform" class="estrellas">' . $estrellas . '</a>';
 }
 
-//Carga la hoja de estilo
-function apg_nif_muestra_mensaje() {
+//Hoja de estilo
+function apg_nif_estilo() {
 	wp_register_style( 'apg_nif_hoja_de_estilo', plugins_url( 'assets/css/style.css', DIRECCION_apg_nif ) ); //Carga la hoja de estilo
 	wp_enqueue_style( 'apg_nif_hoja_de_estilo' );
 }
-add_action( 'admin_init', 'apg_nif_muestra_mensaje' );
+add_action( 'admin_enqueue_scripts', 'apg_nif_estilo' );
 
 //Eliminamos todo rastro del plugin al desinstalarlo
 function apg_nif_desinstalar() {

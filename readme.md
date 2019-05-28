@@ -9,7 +9,7 @@ Requires at least: 3.8
 
 Tested up to: 5.2
 
-Stable tag: 1.4
+Stable tag: 1.4.0.1
 
 WC requires at least: 2.4
 
@@ -81,6 +81,9 @@ Si necesitas ayuda para configurar o instalar **WC - APG NIF/CIF/NIE Field**, **
 *En ningún caso **Art Project Group** proporciona ningún tipo de soporte técnico gratuito.*
 
 ## Changelog
+### 1.4.0.1
+* Pequeños arreglos.
+
 ### 1.4
 * Añadida personalización de la etiqueta y marcador de posición del campo.
 * Actualización de captura de pantalla.
