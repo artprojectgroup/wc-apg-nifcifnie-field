@@ -7,13 +7,13 @@ Tags: woocommerce, commerce, e-commerce, commerce, shop, virtual shop, nif, cif,
 
 Requires at least: 3.8
 
-Tested up to: 5.2
+Tested up to: 5.5
 
-Stable tag: 1.4.0.1
+Stable tag: 1.4.0.2
 
 WC requires at least: 2.4
 
-WC tested up to: 3.6
+WC tested up to: 4.2
 
 License: GPLv3
 
@@ -81,6 +81,10 @@ Si necesitas ayuda para configurar o instalar **WC - APG NIF/CIF/NIE Field**, **
 *En ningún caso **Art Project Group** proporciona ningún tipo de soporte técnico gratuito.*
 
 ## Changelog
+### 1.4.0.2
+* Actualización de la plantilla de cuentas de correo electrónico.
+* Pequeños arreglos.
+
 ### 1.4.0.1
 * Pequeños arreglos.
 

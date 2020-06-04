@@ -94,8 +94,6 @@ $apg_nif_settings	= get_option( 'apg_nif_settings' );
 			</tr>
 			<?php endif; ?>
 		</table>
-		<p class="submit">
-			<input class="button-primary" type="submit" value="<?php _e( 'Save Changes', 'wc-apg-nifcifnie-field' ); ?>" name="submit" id="submit" tabindex="<?php echo $tab++; ?>"/>
-		</p>
+		<?php submit_button(); ?>
 	</form>
 </div>

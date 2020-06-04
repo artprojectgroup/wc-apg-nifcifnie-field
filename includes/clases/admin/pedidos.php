@@ -34,19 +34,23 @@ class APG_Campo_NIF_en_Admin_Pedidos {
 
 	//Añade el NIF y el teléfono a la dirección de facturación y envío
 	public function apg_nif_anade_campo_nif_direccion_facturacion( $campos, $pedido ) {
-	    $numero_de_pedido	= is_callable( array( $pedido, 'get_id' ) ) ? $pedido->get_id() : $pedido->id;
-		$campos['nif']		= $this->apg_nif_dame_campo_personalizado( '_billing_nif', $numero_de_pedido );
-		$campos['phone']	= $this->apg_nif_dame_campo_personalizado( '_billing_phone', $numero_de_pedido );
-		$campos['email']	= $this->apg_nif_dame_campo_personalizado( '_billing_email', $numero_de_pedido );
+		if ( is_array( $campos ) ) {
+			$numero_de_pedido	= is_callable( array( $pedido, 'get_id' ) ) ? $pedido->get_id() : $pedido->id;
+			$campos['nif']		= $this->apg_nif_dame_campo_personalizado( '_billing_nif', $numero_de_pedido );
+			$campos['phone']	= $this->apg_nif_dame_campo_personalizado( '_billing_phone', $numero_de_pedido );
+			$campos['email']	= $this->apg_nif_dame_campo_personalizado( '_billing_email', $numero_de_pedido );
+		}
 		 
 		return $campos;
 	}
 	 
 	public function apg_nif_anade_campo_nif_direccion_envio( $campos, $pedido ) {
-	    $numero_de_pedido	= is_callable( array( $pedido, 'get_id' ) ) ? $pedido->get_id() : $pedido->id;
-		$campos['nif']		= $this->apg_nif_dame_campo_personalizado( '_shipping_nif', $numero_de_pedido );
-		$campos['phone']	= $this->apg_nif_dame_campo_personalizado( '_shipping_phone', $numero_de_pedido );
-		$campos['email']	= $this->apg_nif_dame_campo_personalizado( '_shipping_email', $numero_de_pedido );
+		if ( is_array( $campos ) ) {
+			$numero_de_pedido	= is_callable( array( $pedido, 'get_id' ) ) ? $pedido->get_id() : $pedido->id;
+			$campos['nif']		= $this->apg_nif_dame_campo_personalizado( '_shipping_nif', $numero_de_pedido );
+			$campos['phone']	= $this->apg_nif_dame_campo_personalizado( '_shipping_phone', $numero_de_pedido );
+			$campos['email']	= $this->apg_nif_dame_campo_personalizado( '_shipping_email', $numero_de_pedido );
+		}
 		 
 		return $campos;
 	}

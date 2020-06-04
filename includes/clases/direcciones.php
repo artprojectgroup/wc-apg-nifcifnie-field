@@ -29,10 +29,12 @@ class APG_Campo_NIF_en_Direcciones {
 	
 	//Añade los campos en la dirección de envío del pedido y correo electrónico
 	public function apg_nif_formato_direccion_envio_pedido( $campos, $pedido ) {
-		$numero_de_pedido	= is_callable( array( $pedido, 'get_id' ) ) ? $pedido->get_id() : $pedido->id;
-		$campos['nif']		= get_post_meta( $numero_de_pedido, '_shipping_nif', true );
-		$campos['email']	= get_post_meta( $numero_de_pedido, '_shipping_email', true );
-		$campos['phone']	= get_post_meta( $numero_de_pedido, '_shipping_phone', true );
+		if ( is_array( $campos ) ) {
+			$numero_de_pedido	= is_callable( array( $pedido, 'get_id' ) ) ? $pedido->get_id() : $pedido->id;
+			$campos['nif']		= get_post_meta( $numero_de_pedido, '_shipping_nif', true );
+			$campos['email']	= get_post_meta( $numero_de_pedido, '_shipping_email', true );
+			$campos['phone']	= get_post_meta( $numero_de_pedido, '_shipping_phone', true );
+		}
 	
 		return $campos;
 	}
