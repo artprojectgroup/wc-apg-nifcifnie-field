@@ -1,8 +1,6 @@
 <?php
 //Igual no deberías poder abrirme
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
+defined( 'ABSPATH' ) || exit;
 
 /**
  * Sobreescribe la plantilla email-addresses.php.
@@ -10,8 +8,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 class APG_Plantilla_correos {
 	//Inicializa las plantillas de correos electrónicos
 	public function __construct() {
-		add_filter( 'wc_get_template_part', array( $this, 'apg_nif_sobrescribe_la_ruta_de_plantilla' ), 10, 3 );
-		add_filter( 'woocommerce_locate_template', array( $this, 'apg_nif_sobrescribe_la_plantilla' ), 10, 3 );
+		add_filter( 'wc_get_template_part', [ $this, 'apg_nif_sobrescribe_la_ruta_de_plantilla' ], 10, 3 );
+		add_filter( 'woocommerce_locate_template', [ $this, 'apg_nif_sobrescribe_la_plantilla' ], 10, 3 );
 	}
 	
 	//Previene que salga el teléfono y el correo electrónico doble en los correos electrónicos

@@ -1,8 +1,6 @@
 <?php
 //Igual no deberías poder abrirme
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
+defined( 'ABSPATH' ) || exit;
 
 /**
  * Añade los campos en Usuarios.
@@ -10,34 +8,34 @@ if ( ! defined( 'ABSPATH' ) ) {
 class APG_Campo_NIF_en_Usuarios {
 	//Inicializa las acciones de Usuario
 	public function __construct() {
-		add_filter( 'woocommerce_customer_meta_fields', array( $this, 'apg_nif_anade_campos_administracion_usuarios' ) );
-		add_filter( 'woocommerce_user_column_billing_address', array( $this, 'apg_nif_anade_campo_nif_usuario_direccion_facturacion' ), 1, 2 );
-		add_filter( 'woocommerce_user_column_shipping_address', array( $this, 'apg_nif_anade_campo_nif_usuario_direccion_envio' ), 1, 2 );
+		add_filter( 'woocommerce_customer_meta_fields', [ $this, 'apg_nif_anade_campos_administracion_usuarios' ] );
+		add_filter( 'woocommerce_user_column_billing_address', [ $this, 'apg_nif_anade_campo_nif_usuario_direccion_facturacion' ], 1, 2 );
+		add_filter( 'woocommerce_user_column_shipping_address', [ $this, 'apg_nif_anade_campo_nif_usuario_direccion_envio' ], 1, 2 );
 	}
 
 	//Añade el campo CIF/NIF a usuarios
 	public function apg_nif_anade_campos_administracion_usuarios( $campos ) {
 		$apg_nif_settings								= get_option( 'apg_nif_settings' );
-		$campos['billing']['fields']['billing_nif']		= array( 
+		$campos['billing']['fields']['billing_nif']		= [ 
 				'label'			=> __( ( isset( $apg_nif_settings[ 'etiqueta' ] ) ? $apg_nif_settings[ 'etiqueta' ] : 'NIF/CIF/NIE' ), 'wc-apg-nifcifnie-field' ),
 				'description'	=> ''
-		);
+		];
 	 
-		$campos['shipping']['fields']['shipping_nif']	= array( 
+		$campos['shipping']['fields']['shipping_nif']	= [ 
 				'label'			=> __( ( isset( $apg_nif_settings[ 'etiqueta' ] ) ? $apg_nif_settings[ 'etiqueta' ] : 'NIF/CIF/NIE' ), 'wc-apg-nifcifnie-field' ),
 				'description'	=> ''
-		);
-		$campos['shipping']['fields']['shipping_email']	= array( 
+		];
+		$campos['shipping']['fields']['shipping_email']	= [ 
 				'label'			=> __( 'Email', 'woocommerce' ),
 				'description'	=> ''
-		);
-		$campos['shipping']['fields']['shipping_phone']	= array( 
+		];
+		$campos['shipping']['fields']['shipping_phone']	= [ 
 				'label'			=> __( 'Telephone', 'woocommerce' ),
 				'description'	=> ''
-		);
+		];
 	 
 		//Ordena los campos
-		$orden_de_campos = array(
+		$orden_de_campos = [
 			"first_name", 
 			"last_name", 
 			"company", 
@@ -50,7 +48,7 @@ class APG_Campo_NIF_en_Usuarios {
 			"city",
 			"state",
 			"country", 
-		);
+		];
 		
 		$campos_ordenados['billing']['title']	= $campos['billing']['title'];
 		$campos_ordenados['shipping']['title']	= $campos['shipping']['title'];

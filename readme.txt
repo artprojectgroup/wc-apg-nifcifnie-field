@@ -1,12 +1,12 @@
 === WC - APG NIF/CIF/NIE Field ===
 Contributors: artprojectgroup
 Donate link: https://artprojectgroup.es/tienda/donacion
-Tags: woocommerce, commerce, e-commerce, commerce, shop, virtual shop, nif, cif, nie, shipping form, billing form, wooCommerce pdf invoices & packing slips
+Tags: woocommerce, commerce, e-commerce, commerce, shop, virtual shop, nif, cif, nie, shipping form, billing form, wooCommerce pdf invoices & packing slips, wpml
 Requires at least: 3.8
 Tested up to: 5.5
-Stable tag: 1.4.0.2
+Stable tag: 1.4.1
 WC requires at least: 2.4
-WC tested up to: 4.2
+WC tested up to: 4.3
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -25,6 +25,7 @@ Add to WooCommerce a NIF/CIF/NIE field.
 * You can customize the NIF/CIF/NIE or VIES VAT number field label and placeholder. 
 * Add and require phone and email fields in shipping form.
 * 100% compatible with [WooCommerce PDF Invoices & Packing Slips](https://es.wordpress.org/plugins/woocommerce-pdf-invoices-packing-slips/).
+* 100% compatible with [WPML](https://wpml.org/?aid=80296&affiliate_key=m66Ss5ps0xoS).
 
 = Translations =
 * Español ([**Art Project Group**](https://artprojectgroup.es/)).
@@ -76,6 +77,8 @@ If you need help to configuring or installing **WC - APG NIF/CIF/NIE field**, **
 2. Screenshot of WC - APG NIF/CIF/NIE field. Billing and shipping forms.
 
 == Changelog ==
+= 1.4.1 =
+* Text field name translatable with WPML.
 = 1.4.0.2 =
 * Updated email account template.
 * Small fixes.
@@ -152,9 +155,8 @@ If you need help to configuring or installing **WC - APG NIF/CIF/NIE field**, **
 * Initial version.
 
 == Upgrade Notice ==
-= 1.4.0.2 =
-* Updated email account template.
-* Small fixes.
+= 1.4.1 =
+* Text field name translatable with WPML.
 
 == Translations ==
 * *English*: by [**Art Project Group**](https://artprojectgroup.es/) (default language).

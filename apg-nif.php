@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: WC - APG NIF/CIF/NIE Field
-Version: 1.4.0.2
+Version: 1.4.1
 Plugin URI: https://wordpress.org/plugins/wc-apg-nifcifnie-field/
 Description: Add to WooCommerce a NIF/CIF/NIE field.
 Author URI: https://artprojectgroup.es/
@@ -9,7 +9,7 @@ Author: Art Project Group
 Requires at least: 3.8
 Tested up to: 5.5
 WC requires at least: 2.4
-WC tested up to: 4.2
+WC tested up to: 4.3
 
 Text Domain: wc-apg-nifcifnie-field
 Domain Path: /languages
@@ -34,9 +34,9 @@ if ( is_plugin_active( 'woocommerce/woocommerce.php' ) || is_network_only_plugin
 	class APG_Campo_NIF {
 		//Inicializa las acciones de Usuario
 		public function __construct() {
-			add_action( 'admin_menu', array( $this, 'apg_nif_admin_menu' ), 15 );
-			add_action( 'admin_init', array( $this, 'apg_nif_registra_opciones' ) );
-			add_action( 'woocommerce_screen_ids', array( $this, 'apg_nif_screen_id' ) );
+			add_action( 'admin_menu', [ $this, 'apg_nif_admin_menu' ], 15 );
+			add_action( 'admin_init', [ $this, 'apg_nif_registra_opciones' ] );
+			add_action( 'woocommerce_screen_ids', [ $this, 'apg_nif_screen_id' ] );
 			
 			//Carga funciones externas 
 			include_once 'includes/clases/pedido.php';
@@ -52,7 +52,7 @@ if ( is_plugin_active( 'woocommerce/woocommerce.php' ) || is_network_only_plugin
 
 		//Añade en el menú a WooCommerce
 		public function apg_nif_admin_menu() {
-			add_submenu_page( 'woocommerce', __( 'APG NIF/CIF/NIE field', 'wc-apg-nifcifnie-field' ),  __( 'NIF/CIF/NIE field', 'wc-apg-nifcifnie-field' ) , 'manage_woocommerce', 'wc-apg-nifcifnie-field',  array( $this, 'apg_nif_tab' ) );
+			add_submenu_page( 'woocommerce', __( 'APG NIF/CIF/NIE field', 'wc-apg-nifcifnie-field' ),  __( 'NIF/CIF/NIE field', 'wc-apg-nifcifnie-field' ) , 'manage_woocommerce', 'wc-apg-nifcifnie-field',  [ $this, 'apg_nif_tab' ] );
 		}
 
 		//Registra las opciones

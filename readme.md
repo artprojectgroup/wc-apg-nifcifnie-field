@@ -3,17 +3,17 @@ Contributors: artprojectgroup
 
 Donate link: https://artprojectgroup.es/tienda/donacion
 
-Tags: woocommerce, commerce, e-commerce, commerce, shop, virtual shop, nif, cif, nie, shipping form, billing form, wooCommerce pdf invoices & packing slips
+Tags: woocommerce, commerce, e-commerce, commerce, shop, virtual shop, nif, cif, nie, shipping form, billing form, wooCommerce pdf invoices & packing slips, WPML
 
 Requires at least: 3.8
 
 Tested up to: 5.5
 
-Stable tag: 1.4.0.2
+Stable tag: 1.4.1
 
 WC requires at least: 2.4
 
-WC tested up to: 4.2
+WC tested up to: 4.3
 
 License: GPLv3
 
@@ -34,6 +34,7 @@ Añade a WooCommerce un campo NIF/CIF/NIE.
 * Puedes personalizar la etiqueta y el marcador de posición del campo NIF/CIF/NIE o VIES VAT number. 
 * Añade como requeridos los campos teléfono y correo electrónico al formulario de envío.
 * 100% compatible con [WooCommerce PDF Invoices & Packing Slips](https://es.wordpress.org/plugins/woocommerce-pdf-invoices-packing-slips/).
+* 100% compatible con [WPML](https://wpml.org/?aid=80296&affiliate_key=m66Ss5ps0xoS).
 
 ### Traducciones
 * Español ([**Art Project Group**](https://artprojectgroup.es/)).
@@ -81,6 +82,9 @@ Si necesitas ayuda para configurar o instalar **WC - APG NIF/CIF/NIE Field**, **
 *En ningún caso **Art Project Group** proporciona ningún tipo de soporte técnico gratuito.*
 
 ## Changelog
+### 1.4.1
+* Nombre de campo de texto traducible con WPML.
+
 ### 1.4.0.2
 * Actualización de la plantilla de cuentas de correo electrónico.
 * Pequeños arreglos.

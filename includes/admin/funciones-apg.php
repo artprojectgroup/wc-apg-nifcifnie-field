@@ -1,7 +1,7 @@
 <?php
 
 //Definimos las variables
-$apg_nif = array(	
+$apg_nif = [	
 	'plugin' 		=> 'WC - APG NIF/CIF/NIE Field', 
 	'plugin_uri' 	=> 'wc-apg-nifcifnie-field', 
 	'donacion' 		=> 'https://artprojectgroup.es/tienda/donacion',
@@ -9,7 +9,7 @@ $apg_nif = array(
 	'plugin_url' 	=> 'https://artprojectgroup.es/plugins-para-woocommerce/wc-apg-nifcifnie-field', 
 	'ajustes' 		=> 'admin.php?page=wc-apg-nifcifnie-field', 
 	'puntuacion' 	=> 'https://www.wordpress.org/support/view/plugin-reviews/wc-apg-nifcifnie-field'
-);
+];
 $envios_adicionales = $limpieza = NULL;
 
 //Carga el idioma
@@ -37,10 +37,10 @@ add_filter( 'plugin_row_meta', 'apg_nif_enlaces', 10, 2 );
 function apg_nif_enlace_de_ajustes( $enlaces ) { 
 	global $apg_nif;
 
-	$enlaces_de_ajustes = array(
+	$enlaces_de_ajustes = [
 		'<a href="' . $apg_nif['ajustes'] . '" title="' . __( 'Settings of ', 'wc-apg-nifcifnie-field' ) . $apg_nif['plugin'] .'">' . __( 'Settings', 'wc-apg-nifcifnie-field' ) . '</a>', 
 		'<a href="' . $apg_nif['soporte'] . '" title="' . __( 'Support of ', 'wc-apg-nifcifnie-field' ) . $apg_nif['plugin'] .'">' . __( 'Support', 'wc-apg-nifcifnie-field' ) . '</a>'
-	);
+	];
 	foreach ( $enlaces_de_ajustes as $enlace_de_ajustes ) {
 		array_unshift( $enlaces, $enlace_de_ajustes );
 	}
@@ -54,19 +54,17 @@ add_filter( "plugin_action_links_$plugin", 'apg_nif_enlace_de_ajustes' );
 function apg_nif_plugin( $nombre ) {
 	global $apg_nif;
 
-	$argumentos = ( object ) array( 
+	$argumentos = ( object ) [ 
 		'slug'		=> $nombre 
-	);
-	$consulta = array( 
+	];
+	$consulta = [ 
 		'action'	=> 'plugin_information', 
 		'timeout'	=> 15, 
 		'request'	=> serialize( $argumentos )
-	);
+	];
 	$respuesta = get_transient( 'apg_nif_plugin' );
 	if ( false === $respuesta ) {
-		$respuesta = wp_remote_post( 'https://api.wordpress.org/plugins/info/1.0/', array( 
-			'body' => $consulta)
-		);
+		$respuesta = wp_remote_post( 'https://api.wordpress.org/plugins/info/1.0/', [ 'body' => $consulta ] );
 		set_transient( 'apg_nif_plugin', $respuesta, 24 * HOUR_IN_SECONDS );
 	}
 	if ( !is_wp_error( $respuesta ) ) {
@@ -75,11 +73,11 @@ function apg_nif_plugin( $nombre ) {
 		$plugin['rating'] = 100;
 	}
 	
-	$rating = array(
+	$rating = [
 	   'rating'		=> $plugin['rating'],
 	   'type'		=> 'percent',
 	   'number'		=> $plugin['num_ratings'],
-	);
+	];
 	ob_start();
 	wp_star_rating( $rating );
 	$estrellas = ob_get_contents();

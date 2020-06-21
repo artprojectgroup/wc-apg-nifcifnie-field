@@ -1,8 +1,6 @@
 <?php
 //Igual no deberías poder abrirme
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
+defined( 'ABSPATH' ) || exit;
 
 /**
  * Añade los campos en Mi Cuenta.
@@ -10,7 +8,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 class APG_Campo_NIF_en_Cuenta {
 	//Inicializa las acciones de Mi Cuenta
 	public function __construct() {
-		add_filter( 'woocommerce_my_account_my_address_formatted_address', array( $this, 'apg_nif_anade_campo_nif_editar_direccion' ), 10, 3 );
+		add_filter( 'woocommerce_my_account_my_address_formatted_address', [ $this, 'apg_nif_anade_campo_nif_editar_direccion' ], 10, 3 );
 	}
 	
 	//Añade el campo NIF a Editar mi dirección
@@ -20,7 +18,7 @@ class APG_Campo_NIF_en_Cuenta {
 		$campos['phone']	= get_user_meta( $cliente, $formulario . '_phone', true );
 		
 		//Ordena los campos
-		$orden_de_campos = array(
+		$orden_de_campos = [
 			"first_name", 
 			"last_name", 
 			"company", 
@@ -33,7 +31,7 @@ class APG_Campo_NIF_en_Cuenta {
 			"city",
 			"state",
 			"country", 
-		);
+		];
 		
 		foreach( $orden_de_campos as $campo ) {
 			$campos_ordenados[$campo] = $campos[$campo];

@@ -1,8 +1,6 @@
 <?php
 //Igual no deberías poder abrirme
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
+defined( 'ABSPATH' ) || exit;
 
 /**
  * Añade los campos en el Pedido.
@@ -13,52 +11,63 @@ class APG_Campo_NIF_en_Pedido {
 	//Inicializa las acciones de Pedido
 	public function __construct() {	
 		$apg_nif_settings	= get_option( 'apg_nif_settings' );
-		$this->nombre_nif	= __( ( isset( $apg_nif_settings[ 'etiqueta' ] ) ? $apg_nif_settings[ 'etiqueta' ] : 'NIF/CIF/NIE' ), 'wc-apg-nifcifnie-field' ); //Nombre original del campo
-		$this->placeholder	= _x( ( isset( $apg_nif_settings[ 'placeholder' ] ) ? $apg_nif_settings[ 'placeholder' ] : 'NIF/CIF/NIE number' ), 'placeholder', 'wc-apg-nifcifnie-field' ); //Nombre original del placeholder
 		
-		add_filter( 'woocommerce_default_address_fields', array( $this, 'apg_nif_campos_de_direccion' ) );
-		add_filter( 'woocommerce_billing_fields', array( $this, 'apg_nif_formulario_de_facturacion' ) );
-		add_filter( 'woocommerce_shipping_fields', array( $this, 'apg_nif_formulario_de_envio' ) );
+		add_filter( 'woocommerce_default_address_fields', [ $this, 'apg_nif_campos_de_direccion' ] );
+		add_filter( 'woocommerce_billing_fields', [ $this, 'apg_nif_formulario_de_facturacion' ] );
+		add_filter( 'woocommerce_shipping_fields', [ $this, 'apg_nif_formulario_de_envio' ] );
+        add_action( 'after_setup_theme', [ $this, 'apg_nif_traducciones' ] );
 		//Valida el campo NIF/CIF/NIE
 		if ( isset( $apg_nif_settings[ 'validacion' ] ) && $apg_nif_settings[ 'validacion' ] == "1" ) {	
-			add_action( 'woocommerce_checkout_process', array( $this, 'apg_nif_validacion_de_campo' ) );
+			add_action( 'woocommerce_checkout_process', [ $this, 'apg_nif_validacion_de_campo' ] );
 		}
 		//Añade el número VIES
 		if ( isset( $apg_nif_settings[ 'validacion_vies' ] ) && $apg_nif_settings[ 'validacion_vies' ] == "1" ) {	
-			add_action( 'wp_enqueue_scripts', array( $this, 'apg_nif_carga_ajax' ) );
-			add_action( 'wp_ajax_nopriv_apg_nif_valida_VIES', array( $this, 'apg_nif_valida_VIES' ) );
-			add_action( 'wp_ajax_apg_nif_valida_VIES', array( $this, 'apg_nif_valida_VIES' ) );
-			add_action( 'init', array( $this, 'apg_nif_quita_iva' ) );
+			add_action( 'wp_enqueue_scripts', [ $this, 'apg_nif_carga_ajax' ] );
+			add_action( 'wp_ajax_nopriv_apg_nif_valida_VIES', [ $this, 'apg_nif_valida_VIES' ] );
+			add_action( 'wp_ajax_apg_nif_valida_VIES', [ $this, 'apg_nif_valida_VIES' ] );
+			add_action( 'init', [ $this, 'apg_nif_quita_iva' ] );
+		}
+	}
+    
+	//Añade las traducciones
+	public function apg_nif_traducciones() {
+		$apg_nif_settings	= get_option( 'apg_nif_settings' );
+        
+		$this->nombre_nif	= __( ( isset( $apg_nif_settings[ 'etiqueta' ] ) ? $apg_nif_settings[ 'etiqueta' ] : 'NIF/CIF/NIE' ), 'wc-apg-nifcifnie-field' ); //Nombre original del campo
+		$this->placeholder	= _x( ( isset( $apg_nif_settings[ 'placeholder' ] ) ? $apg_nif_settings[ 'placeholder' ] : 'NIF/CIF/NIE number' ), 'placeholder', 'wc-apg-nifcifnie-field' ); //Nombre original del placeholder
+        
+		//Número VIES
+		if ( isset( $apg_nif_settings[ 'validacion_vies' ] ) && $apg_nif_settings[ 'validacion_vies' ] == "1" ) {	
 			$this->nombre_nif	= __( ( isset( $apg_nif_settings[ 'etiqueta_vies' ] ) ? $apg_nif_settings[ 'etiqueta_vies' ] : 'NIF/CIF/NIE/VAT number' ), 'wc-apg-nifcifnie-field' ); //Nombre modificado del campo
 			$this->placeholder	= _x( ( isset( $apg_nif_settings[ 'placeholder_vies' ] ) ? $apg_nif_settings[ 'placeholder_vies' ] : 'NIF/CIF/NIE/VAT number' ), 'placeholder', 'wc-apg-nifcifnie-field' ); //Nombre modificado del placeholder
 		}
-	}
+    }
 
 	//Arregla la dirección predeterminada
 	public function apg_nif_campos_de_direccion( $campos ) {
-		$campos[ 'nif' ]		= array( 
+		$campos[ 'nif' ]		= [ 
 			'label'			=> $this->nombre_nif,
 			'placeholder'	=> $this->placeholder,
 			'priority'      => $campos[ 'company' ][ 'priority' ] + 1,
-		);
-		$campos[ 'email' ]	= array( 
+		];
+		$campos[ 'email' ]	= [ 
 			'label'			=> __( 'Email Address', 'woocommerce' ),
 			'required'		=> true,
 			'type'			=> 'email',
-			'validate'		=> array( 
+			'validate'		=> [ 
 				'email'
-			),
+			],
 			'autocomplete'	=> 'email username',
-		);
-		$campos[ 'phone' ]	= array( 
+		];
+		$campos[ 'phone' ]	= [ 
 			'label'			=> __( 'Phone', 'woocommerce' ),
 			'required'		=> true,
 			'type'			=> 'tel',
-			'validate'		=> array( 
+			'validate'		=> [ 
 				'phone'
-			),
+			],
 			'autocomplete'	=> 'tel',
-		);
+		];
 
 		$campos[ 'postcode' ][ 'class' ][]	= 'update_totals_on_change';
 		$campos[ 'state' ][ 'class' ][]		= 'update_totals_on_change';
@@ -137,7 +146,7 @@ class APG_Campo_NIF_en_Pedido {
 		}
  
 		if ( preg_match( '/^[XYZ]{1}/', $nif ) ) { //NIE válido (XYZ)
-			if ( $numero[8] == substr( 'TRWAGMYFPDXBNJZSQVHLCKE', substr( str_replace( array( 'X', 'Y', 'Z' ), array( '0', '1', '2' ), $nif ), 0, 8 ) % 23, 1 ) ) {
+			if ( $numero[8] == substr( 'TRWAGMYFPDXBNJZSQVHLCKE', substr( str_replace( [ 'X', 'Y', 'Z' ], [ '0', '1', '2' ], $nif ), 0, 8 ) % 23, 1 ) ) {
 				$nif_valido = true;
 			}
 		}
@@ -303,11 +312,11 @@ class APG_Campo_NIF_en_Pedido {
 	//Carga el JavaScript necesario
 	public function apg_nif_carga_ajax() {
 		if ( is_checkout() ) {
-			wp_enqueue_script( 'apg_nif_vies', plugin_dir_url( DIRECCION_apg_nif ) . '/assets/js/valida-vies.js', array() );
-			wp_localize_script( 'apg_nif_vies', 'apg_nif_ajax', array(
+			wp_enqueue_script( 'apg_nif_vies', plugin_dir_url( DIRECCION_apg_nif ) . '/assets/js/valida-vies.js', [] );
+			wp_localize_script( 'apg_nif_vies', 'apg_nif_ajax', [
 				'url'	=> admin_url( 'admin-ajax.php' ),
 				'error'	=> __( 'Please enter a valid VIES VAT number.', 'wc-apg-nifcifnie-field' ),
-			) );
+			] );
 		}
 	}
 	
@@ -323,10 +332,10 @@ class APG_Campo_NIF_en_Pedido {
 				$validacion = new SoapClient( "http://ec.europa.eu/taxation_customs/vies/checkVatService.wsdl" );
 
 				if ( $validacion ) {
-					$parametros = array(
+					$parametros = [
 						'countryCode' => $pais, 
 						'vatNumber' => $nif
-					);
+					];
 					try {
 						$respuesta = $validacion->checkVat( $parametros );
 						if ( $respuesta->valid == true ) {
