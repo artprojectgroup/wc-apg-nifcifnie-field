@@ -7,9 +7,9 @@ Description: Add to WooCommerce a NIF/CIF/NIE field.
 Author URI: https://artprojectgroup.es/
 Author: Art Project Group
 Requires at least: 3.8
-Tested up to: 5.5
+Tested up to: 5.6
 WC requires at least: 2.4
-WC tested up to: 4.3
+WC tested up to: 4.4
 
 Text Domain: wc-apg-nifcifnie-field
 Domain Path: /languages

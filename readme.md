@@ -7,13 +7,13 @@ Tags: woocommerce, commerce, e-commerce, commerce, shop, virtual shop, nif, cif,
 
 Requires at least: 3.8
 
-Tested up to: 5.5
+Tested up to: 5.6
 
 Stable tag: 1.4.1
 
 WC requires at least: 2.4
 
-WC tested up to: 4.3
+WC tested up to: 4.4
 
 License: GPLv3
 
