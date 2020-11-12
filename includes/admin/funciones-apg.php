@@ -68,15 +68,15 @@ function apg_nif_plugin( $nombre ) {
 		set_transient( 'apg_nif_plugin', $respuesta, 24 * HOUR_IN_SECONDS );
 	}
 	if ( !is_wp_error( $respuesta ) ) {
-		$plugin = get_object_vars( unserialize( $respuesta['body'] ) );
+		$plugin = get_object_vars( unserialize( $respuesta[ 'body' ] ) );
 	} else {
-		$plugin['rating'] = 100;
+		$plugin[ 'rating' ] = 100;
 	}
-	
-	$rating = [
-	   'rating'		=> $plugin['rating'],
+
+    $rating = [
+	   'rating'		=> $plugin[ 'rating' ],
 	   'type'		=> 'percent',
-	   'number'		=> $plugin['num_ratings'],
+	   'number'		=> ( isset( $plugin[ 'num_ratings' ] ) ) ? $plugin[ 'num_ratings' ] : 0,
 	];
 	ob_start();
 	wp_star_rating( $rating );

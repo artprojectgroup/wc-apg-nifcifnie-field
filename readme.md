@@ -9,11 +9,11 @@ Requires at least: 3.8
 
 Tested up to: 5.6
 
-Stable tag: 1.4.1
+Stable tag: 1.4.2
 
 WC requires at least: 2.4
 
-WC tested up to: 4.4
+WC tested up to: 4.7
 
 License: GPLv3
 
@@ -82,6 +82,9 @@ Si necesitas ayuda para configurar o instalar **WC - APG NIF/CIF/NIE Field**, **
 *En ningún caso **Art Project Group** proporciona ningún tipo de soporte técnico gratuito.*
 
 ## Changelog
+### 1.4.2
+* Eliminación de doble teléfono y dirección de correo electrónico en la página de Gracias.
+
 ### 1.4.1
 * Nombre de campo de texto traducible con WPML.
 
