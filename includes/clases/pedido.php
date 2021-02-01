@@ -312,7 +312,7 @@ class APG_Campo_NIF_en_Pedido {
 	//Carga el JavaScript necesario
 	public function apg_nif_carga_ajax() {
 		if ( is_checkout() ) {
-			wp_enqueue_script( 'apg_nif_vies', plugin_dir_url( DIRECCION_apg_nif ) . '/assets/js/valida-vies.js', [] );
+			wp_enqueue_script( 'apg_nif_vies', plugin_dir_url( DIRECCION_apg_nif ) . '/assets/js/valida-vies.js', [ 'jquery' ] );
 			wp_localize_script( 'apg_nif_vies', 'apg_nif_ajax', [
 				'url'	=> admin_url( 'admin-ajax.php' ),
 				'error'	=> __( 'Please enter a valid VIES VAT number.', 'wc-apg-nifcifnie-field' ),
@@ -325,7 +325,7 @@ class APG_Campo_NIF_en_Pedido {
 		$_SESSION[ 'apg_nif' ]	= false;
 		$valido					= true;
 	
-		if ( isset( $_POST[ 'billing_nif' ] ) ) {
+		if ( isset( $_POST[ 'billing_nif' ] ) &&  $_POST[ 'billing_nif' ] ) {
 			$pais	= strtoupper( substr( $_POST[ 'billing_nif' ], 0, 2 ) );
 			$nif	= substr( $_POST[ 'billing_nif' ], 2 );
 			if ( $pais == $_POST[ 'billing_country' ] ) {
@@ -365,9 +365,21 @@ class APG_Campo_NIF_en_Pedido {
 				session_start();
 			}
 			if ( isset( $_SESSION[ 'apg_nif' ] ) ) {
-				WC()->customer->set_is_vat_exempt( $_SESSION[ 'apg_nif' ] );
+                add_filter( 'woocommerce_product_get_tax_class', [ $this, 'apg_nif_iva_productos' ], 1, 2);
+                add_filter( 'woocommerce_product_variation_get_tax_class', [ $this, 'apg_nif_iva_productos' ], 1, 2);
+
 			}
 		}
 	}
+    
+    //Indica que el IVA a aplicar en los productos
+    public function apg_nif_iva_productos( $tax_class, $product ) {
+        if ( isset( $_SESSION[ 'apg_nif' ] ) && $_SESSION[ 'apg_nif' ] ) {
+            $tax_class = 'Zero Rate';
+        }
+        
+        return $tax_class;	
+    }
+
 }
 new APG_Campo_NIF_en_Pedido();
