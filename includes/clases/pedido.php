@@ -365,21 +365,9 @@ class APG_Campo_NIF_en_Pedido {
 				session_start();
 			}
 			if ( isset( $_SESSION[ 'apg_nif' ] ) ) {
-                add_filter( 'woocommerce_product_get_tax_class', [ $this, 'apg_nif_iva_productos' ], 1, 2);
-                add_filter( 'woocommerce_product_variation_get_tax_class', [ $this, 'apg_nif_iva_productos' ], 1, 2);
-
+                WC()->customer->set_is_vat_exempt( $_SESSION[ 'apg_nif' ] );
 			}
 		}
 	}
-    
-    //Indica que el IVA a aplicar en los productos
-    public function apg_nif_iva_productos( $tax_class, $product ) {
-        if ( isset( $_SESSION[ 'apg_nif' ] ) && $_SESSION[ 'apg_nif' ] ) {
-            $tax_class = 'Zero Rate';
-        }
-        
-        return $tax_class;	
-    }
-
 }
 new APG_Campo_NIF_en_Pedido();
