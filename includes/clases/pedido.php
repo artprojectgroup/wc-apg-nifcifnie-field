@@ -6,7 +6,10 @@ defined( 'ABSPATH' ) || exit;
  * Añade los campos en el Pedido.
  */
 class APG_Campo_NIF_en_Pedido {
-	public $nombre_nif, $placeholder;
+	public  $nombre_nif, 
+            $placeholder, 
+            $mensaje_error, 
+            $mensaje_vies;
 	
 	//Inicializa las acciones de Pedido
 	public function __construct() {	
@@ -33,13 +36,15 @@ class APG_Campo_NIF_en_Pedido {
 	public function apg_nif_traducciones() {
 		$apg_nif_settings	= get_option( 'apg_nif_settings' );
         
-		$this->nombre_nif	= __( ( isset( $apg_nif_settings[ 'etiqueta' ] ) ? $apg_nif_settings[ 'etiqueta' ] : 'NIF/CIF/NIE' ), 'wc-apg-nifcifnie-field' ); //Nombre original del campo
-		$this->placeholder	= _x( ( isset( $apg_nif_settings[ 'placeholder' ] ) ? $apg_nif_settings[ 'placeholder' ] : 'NIF/CIF/NIE number' ), 'placeholder', 'wc-apg-nifcifnie-field' ); //Nombre original del placeholder
+		$this->nombre_nif     = __( ( isset( $apg_nif_settings[ 'etiqueta' ] ) ? $apg_nif_settings[ 'etiqueta' ] : 'NIF/CIF/NIE' ), 'wc-apg-nifcifnie-field' ); //Nombre original del campo
+		$this->placeholder    = _x( ( isset( $apg_nif_settings[ 'placeholder' ] ) ? $apg_nif_settings[ 'placeholder' ] : 'NIF/CIF/NIE number' ), 'placeholder', 'wc-apg-nifcifnie-field' ); //Nombre original del placeholder
+		$this->mensaje_error  = __( ( isset( $apg_nif_settings[ 'error' ] ) ? $apg_nif_settings[ 'error' ] : 'Please enter a valid NIF/CIF/NIE.' ), 'wc-apg-nifcifnie-field' ); //Mensaje de error
         
 		//Número VIES
 		if ( isset( $apg_nif_settings[ 'validacion_vies' ] ) && $apg_nif_settings[ 'validacion_vies' ] == "1" ) {	
-			$this->nombre_nif	= __( ( isset( $apg_nif_settings[ 'etiqueta_vies' ] ) ? $apg_nif_settings[ 'etiqueta_vies' ] : 'NIF/CIF/NIE/VAT number' ), 'wc-apg-nifcifnie-field' ); //Nombre modificado del campo
-			$this->placeholder	= _x( ( isset( $apg_nif_settings[ 'placeholder_vies' ] ) ? $apg_nif_settings[ 'placeholder_vies' ] : 'NIF/CIF/NIE/VAT number' ), 'placeholder', 'wc-apg-nifcifnie-field' ); //Nombre modificado del placeholder
+			$this->nombre_nif    = __( ( isset( $apg_nif_settings[ 'etiqueta_vies' ] ) ? $apg_nif_settings[ 'etiqueta_vies' ] : 'NIF/CIF/NIE/VAT number' ), 'wc-apg-nifcifnie-field' ); //Nombre modificado del campo
+			$this->placeholder   = _x( ( isset( $apg_nif_settings[ 'placeholder_vies' ] ) ? $apg_nif_settings[ 'placeholder_vies' ] : 'NIF/CIF/NIE/VAT number' ), 'placeholder', 'wc-apg-nifcifnie-field' ); //Nombre modificado del placeholder
+            $this->mensaje_vies  = __( ( isset( $apg_nif_settings[ 'error_vies' ] ) ? $apg_nif_settings[ 'error_vies' ] : 'Please enter a valid VIES VAT number.' ), 'wc-apg-nifcifnie-field' ); //Mensaje de error
 		}
     }
 
@@ -302,9 +307,9 @@ class APG_Campo_NIF_en_Pedido {
 			$envio = $this->apg_nif_validacion( strtoupper( $_POST[ 'shipping_nif' ] ) );
 		}
 	 
-		if ( !$facturacion || !$envio ) {
-			if ( ( !$facturacion && !empty( $_POST[ 'billing_nif' ] ) ) || ( !$envio && !empty( $_POST[ 'shipping_nif' ] ) ) ) {
-				wc_add_notice( __( 'Please enter a valid NIF/CIF/NIE.', 'wc-apg-nifcifnie-field' ), 'error' );
+		if ( ! $facturacion || ! $envio ) {
+			if ( ( ! $facturacion && ! empty( $_POST[ 'billing_nif' ] ) ) || ( ! $envio && ! empty( $_POST[ 'shipping_nif' ] ) ) ) {
+				wc_add_notice( $this->mensaje_error, 'error' );
 			}
 		}
 	}
@@ -315,7 +320,7 @@ class APG_Campo_NIF_en_Pedido {
 			wp_enqueue_script( 'apg_nif_vies', plugin_dir_url( DIRECCION_apg_nif ) . '/assets/js/valida-vies.js', [ 'jquery' ] );
 			wp_localize_script( 'apg_nif_vies', 'apg_nif_ajax', [
 				'url'	=> admin_url( 'admin-ajax.php' ),
-				'error'	=> __( 'Please enter a valid VIES VAT number.', 'wc-apg-nifcifnie-field' ),
+				'error'	=> $this->mensaje_vies,
 			] );
 		}
 	}
