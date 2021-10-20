@@ -55,9 +55,10 @@ class APG_Campo_NIF_en_Admin_Pedidos {
 
 	//Añade el campo NIF a Detalles del pedido
 	public function apg_nif_anade_campo_nif_editar_direccion_pedido( $campos ) {
-		$apg_nif_settings	= get_option( 'apg_nif_settings' );
-		$campos['nif']		= [ 
-			'label'	=> __( ( isset( $apg_nif_settings[ 'etiqueta' ] ) ? $apg_nif_settings[ 'etiqueta' ] : 'NIF/CIF/NIE' ), 'wc-apg-nifcifnie-field' ),
+		global $apg_nif_settings;
+
+        $campos['nif']		= [ 
+			'label'	=> __( ( isset( $apg_nif_settings[ 'etiqueta' ] ) ? esc_attr( $apg_nif_settings[ 'etiqueta' ] ) : 'NIF/CIF/NIE' ), 'wc-apg-nifcifnie-field' ),
 			'show'	=> false
 		];
 		$campos['phone']	= [ 

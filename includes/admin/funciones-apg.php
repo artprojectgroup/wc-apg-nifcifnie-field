@@ -15,6 +15,9 @@ $envios_adicionales = $limpieza = NULL;
 //Carga el idioma
 load_plugin_textdomain( 'wc-apg-nifcifnie-field', null, dirname( DIRECCION_apg_nif ) . '/languages' );
 
+//Carga la configuración del plugin
+$apg_nif_settings	= get_option( 'apg_nif_settings' );
+
 //Enlaces adicionales personalizados
 function apg_nif_enlaces( $enlaces, $archivo ) {
 	global $apg_nif;

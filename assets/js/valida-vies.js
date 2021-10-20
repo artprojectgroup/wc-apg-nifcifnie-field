@@ -3,7 +3,7 @@ jQuery( function( $ ) {
 	ValidaVIES();
 
 	//Valida al cambiar
-	$( '#billing_nif' ).on( 'change', function() {
+	$( '#billing_nif,#billing_country' ).on( 'change', function() {
 		ValidaVIES();
 	} );
 

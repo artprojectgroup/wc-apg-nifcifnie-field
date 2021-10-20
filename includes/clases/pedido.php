@@ -13,7 +13,7 @@ class APG_Campo_NIF_en_Pedido {
 	
 	//Inicializa las acciones de Pedido
 	public function __construct() {	
-		$apg_nif_settings	= get_option( 'apg_nif_settings' );
+		global $apg_nif_settings;
 		
 		add_filter( 'woocommerce_default_address_fields', [ $this, 'apg_nif_campos_de_direccion' ] );
 		add_filter( 'woocommerce_billing_fields', [ $this, 'apg_nif_formulario_de_facturacion' ] );
@@ -34,17 +34,17 @@ class APG_Campo_NIF_en_Pedido {
     
 	//Añade las traducciones
 	public function apg_nif_traducciones() {
-		$apg_nif_settings	= get_option( 'apg_nif_settings' );
+		global $apg_nif_settings;
         
-		$this->nombre_nif     = __( ( isset( $apg_nif_settings[ 'etiqueta' ] ) ? $apg_nif_settings[ 'etiqueta' ] : 'NIF/CIF/NIE' ), 'wc-apg-nifcifnie-field' ); //Nombre original del campo
-		$this->placeholder    = _x( ( isset( $apg_nif_settings[ 'placeholder' ] ) ? $apg_nif_settings[ 'placeholder' ] : 'NIF/CIF/NIE number' ), 'placeholder', 'wc-apg-nifcifnie-field' ); //Nombre original del placeholder
-		$this->mensaje_error  = __( ( isset( $apg_nif_settings[ 'error' ] ) ? $apg_nif_settings[ 'error' ] : 'Please enter a valid NIF/CIF/NIE.' ), 'wc-apg-nifcifnie-field' ); //Mensaje de error
+		$this->nombre_nif     = __( ( isset( $apg_nif_settings[ 'etiqueta' ] ) ? esc_attr( $apg_nif_settings[ 'etiqueta' ] ) : 'NIF/CIF/NIE' ), 'wc-apg-nifcifnie-field' ); //Nombre original del campo
+		$this->placeholder    = _x( ( isset( $apg_nif_settings[ 'placeholder' ] ) ? esc_attr( $apg_nif_settings[ 'placeholder' ] ) : 'NIF/CIF/NIE number' ), 'placeholder', 'wc-apg-nifcifnie-field' ); //Nombre original del placeholder
+		$this->mensaje_error  = __( ( isset( $apg_nif_settings[ 'error' ] ) ? esc_attr( $apg_nif_settings[ 'error' ] ) : 'Please enter a valid NIF/CIF/NIE.' ), 'wc-apg-nifcifnie-field' ); //Mensaje de error
         
 		//Número VIES
 		if ( isset( $apg_nif_settings[ 'validacion_vies' ] ) && $apg_nif_settings[ 'validacion_vies' ] == "1" ) {	
-			$this->nombre_nif    = __( ( isset( $apg_nif_settings[ 'etiqueta_vies' ] ) ? $apg_nif_settings[ 'etiqueta_vies' ] : 'NIF/CIF/NIE/VAT number' ), 'wc-apg-nifcifnie-field' ); //Nombre modificado del campo
-			$this->placeholder   = _x( ( isset( $apg_nif_settings[ 'placeholder_vies' ] ) ? $apg_nif_settings[ 'placeholder_vies' ] : 'NIF/CIF/NIE/VAT number' ), 'placeholder', 'wc-apg-nifcifnie-field' ); //Nombre modificado del placeholder
-            $this->mensaje_vies  = __( ( isset( $apg_nif_settings[ 'error_vies' ] ) ? $apg_nif_settings[ 'error_vies' ] : 'Please enter a valid VIES VAT number.' ), 'wc-apg-nifcifnie-field' ); //Mensaje de error
+			$this->nombre_nif    = __( ( isset( $apg_nif_settings[ 'etiqueta_vies' ] ) ? esc_attr( $apg_nif_settings[ 'etiqueta_vies' ] ) : 'NIF/CIF/NIE/VAT number' ), 'wc-apg-nifcifnie-field' ); //Nombre modificado del campo
+			$this->placeholder   = _x( ( isset( $apg_nif_settings[ 'placeholder_vies' ] ) ? esc_attr( $apg_nif_settings[ 'placeholder_vies' ] ) : 'NIF/CIF/NIE/VAT number' ), 'placeholder', 'wc-apg-nifcifnie-field' ); //Nombre modificado del placeholder
+            $this->mensaje_vies  = __( ( isset( $apg_nif_settings[ 'error_vies' ] ) ? esc_attr( $apg_nif_settings[ 'error_vies' ] ) : 'Please enter a valid VIES VAT number.' ), 'wc-apg-nifcifnie-field' ); //Mensaje de error
 		}
     }
 
@@ -82,7 +82,7 @@ class APG_Campo_NIF_en_Pedido {
 		
 	//Arreglamos el formulario de facturación
 	function apg_nif_formulario_de_facturacion( $campos ) {
-		$apg_nif_settings = get_option( 'apg_nif_settings' );
+		global $apg_nif_settings;
 		
 		$campos[ 'billing_nif' ][ 'required' ]	= ( isset( $apg_nif_settings[ 'requerido' ] ) && $apg_nif_settings[ 'requerido' ] == "1" ) ? true : false;
 
@@ -91,7 +91,7 @@ class APG_Campo_NIF_en_Pedido {
 	
 	//Arregla el formulario de envío
 	public function apg_nif_formulario_de_envio( $campos ) {
-		$apg_nif_settings = get_option( 'apg_nif_settings' );
+		global $apg_nif_settings;
 		
 		$facturacion = WC()->countries->get_address_fields( WC()->countries->get_base_country(), 'billing_' );
 		
@@ -334,7 +334,7 @@ class APG_Campo_NIF_en_Pedido {
 			$pais	= strtoupper( substr( $_POST[ 'billing_nif' ], 0, 2 ) );
 			$nif	= substr( $_POST[ 'billing_nif' ], 2 );
 			if ( $pais == $_POST[ 'billing_country' ] ) {
-				$validacion = new SoapClient( "http://ec.europa.eu/taxation_customs/vies/checkVatService.wsdl" );
+				$validacion = new SoapClient( "https://ec.europa.eu/taxation_customs/vies/checkVatService.wsdl" );
 
 				if ( $validacion ) {
 					$parametros = [
