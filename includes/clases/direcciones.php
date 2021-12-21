@@ -57,10 +57,9 @@ class APG_Campo_NIF_en_Direcciones {
             $campos[ 'default' ]  = "{name}\n{company}\n{nif}\n{address_1}\n{address_2}\n{city}\n{state}\n{postcode}\n{country}";
             $campos[ 'ES' ]   = "{name}\n{company}\n{nif}\n{address_1}\n{address_2}\n{postcode} {city}\n{state}\n{country}";
         } else {
-            $campos[ 'default' ]  = "{name}\n{company}\n{nif}\n{address_1}\n{address_2}\n{city}\n{state}\n{postcode}\n{country}\n{phone}\n{email}";
-            $campos[ 'ES' ]   = "{name}\n{company}\n{nif}\n{address_1}\n{address_2}\n{postcode} {city}\n{state}\n{country}\n{phone}\n{email}";
-            $campos[ 'AU' ]   = "{name}\n{company}\n{address_1}\n{address_2}\n{city} {state} {postcode}\n{country}\n{phone}\n{email}";
+            $campos[ 'default' ]  = "{name}\n{company}\n{address_1}\n{address_2}\n{city}\n{state}\n{postcode}\n{country}\n{phone}\n{email}";
             $campos[ 'AT' ]   = "{company}\n{name}\n{address_1}\n{address_2}\n{postcode} {city}\n{country}\n{phone}\n{email}";
+            $campos[ 'AU' ]   = "{name}\n{company}\n{address_1}\n{address_2}\n{city} {state} {postcode}\n{country}\n{phone}\n{email}";
             $campos[ 'BE' ]   = "{company}\n{name}\n{address_1}\n{address_2}\n{postcode} {city}\n{country}\n{phone}\n{email}";
             $campos[ 'CA' ]   = "{company}\n{name}\n{address_1}\n{address_2}\n{city} {state_code} {postcode}\n{country}\n{phone}\n{email}";
             $campos[ 'CH' ]   = "{company}\n{name}\n{address_1}\n{address_2}\n{postcode} {city}\n{country}\n{phone}\n{email}";
@@ -68,9 +67,10 @@ class APG_Campo_NIF_en_Direcciones {
             $campos[ 'CN' ]   = "{country} {postcode}\n{state}, {city}, {address_2}, {address_1}\n{company}\n{name}\n{phone}\n{email}";
             $campos[ 'CZ' ]   = "{company}\n{name}\n{address_1}\n{address_2}\n{postcode} {city}\n{country}\n{phone}\n{email}";
             $campos[ 'DE' ]   = "{company}\n{name}\n{address_1}\n{address_2}\n{postcode} {city}\n{country}\n{phone}\n{email}";
-            $campos[ 'EE' ]   = "{company}\n{name}\n{address_1}\n{address_2}\n{postcode} {city}\n{country}\n{phone}\n{email}";
-            $campos[ 'FI' ]   = "{company}\n{name}\n{address_1}\n{address_2}\n{postcode} {city}\n{country}\n{phone}\n{email}";
             $campos[ 'DK' ]   = "{company}\n{name}\n{address_1}\n{address_2}\n{postcode} {city}\n{country}\n{phone}\n{email}";
+            $campos[ 'EE' ]   = "{company}\n{name}\n{address_1}\n{address_2}\n{postcode} {city}\n{country}\n{phone}\n{email}";
+            $campos[ 'ES' ]   = "{name}\n{company}\n{nif}\n{address_1}\n{address_2}\n{postcode} {city}\n{state}\n{country}\n{phone}\n{email}";
+            $campos[ 'FI' ]   = "{company}\n{name}\n{address_1}\n{address_2}\n{postcode} {city}\n{country}\n{phone}\n{email}";
             $campos[ 'FR' ]   = "{company}\n{name}\n{address_1}\n{address_2}\n{postcode} {city_upper}\n{country}\n{phone}\n{email}";
             $campos[ 'HK' ]   = "{company}\n{first_name} {last_name_upper}\n{address_1}\n{address_2}\n{city_upper}\n{state_upper}\n{country}\n{phone}\n{email}";
             $campos[ 'HU' ]   = "{last_name} {first_name}\n{company}\n{city}\n{address_1}\n{address_2}\n{postcode}\n{country}\n{phone}\n{email}";
@@ -79,34 +79,32 @@ class APG_Campo_NIF_en_Direcciones {
             $campos[ 'IT' ]   = "{company}\n{name}\n{address_1}\n{address_2}\n{postcode}\n{city}\n{state_upper}\n{country}\n{phone}\n{email}";
             $campos[ 'JM' ]   = "{name}\n{company}\n{address_1}\n{address_2}\n{city}\n{state}\n{postcode_upper}\n{country}\n{phone}\n{email}";
             $campos[ 'JP' ]   = "{postcode}\n{state} {city} {address_1}\n{address_2}\n{company}\n{last_name} {first_name}\n{country}\n{phone}\n{email}";
-            $campos[ 'TW' ]   = "{company}\n{last_name} {first_name}\n{address_1}\n{address_2}\n{state}, {city} {postcode}\n{country}\n{phone}\n{email}";
             $campos[ 'LI' ]   = "{company}\n{name}\n{address_1}\n{address_2}\n{postcode} {city}\n{country}\n{phone}\n{email}";
             $campos[ 'NL' ]   = "{company}\n{name}\n{address_1}\n{address_2}\n{postcode} {city}\n{country}\n{phone}\n{email}";
-            $campos[ 'NZ' ]   = "{name}\n{company}\n{address_1}\n{address_2}\n{city} {postcode}\n{country}\n{phone}\n{email}";
             $campos[ 'NO' ]   = "{company}\n{name}\n{address_1}\n{address_2}\n{postcode} {city}\n{country}\n{phone}\n{email}";
+            $campos[ 'NZ' ]   = "{name}\n{company}\n{address_1}\n{address_2}\n{city} {postcode}\n{country}\n{phone}\n{email}";
             $campos[ 'PL' ]   = "{company}\n{name}\n{address_1}\n{address_2}\n{postcode} {city}\n{country}\n{phone}\n{email}";
             $campos[ 'PR' ]   = "{company}\n{name}\n{address_1} {address_2}\n{city} \n{country} {postcode}\n{phone}\n{email}";
             $campos[ 'PT' ]   = "{company}\n{name}\n{address_1}\n{address_2}\n{postcode} {city}\n{country}\n{phone}\n{email}";
-            $campos[ 'SK' ]   = "{company}\n{name}\n{address_1}\n{address_2}\n{postcode} {city}\n{country}\n{phone}\n{email}";
             $campos[ 'RS' ]   = "{name}\n{company}\n{address_1}\n{address_2}\n{postcode} {city}\n{country}\n{phone}\n{email}";
-            $campos[ 'SI' ]   = "{company}\n{name}\n{address_1}\n{address_2}\n{postcode} {city}\n{country}\n{phone}\n{email}";
             $campos[ 'SE' ]   = "{company}\n{name}\n{address_1}\n{address_2}\n{postcode} {city}\n{country}\n{phone}\n{email}";
+            $campos[ 'SI' ]   = "{company}\n{name}\n{address_1}\n{address_2}\n{postcode} {city}\n{country}\n{phone}\n{email}";
+            $campos[ 'SK' ]   = "{company}\n{name}\n{address_1}\n{address_2}\n{postcode} {city}\n{country}\n{phone}\n{email}";
             $campos[ 'TR' ]   = "{name}\n{company}\n{address_1}\n{address_2}\n{postcode} {city} {state}\n{country}\n{phone}\n{email}";
+            $campos[ 'TW' ]   = "{company}\n{last_name} {first_name}\n{address_1}\n{address_2}\n{state}, {city} {postcode}\n{country}\n{phone}\n{email}";
             $campos[ 'UG' ]   = "{name}\n{company}\n{address_1}\n{address_2}\n{city}\n{state}, {country}\n{phone}\n{email}";
             $campos[ 'US' ]   = "{name}\n{company}\n{address_1}\n{address_2}\n{city}, {state_code} {postcode}\n{country}\n{phone}\n{email}";
             $campos[ 'VN' ]   = "{name}\n{company}\n{address_1}\n{city}\n{country}\n{phone}\n{email}";	            
-        }	 
+        }
 
         return $campos;
 	}
 	
 	//Añade los campos en WooCommerce PDF Invoices & Packing Slips para facturas con direcciones fuera de España
 	public function apg_nif_direccion_factura_pdf( $direccion, $pedido ) {
-		if ( $pedido->order->get_billing_country() != 'ES' ) {
+        if ( $pedido->order->get_billing_country() != 'ES' ) {
 			$direccion .= "<br />" . get_post_meta( $pedido->order->get_id(), '_billing_nif', true );
-			$direccion .= "<br />" . get_post_meta( $pedido->order->get_id(), '_billing_email', true );
-			$direccion .= "<br />" . get_post_meta( $pedido->order->get_id(), '_billing_phone', true );
-		}
+        }
 
 		return $direccion;
 	}

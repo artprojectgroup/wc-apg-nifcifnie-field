@@ -9,11 +9,11 @@ Requires at least: 3.8
 
 Tested up to: 5.9
 
-Stable tag: 1.7
+Stable tag: 1.7.1
 
 WC requires at least: 2.4
 
-WC tested up to: 5.9
+WC tested up to: 6.0
 
 License: GPLv3
 
@@ -83,6 +83,9 @@ Si necesitas ayuda para configurar o instalar **WC - APG NIF/CIF/NIE Field**, **
 *En ningún caso **Art Project Group** proporciona ningún tipo de soporte técnico gratuito.*
 
 ## Changelog
+### 1.7.1
+* Ajuste para hacer compatible la nueva opción con WooCommerce PDF Invoices & Packing Slips.
+
 ### 1.7
 * Ahora puedes quitar los campos teléfono y correo electrónico de la dirección predeterminada.
 
