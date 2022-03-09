@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: WC - APG NIF/CIF/NIE Field
-Version: 1.7.2
+Version: 1.7.2.1
 Plugin URI: https://wordpress.org/plugins/wc-apg-nifcifnie-field/
 Description: Add to WooCommerce a NIF/CIF/NIE field.
 Author URI: https://artprojectgroup.es/
@@ -57,7 +57,15 @@ if ( is_plugin_active( 'woocommerce/woocommerce.php' ) || is_network_only_plugin
 
 		//Registra las opciones
 		public function apg_nif_registra_opciones() {
-			register_setting( 'apg_nif_settings_group', 'apg_nif_settings' );
+            //Comprueba si existe la librería SOAP
+            $apg_nif_settings = get_option( 'apg_nif_settings' );
+            if ( isset( $apg_nif_settings[ 'validacion_vies' ] ) && $apg_nif_settings[ 'validacion_vies' ] == "1" && ! class_exists( 'Soapclient' ) ) {
+                add_action( 'admin_notices', 'apg_nif_requiere_soap' );
+                $apg_nif_settings[ 'validacion_vies' ] = 0;
+                update_option( 'apg_nif_settings', $apg_nif_settings );
+            }
+
+            register_setting( 'apg_nif_settings_group', 'apg_nif_settings' );
 			
 			//Carga funciones externas exclusivas del Panel de Administración
 			include_once 'includes/clases/admin/pedidos.php';
@@ -80,19 +88,15 @@ if ( is_plugin_active( 'woocommerce/woocommerce.php' ) || is_network_only_plugin
 function apg_nif_requiere_wc() {
 	global $apg_nif;
 		
-	echo '<div class="error fade" id="message"><h3>' . $apg_nif['plugin'] . '</h3><h4>' . __( 'This plugin requires WooCommerce active to run!', 'wc-apg-nifcifnie-field' ) . '</h4></div>';
+	echo '<div class="notice notice-error is-dismissible" id="wc-apg-nifcifnie-field"><h3>' . $apg_nif['plugin'] . '</h3><h4>' . __( 'This plugin requires WooCommerce active to run!', 'wc-apg-nifcifnie-field' ) . '</h4></div>';
 	deactivate_plugins( DIRECCION_apg_nif );
 }
 
-//Muestra el mensaje de requerimiento de SOAP y desactiva el plugin
+//Muestra el mensaje de requerimiento de SOAP
 function apg_nif_requiere_soap() {
 	global $apg_nif;
 		
-	echo '<div class="error fade" id="message"><h3>' . $apg_nif['plugin'] . '</h3><h4>' . __( 'This plugin requires the <a href="http://php.net/manual/en/class.soapclient.php">SoapClient</a> PHP class active to run!', 'wc-apg-nifcifnie-field' ) . '</h4></div>';
-}
-$apg_nif_settings = get_option( 'apg_nif_settings' );
-if ( isset( $apg_nif_settings['validacion_vies'] ) && $apg_nif_settings['validacion_vies'] == "1" && ! class_exists( 'Soapclient' ) ) {
-	add_action( 'admin_notices', 'apg_nif_requiere_soap' );
+	echo '<div class="notice notice-error is-dismissible" id="wc-apg-nifcifnie-field"><h3>' . $apg_nif['plugin'] . '</h3><h4>' . __( 'This plugin requires the <a href="http://php.net/manual/en/class.soapclient.php">SoapClient</a> PHP class active to run!', 'wc-apg-nifcifnie-field' ) . '</h4></div>';
 }
 
 //Eliminamos todo rastro del plugin al desinstalarlo

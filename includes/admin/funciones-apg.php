@@ -57,15 +57,15 @@ add_filter( "plugin_action_links_$plugin", 'apg_nif_enlace_de_ajustes' );
 function apg_nif_plugin( $nombre ) {
 	global $apg_nif;
 
-	$respuesta	= get_transient( 'apg_sms_plugin' );
+	$respuesta	= get_transient( 'apg_nif_plugin' );
 	if ( false === $respuesta ) {
 		$respuesta = wp_remote_get( 'https://api.wordpress.org/plugins/info/1.2/?action=plugin_information&request[slug]=' . $nombre  );
-		set_transient( 'apg_sms_plugin', $respuesta, 24 * HOUR_IN_SECONDS );
+		set_transient( 'apg_nif_plugin', $respuesta, 24 * HOUR_IN_SECONDS );
 	}
-	if ( !is_wp_error( $respuesta ) ) {
+	if ( ! is_wp_error( $respuesta ) ) {
 		$plugin = json_decode( wp_remote_retrieve_body( $respuesta ) );
 	} else {
-	   return '<a title="' . sprintf( __( 'Please, rate %s:', 'woocommerce-apg-sms-notifications' ), $apg_nif[ 'plugin' ] ) . '" href="' . $apg_nif[ 'puntuacion' ] . '?rate=5#postform" class="estrellas">' . __( 'Unknown rating', 'woocommerce-apg-sms-notifications' ) . '</a>';
+	   return '<a title="' . sprintf( __( 'Please, rate %s:', 'wc-apg-nifcifnie-field' ), $apg_nif[ 'plugin' ] ) . '" href="' . $apg_nif[ 'puntuacion' ] . '?rate=5#postform" class="estrellas">' . __( 'Unknown rating', 'wc-apg-nifcifnie-field' ) . '</a>';
 	}
 
     $rating = [
@@ -78,7 +78,7 @@ function apg_nif_plugin( $nombre ) {
 	$estrellas = ob_get_contents();
 	ob_end_clean();
 
-	return '<a title="' . sprintf( __( 'Please, rate %s:', 'woocommerce-apg-sms-notifications' ), $apg_nif[ 'plugin' ] ) . '" href="' . $apg_nif[ 'puntuacion' ] . '?rate=5#postform" class="estrellas">' . $estrellas . '</a>';
+	return '<a title="' . sprintf( __( 'Please, rate %s:', 'wc-apg-nifcifnie-field' ), $apg_nif[ 'plugin' ] ) . '" href="' . $apg_nif[ 'puntuacion' ] . '?rate=5#postform" class="estrellas">' . $estrellas . '</a>';
 }
 
 //Hoja de estilo
