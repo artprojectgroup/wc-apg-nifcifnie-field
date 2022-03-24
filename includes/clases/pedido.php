@@ -334,43 +334,45 @@ class APG_Campo_NIF_en_Pedido {
             'EL'    => 'GR',
         ];
         
-		if ( isset( $_POST[ 'billing_nif' ] ) &&  $_POST[ 'billing_nif' ] ) {
-            //Separa el país del VIES
-            $pais	= strtoupper( substr( $_POST[ 'billing_nif' ], 0, 2 ) );
-            if ( ! empty( $pais ) && isset( $iso_vies[ $pais ] ) ) { //Hack para Irlanda y Grecia
-                $pais   = $iso_vies[ $pais ];
-            }
-			if ( $pais == $_POST[ 'billing_country' ] ) { //El VIES incluye el prefijo
-                $nif	= substr( $_POST[ 'billing_nif' ], 2 );
-			} else {
-                $pais	= $_POST[ 'billing_country' ];
-                $nif	= $_POST[ 'billing_nif' ];
-            }
-            if ( array_search( $pais, $iso_vies ) ) { //Hack para Irlanda y Grecia
-                $pais   = array_search( $pais, $iso_vies );
-            }
-            
-            //Comprueba el VIES
-            $validacion = new SoapClient( "https://ec.europa.eu/taxation_customs/vies/checkVatService.wsdl" );
+        if ( $_POST[ 'billing_country' ] != WC()->countries->get_base_country() ) { //Sólo si el país es distinto al de la tienda
+            if ( isset( $_POST[ 'billing_nif' ] ) &&  $_POST[ 'billing_nif' ] ) {
+                //Separa el país del VIES
+                $pais	= strtoupper( substr( $_POST[ 'billing_nif' ], 0, 2 ) );
+                if ( ! empty( $pais ) && isset( $iso_vies[ $pais ] ) ) { //Hack para Irlanda y Grecia
+                    $pais   = $iso_vies[ $pais ];
+                }
+                if ( $pais == $_POST[ 'billing_country' ] ) { //El VIES incluye el prefijo
+                    $nif	= substr( $_POST[ 'billing_nif' ], 2 );
+                } else {
+                    $pais	= $_POST[ 'billing_country' ];
+                    $nif	= $_POST[ 'billing_nif' ];
+                }
+                if ( array_search( $pais, $iso_vies ) ) { //Hack para Irlanda y Grecia
+                    $pais   = array_search( $pais, $iso_vies );
+                }
 
-            if ( $validacion ) {
-                $parametros = [
-                    'countryCode'   => $pais, 
-                    'vatNumber'     => $nif
-                ];
-                try {
-                    $respuesta = $validacion->checkVat( $parametros );
-                    $valido = ( $respuesta->valid == true ) ? true : false;
-                } catch( SoapFault $e ) {
+                //Comprueba el VIES
+                $validacion = new SoapClient( "https://ec.europa.eu/taxation_customs/vies/checkVatService.wsdl" );
+
+                if ( $validacion ) {
+                    $parametros = [
+                        'countryCode'   => $pais, 
+                        'vatNumber'     => $nif
+                    ];
+                    try {
+                        $respuesta = $validacion->checkVat( $parametros );
+                        $valido = ( $respuesta->valid == true ) ? true : false;
+                    } catch( SoapFault $e ) {
+                        $valido = false;
+                    }
+                } else {
                     $valido = false;
                 }
-            } else {
-                $valido = false;
-            }
-            if ( $valido && $_POST[ 'billing_country' ] != WC()->countries->get_base_country() ) {
-                $_SESSION[ 'apg_nif' ] = true;
-            }
-		}
+                if ( $valido ) {
+                    $_SESSION[ 'apg_nif' ] = true;
+                }
+            }            
+        }
 		
 		echo $valido;
 	}
