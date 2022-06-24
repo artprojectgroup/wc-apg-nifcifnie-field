@@ -19,6 +19,7 @@ jQuery( function( $ ) {
             url: apg_nif_ajax.url,
             data: datos,
             success: function( response ) {
+                console.log( "WC - APG NIF/CIF/NIE Field: " + response );
                 if ( response == 0 && $( '#error_vies' ).length == 0 ) {
                     $( '#billing_nif_field' ).append( '<div id="error_vies"><strong>' + apg_nif_ajax.error + '</strong></div>' );
                 } else if ( response != 0 && $( '#error_vies' ).length ) {
@@ -27,5 +28,5 @@ jQuery( function( $ ) {
                 $( 'body' ).trigger( 'update_checkout' );
             },
         } );
-	};
+	}
 } );

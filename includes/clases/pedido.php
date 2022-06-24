@@ -327,10 +327,6 @@ class APG_Campo_NIF_en_Pedido {
 	
 	//Valida el campo VIES
 	public function apg_nif_valida_VIES() {
-        if ( ! is_checkout() ) {
-            return;
-        }
-        
 		$_SESSION[ 'apg_nif' ]	= false;
 		$valido					= true;
         $iso_vies               = [ //Hack para Irlanda y Grecia
