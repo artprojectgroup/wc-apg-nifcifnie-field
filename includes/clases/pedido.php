@@ -327,6 +327,10 @@ class APG_Campo_NIF_en_Pedido {
 	
 	//Valida el campo VIES
 	public function apg_nif_valida_VIES() {
+        if ( is_admin() && ! wp_doing_ajax() ) {
+            return;
+        }
+        
 		$_SESSION[ 'apg_nif' ]	= false;
 		$valido					= true;
         $iso_vies               = [ //Hack para Irlanda y Grecia
@@ -334,7 +338,7 @@ class APG_Campo_NIF_en_Pedido {
             'EL'    => 'GR',
         ];
         
-        if ( $_POST[ 'billing_country' ] != WC()->countries->get_base_country() ) { //Sólo si el país es distinto al de la tienda
+        if ( isset( $_POST[ 'billing_country' ] ) && $_POST[ 'billing_country' ] != WC()->countries->get_base_country() ) { //Sólo si el país es distinto al de la tienda
             if ( isset( $_POST[ 'billing_nif' ] ) &&  $_POST[ 'billing_nif' ] ) {
                 //Separa el país del VIES
                 $pais	= strtoupper( substr( $_POST[ 'billing_nif' ], 0, 2 ) );

@@ -8,6 +8,7 @@ defined( 'ABSPATH' ) || exit;
 class APG_Campo_NIF_en_Admin_Pedidos {
 	//Inicializa las acciones de Pedido
 	public function __construct() {
+        add_filter( 'woocommerce_shop_order_search_fields', [ $this, 'apg_nif_anade_campo_nif_busqueda' ] );
 		add_filter( 'woocommerce_order_formatted_billing_address', [ $this, 'apg_nif_anade_campo_nif_direccion_facturacion' ], 1, 2 );
 		add_filter( 'woocommerce_order_formatted_shipping_address', [ $this, 'apg_nif_anade_campo_nif_direccion_envio' ], 1, 2 );
 		add_filter( 'woocommerce_admin_billing_fields', [ $this, 'apg_nif_anade_campo_nif_editar_direccion_pedido' ] );
@@ -20,6 +21,14 @@ class APG_Campo_NIF_en_Admin_Pedidos {
 		add_action( 'woocommerce_admin_order_data_after_billing_address', [ $this, 'apg_nif_carga_hoja_de_estilo_editar_direccion_pedido' ] );
 	}
 	
+    //Añade el NIF en las búsquedas de pedidos
+    public function apg_nif_anade_campo_nif_busqueda( $search_fields ) { 
+        $search_fields[]    = '_billing_nif';
+        $search_fields[]    = '_shipping_nif';
+        
+        return $search_fields;
+    }
+
 	//Nueva función para hacer compatible el código con WooCommerce 2.1
 	public function apg_nif_dame_campo_personalizado( $campo, $pedido ) {
 		$valor = get_post_meta( $pedido, $campo, false );
