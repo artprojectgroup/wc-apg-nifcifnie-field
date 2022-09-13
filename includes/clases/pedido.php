@@ -265,7 +265,7 @@ class APG_Campo_NIF_en_Pedido {
 				$eu_valido = (bool) preg_match( '/^(PT)(\d{9})$/', $vat_number ); 
 				break; 
 			case 'RO': //RUMANÍA 
-				$eu_valido = (bool) preg_match( '/^(RO)([1-9]\d{1,10})$/', $vat_number ); 
+				$eu_valido = (bool) preg_match( '/^(RO)([1-9]\d{2,10})$/', $vat_number ); 
 				break; 
 			case 'RS': //SERBIA 
 				$eu_valido = (bool) preg_match( '/^(RS)(\d{9})$/', $vat_number ); 
@@ -308,8 +308,11 @@ class APG_Campo_NIF_en_Pedido {
 		}
 	 
 		if ( ! $facturacion || ! $envio ) {
-			if ( ( ! $facturacion && ! empty( $_POST[ 'billing_nif' ] ) ) || ( ! $envio && ! empty( $_POST[ 'shipping_nif' ] ) ) ) {
-				wc_add_notice( $this->mensaje_error, 'error' );
+			if ( ! $facturacion && ! empty( $_POST[ 'billing_nif' ] ) ) {
+				wc_add_notice( $this->mensaje_error . ' - ' . __( 'Billing details', 'woocommerce' ), 'error' );
+            } 
+            if ( ! $envio && ! empty( $_POST[ 'shipping_nif' ] ) ) {
+				wc_add_notice( $this->mensaje_error . ' - ' . __( 'Shipping details', 'woocommerce' ), 'error' );
 			}
 		}
 	}
