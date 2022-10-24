@@ -18,7 +18,7 @@
 			<p>
 				<?php _e( 'Follow us:', 'wc-apg-nifcifnie-field' ); ?>
 			</p>
-			<p><a href="https://www.facebook.com/artprojectgroup" title="<?php _e( 'Follow us on ', 'wc-apg-nifcifnie-field' ); ?>Facebook" target="_blank"><span class="genericon genericon-facebook-alt"></span></a> <a href="https://twitter.com/artprojectgroup" title="<?php _e( 'Follow us on ', 'wc-apg-nifcifnie-field' ); ?>Twitter" target="_blank"><span class="genericon genericon-twitter"></span></a> <a href="https://plus.google.com/+ArtProjectGroupES" title="<?php _e( 'Follow us on ', 'wc-apg-nifcifnie-field' ); ?>Google+" target="_blank"><span class="genericon genericon-googleplus-alt"></span></a> <a href="http://es.linkedin.com/in/artprojectgroup" title="<?php _e( 'Follow us on ', 'wc-apg-nifcifnie-field' ); ?>LinkedIn" target="_blank"><span class="genericon genericon-linkedin"></span></a>
+			<p><a href="https://www.facebook.com/artprojectgroup" title="<?php _e( 'Follow us on ', 'wc-apg-nifcifnie-field' ); ?>Facebook" target="_blank"><span class="genericon genericon-facebook-alt"></span></a> <a href="https://twitter.com/artprojectgroup" title="<?php _e( 'Follow us on ', 'wc-apg-nifcifnie-field' ); ?>Twitter" target="_blank"><span class="genericon genericon-twitter"></span></a> <a href="http://es.linkedin.com/in/artprojectgroup" title="<?php _e( 'Follow us on ', 'wc-apg-nifcifnie-field' ); ?>LinkedIn" target="_blank"><span class="genericon genericon-linkedin"></span></a>
 			</p>
 		</div>
 		<div class="columna">

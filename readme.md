@@ -9,11 +9,11 @@ Requires at least: 3.8
 
 Tested up to: 6.1
 
-Stable tag: 1.7.3.1
+Stable tag: 1.7.4
 
 WC requires at least: 2.4
 
-WC tested up to: 6.9
+WC tested up to: 7.1
 
 License: GPLv3
 
@@ -83,6 +83,10 @@ Si necesitas ayuda para configurar o instalar **WC - APG NIF/CIF/NIE Field**, **
 *En ningún caso **Art Project Group** proporciona ningún tipo de soporte técnico gratuito.*
 
 ## Changelog
+### 1.7.4
+* Valida el formulario de envío sólo si se ha activado.
+* Valida el número VIES sólo para los países soportados.
+
 ### 1.7.3.1
 * Indica el formulario correspondiente en la validación del campo.
 

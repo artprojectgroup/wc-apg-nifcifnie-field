@@ -1,4 +1,6 @@
 <?php
+//Igual no deberías poder abrirme
+defined( 'ABSPATH' ) || exit;
 
 //Definimos las variables
 $apg_nif = [	
