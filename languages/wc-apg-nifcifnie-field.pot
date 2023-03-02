@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WooCommerce - APG NIF/CIF/NIE field\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-05-15 08:27+0000\n"
+"POT-Creation-Date: 2023-03-02 08:47+0000\n"
 "POT-Revision-Date: Wed Aug 10 2016 13:39:45 GMT+0200 (CEST)\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: \n"
@@ -23,183 +23,276 @@ msgstr ""
 "esc_html_x:1,2c;comments_number_link:2,3;t:1;st:1;trans:1;transChoice:1,2\n"
 "X-Generator: Loco https://localise.biz/"
 
-#: apg-nif.php:55
-msgid "APG NIF/CIF/NIE field"
-msgstr ""
-
-#: apg-nif.php:55
-msgid "NIF/CIF/NIE field"
-msgstr ""
-
-#: apg-nif.php:83
-msgid "This plugin requires WooCommerce active to run!"
-msgstr ""
-
-#: apg-nif.php:91
-msgid ""
-"This plugin requires the <a href=\"http://php.net/manual/en/class.soapclient."
-"php\">SoapClient</a> PHP class active to run!"
-msgstr ""
-
-#: includes/cuadro-informacion.php:5
-msgid "If you enjoyed and find helpful this plugin, please make a donation:"
-msgstr ""
-
-#: includes/cuadro-informacion.php:7 includes/admin/funciones-apg.php:24
-msgid "Make a donation by "
-msgstr ""
-
-#: includes/cuadro-informacion.php:19
-msgid "Follow us:"
-msgstr ""
-
-#: includes/cuadro-informacion.php:21 includes/admin/funciones-apg.php:26
-#: includes/admin/funciones-apg.php:26 includes/admin/funciones-apg.php:26
-#: includes/admin/funciones-apg.php:26
-msgid "Follow us on "
-msgstr ""
-
-#: includes/cuadro-informacion.php:26
-msgid "More plugins:"
-msgstr ""
-
-#: includes/cuadro-informacion.php:28 includes/admin/funciones-apg.php:27
-msgid "More plugins on "
-msgstr ""
-
-#: includes/cuadro-informacion.php:35
-msgid "Contact with us:"
-msgstr ""
-
-#: includes/cuadro-informacion.php:37 includes/admin/funciones-apg.php:28
-#: includes/admin/funciones-apg.php:28
-msgid "Contact with us by "
-msgstr ""
-
-#: includes/cuadro-informacion.php:42
-msgid "Documentation and Support:"
-msgstr ""
-
-#: includes/cuadro-informacion.php:44 includes/admin/funciones-apg.php:42
-msgid "Support"
-msgstr ""
-
-#: includes/cuadro-informacion.php:51 includes/admin/funciones-apg.php:88
-#, php-format
-msgid "Please, rate %s:"
-msgstr ""
-
-#: includes/formulario.php:11
-msgid "APG NIF/CIF/NIE field Options."
-msgstr ""
-
-#. Description of the plugin
-#: includes/formulario.php:15
+#: includes/formulario.php:28
 msgid ""
 "Add to WooCommerce a NIF/CIF/NIE field, validate the field before submit and "
 "let to the admin configure the billing and shipping forms."
-msgstr ""
-
-#: includes/formulario.php:25
-msgid "Field label"
-msgstr ""
-
-#: includes/formulario.php:26
-msgid "Type your own field label."
-msgstr ""
-
-#: includes/formulario.php:34
-msgid "Field placeholder"
-msgstr ""
-
-#: includes/formulario.php:35
-msgid "Type your own field placeholder."
-msgstr ""
-
-#: includes/formulario.php:43
-msgid "Require billing field?"
-msgstr ""
-
-#: includes/formulario.php:44 includes/formulario.php:53
-msgid "Check if you need to require the field."
-msgstr ""
-
-#: includes/formulario.php:52
-msgid "Require shipping field?"
-msgstr ""
-
-#: includes/formulario.php:61
-msgid "Validate field?"
-msgstr ""
-
-#: includes/formulario.php:62
-msgid "Check if you want to validate the field before submit."
-msgstr ""
-
-#: includes/formulario.php:71
-msgid "Allow VIES VAT number?"
-msgstr ""
-
-#: includes/formulario.php:72
-msgid "Check if you want to allow and validate VIES VAT number."
-msgstr ""
-
-#: includes/formulario.php:80
-msgid "VIES VAT number field label"
-msgstr ""
-
-#: includes/formulario.php:81
-msgid "Type your own VIES VAT number field label."
-msgstr ""
-
-#: includes/formulario.php:89
-msgid "VIES VAT number field placeholder"
-msgstr ""
-
-#: includes/formulario.php:90
-msgid "Type your own VIES VAT number field placeholder."
-msgstr ""
-
-#: includes/formulario.php:98
-msgid "Save Changes"
-msgstr ""
-
-#: includes/admin/funciones-apg.php:41
-msgid "Settings of "
-msgstr ""
-
-#: includes/admin/funciones-apg.php:41
-msgid "Settings"
-msgstr ""
-
-#: includes/admin/funciones-apg.php:42
-msgid "Support of "
-msgstr ""
-
-#: includes/clases/pedido.php:298
-msgid "Please enter a valid NIF/CIF/NIE."
-msgstr ""
-
-#: includes/clases/pedido.php:309
-msgid "Please enter a valid VIES VAT number."
-msgstr ""
-
-#. Name of the plugin
-msgid "WC - APG NIF/CIF/NIE Field"
 msgstr ""
 
 #. Description of the plugin
 msgid "Add to WooCommerce a NIF/CIF/NIE field."
 msgstr ""
 
-#. URI of the plugin
-msgid "https://wordpress.org/plugins/wc-apg-nifcifnie-field/"
+#: includes/formulario.php:145
+msgid "Allow EORI number?"
+msgstr ""
+
+#: includes/formulario.php:109
+msgid "Allow VIES VAT number?"
+msgstr ""
+
+#: apg-nif.php:55
+msgid "APG NIF/CIF/NIE field"
+msgstr ""
+
+#: includes/formulario.php:24
+msgid "APG NIF/CIF/NIE field Options."
 msgstr ""
 
 #. Author of the plugin
 msgid "Art Project Group"
 msgstr ""
 
+#: includes/formulario.php:220
+msgid "Check if you need to remove phone and email fields from the address."
+msgstr ""
+
+#: includes/formulario.php:82 includes/formulario.php:91
+msgid "Check if you need to require the field."
+msgstr ""
+
+#: includes/formulario.php:146
+msgid "Check if you want to allow and validate EORI number."
+msgstr ""
+
+#: includes/formulario.php:110
+msgid "Check if you want to allow and validate VIES VAT number."
+msgstr ""
+
+#: includes/formulario.php:100
+msgid "Check if you want to validate the field before submit."
+msgstr ""
+
+#: includes/cuadro-informacion.php:37 includes/admin/funciones-apg.php:36
+#: includes/admin/funciones-apg.php:36
+msgid "Contact with us by "
+msgstr ""
+
+#: includes/cuadro-informacion.php:35
+msgid "Contact with us:"
+msgstr ""
+
+#: includes/formulario.php:170
+msgid "Countries to validate EORI number"
+msgstr ""
+
+#: includes/cuadro-informacion.php:42
+msgid "Documentation and Support:"
+msgstr ""
+
+#: includes/formulario.php:65
+msgid "Enter the field priority."
+msgstr ""
+
+#: includes/formulario.php:209
+msgid "EORI number error message"
+msgstr ""
+
+#: includes/formulario.php:191
+msgid "EORI number field label"
+msgstr ""
+
+#: includes/formulario.php:200
+msgid "EORI number field placeholder"
+msgstr ""
+
+#: includes/formulario.php:56
+msgid "Error message"
+msgstr ""
+
+#: includes/formulario.php:38
+msgid "Field label"
+msgstr ""
+
+#: includes/formulario.php:47
+msgid "Field placeholder"
+msgstr ""
+
+#: includes/formulario.php:64
+msgid "Field priority"
+msgstr ""
+
+#: includes/cuadro-informacion.php:21 includes/admin/funciones-apg.php:34
+#: includes/admin/funciones-apg.php:34 includes/admin/funciones-apg.php:34
+msgid "Follow us on "
+msgstr ""
+
+#: includes/cuadro-informacion.php:19
+msgid "Follow us:"
+msgstr ""
+
 #. Author URI of the plugin
 msgid "https://artprojectgroup.es/"
+msgstr ""
+
+#. URI of the plugin
+msgid "https://wordpress.org/plugins/wc-apg-nifcifnie-field/"
+msgstr ""
+
+#: includes/cuadro-informacion.php:5
+msgid "If you enjoyed and find helpful this plugin, please make a donation:"
+msgstr ""
+
+#: includes/cuadro-informacion.php:7 includes/admin/funciones-apg.php:32
+msgid "Make a donation by "
+msgstr ""
+
+#: includes/cuadro-informacion.php:28 includes/admin/funciones-apg.php:35
+msgid "More plugins on "
+msgstr ""
+
+#: includes/cuadro-informacion.php:26
+msgid "More plugins:"
+msgstr ""
+
+#: apg-nif.php:55
+msgid "NIF/CIF/NIE field"
+msgstr ""
+
+#: includes/formulario.php:51
+msgid "NIF/CIF/NIE number"
+msgstr ""
+
+#: includes/formulario.php:195 includes/formulario.php:204
+#: includes/formulario.php:204
+msgid "NIF/CIF/NIE/EORI number"
+msgstr ""
+
+#: includes/formulario.php:122 includes/formulario.php:131
+#: includes/formulario.php:131
+msgid "NIF/CIF/NIE/VAT number"
+msgstr ""
+
+#: includes/formulario.php:213
+msgid "Please enter a valid EORI number."
+msgstr ""
+
+#: includes/formulario.php:60
+msgid "Please enter a valid NIF/CIF/NIE."
+msgstr ""
+
+#: includes/formulario.php:140
+msgid "Please enter a valid VIES VAT number."
+msgstr ""
+
+#: includes/cuadro-informacion.php:51 includes/admin/funciones-apg.php:73
+#: includes/admin/funciones-apg.php:86
+#, php-format
+msgid "Please, rate %s:"
+msgstr ""
+
+#: includes/formulario.php:219
+msgid "Remove extra fields"
+msgstr ""
+
+#: includes/formulario.php:81
+msgid "Require billing field?"
+msgstr ""
+
+#: includes/formulario.php:90
+msgid "Require shipping field?"
+msgstr ""
+
+#: includes/formulario.php:171
+msgid "Select the list of countries where the EORI number must be validated."
+msgstr ""
+
+#: includes/admin/funciones-apg.php:49
+msgid "Settings"
+msgstr ""
+
+#: includes/admin/funciones-apg.php:49
+msgid "Settings of "
+msgstr ""
+
+#: includes/cuadro-informacion.php:44 includes/admin/funciones-apg.php:50
+msgid "Support"
+msgstr ""
+
+#: includes/admin/funciones-apg.php:50
+msgid "Support of "
+msgstr ""
+
+#: apg-nif.php:99
+msgid ""
+"This plugin requires the <a href=\"http://php.net/manual/en/class.soapclient."
+"php\">SoapClient</a> PHP class active to run!"
+msgstr ""
+
+#: apg-nif.php:91
+msgid "This plugin requires WooCommerce active to run!"
+msgstr ""
+
+#: includes/formulario.php:210
+msgid "Type your own EORI number error message."
+msgstr ""
+
+#: includes/formulario.php:192
+msgid "Type your own EORI number field label."
+msgstr ""
+
+#: includes/formulario.php:201
+msgid "Type your own EORI number field placeholder."
+msgstr ""
+
+#: includes/formulario.php:57
+msgid "Type your own error message."
+msgstr ""
+
+#: includes/formulario.php:39
+msgid "Type your own field label."
+msgstr ""
+
+#: includes/formulario.php:48
+msgid "Type your own field placeholder."
+msgstr ""
+
+#: includes/formulario.php:137
+msgid "Type your own VIES VAT number error message."
+msgstr ""
+
+#: includes/formulario.php:119
+msgid "Type your own VIES VAT number field label."
+msgstr ""
+
+#: includes/formulario.php:128
+msgid "Type your own VIES VAT number field placeholder."
+msgstr ""
+
+#: includes/admin/funciones-apg.php:73
+msgid "Unknown rating"
+msgstr ""
+
+#: includes/formulario.php:99
+msgid "Validate field?"
+msgstr ""
+
+#: includes/formulario.php:136
+msgid "VIES VAT number error message"
+msgstr ""
+
+#: includes/formulario.php:118
+msgid "VIES VAT number field label"
+msgstr ""
+
+#: includes/formulario.php:127
+msgid "VIES VAT number field placeholder"
+msgstr ""
+
+#. Name of the plugin
+msgid "WC - APG NIF/CIF/NIE Field"
+msgstr ""
+
+#: includes/formulario.php:69
+msgid "Your current values are:"
 msgstr ""

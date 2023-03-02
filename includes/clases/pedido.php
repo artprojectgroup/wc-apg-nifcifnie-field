@@ -9,12 +9,14 @@ class APG_Campo_NIF_en_Pedido {
     public  $nombre_nif,
             $placeholder,
             $mensaje_error,
-            $mensaje_vies;
+            $priority,
+            $mensaje_vies, 
+            $mensaje_eori;
 
     //Inicializa las acciones de Pedido
     public function __construct() {
         global $apg_nif_settings;
-
+        
         add_filter( 'woocommerce_default_address_fields', [ $this, 'apg_nif_campos_de_direccion' ] );
         add_filter( 'woocommerce_billing_fields', [ $this, 'apg_nif_formulario_de_facturacion' ] );
         add_filter( 'woocommerce_shipping_fields', [ $this, 'apg_nif_formulario_de_envio' ] );
@@ -30,6 +32,13 @@ class APG_Campo_NIF_en_Pedido {
             add_action( 'wp_ajax_apg_nif_valida_VIES', [ $this, 'apg_nif_valida_VIES' ] );
             add_action( 'init', [ $this, 'apg_nif_quita_iva' ] );
         }
+        //Añade el número EORI
+        if ( isset( $apg_nif_settings[ 'validacion_eori' ] ) && $apg_nif_settings[ 'validacion_eori' ] == "1" ) {
+            add_action( 'wp_enqueue_scripts', [ $this, 'apg_nif_carga_ajax' ] );
+            add_action( 'wp_ajax_nopriv_apg_nif_valida_EORI', [ $this, 'apg_nif_valida_EORI' ] );
+            add_action( 'wp_ajax_apg_nif_valida_EORI', [ $this, 'apg_nif_valida_EORI' ] );
+            add_action( 'woocommerce_checkout_process', [ $this, 'apg_nif_validacion_de_campo' ] );
+        }
     }
 
     //Añade las traducciones
@@ -39,12 +48,19 @@ class APG_Campo_NIF_en_Pedido {
         $this->nombre_nif       = __( ( isset( $apg_nif_settings[ 'etiqueta' ] ) ? esc_attr( $apg_nif_settings[ 'etiqueta' ] ) : 'NIF/CIF/NIE' ), 'wc-apg-nifcifnie-field' ); //Nombre original del campo
         $this->placeholder      = _x( ( isset( $apg_nif_settings[ 'placeholder' ] ) ? esc_attr( $apg_nif_settings[ 'placeholder' ] ) : 'NIF/CIF/NIE number' ), 'placeholder', 'wc-apg-nifcifnie-field' ); //Nombre original del placeholder
         $this->mensaje_error    = __( ( isset( $apg_nif_settings[ 'error' ] ) ? esc_attr( $apg_nif_settings[ 'error' ] ) : 'Please enter a valid NIF/CIF/NIE.' ), 'wc-apg-nifcifnie-field' ); //Mensaje de error
-
+        $this->priority         = ( isset( $apg_nif_settings[ 'prioridad' ] ) ? esc_attr( $apg_nif_settings[ 'prioridad' ] ) : 31 ); //Prioridad del campo
+                
         //Número VIES
         if ( isset( $apg_nif_settings[ 'validacion_vies' ] ) && $apg_nif_settings[ 'validacion_vies' ] == "1" ) {
             $this->nombre_nif   = __( ( isset( $apg_nif_settings[ 'etiqueta_vies' ] ) ? esc_attr( $apg_nif_settings[ 'etiqueta_vies' ] ) : 'NIF/CIF/NIE/VAT number' ), 'wc-apg-nifcifnie-field' ); //Nombre modificado del campo
             $this->placeholder  = _x( ( isset( $apg_nif_settings[ 'placeholder_vies' ] ) ? esc_attr( $apg_nif_settings[ 'placeholder_vies' ] ) : 'NIF/CIF/NIE/VAT number' ), 'placeholder', 'wc-apg-nifcifnie-field' ); //Nombre modificado del placeholder
             $this->mensaje_vies = __( ( isset( $apg_nif_settings[ 'error_vies' ] ) ? esc_attr( $apg_nif_settings[ 'error_vies' ] ) : 'Please enter a valid VIES VAT number.' ), 'wc-apg-nifcifnie-field' ); //Mensaje de error
+        }
+        //Número EORI
+        if ( isset( $apg_nif_settings[ 'validacion_eori' ] ) && $apg_nif_settings[ 'validacion_eori' ] == "1" ) {
+            $this->nombre_nif   = __( ( isset( $apg_nif_settings[ 'etiqueta_eori' ] ) ? esc_attr( $apg_nif_settings[ 'etiqueta_eori' ] ) : 'NIF/CIF/NIE/EORI number' ), 'wc-apg-nifcifnie-field' ); //Nombre modificado del campo
+            $this->placeholder  = _x( ( isset( $apg_nif_settings[ 'placeholder_eori' ] ) ? esc_attr( $apg_nif_settings[ 'placeholder_eori' ] ) : 'NIF/CIF/NIE/EORI number' ), 'placeholder', 'wc-apg-nifcifnie-field' ); //Nombre modificado del placeholder
+            $this->mensaje_eori = __( ( isset( $apg_nif_settings[ 'error_eori' ] ) ? esc_attr( $apg_nif_settings[ 'error_eori' ] ) : 'Please enter a valid EORI number.' ), 'wc-apg-nifcifnie-field' ); //Mensaje de error
         }
     }
 
@@ -53,8 +69,9 @@ class APG_Campo_NIF_en_Pedido {
         $campos[ 'nif' ]    = [
             'label'         => $this->nombre_nif,
             'placeholder'   => $this->placeholder,
-            'priority'      => $campos[ 'company' ][ 'priority' ] + 1,
+            'priority'      => $this->priority,
         ];
+        //Añade el correo electónico y el teléfono
         $campos[ 'email' ]  = [
             'label'         => __( 'Email Address', 'woocommerce' ),
             'required'      => true,
@@ -63,6 +80,7 @@ class APG_Campo_NIF_en_Pedido {
                 'email'
             ],
             'autocomplete'  => 'email username',
+            'priority'      => 110,
         ];
         $campos[ 'phone' ]  = [
             'label'         => __( 'Phone', 'woocommerce' ),
@@ -72,8 +90,10 @@ class APG_Campo_NIF_en_Pedido {
                 'phone'
             ],
             'autocomplete'  => 'tel',
+            'priority'      => 100,
         ];
 
+        //Fuerza la actualización del checkout con el código postal y la provincia/estado
         $campos[ 'postcode' ][ 'class' ][]  = 'update_totals_on_change';
         $campos[ 'state' ][ 'class' ][]     = 'update_totals_on_change';
 
@@ -178,7 +198,7 @@ class APG_Campo_NIF_en_Pedido {
             case 'BG': //BULGARIA 
                 $eu_valido  = ( bool )preg_match( '/(BG)(\d{9,10})$/', $vat_number );
                 break;
-            case 'CHE': //SUIZA 
+            case 'CH': //SUIZA 
                 $eu_valido  = ( bool )preg_match( '/(CHE)(\d{9})(MWST)?$/', $vat_number );
                 break;
             case 'CY': //CHIPRE 
@@ -288,6 +308,8 @@ class APG_Campo_NIF_en_Pedido {
 
     //Valida el campo NIF/CIF/NIE
     public function apg_nif_validacion_de_campo() {
+        global $apg_nif_settings;
+        
         $facturacion    = true;
         $envio          = true;
         $pais           = strtoupper( substr( $_POST[ 'billing_nif' ], 0, 2 ) );
@@ -306,33 +328,69 @@ class APG_Campo_NIF_en_Pedido {
         if ( $_POST[ 'shipping_country' ] == "ES" && isset( $_POST[ 'shipping_nif' ] ) ) {
             $envio          = $this->apg_nif_validacion( strtoupper( $_POST[ 'shipping_nif' ] ) );
         }
-
+        
+        //Muestra el mensaje de error
         if ( ! $facturacion || ! $envio ) {
+            //Mensaje de error para el formulario de facturación
             if ( ! $facturacion && ! empty( $_POST[ 'billing_nif' ] ) ) {
-                wc_add_notice( $this->mensaje_error . ' - ' . __( 'Billing details', 'woocommerce' ), 'error' );
+                wc_add_notice( $this->mensaje_error, 'error' );
             }
+            //Mensaje de error para el formulario de envío
             if ( ! $envio && ! empty( $_POST[ 'shipping_nif' ] ) && $_POST[ 'ship_to_different_address' ] ) {
                 wc_add_notice( $this->mensaje_error . ' - ' . __( 'Shipping details', 'woocommerce' ), 'error' );
             }
+        }
+        
+        //Muestra el mensaje de error EORI
+        if ( in_array( $_POST[ 'billing_country' ], $apg_nif_settings[ 'eori_paises' ] ) && ! $_SESSION[ 'apg_eori' ] ) {
+            wc_add_notice( $this->mensaje_eori, 'error' );
+        }
+        
+        //Muestra el mensaje de error personalizado
+        if ( apply_filters( "apg_nif_display_error_message", false, $_POST[ 'billing_nif' ], $_POST[ 'billing_country' ] ) ) {
+            wc_add_notice( apply_filters( "apg_nif_error_message", $this->mensaje_error, $_POST[ 'billing_nif' ], $_POST[ 'billing_country' ] ), 'error' );
         }
     }
 
     //Carga el JavaScript necesario
     public function apg_nif_carga_ajax() {
+        global $apg_nif_settings;
+        
         if ( is_checkout() ) {
-            wp_enqueue_script( 'apg_nif_vies', plugin_dir_url( DIRECCION_apg_nif ) . '/assets/js/valida-vies.js', [ 'jquery' ] );
-            wp_localize_script( 'apg_nif_vies', 'apg_nif_ajax', [
-                'url'   => admin_url( 'admin-ajax.php' ),
-                'error' => $this->mensaje_vies,
-            ] );
+            //Añade el número VIES
+            if ( isset( $apg_nif_settings[ 'validacion_vies' ] ) && $apg_nif_settings[ 'validacion_vies' ] == "1" ) {
+                wp_enqueue_script( 'apg_nif_vies', plugin_dir_url( DIRECCION_apg_nif ) . '/assets/js/valida-vies.js', [ 'jquery' ] );
+                wp_localize_script( 'apg_nif_vies', 'apg_nif_ajax', [
+                    'url'   => admin_url( 'admin-ajax.php' ),
+                    'error' => $this->mensaje_vies,
+                ] );
+            }
+            //Añade el número EORI
+            if ( isset( $apg_nif_settings[ 'validacion_eori' ] ) && $apg_nif_settings[ 'validacion_eori' ] == "1" ) {
+                wp_enqueue_script( 'apg_nif_eori', plugin_dir_url( DIRECCION_apg_nif ) . '/assets/js/valida-eori.js', [ 'jquery' ] );
+                wp_localize_script( 'apg_nif_eori', 'apg_nif_eori_ajax', [
+                    'url'   => admin_url( 'admin-ajax.php' ),
+                    'error' => $this->mensaje_eori,
+                    'lista' => $apg_nif_settings[ 'eori_paises' ],
+                ] );
+            }
         }
     }
 
     //Valida el campo VIES
     public function apg_nif_valida_VIES() {
-        if ( is_admin() && ! wp_doing_ajax() ) {
+        global $apg_nif_settings;
+
+        if ( is_admin() && ! wp_doing_ajax() ) { //No funciona en el panel de administración
             return;
         }
+        
+        if ( isset( $_POST[ 'billing_country' ] ) && isset( $apg_nif_settings[ 'eori_paises' ] ) && in_array( $_POST[ 'billing_country' ], $apg_nif_settings[ 'eori_paises' ] ) ) { //Sólo si no está incluido en el listado de países EORI
+            echo true;
+            
+            return;
+        }
+
 
         $_SESSION[ 'apg_nif' ]  = false;
         $valido                 = true;
@@ -369,10 +427,9 @@ class APG_Campo_NIF_en_Pedido {
             "SE",
             "SI",
             "SK",
-            "XI",
         ];
 
-        if ( isset( $_POST[ 'billing_country' ] ) && $_POST[ 'billing_country' ] != WC()->countries->get_base_country() && in_array( $_POST[ 'billing_country' ], $paises_validos )  ) { //Sólo si el país es distinto al de la tienda y pertenece al listado de países válidos
+        if ( isset( $_POST[ 'billing_country' ] ) && $_POST[ 'billing_country' ] != WC()->countries->get_base_country() && in_array( $_POST[ 'billing_country' ], $paises_validos ) ) { //Sólo si el país es distinto al de la tienda y pertenece al listado de países válidos
             if ( isset( $_POST[ 'billing_nif' ] ) && $_POST[ 'billing_nif' ] ) {
                 //Separa el país del VIES
                 $pais = strtoupper( substr( $_POST[ 'billing_nif' ], 0, 2 ) );
@@ -411,8 +468,10 @@ class APG_Campo_NIF_en_Pedido {
                 }
             }
         }
-
+        
         echo $valido;
+        
+        return;
     }
 
     //Quita impuestos a VIES válido
@@ -426,5 +485,136 @@ class APG_Campo_NIF_en_Pedido {
             }
         }
     }
+
+    //Valida el campo EORI
+    public function apg_nif_valida_EORI() {
+        global $apg_nif_settings;
+        
+        //No funciona en el panel de administración
+        if ( is_admin() && ! wp_doing_ajax() ) {
+            return;
+        }
+
+        //Variables
+        $_SESSION[ 'apg_eori' ] = false;
+        $valido                 = false;
+        //Hack para Grecia
+        $iso_vies               = [
+            'EL' => 'GR',
+        ];
+        
+        //Añade el código del país al EORI en caso de que no lo incluya
+        if ( isset( $_POST[ 'billing_country' ] ) && $_POST[ 'billing_country' ] != WC()->countries->get_base_country() ) {
+            if ( isset( $_POST[ 'billing_nif' ] ) && $_POST[ 'billing_nif' ] ) {
+                //Comprueba el país
+                $pais = $_POST[ 'billing_country' ];
+                if ( ! empty( $pais ) && isset( $iso_vies[ $pais ] ) ) { //Hack para Irlanda y Grecia
+                    $pais   = $iso_vies[ $pais ];
+                }
+                if ( array_search( $pais, $iso_vies ) ) {
+                    $pais = array_search( $pais, $iso_vies );
+                }
+                
+                $nif    = ( ! $pais == $_POST[ 'billing_country' ] ) ? $pais . $_POST[ 'billing_nif' ] : $_POST[ 'billing_nif' ];
+            }
+        }
+        
+        //Valida el EORI
+        if ( isset( $_POST[ 'billing_country' ] ) && $_POST[ 'billing_country' ] != WC()->countries->get_base_country() && in_array( $_POST[ 'billing_country' ], $apg_nif_settings[ 'eori_paises' ] ) ) { //Sólo si el país es distinto al de la tienda y pertenece al listado de países de validación EORI
+            //Listado de países para validar en https://vatapp.net
+            $paises = [
+                'NO', 
+                'CH', 
+                'TH',
+            ];
+            //Reino Unido
+            if ( $_POST[ 'billing_country' ] == 'GB' && isset( $_POST[ 'billing_nif' ] ) && $_POST[ 'billing_nif' ] && strpos( $_POST[ 'billing_nif' ], 'XI' ) === false ) {
+                $argumentos[ 'headers' ]	= [
+                    'Content-Type'				=> 'application/json',
+                ];
+                $argumentos[ 'body' ]		= json_encode( [ 
+                    'eoris' => [ $_POST[ 'billing_nif' ] ] 
+                ] );
+
+                $respuesta					= wp_remote_post( "https://api.service.hmrc.gov.uk/customs/eori/lookup/check-multiple-eori", $argumentos );
+                $eori                       = json_decode( wp_remote_retrieve_body( $respuesta ) );
+                $valido                     = ( isset( $eori[ 0 ]->valid ) && $eori[ 0 ]->valid == true ) ? true : false; 
+            }
+            //Noruega, Suiza, Tailandia o Irlanda del Norte
+            else if ( ( in_array( $_POST[ 'billing_country' ], $paises ) && isset( $_POST[ 'billing_nif' ] ) && $_POST[ 'billing_nif' ] ) || ( $_POST[ 'billing_country' ] == 'GB' && strpos( $_POST[ 'billing_nif' ], 'XI' ) !== false ) ) {
+                $argumentos[ 'headers' ]	= [
+                    'Content-Type'				=> 'application/json',
+                ];
+                $nif                        = strtoupper( preg_replace( "/[^\w]/i", "", $_POST[ 'billing_nif' ] ) );
+                $argumentos[ 'body' ]		= json_encode( [ 
+                    'data'  => $nif 
+                ] );
+
+                $respuesta					= wp_remote_post( "https://vatapp.net/api/vat-ccf7f2e0", $argumentos );
+                $eori                       = json_split_objects( wp_remote_retrieve_body( $respuesta ) );
+                $eori                       = json_decode( $eori[1] );
+                $valido                     = ( isset( $eori->data->valid ) && $eori->data->valid == 1 ) ? true : false;
+            }
+            //Unión Europea
+            else if ( isset( $_POST[ 'billing_nif' ] ) && $_POST[ 'billing_nif' ] ) {
+                $validacion = new SoapClient( "https://ec.europa.eu/taxation_customs/dds2/eos/validation/services/validation?wsdl" );
+
+                if ( $validacion ) {
+                    $parametros = [
+                        'eori'     => $_POST[ 'billing_nif' ]
+                    ];
+                    try {
+                        $respuesta  = $validacion->validateEORI( $parametros );
+                        $valido     = ( $respuesta->return->result->statusDescr == 'Valid' ) ? true : false;
+                    } catch ( SoapFault $e ) {
+                        $valido     = false;
+                    }
+                } else {
+                    $valido = false;
+                }
+            }
+
+            //Almacena y devuelve el valor
+            if ( $valido ) {
+                $_SESSION[ 'apg_eori' ]  = true;
+            }
+            echo $valido;
+
+            return;
+        }
+        //Devuelve el valor
+        echo $valido;
+        
+        return;
+    }
 }
 new APG_Campo_NIF_en_Pedido();
+
+//Fuente: http://ryanuber.com/07-31-2012/split-and-decode-json-php.html
+/**
+ * json_split_objects - Return an array of many JSON objects
+ *
+ * In some applications (such as PHPUnit, or salt), JSON output is presented as multiple
+ * objects, which you cannot simply pass in to json_decode(). This function will split
+ * the JSON objects apart and return them as an array of strings, one object per indice.
+ *
+ * @param string $json  The JSON data to parse
+ *
+ * @return array
+ */
+function json_split_objects( $json ) {
+    $q      = FALSE;
+    $len    = strlen( $json );
+    for ( $l = $c = $i = 0; $i < $len; $i++ ) {
+        $json[ $i ] == '"' && ( $i > 0 ? $json[ $i - 1 ] : '' ) != '\\' && $q = !$q;
+        if ( ! $q && in_array( $json[ $i ], array( " ", "\r", "\n", "\t" ) ) ) {
+            continue;
+        }
+        in_array( $json[ $i ], array( '{', '[' ) ) && ! $q && $l++;
+        in_array( $json[ $i ], array( '}', ']' ) ) && ! $q && $l--;
+        ( isset( $objects[ $c ] ) && $objects[ $c ] .= $json[ $i ] ) || $objects[ $c ] = $json[ $i ];
+        $c += ( $l == 0 );
+    }
+    
+    return $objects;
+}

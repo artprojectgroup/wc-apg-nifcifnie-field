@@ -9,11 +9,11 @@ Requires at least: 3.8
 
 Tested up to: 6.2
 
-Stable tag: 1.7.4.1
+Stable tag: 2.0
 
 WC requires at least: 2.4
 
-WC tested up to: 7.4
+WC tested up to: 7.5
 
 License: GPLv3
 
@@ -29,11 +29,16 @@ Añade a WooCommerce un campo NIF/CIF/NIE.
 ### Características
 * Puedes hacer obligatorio el campo NIF/CIF/NIE en el formulario de facturación.
 * Puedes hacer obligatorio el campo NIF/CIF/NIE en el formulario de envío.
+* Puedes personalizar la prioridad (posición) del campo.
 * Puedes validar el campo NIF/CIF/NIE.
 * Puedes validar el campo VIES VAT number para excluir los impuestos.
-* Puedes personalizar la etiqueta y el marcador de posición del campo NIF/CIF/NIE o VIES VAT number. 
+* Puedes validar el campo EORI para impedir la venta si no se introduce un número válido.
+* Puedes seleccionar el/los país/es donde se validará el campo EORI.
+* Puedes personalizar la etiqueta y el marcador de posición del campo NIF/CIF/NIE, VIES VAT number o EORI.
+* Puedes personalizar el mensaje de error del campo NIF/CIF/NIE, VIES VAT number o EORI.
 * Añade como requeridos los campos teléfono y correo electrónico al formulario de envío.
 * Puedes quitar los campos teléfono y correo electrónico de la dirección predeterminada.
+* Puedes mostrar y personalizar un mensaje de error para el formulario de facturación utilizando los filtros `apg_nif_display_error_message` y `apg_nif_error_message`.
 * 100% compatible con [WooCommerce PDF Invoices & Packing Slips](https://es.wordpress.org/plugins/woocommerce-pdf-invoices-packing-slips/).
 * 100% compatible con [WPML](https://wpml.org/?aid=80296&affiliate_key=m66Ss5ps0xoS).
 
@@ -83,6 +88,12 @@ Si necesitas ayuda para configurar o instalar **WC - APG NIF/CIF/NIE Field**, **
 *En ningún caso **Art Project Group** proporciona ningún tipo de soporte técnico gratuito.*
 
 ## Changelog
+### 2.0
+* Añadida opción de validación del número EORI **Actualización patrocinada por [OldWood - Ground, Oil Varnishes & Natural Colours](https://www.oldwood1700.com)**.
+* Añadida opción de selección de prioridad del campo NIF/CIF/NIE.
+* Añadidos dos filtros para mostrar y personalizar un mensaje de error para el formulario de facturación: `apg_nif_display_error_message` y `apg_nif_error_message`.
+* Actualización de captura de pantalla.
+
 ### 1.7.4.1
 * Actualización de cabecera.
 * Actualización de hoja de estilo.

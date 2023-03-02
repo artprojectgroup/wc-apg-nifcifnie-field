@@ -28,13 +28,13 @@ function apg_nif_enlaces( $enlaces, $archivo ) {
 	global $apg_nif;
 
 	if ( $archivo == DIRECCION_apg_nif ) {
-		$plugin		= apg_nif_plugin( $apg_nif['plugin_uri'] );
-		$enlaces[]	= '<a href="' . $apg_nif['donacion'] . '" target="_blank" title="' . __( 'Make a donation by ', 'wc-apg-nifcifnie-field' ) . 'APG"><span class="genericon genericon-cart"></span></a>';
-		$enlaces[]	= '<a href="'. $apg_nif['plugin_url'] . '" target="_blank" title="' . $apg_nif['plugin'] . '"><strong class="artprojectgroup">APG</strong></a>';
+		$plugin		= apg_nif_plugin( $apg_nif[ 'plugin_uri' ] );
+		$enlaces[]	= '<a href="' . $apg_nif[ 'donacion' ] . '" target="_blank" title="' . __( 'Make a donation by ', 'wc-apg-nifcifnie-field' ) . 'APG"><span class="genericon genericon-cart"></span></a>';
+		$enlaces[]	= '<a href="'. $apg_nif[ 'plugin_url' ] . '" target="_blank" title="' . $apg_nif[ 'plugin' ] . '"><strong class="artprojectgroup">APG</strong></a>';
 		$enlaces[]	= '<a href="https://www.facebook.com/artprojectgroup" title="' . __( 'Follow us on ', 'wc-apg-nifcifnie-field' ) . 'Facebook" target="_blank"><span class="genericon genericon-facebook-alt"></span></a> <a href="https://twitter.com/artprojectgroup" title="' . __( 'Follow us on ', 'wc-apg-nifcifnie-field' ) . 'Twitter" target="_blank"><span class="genericon genericon-twitter"></span></a> <a href="https://es.linkedin.com/in/artprojectgroup" title="' . __( 'Follow us on ', 'wc-apg-nifcifnie-field' ) . 'LinkedIn" target="_blank"><span class="genericon genericon-linkedin"></span></a>';
 		$enlaces[]	= '<a href="https://profiles.wordpress.org/artprojectgroup/" title="' . __( 'More plugins on ', 'wc-apg-nifcifnie-field' ) . 'WordPress" target="_blank"><span class="genericon genericon-wordpress"></span></a>';
 		$enlaces[]	= '<a href="mailto:info@artprojectgroup.es" title="' . __( 'Contact with us by ', 'wc-apg-nifcifnie-field' ) . 'e-mail"><span class="genericon genericon-mail"></span></a> <a href="skype:artprojectgroup" title="' . __( 'Contact with us by ', 'wc-apg-nifcifnie-field' ) . 'Skype"><span class="genericon genericon-skype"></span></a>';
-		$enlaces[]	= apg_nif_plugin( $apg_nif['plugin_uri'] );
+		$enlaces[]	= apg_nif_plugin( $apg_nif[ 'plugin_uri' ] );
 	}
 	
 	return $enlaces;
@@ -46,8 +46,8 @@ function apg_nif_enlace_de_ajustes( $enlaces ) {
 	global $apg_nif;
 
 	$enlaces_de_ajustes = [
-		'<a href="' . $apg_nif['ajustes'] . '" title="' . __( 'Settings of ', 'wc-apg-nifcifnie-field' ) . $apg_nif['plugin'] .'">' . __( 'Settings', 'wc-apg-nifcifnie-field' ) . '</a>', 
-		'<a href="' . $apg_nif['soporte'] . '" title="' . __( 'Support of ', 'wc-apg-nifcifnie-field' ) . $apg_nif['plugin'] .'">' . __( 'Support', 'wc-apg-nifcifnie-field' ) . '</a>'
+		'<a href="' . $apg_nif[ 'ajustes' ] . '" title="' . __( 'Settings of ', 'wc-apg-nifcifnie-field' ) . $apg_nif[ 'plugin' ] .'">' . __( 'Settings', 'wc-apg-nifcifnie-field' ) . '</a>', 
+		'<a href="' . $apg_nif[ 'soporte' ] . '" title="' . __( 'Support of ', 'wc-apg-nifcifnie-field' ) . $apg_nif[ 'plugin' ] .'">' . __( 'Support', 'wc-apg-nifcifnie-field' ) . '</a>'
 	];
 	foreach ( $enlaces_de_ajustes as $enlace_de_ajustes ) {
 		array_unshift( $enlaces, $enlace_de_ajustes );

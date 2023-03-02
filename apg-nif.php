@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: WC - APG NIF/CIF/NIE Field
-Version: 1.7.4.1
+Version: 2.0
 Plugin URI: https://wordpress.org/plugins/wc-apg-nifcifnie-field/
 Description: Add to WooCommerce a NIF/CIF/NIE field.
 Author URI: https://artprojectgroup.es/
@@ -9,7 +9,7 @@ Author: Art Project Group
 Requires at least: 3.8
 Tested up to: 6.2
 WC requires at least: 2.4
-WC tested up to: 7.4
+WC tested up to: 7.5
 
 Text Domain: wc-apg-nifcifnie-field
 Domain Path: /languages
@@ -88,7 +88,7 @@ if ( is_plugin_active( 'woocommerce/woocommerce.php' ) || is_network_only_plugin
 function apg_nif_requiere_wc() {
 	global $apg_nif;
 		
-	echo '<div class="notice notice-error is-dismissible" id="wc-apg-nifcifnie-field"><h3>' . $apg_nif['plugin'] . '</h3><h4>' . __( 'This plugin requires WooCommerce active to run!', 'wc-apg-nifcifnie-field' ) . '</h4></div>';
+	echo '<div class="notice notice-error is-dismissible" id="wc-apg-nifcifnie-field"><h3>' . $apg_nif[ 'plugin' ] . '</h3><h4>' . __( 'This plugin requires WooCommerce active to run!', 'wc-apg-nifcifnie-field' ) . '</h4></div>';
 	deactivate_plugins( DIRECCION_apg_nif );
 }
 
@@ -96,7 +96,7 @@ function apg_nif_requiere_wc() {
 function apg_nif_requiere_soap() {
 	global $apg_nif;
 		
-	echo '<div class="notice notice-error is-dismissible" id="wc-apg-nifcifnie-field"><h3>' . $apg_nif['plugin'] . '</h3><h4>' . __( 'This plugin requires the <a href="http://php.net/manual/en/class.soapclient.php">SoapClient</a> PHP class active to run!', 'wc-apg-nifcifnie-field' ) . '</h4></div>';
+	echo '<div class="notice notice-error is-dismissible" id="wc-apg-nifcifnie-field"><h3>' . $apg_nif[ 'plugin' ] . '</h3><h4>' . __( 'This plugin requires the <a href="http://php.net/manual/en/class.soapclient.php">SoapClient</a> PHP class active to run!', 'wc-apg-nifcifnie-field' ) . '</h4></div>';
 }
 
 //Eliminamos todo rastro del plugin al desinstalarlo

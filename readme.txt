@@ -4,9 +4,9 @@ Donate link: https://artprojectgroup.es/tienda/donacion
 Tags: woocommerce, commerce, e-commerce, commerce, shop, virtual shop, nif, cif, nie, shipping form, billing form, wooCommerce pdf invoices & packing slips, wpml
 Requires at least: 3.8
 Tested up to: 6.2
-Stable tag: 1.7.4.1
+Stable tag: 2.0
 WC requires at least: 2.4
-WC tested up to: 7.4
+WC tested up to: 7.5
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -20,11 +20,16 @@ Add to WooCommerce a NIF/CIF/NIE field.
 = Features =
 * You can require the NIF/CIF/NIE field in billing form.
 * You can require the NIF/CIF/NIE field in shipping form.
+* You can customize the priority (position) of the field.
 * You can validate the NIF/CIF/NIE field.
 * You can validate the VIES VAT number field to exempt the taxes.
-* You can customize the NIF/CIF/NIE or VIES VAT number field label and placeholder. 
+* You can validate the EORI field to prevent the sale if a valid number is not entered.
+* You can select the country(ies) where the EORI field will be validated.
+* You can customize the label and placeholder of the NIF/CIF/NIE, VIES VAT number or EORI field.
+* You can customize the error message of the field NIF/CIF/NIE, VIES VAT number or EORI.
 * Add and require phone and email fields in shipping form.
 * You can remove the phone and email fields from the default address.
+* You can display and customize an error message for the billing form using the `apg_nif_display_error_message` and `apg_nif_error_message` filters.
 * 100% compatible with [WooCommerce PDF Invoices & Packing Slips](https://es.wordpress.org/plugins/woocommerce-pdf-invoices-packing-slips/).
 * 100% compatible with [WPML](https://wpml.org/?aid=80296&affiliate_key=m66Ss5ps0xoS).
 
@@ -78,6 +83,11 @@ If you need help to configuring or installing **WC - APG NIF/CIF/NIE field**, **
 2. Screenshot of WC - APG NIF/CIF/NIE field. Billing and shipping forms.
 
 == Changelog ==
+= 2.0 =
+* Added EORI number validation option **Upgrade sponsored by [OldWood - Ground, Oil Varnishes & Natural Colours](https://www.oldwood1700.com)**.
+* Added option to select priority of the field NIF/CIF/NIE.
+* Added two filters to display and customize an error message for the billing form: `apg_nif_display_error_message` and `apg_nif_error_message`. 
+* Screenshot updated.
 = 1.7.4.1 =
 * Header updated.
 * Stylesheet updated.
@@ -196,9 +206,10 @@ If you need help to configuring or installing **WC - APG NIF/CIF/NIE field**, **
 * Initial version.
 
 == Upgrade Notice ==
-= 1.7.4.1 =
-* Header updated.
-* Stylesheet updated.
+= 2.0 =
+* Added EORI number validation option **Upgrade sponsored by [OldWood - Ground, Oil Varnishes & Natural Colours](https://www.oldwood1700.com)**.
+* Added option to select priority of the field NIF/CIF/NIE.
+* Added two filters to display and customize an error message for the billing form: `apg_nif_display_error_message` and `apg_nif_error_message`. 
 * Screenshot updated.
 
 == Translations ==
