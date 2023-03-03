@@ -9,7 +9,7 @@ Requires at least: 3.8
 
 Tested up to: 6.2
 
-Stable tag: 2.0
+Stable tag: 2.0.1
 
 WC requires at least: 2.4
 
@@ -87,6 +87,9 @@ Si necesitas ayuda para configurar o instalar **WC - APG NIF/CIF/NIE Field**, **
 *En ningún caso **Art Project Group** proporciona ningún tipo de soporte técnico gratuito.*
 
 ## Changelog
+### 2.0.1
+* Arreglos menores.
+
 ### 2.0
 * Añadida opción de validación del número EORI **Actualización patrocinada por [OldWood - Ground, Oil Varnishes & Natural Colours](https://www.oldwood1700.com)**.
 * Añadida opción de selección de prioridad del campo NIF/CIF/NIE.

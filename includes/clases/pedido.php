@@ -342,7 +342,7 @@ class APG_Campo_NIF_en_Pedido {
         }
         
         //Muestra el mensaje de error EORI
-        if ( in_array( $_POST[ 'billing_country' ], $apg_nif_settings[ 'eori_paises' ] ) && ! $_SESSION[ 'apg_eori' ] ) {
+        if ( isset( $apg_nif_settings[ 'eori_paises' ] ) && in_array( $_POST[ 'billing_country' ], $apg_nif_settings[ 'eori_paises' ] ) && ! $_SESSION[ 'apg_eori' ] ) {
             wc_add_notice( $this->mensaje_eori, 'error' );
         }
         
@@ -366,7 +366,7 @@ class APG_Campo_NIF_en_Pedido {
                 ] );
             }
             //Añade el número EORI
-            if ( isset( $apg_nif_settings[ 'validacion_eori' ] ) && $apg_nif_settings[ 'validacion_eori' ] == "1" ) {
+            if ( isset( $apg_nif_settings[ 'validacion_eori' ] ) && $apg_nif_settings[ 'validacion_eori' ] == "1" && isset( $apg_nif_settings[ 'eori_paises' ] ) ) {
                 wp_enqueue_script( 'apg_nif_eori', plugin_dir_url( DIRECCION_apg_nif ) . '/assets/js/valida-eori.js', [ 'jquery' ] );
                 wp_localize_script( 'apg_nif_eori', 'apg_nif_eori_ajax', [
                     'url'   => admin_url( 'admin-ajax.php' ),
@@ -520,7 +520,7 @@ class APG_Campo_NIF_en_Pedido {
         }
         
         //Valida el EORI
-        if ( isset( $_POST[ 'billing_country' ] ) && $_POST[ 'billing_country' ] != WC()->countries->get_base_country() && in_array( $_POST[ 'billing_country' ], $apg_nif_settings[ 'eori_paises' ] ) ) { //Sólo si el país es distinto al de la tienda y pertenece al listado de países de validación EORI
+        if ( isset( $_POST[ 'billing_country' ] ) && $_POST[ 'billing_country' ] != WC()->countries->get_base_country() && isset( $apg_nif_settings[ 'eori_paises' ] ) && in_array( $_POST[ 'billing_country' ], $apg_nif_settings[ 'eori_paises' ] ) ) { //Sólo si el país es distinto al de la tienda y pertenece al listado de países de validación EORI
             //Listado de países para validar en https://vatapp.net
             $paises = [
                 'NO', 
