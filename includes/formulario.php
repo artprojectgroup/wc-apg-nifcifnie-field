@@ -55,7 +55,9 @@ $tab    = 1;
                         echo "<ol>";
                         $campos = WC()->countries->get_address_fields( WC()->countries->get_base_country(), 'billing_' );
                         foreach ( $campos as $campo ) {
-                            echo "<li>{$campo[ 'label' ]}: {$campo[ 'priority' ]}.</li>";
+                            $etiqueta   = ( isset( $campo[ 'label' ] ) ) ? $campo[ 'label' ] : __( 'No label exists', 'wc-apg-nifcifnie-field' );
+                            $prioridad  = ( isset( $campo[ 'priority' ] ) ) ? $campo[ 'priority' ] : __( 'No priority', 'wc-apg-nifcifnie-field' );
+                            echo "<li>$etiqueta: $prioridad.</li>";
                         }
                         echo "</ol>";
                         ?></p></td>

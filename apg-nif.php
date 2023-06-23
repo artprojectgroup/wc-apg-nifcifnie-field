@@ -1,15 +1,15 @@
 <?php
 /*
 Plugin Name: WC - APG NIF/CIF/NIE Field
-Version: 2.0.1
+Version: 2.1
 Plugin URI: https://wordpress.org/plugins/wc-apg-nifcifnie-field/
 Description: Add to WooCommerce a NIF/CIF/NIE field.
 Author URI: https://artprojectgroup.es/
 Author: Art Project Group
 Requires at least: 3.8
-Tested up to: 6.2
+Tested up to: 6.3
 WC requires at least: 2.4
-WC tested up to: 7.5
+WC tested up to: 7.9
 
 Text Domain: wc-apg-nifcifnie-field
 Domain Path: /languages
@@ -31,7 +31,14 @@ include_once( 'includes/admin/funciones-apg.php' );
 //¿Está activo WooCommerce?
 include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 if ( is_plugin_active( 'woocommerce/woocommerce.php' ) || is_network_only_plugin( 'woocommerce/woocommerce.php' ) ) {
-	class APG_Campo_NIF {
+    //Añade compatibilidad con HPOS
+    add_action( 'before_woocommerce_init', function() {
+        if ( class_exists( '\Automattic\WooCommerce\Utilities\FeaturesUtil' ) ) {
+            \Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', __FILE__, true );
+        }
+    } );
+
+    class APG_Campo_NIF {
 		//Inicializa las acciones de Usuario
 		public function __construct() {
 			add_action( 'admin_menu', [ $this, 'apg_nif_admin_menu' ], 15 );

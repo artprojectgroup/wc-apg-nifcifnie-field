@@ -31,7 +31,7 @@ class APG_Campo_NIF_en_Admin_Pedidos {
 
 	//Nueva función para hacer compatible el código con WooCommerce 2.1
 	public function apg_nif_dame_campo_personalizado( $campo, $pedido ) {
-		$valor = get_post_meta( $pedido, $campo, false );
+		$valor = $pedido->get_meta( $campo, false );
 		if ( isset( $valor[0] ) ) {
 			return $valor[0];
 		}
@@ -42,10 +42,9 @@ class APG_Campo_NIF_en_Admin_Pedidos {
 	//Añade el NIF y el teléfono a la dirección de facturación y envío
 	public function apg_nif_anade_campo_nif_direccion_facturacion( $campos, $pedido ) {
 		if ( is_array( $campos ) ) {
-			$numero_de_pedido    = is_callable( [ $pedido, 'get_id' ] ) ? $pedido->get_id() : $pedido->id;
-			$campos[ 'nif' ]     = $this->apg_nif_dame_campo_personalizado( '_billing_nif', $numero_de_pedido );
-			$campos[ 'phone' ]   = $this->apg_nif_dame_campo_personalizado( '_billing_phone', $numero_de_pedido );
-			$campos[ 'email' ]   = $this->apg_nif_dame_campo_personalizado( '_billing_email', $numero_de_pedido );
+			$campos[ 'nif' ]     = $this->apg_nif_dame_campo_personalizado( '_billing_nif', $pedido );
+			$campos[ 'phone' ]   = $this->apg_nif_dame_campo_personalizado( '_billing_phone', $pedido );
+			$campos[ 'email' ]   = $this->apg_nif_dame_campo_personalizado( '_billing_email', $pedido );
 		}
 		 
 		return $campos;
@@ -53,10 +52,9 @@ class APG_Campo_NIF_en_Admin_Pedidos {
 	 
 	public function apg_nif_anade_campo_nif_direccion_envio( $campos, $pedido ) {
 		if ( is_array( $campos ) ) {
-			$numero_de_pedido    = is_callable( [ $pedido, 'get_id' ] ) ? $pedido->get_id() : $pedido->id;
-			$campos[ 'nif' ]     = $this->apg_nif_dame_campo_personalizado( '_shipping_nif', $numero_de_pedido );
-			$campos[ 'phone' ]   = $this->apg_nif_dame_campo_personalizado( '_shipping_phone', $numero_de_pedido );
-			$campos[ 'email' ]   = $this->apg_nif_dame_campo_personalizado( '_shipping_email', $numero_de_pedido );
+			$campos[ 'nif' ]     = $this->apg_nif_dame_campo_personalizado( '_shipping_nif', $pedido );
+			$campos[ 'phone' ]   = $this->apg_nif_dame_campo_personalizado( '_shipping_phone', $pedido );
+			$campos[ 'email' ]   = $this->apg_nif_dame_campo_personalizado( '_shipping_email', $pedido );
 		}
 		 
 		return $campos;

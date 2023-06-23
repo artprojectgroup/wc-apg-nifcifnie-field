@@ -17,10 +17,9 @@ class APG_Campo_NIF_en_Direcciones {
 
 	//Añade los campos en la dirección de facturarión del pedido y correo electrónico
 	public function apg_nif_formato_direccion_facturacion_pedido( $campos, $pedido ) {
-		$numero_de_pedido     = is_callable( [ $pedido, 'get_id' ] ) ? $pedido->get_id() : $pedido->id;
-		$campos[ 'nif' ]      = get_post_meta( $numero_de_pedido, '_billing_nif', true );
-		$campos[ 'email' ]    = get_post_meta( $numero_de_pedido, '_billing_email', true );
-		$campos[ 'phone' ]    = get_post_meta( $numero_de_pedido, '_billing_phone', true );
+		$campos[ 'nif' ]      = $pedido->get_meta( '_billing_nif', true );
+		$campos[ 'email' ]    = $pedido->get_meta( '_billing_email', true );
+		$campos[ 'phone' ]    = $pedido->get_meta( '_billing_phone', true );
 	
 		return $campos;
 	}
@@ -28,10 +27,9 @@ class APG_Campo_NIF_en_Direcciones {
 	//Añade los campos en la dirección de envío del pedido y correo electrónico
 	public function apg_nif_formato_direccion_envio_pedido( $campos, $pedido ) {
 		if ( is_array( $campos ) ) {
-			$numero_de_pedido    = is_callable( [ $pedido, 'get_id' ] ) ? $pedido->get_id() : $pedido->id;
-			$campos[ 'nif' ]     = get_post_meta( $numero_de_pedido, '_shipping_nif', true );
-			$campos[ 'email' ]   = get_post_meta( $numero_de_pedido, '_shipping_email', true );
-			$campos[ 'phone' ]   = get_post_meta( $numero_de_pedido, '_shipping_phone', true );
+			$campos[ 'nif' ]     = $pedido->get_meta( '_shipping_nif', true );
+			$campos[ 'email' ]   = $pedido->get_meta( '_shipping_email', true );
+			$campos[ 'phone' ]   = $pedido->get_meta( '_shipping_phone', true );
 		}
 	
 		return $campos;
@@ -103,7 +101,8 @@ class APG_Campo_NIF_en_Direcciones {
 	//Añade los campos en WooCommerce PDF Invoices & Packing Slips para facturas con direcciones fuera de España
 	public function apg_nif_direccion_factura_pdf( $direccion, $pedido ) {
         if ( $pedido->order->get_billing_country() != 'ES' ) {
-			$direccion .= "<br />" . get_post_meta( $pedido->order->get_id(), '_billing_nif', true );
+	        $pedido_wc	= wc_get_order( $pedido->order->get_id() );
+			$direccion	.= "<br />" . $pedido_wc->get_meta( '_billing_nif', true );
         }
 
 		return $direccion;

@@ -3,17 +3,17 @@ Contributors: artprojectgroup
 
 Donate link: https://artprojectgroup.es/tienda/donacion
 
-Tags: woocommerce, commerce, e-commerce, commerce, shop, virtual shop, nif, cif, nie, shipping form, billing form, wooCommerce pdf invoices & packing slips, WPML
+Tags: woocommerce, commerce, e-commerce, commerce, shop, virtual shop, nif, cif, nie, shipping form, billing form, wooCommerce pdf invoices & packing slips, WPML, eori, vies
 
 Requires at least: 3.8
 
-Tested up to: 6.2
+Tested up to: 6.3
 
-Stable tag: 2.0.1
+Stable tag: 2.1
 
 WC requires at least: 2.4
 
-WC tested up to: 7.5
+WC tested up to: 7.9
 
 License: GPLv3
 
@@ -87,6 +87,9 @@ Si necesitas ayuda para configurar o instalar **WC - APG NIF/CIF/NIE Field**, **
 *En ningún caso **Art Project Group** proporciona ningún tipo de soporte técnico gratuito.*
 
 ## Changelog
+### 2.1
+* Añadida compatibilidad con HPOS.
+
 ### 2.0.1
 * Arreglos menores.
 
