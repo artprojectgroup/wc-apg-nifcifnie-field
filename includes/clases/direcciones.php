@@ -18,8 +18,8 @@ class APG_Campo_NIF_en_Direcciones {
 	//Añade los campos en la dirección de facturarión del pedido y correo electrónico
 	public function apg_nif_formato_direccion_facturacion_pedido( $campos, $pedido ) {
 		$campos[ 'nif' ]      = $pedido->get_meta( '_billing_nif', true );
-		$campos[ 'email' ]    = $pedido->get_meta( '_billing_email', true );
-		$campos[ 'phone' ]    = $pedido->get_meta( '_billing_phone', true );
+		$campos[ 'email' ]    = $pedido->get_billing_phone();
+		$campos[ 'phone' ]    = $pedido->get_billing_phone();
 	
 		return $campos;
 	}
@@ -29,7 +29,7 @@ class APG_Campo_NIF_en_Direcciones {
 		if ( is_array( $campos ) ) {
 			$campos[ 'nif' ]     = $pedido->get_meta( '_shipping_nif', true );
 			$campos[ 'email' ]   = $pedido->get_meta( '_shipping_email', true );
-			$campos[ 'phone' ]   = $pedido->get_meta( '_shipping_phone', true );
+			$campos[ 'phone' ]   = $pedido->get_shipping_phone();
 		}
 	
 		return $campos;

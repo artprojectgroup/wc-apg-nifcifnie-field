@@ -29,22 +29,12 @@ class APG_Campo_NIF_en_Admin_Pedidos {
         return $search_fields;
     }
 
-	//Nueva función para hacer compatible el código con WooCommerce 2.1
-	public function apg_nif_dame_campo_personalizado( $campo, $pedido ) {
-		$valor = $pedido->get_meta( $campo, false );
-		if ( isset( $valor[0] ) ) {
-			return $valor[0];
-		}
-		
-		return NULL;
-	}
-
 	//Añade el NIF y el teléfono a la dirección de facturación y envío
 	public function apg_nif_anade_campo_nif_direccion_facturacion( $campos, $pedido ) {
 		if ( is_array( $campos ) ) {
-			$campos[ 'nif' ]     = $this->apg_nif_dame_campo_personalizado( '_billing_nif', $pedido );
-			$campos[ 'phone' ]   = $this->apg_nif_dame_campo_personalizado( '_billing_phone', $pedido );
-			$campos[ 'email' ]   = $this->apg_nif_dame_campo_personalizado( '_billing_email', $pedido );
+			$campos[ 'nif' ]     = $pedido->get_meta( '_billing_nif', true );
+			$campos[ 'phone' ]   = $pedido->get_billing_phone();
+			$campos[ 'email' ]   = $pedido->get_billing_email();
 		}
 		 
 		return $campos;
@@ -52,9 +42,9 @@ class APG_Campo_NIF_en_Admin_Pedidos {
 	 
 	public function apg_nif_anade_campo_nif_direccion_envio( $campos, $pedido ) {
 		if ( is_array( $campos ) ) {
-			$campos[ 'nif' ]     = $this->apg_nif_dame_campo_personalizado( '_shipping_nif', $pedido );
-			$campos[ 'phone' ]   = $this->apg_nif_dame_campo_personalizado( '_shipping_phone', $pedido );
-			$campos[ 'email' ]   = $this->apg_nif_dame_campo_personalizado( '_shipping_email', $pedido );
+			$campos[ 'nif' ]     = $pedido->get_meta( '_shipping_nif', true );
+			$campos[ 'phone' ]   = $pedido->get_shipping_phone();
+			$campos[ 'email' ]   = $pedido->get_meta( '_shipping_email', true );
 		}
 		 
 		return $campos;
