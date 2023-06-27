@@ -4,7 +4,7 @@ Donate link: https://artprojectgroup.es/tienda/donacion
 Tags: woocommerce, commerce, e-commerce, commerce, shop, virtual shop, nif, cif, nie, shipping form, billing form, wooCommerce pdf invoices & packing slips, wpml, eori, vies
 Requires at least: 3.8
 Tested up to: 6.3
-Stable tag: 2.1.0.1
+Stable tag: 2.1.0.2
 WC requires at least: 2.4
 WC tested up to: 7.9
 License: GPLv3
@@ -82,6 +82,8 @@ If you need help to configuring or installing **WC - APG NIF/CIF/NIE field**, **
 2. Screenshot of WC - APG NIF/CIF/NIE field. Billing and shipping forms.
 
 == Changelog ==
+= 2.1.0.2 =
+* Small fixes.
 = 2.1.0.1 =
 * Small fixes.
 = 2.1 =
@@ -211,7 +213,7 @@ If you need help to configuring or installing **WC - APG NIF/CIF/NIE field**, **
 * Initial version.
 
 == Upgrade Notice ==
-= 2.1.0.1 =
+= 2.1.0.2 =
 * Small fixes.
 
 == Translations ==

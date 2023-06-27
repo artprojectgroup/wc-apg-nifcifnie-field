@@ -32,9 +32,9 @@ class APG_Campo_NIF_en_Admin_Pedidos {
 	//Añade el NIF y el teléfono a la dirección de facturación y envío
 	public function apg_nif_anade_campo_nif_direccion_facturacion( $campos, $pedido ) {
 		if ( is_array( $campos ) ) {
-			$campos[ 'nif' ]     = $pedido->get_meta( '_billing_nif', true );
-			$campos[ 'phone' ]   = $pedido->get_billing_phone();
+			$campos[ 'nif' ]     = $pedido->get_meta( '_billing_nif' );
 			$campos[ 'email' ]   = $pedido->get_billing_email();
+			$campos[ 'phone' ]   = $pedido->get_billing_phone();
 		}
 		 
 		return $campos;
@@ -42,9 +42,9 @@ class APG_Campo_NIF_en_Admin_Pedidos {
 	 
 	public function apg_nif_anade_campo_nif_direccion_envio( $campos, $pedido ) {
 		if ( is_array( $campos ) ) {
-			$campos[ 'nif' ]     = $pedido->get_meta( '_shipping_nif', true );
+			$campos[ 'nif' ]     = $pedido->get_meta( '_shipping_nif' );
+			$campos[ 'email' ]   = $pedido->get_meta( '_shipping_email' );
 			$campos[ 'phone' ]   = $pedido->get_shipping_phone();
-			$campos[ 'email' ]   = $pedido->get_meta( '_shipping_email', true );
 		}
 		 
 		return $campos;

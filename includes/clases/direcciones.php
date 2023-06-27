@@ -17,8 +17,8 @@ class APG_Campo_NIF_en_Direcciones {
 
 	//Añade los campos en la dirección de facturarión del pedido y correo electrónico
 	public function apg_nif_formato_direccion_facturacion_pedido( $campos, $pedido ) {
-		$campos[ 'nif' ]      = $pedido->get_meta( '_billing_nif', true );
-		$campos[ 'email' ]    = $pedido->get_billing_phone();
+		$campos[ 'nif' ]      = $pedido->get_meta( '_billing_nif' );
+		$campos[ 'email' ]    = $pedido->get_billing_email();
 		$campos[ 'phone' ]    = $pedido->get_billing_phone();
 	
 		return $campos;
@@ -27,8 +27,8 @@ class APG_Campo_NIF_en_Direcciones {
 	//Añade los campos en la dirección de envío del pedido y correo electrónico
 	public function apg_nif_formato_direccion_envio_pedido( $campos, $pedido ) {
 		if ( is_array( $campos ) ) {
-			$campos[ 'nif' ]     = $pedido->get_meta( '_shipping_nif', true );
-			$campos[ 'email' ]   = $pedido->get_meta( '_shipping_email', true );
+			$campos[ 'nif' ]     = $pedido->get_meta( '_shipping_nif' );
+			$campos[ 'email' ]   = $pedido->get_meta( '_shipping_email' );
 			$campos[ 'phone' ]   = $pedido->get_shipping_phone();
 		}
 	
@@ -102,7 +102,7 @@ class APG_Campo_NIF_en_Direcciones {
 	public function apg_nif_direccion_factura_pdf( $direccion, $pedido ) {
         if ( $pedido->order->get_billing_country() != 'ES' ) {
 	        $pedido_wc	= wc_get_order( $pedido->order->get_id() );
-			$direccion	.= "<br />" . $pedido_wc->get_meta( '_billing_nif', true );
+			$direccion	.= "<br />" . $pedido_wc->get_meta( '_billing_nif' );
         }
 
 		return $direccion;
