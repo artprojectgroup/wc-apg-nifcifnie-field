@@ -1,7 +1,7 @@
 === WC - APG NIF/CIF/NIE Field ===
 Contributors: artprojectgroup
 Donate link: https://artprojectgroup.es/tienda/donacion
-Tags: woocommerce, commerce, e-commerce, commerce, shop, virtual shop, nif, cif, nie, shipping form, billing form, wooCommerce pdf invoices & packing slips, wpml, eori, vies
+Tags: nif, cif, nie, eori, vies
 Requires at least: 5.0
 Tested up to: 6.7
 Stable tag: 3.0
