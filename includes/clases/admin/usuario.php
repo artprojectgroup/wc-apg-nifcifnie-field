@@ -34,8 +34,8 @@ class APG_Campo_NIF_en_Usuarios {
 				'label'			=> __( 'Telephone', 'woocommerce' ),
 				'description'	=> ''
 		];
-	 
-		//Ordena los campos
+
+        //Ordena los campos
 		$orden_de_campos  = [
 			"first_name", 
 			"last_name", 
@@ -51,16 +51,27 @@ class APG_Campo_NIF_en_Usuarios {
 			"country", 
 		];
 		
+        //Rellena el nuevo listado
 		$campos_ordenados[ 'billing' ][ 'title' ]     = $campos[ 'billing' ][ 'title' ];
 		$campos_ordenados[ 'shipping' ][ 'title' ]    = $campos[ 'shipping' ][ 'title' ];
-		foreach( $orden_de_campos as $campo ) {
+		foreach ( $orden_de_campos as $campo ) {
 			$campos_ordenados[ 'billing' ][ 'fields' ][ 'billing_' . $campo ]    = $campos[ 'billing' ][ 'fields' ][ 'billing_' . $campo ];
 			$campos_ordenados[ 'shipping' ][ 'fields' ][ 'shipping_' . $campo ]  = $campos[ 'shipping' ][ 'fields' ][ 'shipping_' . $campo ];
 		}
-		
-		$campos_ordenados = apply_filters( 'wcbcf_customer_meta_fields', $campos_ordenados );
-		 
-		return $campos_ordenados;
+        foreach ( $campos[ 'billing' ][ 'fields' ] as $campo => $datos ) {
+            if ( ! isset( $campos_ordenados[ 'billing' ][ 'fields' ][ $campo ] ) ) {
+                $campos_ordenados[ 'billing' ][ 'fields' ][ $campo ] = $datos;
+            }
+        }
+        foreach ( $campos[ 'shipping' ][ 'fields' ] as $campo => $datos ) {
+            if ( ! isset( $campos_ordenados[ 'shipping' ][ 'fields' ][ $campo ] ) ) {
+                $campos_ordenados[ 'shipping' ][ 'fields' ][ $campo ] = $datos;
+            }
+        }
+
+        $campos_ordenados = apply_filters( 'wcbcf_customer_meta_fields', $campos_ordenados );
+
+        return $campos_ordenados;
 	}
 	
 	//Añade el NIF a la dirección de facturación

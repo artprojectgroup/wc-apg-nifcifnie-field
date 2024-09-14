@@ -2,11 +2,11 @@
 Contributors: artprojectgroup
 Donate link: https://artprojectgroup.es/tienda/donacion
 Tags: woocommerce, commerce, e-commerce, commerce, shop, virtual shop, nif, cif, nie, shipping form, billing form, wooCommerce pdf invoices & packing slips, wpml, eori, vies
-Requires at least: 3.8
-Tested up to: 6.3
-Stable tag: 2.1.0.2
-WC requires at least: 2.4
-WC tested up to: 7.9
+Requires at least: 5.0
+Tested up to: 6.7
+Stable tag: 3.0
+WC requires at least: 5.6
+WC tested up to: 9.4
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -18,6 +18,7 @@ Add to WooCommerce a NIF/CIF/NIE field.
 **WC - APG NIF/CIF/NIE field** add to your WooCommerce shop a new NIF/CIF/NIE field to all billing and shipping forms available to admin and customer in WooCommerce.
 
 = Features =
+* Fully compatible with the End Purchase block of the WordPress block editor.
 * You can require the NIF/CIF/NIE field in billing form.
 * You can require the NIF/CIF/NIE field in shipping form.
 * You can customize the priority (position) of the field.
@@ -79,9 +80,13 @@ If you need help to configuring or installing **WC - APG NIF/CIF/NIE field**, **
 
 == Screenshots ==
 1. Screenshot of WC - APG NIF/CIF/NIE field.
-2. Screenshot of WC - APG NIF/CIF/NIE field. Billing and shipping forms.
+2. Screenshot of WC - APG NIF/CIF/NIE field. Billing and shipping forms. Checkout Block.
+3. Screenshot of WC - APG NIF/CIF/NIE field. Billing and shipping forms. Classic Shortcode.
 
 == Changelog ==
+= 3.0 =
+* Added support for the Checkout block.
+* Improved compatibility with third party plugins.
 = 2.1.0.2 =
 * Small fixes.
 = 2.1.0.1 =
@@ -213,8 +218,9 @@ If you need help to configuring or installing **WC - APG NIF/CIF/NIE field**, **
 * Initial version.
 
 == Upgrade Notice ==
-= 2.1.0.2 =
-* Small fixes.
+= 3.0 =
+* Added support for the Checkout block.
+* Improved compatibility with third party plugins.
 
 == Translations ==
 * *English*: by [**Art Project Group**](https://artprojectgroup.es/) (default language).

@@ -31,19 +31,19 @@ class APG_Campo_NIF_en_Admin_Pedidos {
 
 	//Añade el NIF y el teléfono a la dirección de facturación y envío
 	public function apg_nif_anade_campo_nif_direccion_facturacion( $campos, $pedido ) {
-		if ( is_array( $campos ) ) {
-			$campos[ 'nif' ]     = $pedido->get_meta( '_billing_nif' );
-			$campos[ 'email' ]   = $pedido->get_billing_email();
-			$campos[ 'phone' ]   = $pedido->get_billing_phone();
-		}
-		 
-		return $campos;
+        if ( is_array( $campos ) ) {
+            $campos[ 'nif' ]     = $pedido->get_meta( '_billing_nif', true );
+            $campos[ 'email' ]   = $pedido->get_billing_email();
+            $campos[ 'phone' ]   = $pedido->get_billing_phone();
+        }
+
+        return $campos;
 	}
 	 
 	public function apg_nif_anade_campo_nif_direccion_envio( $campos, $pedido ) {
 		if ( is_array( $campos ) ) {
-			$campos[ 'nif' ]     = $pedido->get_meta( '_shipping_nif' );
-			$campos[ 'email' ]   = $pedido->get_meta( '_shipping_email' );
+			$campos[ 'nif' ]     = $pedido->get_meta( '_shipping_nif', true );
+			$campos[ 'email' ]   = $pedido->get_meta( '_shipping_email', true );
 			$campos[ 'phone' ]   = $pedido->get_shipping_phone();
 		}
 		 
@@ -100,8 +100,8 @@ class APG_Campo_NIF_en_Admin_Pedidos {
 		return $datos_cliente;
 	}
 	public function apg_dame_nif_ajax( $datos_cliente, $cliente ) { 
-		$datos_cliente[ 'billing' ][ 'nif' ]  = $cliente->get_meta( 'billing_nif' );
-		$datos_cliente[ 'shipping' ][ 'nif' ] = $cliente->get_meta( 'shipping_nif' );
+		$datos_cliente[ 'billing' ][ 'nif' ]  = $cliente->get_meta( 'billing_nif', true );
+		$datos_cliente[ 'shipping' ][ 'nif' ] = $cliente->get_meta( 'shipping_nif', true );
  
 		return $datos_cliente; 
 	} 

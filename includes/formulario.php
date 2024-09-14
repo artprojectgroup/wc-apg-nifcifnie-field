@@ -200,15 +200,6 @@ $tab    = 1;
 				<td class="forminp"><input id="apg_nif_settings[error_eori]" name="apg_nif_settings[error_eori]" type="text" value="<?php echo ( isset( $apg_nif_settings[ 'error_eori' ] ) && ! empty( $apg_nif_settings[ 'error_eori' ] ) ? esc_attr( $apg_nif_settings[ 'error_eori' ] ) : __( 'Please enter a valid EORI number.', 'wc-apg-nifcifnie-field' ) ); ?>" tabindex="<?php echo $tab++; ?>" placeholder="<?php esc_attr_e( 'Please enter a valid EORI number.', 'wc-apg-nifcifnie-field' ); ?>" /></td>
 			</tr>			
 			<?php endif; ?>
-            <tr valign="top">
-				<th scope="row" class="titledesc">
-					<label for="apg_nif_settings[campos]">
-						<?php esc_attr_e( 'Remove extra fields', 'wc-apg-nifcifnie-field' ); ?>
-						<span class="woocommerce-help-tip" data-tip="<?php esc_attr_e( 'Check if you need to remove phone and email fields from the address.', 'wc-apg-nifcifnie-field' ); ?>"></span>
-					</label>
-				</th>
-				<td class="forminp"><input id="apg_nif_settings[campos]" name="apg_nif_settings[campos]" type="checkbox" value="1" <?php checked( isset( $apg_nif_settings[ 'campos' ] ) ? $apg_nif_settings[ 'campos' ] : '', 1 ); ?> tabindex="<?php echo $tab++; ?>" /></td>
-			</tr>
 		</table>
 		<?php submit_button(); ?>
 	</form>
