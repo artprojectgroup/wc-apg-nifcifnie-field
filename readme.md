@@ -9,7 +9,7 @@ Requires at least: 5.0
 
 Tested up to: 6.7
 
-Stable tag: 3.0
+Stable tag: 3.0.1
 
 WC requires at least: 5.6
 
@@ -88,6 +88,9 @@ Si necesitas ayuda para configurar o instalar **WC - APG NIF/CIF/NIE Field**, **
 *En ningún caso **Art Project Group** proporciona ningún tipo de soporte técnico gratuito.*
 
 ## Changelog
+### 3.0.1
+* Corregido un error que afecta a versiones anteriores a WooCommerce 8.9.
+
 ### 3.0
 * Añade soporte al bloque Finalizar compra.
 * Mejora de la compatibilidad con plugins de terceros.

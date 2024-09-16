@@ -129,19 +129,21 @@ class APG_Campo_NIF_en_Pedido {
         global $apg_nif_settings;
 
         $etiqueta   = $this->nombre_nif;
-        woocommerce_register_additional_checkout_field( [
-            'id'            => 'apg/nif',
-            'label'         => $etiqueta,
-            'optionalLabel' => sprintf( __( '%s (optional)', 'woocommerce' ), $etiqueta ),
-            'location'      => 'address',
-            'required'      => ( isset( $apg_nif_settings[ 'requerido' ] ) && $apg_nif_settings[ 'requerido' ] == "1" ) ? true : false,
-            'type'          => 'text',
-            'attributes' => [
-                'autocomplete'      => 'nif',
-                'data-attribute'    => 'nif',
-                'title'             => $this->placeholder,
-            ],
-        ] );  
+        if ( function_exists( 'woocommerce_register_additional_checkout_field' ) ) {
+            woocommerce_register_additional_checkout_field( [
+                'id'            => 'apg/nif',
+                'label'         => $etiqueta,
+                'optionalLabel' => sprintf( __( '%s (optional)', 'woocommerce' ), $etiqueta ),
+                'location'      => 'address',
+                'required'      => ( isset( $apg_nif_settings[ 'requerido' ] ) && $apg_nif_settings[ 'requerido' ] == "1" ) ? true : false,
+                'type'          => 'text',
+                'attributes' => [
+                    'autocomplete'      => 'nif',
+                    'data-attribute'    => 'nif',
+                    'title'             => $this->placeholder,
+                ],
+            ] );              
+        }
 
         //Limpia el campo NIF/CIF/NIE
         add_action( 'woocommerce_sanitize_additional_field', function( $field_value, $field_key ) {
