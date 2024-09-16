@@ -26,17 +26,17 @@ class APG_Campo_NIF_en_Direcciones {
         return $campos;
 	}
 	
-	//Reordena los campos de la dirección predeterminada
-	public function apg_nif_formato_direccion_localizacion( $campos ) {
+	//Modificalos campos de las direcciones
+	public function apg_nif_formato_direccion_localizacion( $direccion ) {
 		global $apg_nif_settings;
         
         if ( ! is_checkout() ) {
-            foreach ( $campos as $id => $format ) {
-                $campos[ $id ] = str_replace( "{company}", "{company}\n{nif}", $format );
+            foreach ( $direccion as $id => $formato ) {
+                $direccion[ $id ] = str_replace( "{company}", "{company}\n{nif}", $formato );
             }
         }
 
-        return $campos;
+        return $direccion;
 	}
 	
 	//Añade los campos en WooCommerce PDF Invoices & Packing Slips

@@ -59,7 +59,7 @@ class APG_Campo_NIF_en_Admin_Pedidos {
 			'show'	=> false
 		];
         $campos[ 'phone' ]  = [ 
-			'label'	=> __( 'Telephone', 'woocommerce' ),
+			'label'	=> __( 'Phone', 'woocommerce' ),
 			'show'	=> false
 		];
         $campos[ 'email' ]  = [ 
