@@ -31,6 +31,7 @@ class APG_Campo_NIF_en_Admin_Pedidos {
 
 	//Añade el NIF y el teléfono a la dirección de facturación y envío
 	public function apg_nif_anade_campo_nif_direccion_facturacion( $campos, $pedido ) {
+        //exit();
         if ( is_array( $campos ) ) {
             $campos[ 'nif' ]     = $pedido->get_meta( '_billing_nif', true );
             $campos[ 'email' ]   = $pedido->get_billing_email();
@@ -59,12 +60,12 @@ class APG_Campo_NIF_en_Admin_Pedidos {
 			'show'	=> false
 		];
         $campos[ 'phone' ]  = [ 
-			'label'	=> __( 'Phone', 'woocommerce' ),
-			'show'	=> false
+			'label'	=> __( 'Telephone', 'woocommerce' ),
+			'show'	=> true
 		];
         $campos[ 'email' ]  = [ 
 			'label'	=> __( 'Email Address', 'woocommerce' ),
-			'show'	=> false
+			'show'	=> true
 		];
 
 		//Ordena los campos
@@ -82,12 +83,19 @@ class APG_Campo_NIF_en_Admin_Pedidos {
 			"state",
 			"country", 
 		];
-		
-		foreach( $orden_de_campos as $campo ) {
-			$campos_ordenados[$campo] = $campos[$campo];
-		}
+        		
+        foreach ( $orden_de_campos as $campo ) {
+            if ( isset( $campos[ $campo ] ) ) {
+                $campos_ordenados[ $campo ] = $campos[ $campo ];
+            }
+        }
 
-		return $campos_ordenados;
+        foreach ( $campos as $campo => $datos ) {
+            if ( ! isset( $campos_ordenados[ $campo ] ) && $datos[ 'label' ] != __( ( isset( $apg_nif_settings[ 'etiqueta' ] ) ? esc_attr( $apg_nif_settings[ 'etiqueta' ] ) : 'NIF/CIF/NIE' ), 'wc-apg-nifcifnie-field' ) ) {
+                $campos_ordenados[ $campo ] = $datos;
+            }
+        }
+        return $campos_ordenados;
 	}
 
 	//Carga el campo NIF en los pedidos creados manualmente

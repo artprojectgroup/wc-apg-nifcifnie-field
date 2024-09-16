@@ -171,12 +171,12 @@ class APG_Campo_NIF_en_Pedido {
 			return;
 		}
 
-		$clave    = ( 'billing' === $group ) ? 'billing_nif' : 'shipping_nif';
+		$clave    = ( 'billing' === $group ) ? '_billing_nif' : '_shipping_nif';
 
 		$wc_object->update_meta_data( $clave, $value, true );
 	}
     public function apg_nif_retrocompatibilidad_campo_formulario_bloques( $value, $group, $wc_object ) {
-		$clave    = ( 'billing' === $group ) ? 'billing_nif' : 'shipping_nif';
+		$clave    = ( 'billing' === $group ) ? '_billing_nif' : '_shipping_nif';
 
 		return $wc_object->get_meta( $clave );
 	}

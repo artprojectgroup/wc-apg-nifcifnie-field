@@ -8,9 +8,8 @@ defined( 'ABSPATH' ) || exit;
 class APG_Campo_NIF_en_Direcciones {
 	//Inicializa las acciones de Direcciones
 	public function __construct() {
-		add_filter( 'woocommerce_formatted_address_replacements', [ $this, 'apg_nif_formato_direccion_de_facturacion' ], 1, 2 );
-		add_filter( 'woocommerce_localisation_address_formats', [ $this, 'apg_nif_formato_direccion_localizacion' ] );
-		add_filter( 'wpo_wcpdf_billing_address', [ $this, 'apg_nif_direccion_factura_pdf' ], 1, 2 );
+		add_filter( 'woocommerce_formatted_address_replacements', [ $this, 'apg_nif_formato_direccion_de_facturacion' ], 10, 2 );
+		add_filter( 'woocommerce_localisation_address_formats', [ $this, 'apg_nif_formato_direccion_localizacion' ], PHP_INT_MAX );
 
 	}
 	
@@ -37,15 +36,6 @@ class APG_Campo_NIF_en_Direcciones {
         }
 
         return $direccion;
-	}
-	
-	//Añade los campos en WooCommerce PDF Invoices & Packing Slips
-	public function apg_nif_direccion_factura_pdf( $direccion, $documento ) {
-        if (!empty($documento->order) && $nif = $documento->get_custom_field('billing_nif') ) {
-            $direccion = $direccion . "<br />$nif";
-        }
-
-		return $direccion;
 	}
 }
 new APG_Campo_NIF_en_Direcciones();
