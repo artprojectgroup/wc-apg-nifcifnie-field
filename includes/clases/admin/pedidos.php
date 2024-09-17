@@ -9,8 +9,6 @@ class APG_Campo_NIF_en_Admin_Pedidos {
 	//Inicializa las acciones de Pedido
 	public function __construct() {
         add_filter( 'woocommerce_shop_order_search_fields', [ $this, 'apg_nif_anade_campo_nif_busqueda' ] );
-		add_filter( 'woocommerce_order_formatted_billing_address', [ $this, 'apg_nif_anade_campo_nif_direccion_facturacion' ], 1, 2 );
-		add_filter( 'woocommerce_order_formatted_shipping_address', [ $this, 'apg_nif_anade_campo_nif_direccion_envio' ], 1, 2 );
 		add_filter( 'woocommerce_admin_billing_fields', [ $this, 'apg_nif_anade_campo_nif_editar_direccion_pedido' ] );
 		add_filter( 'woocommerce_admin_shipping_fields', [ $this, 'apg_nif_anade_campo_nif_editar_direccion_pedido' ] );
 		if ( version_compare( WC_VERSION, '2.7', '<' ) ) { 
@@ -28,28 +26,6 @@ class APG_Campo_NIF_en_Admin_Pedidos {
         
         return $search_fields;
     }
-
-	//Añade el NIF y el teléfono a la dirección de facturación y envío
-	public function apg_nif_anade_campo_nif_direccion_facturacion( $campos, $pedido ) {
-        //exit();
-        if ( is_array( $campos ) ) {
-            $campos[ 'nif' ]     = $pedido->get_meta( '_billing_nif', true );
-            $campos[ 'email' ]   = $pedido->get_billing_email();
-            $campos[ 'phone' ]   = $pedido->get_billing_phone();
-        }
-
-        return $campos;
-	}
-	 
-	public function apg_nif_anade_campo_nif_direccion_envio( $campos, $pedido ) {
-		if ( is_array( $campos ) ) {
-			$campos[ 'nif' ]     = $pedido->get_meta( '_shipping_nif', true );
-			$campos[ 'email' ]   = $pedido->get_meta( '_shipping_email', true );
-			$campos[ 'phone' ]   = $pedido->get_shipping_phone();
-		}
-		 
-		return $campos;
-	}
 
 	//Añade el campo NIF a Detalles del pedido
 	public function apg_nif_anade_campo_nif_editar_direccion_pedido( $campos ) {
@@ -95,6 +71,7 @@ class APG_Campo_NIF_en_Admin_Pedidos {
                 $campos_ordenados[ $campo ] = $datos;
             }
         }
+        
         return $campos_ordenados;
 	}
 
