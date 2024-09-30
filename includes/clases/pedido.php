@@ -428,18 +428,19 @@ class APG_Campo_NIF_en_Pedido {
     public function apg_nif_validacion_de_campo_bloques( WP_Error $errors, $fields, $group ) {
         global $apg_nif_settings;
         
-        $pais   = strtoupper( substr( $fields[ 'apg/nif' ], 0, 2 ) );
+        $campo  = isset( $fields[ "apg/nif" ] ) ? "apg/nif" : "billing_nif";
+        $pais   = strtoupper( substr( $fields[ $campo ], 0, 2 ) );
 
         //Comprueba si es un número VAT válido
         if ( $pais == $fields[ 'country' ] || $fields[ 'country' ] != "ES" ) {
-            if ( ! $this->apg_nif_validacion_eu( $fields[ 'apg/nif' ] ) ) {
+            if ( ! $this->apg_nif_validacion_eu( $fields[ $campo ] ) ) {
                 $errors->add( 'invalid_vat', $this->mensaje_error );
             }
         }
 
         //Comprueba el campo NIF/CIF/NIE
-        if ( $fields[ 'country' ] == "ES" && isset( $fields[ 'apg/nif' ] ) && ! empty( $fields[ 'apg/nif' ] ) ) {
-            if ( ! $this->apg_nif_validacion( $fields[ 'apg/nif' ] ) ) {
+        if ( $fields[ 'country' ] == "ES" && isset( $fields[ $campo ] ) && ! empty( $fields[ $campo ] ) ) {
+            if ( ! $this->apg_nif_validacion( $fields[ $campo ] ) ) {
                 $errors->add( 'invalid_nif', $this->mensaje_error );
             }
         }
@@ -450,8 +451,8 @@ class APG_Campo_NIF_en_Pedido {
         }
         
         //Muestra el mensaje de error personalizado
-        if ( apply_filters( "apg_nif_display_error_message", false, $fields[ 'apg/nif' ], $fields[ 'country' ] ) ) {
-            $errors->add( 'invalid_eori', apply_filters( "apg_nif_error_message", $this->mensaje_error, $fields[ 'apg/nif' ], $fields[ 'country' ] ) );
+        if ( apply_filters( "apg_nif_display_error_message", false, $fields[ $campo ], $fields[ 'country' ] ) ) {
+            $errors->add( 'invalid_eori', apply_filters( "apg_nif_error_message", $this->mensaje_error, $fields[ $campo ], $fields[ 'country' ] ) );
         }
         
         return $errors;
@@ -496,7 +497,6 @@ class APG_Campo_NIF_en_Pedido {
             
             return;
         }
-
 
         $_SESSION[ 'apg_nif' ]  = false;
         $valido                 = true;
