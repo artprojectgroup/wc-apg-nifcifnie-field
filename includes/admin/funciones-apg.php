@@ -18,7 +18,7 @@ $envios_adicionales = $limpieza = NULL;
 function apg_nif_inicia_idioma() {
     load_plugin_textdomain( 'wc-apg-nifcifnie-field', null, dirname( DIRECCION_apg_nif ) . '/languages' );
 }
-add_action( 'plugins_loaded', 'apg_nif_inicia_idioma' );
+add_action( 'after_setup_theme', 'apg_nif_inicia_idioma' );
 
 //Carga la configuración del plugin
 $apg_nif_settings	= get_option( 'apg_nif_settings' );

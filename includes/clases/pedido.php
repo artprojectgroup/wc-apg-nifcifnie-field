@@ -426,35 +426,35 @@ class APG_Campo_NIF_en_Pedido {
 
     //Valida el campo NIF/CIF/NIE - Bloques
     public function apg_nif_validacion_de_campo_bloques( WP_Error $errors, $fields, $group ) {
-        global $apg_nif_settings;
-        
-        $campo  = isset( $fields[ "apg/nif" ] ) ? "apg/nif" : "billing_nif";
-        $pais   = strtoupper( substr( $fields[ $campo ], 0, 2 ) );
+        if ( is_checkout() ) {
+            global $apg_nif_settings;
 
-        //Comprueba si es un número VAT válido
-        if ( $pais == $fields[ 'country' ] || $fields[ 'country' ] != "ES" ) {
-            if ( ! $this->apg_nif_validacion_eu( $fields[ $campo ] ) ) {
-                $errors->add( 'invalid_vat', $this->mensaje_error );
+            $pais   = strtoupper( substr( $fields[ 'apg/nif' ], 0, 2 ) );
+
+            //Comprueba si es un número VAT válido
+            if ( $pais == $fields[ 'country' ] || $fields[ 'country' ] != "ES" ) {
+                if ( ! $this->apg_nif_validacion_eu( $fields[ 'apg/nif' ] ) ) {
+                    $errors->add( 'invalid_vat', $this->mensaje_error );
+                }
+            }
+
+            //Comprueba el campo NIF/CIF/NIE
+            if ( $fields[ 'country' ] == "ES" && isset( $fields[ 'apg/nif' ] ) && ! empty( $fields[ 'apg/nif' ] ) ) {
+                if ( ! $this->apg_nif_validacion( $fields[ 'apg/nif' ] ) ) {
+                    $errors->add( 'invalid_nif', $this->mensaje_error );
+                }
+            }
+
+            //Muestra el mensaje de error EORI
+            if ( isset( $apg_nif_settings[ 'eori_paises' ] ) && in_array( $fields[ 'country' ], $apg_nif_settings[ 'eori_paises' ] ) && ! $_SESSION[ 'apg_eori' ] ) {
+                $errors->add( 'invalid_eori', $this->mensaje_eori );
+            }
+
+            //Muestra el mensaje de error personalizado
+            if ( apply_filters( "apg_nif_display_error_message", false, $fields[ 'apg/nif' ], $fields[ 'country' ] ) ) {
+                $errors->add( 'invalid_eori', apply_filters( "apg_nif_error_message", $this->mensaje_error, $fields[ 'apg/nif' ], $fields[ 'country' ] ) );
             }
         }
-
-        //Comprueba el campo NIF/CIF/NIE
-        if ( $fields[ 'country' ] == "ES" && isset( $fields[ $campo ] ) && ! empty( $fields[ $campo ] ) ) {
-            if ( ! $this->apg_nif_validacion( $fields[ $campo ] ) ) {
-                $errors->add( 'invalid_nif', $this->mensaje_error );
-            }
-        }
-
-        //Muestra el mensaje de error EORI
-        if ( isset( $apg_nif_settings[ 'eori_paises' ] ) && in_array( $fields[ 'country' ], $apg_nif_settings[ 'eori_paises' ] ) && ! $_SESSION[ 'apg_eori' ] ) {
-            $errors->add( 'invalid_eori', $this->mensaje_eori );
-        }
-        
-        //Muestra el mensaje de error personalizado
-        if ( apply_filters( "apg_nif_display_error_message", false, $fields[ $campo ], $fields[ 'country' ] ) ) {
-            $errors->add( 'invalid_eori', apply_filters( "apg_nif_error_message", $this->mensaje_error, $fields[ $campo ], $fields[ 'country' ] ) );
-        }
-        
         return $errors;
     }
     
