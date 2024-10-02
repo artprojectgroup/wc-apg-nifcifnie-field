@@ -2,7 +2,7 @@
 /*
 Plugin Name: WC - APG NIF/CIF/NIE Field
 Requires Plugins: woocommerce
-Version: 3.0.6
+Version: 3.0.7
 Plugin URI: https://wordpress.org/plugins/wc-apg-nifcifnie-field/
 Description: Add to WooCommerce a NIF/CIF/NIE field.
 Author URI: https://artprojectgroup.es/

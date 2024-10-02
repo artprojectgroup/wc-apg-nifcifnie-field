@@ -87,7 +87,7 @@ class APG_Campo_NIF_en_Pedido {
         if ( ! CartCheckoutUtils::is_checkout_block_default() ) {
             //Añade el correo electónico y el teléfono
             $campos[ 'email' ]  = [
-                'label'         => __( 'Email Address', 'woocommerce' ) . "Modificado",
+                'label'         => __( 'Email address', 'woocommerce' ),
                 'required'      => true,
                 'type'          => 'email',
                 'validate'      => [

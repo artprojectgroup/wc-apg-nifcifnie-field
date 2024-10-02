@@ -40,7 +40,7 @@ class APG_Campo_NIF_en_Admin_Pedidos {
 			'show'	=> true
 		];
         $campos[ 'email' ]  = [ 
-			'label'	=> __( 'Email Address', 'woocommerce' ),
+			'label'	=> __( 'Email address', 'woocommerce' ),
 			'show'	=> true
 		];
 
