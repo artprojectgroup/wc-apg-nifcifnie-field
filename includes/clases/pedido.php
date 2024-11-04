@@ -575,6 +575,7 @@ class APG_Campo_NIF_en_Pedido {
                 }
             }
         }
+        //Devuelve el valor
         echo $valido;
         
         return;
