@@ -262,114 +262,114 @@ class APG_Campo_NIF_en_Pedido {
         }
         switch ( substr( $vat_number, 0, 2 ) ) {
             case 'AT': //AUSTRIA 
-                $eu_valido  = ( bool )preg_match( '/^(AT)U(\d{8})$/', $vat_number );
+                $eu_valido  = ( bool ) preg_match( '/^(AT)U(\d{8})$/', $vat_number );
                 break;
             case 'BE': //BÉLGICA 
-                $eu_valido  = ( bool )preg_match( '/(BE)(0?\d{9})$/', $vat_number );
+                $eu_valido  = ( bool ) preg_match( '/(BE)(0?\d{9})$/', $vat_number );
                 break;
             case 'BG': //BULGARIA 
-                $eu_valido  = ( bool )preg_match( '/(BG)(\d{9,10})$/', $vat_number );
+                $eu_valido  = ( bool ) preg_match( '/(BG)(\d{9,10})$/', $vat_number );
                 break;
             case 'CH': //SUIZA 
-                $eu_valido  = ( bool )preg_match( '/(CHE)(\d{9})(MWST)?$/', $vat_number );
+                $eu_valido  = ( bool ) preg_match( '/(CHE)(\d{9})(MWST)?$/', $vat_number );
                 break;
             case 'CY': //CHIPRE 
-                $eu_valido  = ( bool )preg_match( '/^(CY)([0-5|9]\d{7}[A-Z])$/', $vat_number );
+                $eu_valido  = ( bool ) preg_match( '/^(CY)([0-5|9]\d{7}[A-Z])$/', $vat_number );
                 break;
             case 'CZ': //REPÚBLICA CHECA
-                $eu_valido  = ( bool )preg_match( '/^(CZ)(\d{8,10})(\d{3})?$/', $vat_number );
+                $eu_valido  = ( bool ) preg_match( '/^(CZ)(\d{8,10})(\d{3})?$/', $vat_number );
                 break;
             case 'DE': //ALEMANIA 
-                $eu_valido  = ( bool )preg_match( '/^(DE)([1-9]\d{8,9})/', $vat_number );
+                $eu_valido  = ( bool ) preg_match( '/^(DE)([1-9]\d{8,9})/', $vat_number );
                 break;
             case 'DK': //DINAMARCA 
-                $eu_valido  = ( bool )preg_match( '/^(DK)(\d{8})$/', $vat_number );
+                $eu_valido  = ( bool ) preg_match( '/^(DK)(\d{8})$/', $vat_number );
                 break;
             case 'EE': //ESTONIA 
-                $eu_valido  = ( bool )preg_match( '/^(EE)(10\d{7,9})$/', $vat_number );
+                $eu_valido  = ( bool ) preg_match( '/^(EE)(10\d{7,9})$/', $vat_number );
                 break;
             case 'EL': //GRECIA 
-                $eu_valido  = ( bool )preg_match( '/^(EL)(\d{9})$/', $vat_number );
+                $eu_valido  = ( bool ) preg_match( '/^(EL)(\d{9})$/', $vat_number );
                 break;
             case 'ES': //ESPAÑA 
-                $eu_valido  = ( bool )preg_match( '/^(ES)([A-Z]\d{8})$/', $vat_number ) ||
+                $eu_valido  = ( bool ) preg_match( '/^(ES)([A-Z]\d{8})$/', $vat_number ) ||
                     preg_match( '/^(ES)([A-H|N-S|W]\d{7}[A-J])$/', $vat_number ) ||
                     preg_match( '/^(ES)([0-9|Y|Z]\d{7}[A-Z])$/', $vat_number ) ||
                     preg_match( '/^(ES)([K|L|M|X]\d{7}[A-Z])$/', $vat_number );
                 break;
             case 'EU': //UNIÓN EUROPEA 
-                $eu_valido  = ( bool )preg_match( '/^(EU)(\d{9})$/', $vat_number );
+                $eu_valido  = ( bool ) preg_match( '/^(EU)(\d{9})$/', $vat_number );
                 break;
             case 'FI': //FINLANDIA 
-                $eu_valido  = ( bool )preg_match( '/^(FI)(\d{8})$/', $vat_number );
+                $eu_valido  = ( bool ) preg_match( '/^(FI)(\d{8})$/', $vat_number );
                 break;
             case 'FR': //FRANCIA 
-                $eu_valido  = ( bool )preg_match( '/^(FR)(\d{11})$/', $vat_number ) ||
+                $eu_valido  = ( bool ) preg_match( '/^(FR)(\d{11})$/', $vat_number ) ||
                     preg_match( '/^(FR)([(A-H)|(J-N)|(P-Z)]\d{10})$/', $vat_number ) ||
                     preg_match( '/^(FR)(\d[(A-H)|(J-N)|(P-Z)]\d{9})$/', $vat_number ) ||
                     preg_match( '/^(FR)([(A-H)|(J-N)|(P-Z)]{2}\d{9})$/', $vat_number );
                 break;
             case 'GB': //GRAN BRETAÑA 
-                $eu_valido  = ( bool )preg_match( '/^(GB)?(\d{9})$/', $vat_number ) ||
+                $eu_valido  = ( bool ) preg_match( '/^(GB)?(\d{9})$/', $vat_number ) ||
                     preg_match( '/^(GB)?(\d{12})$/', $vat_number ) ||
                     preg_match( '/^(GB)?(GD\d{3})$/', $vat_number ) ||
                     preg_match( '/^(GB)?(HA\d{3})$/', $vat_number );
                 break;
             case 'GR': //GRECIA
-                $eu_valido  = ( bool )preg_match( '/^(GR)(\d{8,9})$/', $vat_number );
+                $eu_valido  = ( bool ) preg_match( '/^(GR)(\d{8,9})$/', $vat_number );
                 break;
             case 'HR': //CROACIA 
-                $eu_valido  = ( bool )preg_match( '/^(HR)(\d{11})$/', $vat_number );
+                $eu_valido  = ( bool ) preg_match( '/^(HR)(\d{11})$/', $vat_number );
                 break;
             case 'HU': //HUNGRÍA 
-                $eu_valido  = ( bool )preg_match( '/^(HU)(\d{8})$/', $vat_number );
+                $eu_valido  = ( bool ) preg_match( '/^(HU)(\d{8})$/', $vat_number );
                 break;
             case 'IE': //IRLANDA 
-                $eu_valido  = ( bool )preg_match( '/^(IE)(\d{7}[A-W])$/', $vat_number ) ||
+                $eu_valido  = ( bool ) preg_match( '/^(IE)(\d{7}[A-W])$/', $vat_number ) ||
                     preg_match( '/^(IE)([7-9][A-Z\*\+)]\d{5}[A-W])$/', $vat_number ) ||
                     preg_match( '/^(IE)(\d{7}[A-W][AH])$/', $vat_number );
                 break;
             case 'IT': //ITALIA 
-                $eu_valido  = ( bool )preg_match( '/^(IT)(\d{11})$/', $vat_number );
+                $eu_valido  = ( bool ) preg_match( '/^(IT)(\d{11})$/', $vat_number );
                 break;
             case 'LV': //LETONIA 
-                $eu_valido  = ( bool )preg_match( '/^(LV)(\d{11})$/', $vat_number );
+                $eu_valido  = ( bool ) preg_match( '/^(LV)(\d{11})$/', $vat_number );
                 break;
             case 'LT': //LITUANIA 
-                $eu_valido  = ( bool )preg_match( '/^(LT)(\d{9}|\d{12})$/', $vat_number );
+                $eu_valido  = ( bool ) preg_match( '/^(LT)(\d{9}|\d{12})$/', $vat_number );
                 break;
             case 'LU': //LUXEMBURGO 
-                $eu_valido  = ( bool )preg_match( '/^(LU)(\d{8})$/', $vat_number );
+                $eu_valido  = ( bool ) preg_match( '/^(LU)(\d{8})$/', $vat_number );
                 break;
             case 'MT': //MALTA 
-                $eu_valido  = ( bool )preg_match( '/^(MT)([1-9]\d{7,8})$/', $vat_number );
+                $eu_valido  = ( bool ) preg_match( '/^(MT)([1-9]\d{7,8})$/', $vat_number );
                 break;
             case 'NL': //PAÍSES BAJOS 
-                $eu_valido  = ( bool )preg_match( '/^(NL)(\d{9})B\d{2}$/', $vat_number );
+                $eu_valido  = ( bool ) preg_match( '/^(NL)(\d{9})B\d{2}$/', $vat_number );
                 break;
             case 'NO': //NORUEGA 
-                $eu_valido  = ( bool )preg_match( '/^(NO)(\d{9})$/', $vat_number );
+                $eu_valido  = ( bool ) preg_match( '/^(NO)(\d{9})$/', $vat_number );
                 break;
             case 'PL': //POLONIA 
-                $eu_valido  = ( bool )preg_match( '/^(PL)(\d{10})$/', $vat_number );
+                $eu_valido  = ( bool ) preg_match( '/^(PL)(\d{10})$/', $vat_number );
                 break;
             case 'PT': //PORTUGAL 
-                $eu_valido  = ( bool )preg_match( '/^(PT)(\d{9})$/', $vat_number );
+                $eu_valido  = ( bool ) preg_match( '/^(PT)(\d{9})$/', $vat_number );
                 break;
             case 'RO': //RUMANÍA 
-                $eu_valido  = ( bool )preg_match( '/^(RO)([1-9]\d{2,10})$/', $vat_number );
+                $eu_valido  = ( bool ) preg_match( '/^(RO)([1-9]\d{2,10})$/', $vat_number );
                 break;
             case 'RS': //SERBIA 
-                $eu_valido  = ( bool )preg_match( '/^(RS)(\d{9})$/', $vat_number );
+                $eu_valido  = ( bool ) preg_match( '/^(RS)(\d{9})$/', $vat_number );
                 break;
             case 'SI': //ESLOVENIA 
-                $eu_valido  = ( bool )preg_match( '/^(SI)([1-9]\d{7,8})$/', $vat_number );
+                $eu_valido  = ( bool ) preg_match( '/^(SI)([1-9]\d{7,8})$/', $vat_number );
                 break;
             case 'SK': //REPÚBLICA ESLOVACA
-                $eu_valido  = ( bool )preg_match( '/^(SK)([1-9]\d[(2-4)|(6-9)]\d{7})$/', $vat_number );
+                $eu_valido  = ( bool ) preg_match( '/^(SK)([1-9]\d[(2-4)|(6-9)]\d{7})$/', $vat_number );
                 break;
             case 'SE': //SUECIA 
-                $eu_valido  = ( bool )preg_match( '/^(SE)(\d{10}01)$/', $vat_number );
+                $eu_valido  = ( bool ) preg_match( '/^(SE)(\d{10}01)$/', $vat_number );
                 break;
             default:
                 $eu_valido  = false;
@@ -426,7 +426,7 @@ class APG_Campo_NIF_en_Pedido {
 
     //Valida el campo NIF/CIF/NIE - Bloques
     public function apg_nif_validacion_de_campo_bloques( WP_Error $errors, $fields, $group ) {
-        if ( is_checkout() ) {
+        if ( CartCheckoutUtils::is_checkout_block_default() ) {
             global $apg_nif_settings;
 
             $pais   = strtoupper( substr( $fields[ 'apg/nif' ], 0, 2 ) );
@@ -455,6 +455,7 @@ class APG_Campo_NIF_en_Pedido {
                 $errors->add( 'invalid_eori', apply_filters( "apg_nif_error_message", $this->mensaje_error, $fields[ 'apg/nif' ], $fields[ 'country' ] ) );
             }
         }
+        
         return $errors;
     }
     
