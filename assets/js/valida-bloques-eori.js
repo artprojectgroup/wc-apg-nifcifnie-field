@@ -10,21 +10,18 @@ jQuery(function ($) {
             }
         }
     });
-
-    //Valida al actualizar algún campo
-    $('#billing-apg-nif,#billing-country,#shipping-apg-nif,#shipping-country').on('change', function () {
-        var formulario = $(this).closest('.wc-block-components-address-form').attr('id');
-        if ($('#checkbox-control-0').is(":checked") || (!$('#checkbox-control-0').is(":checked") && formulario == 'billing')) {
-            if (lista.includes($('#' + formulario + '-country').val()) == true) {
-                ValidaEORI_Bloques(formulario);
-            } else if ($('#error_eori').length) {
-                $('#error_eori').remove();
-            }
-        }
+    ValidaCampos_EORI();
+    
+    //Valida al cargarse el formulario de facturación
+    $("body").on('DOMNodeInserted', '#billing-fields', function(e) {
+        ValidaCampos_EORI();
     });
 
     //Valida el EORI
     function ValidaEORI_Bloques(formulario) {
+        if ( !$("#" + formulario + "-apg-nif").val() || !$("#" + formulario + "-country").val() ) {
+            return null;
+        }
         var datos = {
             'action': 'apg_nif_valida_EORI',
             'billing_nif': $('#' + formulario + '-apg-nif').val(),
@@ -43,6 +40,20 @@ jQuery(function ($) {
                     $('#error_eori').remove();
                 }
             },
+        });
+    }
+    
+    //Valida al actualizar algún campo
+    function ValidaCampos_EORI() {
+        $('#billing-apg-nif,#billing-country,#shipping-apg-nif,#shipping-country').on('change', function () {
+            var formulario = $(this).closest('.wc-block-components-address-form').attr('id');
+            if ($('#checkbox-control-0').is(":checked") || (!$('#checkbox-control-0').is(":checked") && formulario == 'billing')) {
+                if (lista.includes($('#' + formulario + '-country').val()) == true) {
+                    ValidaEORI_Bloques(formulario);
+                } else if ($('#error_eori').length) {
+                    $('#error_eori').remove();
+                }
+            }
         });
     }
 });

@@ -9,6 +9,9 @@ jQuery( function( $ ) {
 
 	//Valida el VIES
 	function ValidaVIES() {
+        if ( !$("#billing_nif").val() || !$("#billing_country").val() ) {
+            return null;
+        }
         var datos = {
             'action'			: 'apg_nif_valida_VIES',
             'billing_nif'		: $( '#billing_nif' ).val(),

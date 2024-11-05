@@ -16,6 +16,9 @@ jQuery( function( $ ) {
     
 	//Valida el EORI
 	function ValidaEORI() {
+        if ( !$("#billing_nif").val() || !$("#billing_country").val() ) {
+            return null;
+        }
         var datos = {
             'action'			: 'apg_nif_valida_EORI',
             'billing_nif'		: $( '#billing_nif' ).val(),

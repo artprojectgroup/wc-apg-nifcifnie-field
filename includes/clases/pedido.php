@@ -455,8 +455,6 @@ class APG_Campo_NIF_en_Pedido {
                 $errors->add( 'invalid_eori', apply_filters( "apg_nif_error_message", $this->mensaje_error, $fields[ 'apg/nif' ], $fields[ 'country' ] ) );
             }
         }
-        
-        return $errors;
     }
     
     //Carga el JavaScript necesario
