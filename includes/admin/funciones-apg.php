@@ -2,6 +2,8 @@
 //Igual no deberías poder abrirme
 defined( 'ABSPATH' ) || exit;
 
+use Automattic\WooCommerce\Blocks\Utils;
+
 //Definimos las variables
 $apg_nif = [	
 	'plugin' 		=> 'WC - APG NIF/CIF/NIE Field', 
