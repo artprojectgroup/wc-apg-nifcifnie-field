@@ -29,21 +29,23 @@ class APG_Campo_NIF_en_Pedido {
         add_action( 'woocommerce_init', [ $this, 'apg_nif_formulario_bloques' ] );
         add_action( 'woocommerce_set_additional_field_value', [ $this, 'apg_nif_retrocompatibilidad_formulario_bloques' ], 10, 4 );
         add_filter( 'woocommerce_get_default_value_for_apg/nif', [ $this, 'apg_nif_retrocompatibilidad_campo_formulario_bloques' ], 10, 3 );
-        
+        add_action( 'woocommerce_blocks_loaded', [ $this, 'apg_nif_recarga_checkout' ] );
+                   
         //Valida el campo NIF/CIF/NIE
         if ( isset( $apg_nif_settings[ 'validacion' ] ) && $apg_nif_settings[ 'validacion' ] == "1" ) {
             add_action( 'woocommerce_checkout_process', [ $this, 'apg_nif_validacion_de_campo' ] );
             add_action( 'woocommerce_blocks_validate_location_address_fields', [ $this, 'apg_nif_validacion_de_campo_bloques' ], 10, 3 ); //Formulario de bloques
         }
         //Añade el número VIES
-        if ( isset( $apg_nif_settings[ 'validacion_vies' ] ) && $apg_nif_settings[ 'validacion_vies' ] == "1" ) {
+        if ( isset( $apg_nif_settings[ 'validacion_vies' ] ) && $apg_nif_settings[ 'validacion_vies' ] == "1" && ! apg_nif_checkout_block() ) {
             add_action( 'wp_enqueue_scripts', [ $this, 'apg_nif_carga_ajax' ] );
             add_action( 'wp_ajax_nopriv_apg_nif_valida_VIES', [ $this, 'apg_nif_valida_VIES' ] );
             add_action( 'wp_ajax_apg_nif_valida_VIES', [ $this, 'apg_nif_valida_VIES' ] );
             add_action( 'init', [ $this, 'apg_nif_quita_iva' ] );
+            add_action( 'woocommerce_checkout_update_order_review', [ $this, 'apg_nif_quita_iva' ] );
         }
         //Añade el número EORI
-        if ( isset( $apg_nif_settings[ 'validacion_eori' ] ) && $apg_nif_settings[ 'validacion_eori' ] == "1" ) {
+        if ( isset( $apg_nif_settings[ 'validacion_eori' ] ) && $apg_nif_settings[ 'validacion_eori' ] == "1" && ! apg_nif_checkout_block() ) {
             add_action( 'wp_enqueue_scripts', [ $this, 'apg_nif_carga_ajax' ] );
             add_action( 'wp_ajax_nopriv_apg_nif_valida_EORI', [ $this, 'apg_nif_valida_EORI' ] );
             add_action( 'wp_ajax_apg_nif_valida_EORI', [ $this, 'apg_nif_valida_EORI' ] );
@@ -164,6 +166,18 @@ class APG_Campo_NIF_en_Pedido {
             return $locale;
         } );
 	}
+    
+    //Actualiza el checkout
+    public function apg_nif_recarga_checkout() {
+        if ( function_exists( 'woocommerce_store_api_register_update_callback' ) ) {
+            woocommerce_store_api_register_update_callback( [
+                    'namespace' => 'apg_nif_valida_vies',
+                    'callback'  => function() {
+                        $this->apg_nif_quita_iva( true );
+                    },
+            ] );
+        }
+    }
     
     //Añade retrocompatibilidad al formulario de bloques 
     public function apg_nif_retrocompatibilidad_formulario_bloques( $key, $value, $group, $wc_object ) {
@@ -497,7 +511,7 @@ class APG_Campo_NIF_en_Pedido {
             return;
         }
 
-        $_SESSION[ 'apg_nif' ]  = false;
+        //Variables
         $valido                 = true;
         $iso_vies               = [ //Hack para Grecia
             'EL' => 'GR',
@@ -568,11 +582,11 @@ class APG_Campo_NIF_en_Pedido {
                 } else {
                     $valido = false;
                 }
-                if ( $valido ) {
-                    $_SESSION[ 'apg_nif' ]  = true;
-                }
             }
         }
+        //Almacena el valor en la sesión
+        $_SESSION[ 'apg_nif' ]  = $valido;
+        
         //Devuelve el valor
         echo $valido;
         
@@ -580,8 +594,8 @@ class APG_Campo_NIF_en_Pedido {
     }
 
     //Quita impuestos a VIES válido
-    public function apg_nif_quita_iva( $carro ) {
-        if ( is_checkout() || defined( 'WOOCOMMERCE_CHECKOUT' ) || ( defined( 'DOING_AJAX' ) && DOING_AJAX ) ) {
+    public function apg_nif_quita_iva( $actualiza = false) {
+        if ( $actualiza || is_checkout() || defined( 'WOOCOMMERCE_CHECKOUT' ) || ( defined( 'DOING_AJAX' ) && DOING_AJAX ) ) {
             if ( ! session_id() ) {
                 session_start();
             }

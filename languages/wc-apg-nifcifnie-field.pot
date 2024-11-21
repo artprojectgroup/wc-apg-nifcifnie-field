@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WooCommerce - APG NIF/CIF/NIE field\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-16 14:56+0000\n"
+"POT-Creation-Date: 2024-11-21 10:22+0000\n"
 "POT-Revision-Date: Wed Aug 10 2016 13:39:45 GMT+0200 (CEST)\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: \n"
@@ -33,11 +33,11 @@ msgstr ""
 msgid "Add to WooCommerce a NIF/CIF/NIE field."
 msgstr ""
 
-#: includes/formulario.php:132
+#: includes/formulario.php:135
 msgid "Allow EORI number?"
 msgstr ""
 
-#: includes/formulario.php:96
+#: includes/formulario.php:99
 msgid "Allow VIES VAT number?"
 msgstr ""
 
@@ -53,19 +53,19 @@ msgstr ""
 msgid "Art Project Group"
 msgstr ""
 
-#: includes/formulario.php:69 includes/formulario.php:78
+#: includes/formulario.php:72 includes/formulario.php:81
 msgid "Check if you need to require the field."
 msgstr ""
 
-#: includes/formulario.php:133
+#: includes/formulario.php:136
 msgid "Check if you want to allow and validate EORI number."
 msgstr ""
 
-#: includes/formulario.php:97
+#: includes/formulario.php:100
 msgid "Check if you want to allow and validate VIES VAT number."
 msgstr ""
 
-#: includes/formulario.php:87
+#: includes/formulario.php:90
 msgid "Check if you want to validate the field before submit."
 msgstr ""
 
@@ -78,7 +78,7 @@ msgstr ""
 msgid "Contact with us:"
 msgstr ""
 
-#: includes/formulario.php:157
+#: includes/formulario.php:160
 msgid "Countries to validate EORI number"
 msgstr ""
 
@@ -86,35 +86,35 @@ msgstr ""
 msgid "Documentation and Support:"
 msgstr ""
 
-#: includes/formulario.php:50
+#: includes/formulario.php:53
 msgid "Enter the field priority."
 msgstr ""
 
-#: includes/formulario.php:196
+#: includes/formulario.php:199
 msgid "EORI number error message"
 msgstr ""
 
-#: includes/formulario.php:178
+#: includes/formulario.php:181
 msgid "EORI number field label"
 msgstr ""
 
-#: includes/formulario.php:187
+#: includes/formulario.php:190
 msgid "EORI number field placeholder"
 msgstr ""
 
-#: includes/formulario.php:41
+#: includes/formulario.php:44
 msgid "Error message"
 msgstr ""
 
-#: includes/formulario.php:23
+#: includes/formulario.php:26
 msgid "Field label"
 msgstr ""
 
-#: includes/formulario.php:32
+#: includes/formulario.php:35
 msgid "Field placeholder"
 msgstr ""
 
-#: includes/formulario.php:49
+#: includes/formulario.php:52
 msgid "Field priority"
 msgstr ""
 
@@ -155,37 +155,37 @@ msgstr ""
 msgid "NIF/CIF/NIE field"
 msgstr ""
 
-#: includes/formulario.php:36
+#: includes/formulario.php:39
 msgid "NIF/CIF/NIE number"
 msgstr ""
 
-#: includes/formulario.php:182 includes/formulario.php:191
-#: includes/formulario.php:191
+#: includes/formulario.php:185 includes/formulario.php:194
+#: includes/formulario.php:194
 msgid "NIF/CIF/NIE/EORI number"
 msgstr ""
 
-#: includes/formulario.php:109 includes/formulario.php:118
-#: includes/formulario.php:118
+#: includes/formulario.php:112 includes/formulario.php:121
+#: includes/formulario.php:121
 msgid "NIF/CIF/NIE/VAT number"
 msgstr ""
 
-#: includes/formulario.php:58
+#: includes/formulario.php:61
 msgid "No label exists"
 msgstr ""
 
-#: includes/formulario.php:59
+#: includes/formulario.php:62
 msgid "No priority"
 msgstr ""
 
-#: includes/formulario.php:200
+#: includes/formulario.php:203
 msgid "Please enter a valid EORI number."
 msgstr ""
 
-#: includes/formulario.php:45
+#: includes/formulario.php:48
 msgid "Please enter a valid NIF/CIF/NIE."
 msgstr ""
 
-#: includes/formulario.php:127
+#: includes/formulario.php:130
 msgid "Please enter a valid VIES VAT number."
 msgstr ""
 
@@ -195,15 +195,15 @@ msgstr ""
 msgid "Please, rate %s:"
 msgstr ""
 
-#: includes/formulario.php:68
+#: includes/formulario.php:71
 msgid "Require billing field?"
 msgstr ""
 
-#: includes/formulario.php:77
+#: includes/formulario.php:80
 msgid "Require shipping field?"
 msgstr ""
 
-#: includes/formulario.php:158
+#: includes/formulario.php:161
 msgid "Select the list of countries where the EORI number must be validated."
 msgstr ""
 
@@ -223,6 +223,10 @@ msgstr ""
 msgid "Support of "
 msgstr ""
 
+#: includes/formulario.php:20
+msgid "There are functions that aren't yet available for the Checkout block."
+msgstr ""
+
 #: apg-nif.php:109
 msgid ""
 "This plugin requires the <a href=\"http://php.net/manual/en/class.soapclient."
@@ -233,39 +237,39 @@ msgstr ""
 msgid "This plugin requires WooCommerce active to run!"
 msgstr ""
 
-#: includes/formulario.php:197
+#: includes/formulario.php:200
 msgid "Type your own EORI number error message."
 msgstr ""
 
-#: includes/formulario.php:179
+#: includes/formulario.php:182
 msgid "Type your own EORI number field label."
 msgstr ""
 
-#: includes/formulario.php:188
+#: includes/formulario.php:191
 msgid "Type your own EORI number field placeholder."
 msgstr ""
 
-#: includes/formulario.php:42
+#: includes/formulario.php:45
 msgid "Type your own error message."
 msgstr ""
 
-#: includes/formulario.php:24
+#: includes/formulario.php:27
 msgid "Type your own field label."
 msgstr ""
 
-#: includes/formulario.php:33
+#: includes/formulario.php:36
 msgid "Type your own field placeholder."
 msgstr ""
 
-#: includes/formulario.php:124
+#: includes/formulario.php:127
 msgid "Type your own VIES VAT number error message."
 msgstr ""
 
-#: includes/formulario.php:106
+#: includes/formulario.php:109
 msgid "Type your own VIES VAT number field label."
 msgstr ""
 
-#: includes/formulario.php:115
+#: includes/formulario.php:118
 msgid "Type your own VIES VAT number field placeholder."
 msgstr ""
 
@@ -273,19 +277,19 @@ msgstr ""
 msgid "Unknown rating"
 msgstr ""
 
-#: includes/formulario.php:86
+#: includes/formulario.php:89
 msgid "Validate field?"
 msgstr ""
 
-#: includes/formulario.php:123
+#: includes/formulario.php:126
 msgid "VIES VAT number error message"
 msgstr ""
 
-#: includes/formulario.php:105
+#: includes/formulario.php:108
 msgid "VIES VAT number field label"
 msgstr ""
 
-#: includes/formulario.php:114
+#: includes/formulario.php:117
 msgid "VIES VAT number field placeholder"
 msgstr ""
 
@@ -293,6 +297,6 @@ msgstr ""
 msgid "WC - APG NIF/CIF/NIE Field"
 msgstr ""
 
-#: includes/formulario.php:54
+#: includes/formulario.php:57
 msgid "Your current values are:"
 msgstr ""

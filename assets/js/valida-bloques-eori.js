@@ -4,7 +4,7 @@ jQuery(function ($) {
     //Valida al inicio
     $('.wc-block-components-address-card__edit').on("click", function () {
         var formulario = $(this).attr('aria-controls');
-        if ($('#checkbox-control-0').is(":checked") || (!$('#checkbox-control-0').is(":checked") && formulario == 'billing')) {
+        if ($('.wc-block-checkout__use-address-for-billing .wc-block-components-checkbox__input').is(":checked") || (!$('.wc-block-checkout__use-address-for-billing .wc-block-components-checkbox__input').is(":checked") && formulario == 'billing')) {
             if (lista.includes($('#' + formulario + '-country').val()) == true) {
                 ValidaEORI_Bloques(formulario);
             }
@@ -45,9 +45,10 @@ jQuery(function ($) {
     
     //Valida al actualizar algún campo
     function ValidaCampos_EORI() {
-        $('#billing-apg-nif,#billing-country,#shipping-apg-nif,#shipping-country').on('change', function () {
+        $(document).on("change", "#billing-apg-nif,#billing-country,#shipping-apg-nif,#shipping-country", function() {
+       //$('#billing-apg-nif,#billing-country,#shipping-apg-nif,#shipping-country').on('change', function () {
             var formulario = $(this).closest('.wc-block-components-address-form').attr('id');
-            if ($('#checkbox-control-0').is(":checked") || (!$('#checkbox-control-0').is(":checked") && formulario == 'billing')) {
+            if ($('.wc-block-checkout__use-address-for-billing .wc-block-components-checkbox__input').is(":checked") || (!$('.wc-block-checkout__use-address-for-billing .wc-block-components-checkbox__input').is(":checked") && formulario == 'billing')) {
                 if (lista.includes($('#' + formulario + '-country').val()) == true) {
                     ValidaEORI_Bloques(formulario);
                 } else if ($('#error_eori').length) {
