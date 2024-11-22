@@ -74,9 +74,9 @@ function apg_nif_plugin( $nombre ) {
 	}
 
     $rating = [
-	   'rating'		=> $plugin->rating,
+	   'rating'		=> ( isset( $plugin->rating ) ) ? $plugin->rating : 0,
 	   'type'		=> 'percent',
-	   'number'		=> $plugin->num_ratings,
+	   'number'		=> ( isset( $plugin->num_ratings ) ) ? $plugin->num_ratings : 0,
 	];
 	ob_start();
 	wp_star_rating( $rating );
@@ -97,6 +97,6 @@ add_action( 'admin_enqueue_scripts', 'apg_nif_estilo' );
 
 //Comprueba si está activo el Checkout Block en el checkout
 function apg_nif_checkout_block() {
-    return WC_Blocks_Utils::has_block_in_page( wc_get_page_id( 'checkout' ), 'woocommerce/checkout' );
+    return has_block( 'woocommerce/checkout', wc_get_page_id( 'checkout' ) );
 }
 
