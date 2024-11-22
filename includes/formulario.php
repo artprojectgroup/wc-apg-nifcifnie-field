@@ -16,7 +16,7 @@ $tab    = 1;
 	<form method="post" action="options.php">
 		<?php settings_fields( 'apg_nif_settings_group' ); ?>
 		<div class="cabecera"> <a href="<?php echo $apg_nif[ 'plugin_url' ]; ?>" title="<?php echo $apg_nif[ 'plugin' ]; ?>" target="_blank"><img src="<?php echo plugins_url( 'assets/images/cabecera.jpg', DIRECCION_apg_nif ); ?>" class="imagen" alt="<?php echo $apg_nif[ 'plugin' ]; ?>" /></a> </div>
-        <?php if ( apg_nif_checkout_block() ): ?>
+        <?php if ( has_block( 'woocommerce/checkout', wc_get_page_id( 'checkout' ) ) ): ?>
         <h4><?php esc_attr_e( "There are functions that aren't yet available for the Checkout block.", 'wc-apg-nifcifnie-field' ); ?></h4>
         <?php endif; ?>
 		<table class="form-table apg-table">
@@ -92,7 +92,7 @@ $tab    = 1;
 				</th>
 				<td class="forminp"><input id="apg_nif_settings[validacion]" name="apg_nif_settings[validacion]" type="checkbox" value="1" <?php checked( isset( $apg_nif_settings[ 'validacion' ] ) ? $apg_nif_settings[ 'validacion' ] : '', 1 ); ?> tabindex="<?php echo $tab++; ?>" /></td>
 			</tr>
-			<?php if ( class_exists( 'Soapclient' ) && ! apg_nif_checkout_block() ) : ?>
+			<?php if ( class_exists( 'Soapclient' ) && ! has_block( 'woocommerce/checkout', wc_get_page_id( 'checkout' ) ) ) : ?>
 			<tr valign="top" id="vies">
 				<th scope="row" class="titledesc">
 					<label for="apg_nif_settings[validacion_vies]">

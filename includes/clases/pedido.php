@@ -37,7 +37,7 @@ class APG_Campo_NIF_en_Pedido {
             add_action( 'woocommerce_blocks_validate_location_address_fields', [ $this, 'apg_nif_validacion_de_campo_bloques' ], 10, 3 ); //Formulario de bloques
         }
         //Añade el número VIES
-        if ( isset( $apg_nif_settings[ 'validacion_vies' ] ) && $apg_nif_settings[ 'validacion_vies' ] == "1" && ! apg_nif_checkout_block() ) {
+        if ( isset( $apg_nif_settings[ 'validacion_vies' ] ) && $apg_nif_settings[ 'validacion_vies' ] == "1" && ! has_block( 'woocommerce/checkout', wc_get_page_id( 'checkout' ) ) ) {
             add_action( 'wp_enqueue_scripts', [ $this, 'apg_nif_carga_ajax' ] );
             add_action( 'wp_ajax_nopriv_apg_nif_valida_VIES', [ $this, 'apg_nif_valida_VIES' ] );
             add_action( 'wp_ajax_apg_nif_valida_VIES', [ $this, 'apg_nif_valida_VIES' ] );
@@ -45,7 +45,7 @@ class APG_Campo_NIF_en_Pedido {
             add_action( 'woocommerce_checkout_update_order_review', [ $this, 'apg_nif_quita_iva' ] );
         }
         //Añade el número EORI
-        if ( isset( $apg_nif_settings[ 'validacion_eori' ] ) && $apg_nif_settings[ 'validacion_eori' ] == "1" && ! apg_nif_checkout_block() ) {
+        if ( isset( $apg_nif_settings[ 'validacion_eori' ] ) && $apg_nif_settings[ 'validacion_eori' ] == "1" && ! has_block( 'woocommerce/checkout', wc_get_page_id( 'checkout' ) ) ) {
             add_action( 'wp_enqueue_scripts', [ $this, 'apg_nif_carga_ajax' ] );
             add_action( 'wp_ajax_nopriv_apg_nif_valida_EORI', [ $this, 'apg_nif_valida_EORI' ] );
             add_action( 'wp_ajax_apg_nif_valida_EORI', [ $this, 'apg_nif_valida_EORI' ] );

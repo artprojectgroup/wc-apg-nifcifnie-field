@@ -94,9 +94,3 @@ function apg_nif_estilo() {
 	}
 }
 add_action( 'admin_enqueue_scripts', 'apg_nif_estilo' );
-
-//Comprueba si está activo el Checkout Block en el checkout
-function apg_nif_checkout_block() {
-    return has_block( 'woocommerce/checkout', wc_get_page_id( 'checkout' ) );
-}
-
