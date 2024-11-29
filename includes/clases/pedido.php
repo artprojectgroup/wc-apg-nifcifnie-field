@@ -512,6 +512,7 @@ class APG_Campo_NIF_en_Pedido {
         }
 
         //Variables
+        $_SESSION[ 'apg_nif' ]  = false;
         $valido                 = true;
         $iso_vies               = [ //Hack para Grecia
             'EL' => 'GR',
@@ -582,10 +583,12 @@ class APG_Campo_NIF_en_Pedido {
                 } else {
                     $valido = false;
                 }
+                //Almacena el valor en la sesión
+                if ( $valido ) {
+                    $_SESSION[ 'apg_nif' ]  = true;
+                }
             }
         }
-        //Almacena el valor en la sesión
-        $_SESSION[ 'apg_nif' ]  = $valido;
         
         //Devuelve el valor
         echo $valido;
