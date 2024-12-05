@@ -18,20 +18,20 @@ class APG_Campo_NIF_en_Usuarios {
 		global $apg_nif_settings;
 
         $campos[ 'billing' ][ 'fields' ][ 'billing_nif' ]       = [ 
-				'label'			=> __( ( isset( $apg_nif_settings[ 'etiqueta' ] ) ? esc_attr( $apg_nif_settings[ 'etiqueta' ] ) : 'NIF/CIF/NIE' ), 'wc-apg-nifcifnie-field' ),
+				'label'			=> esc_attr__( ( isset( $apg_nif_settings[ 'etiqueta' ] ) ? esc_attr( $apg_nif_settings[ 'etiqueta' ] ) : 'NIF/CIF/NIE' ), 'wc-apg-nifcifnie-field' ),
 				'description'	=> ''
 		];
 	 
         $campos[ 'shipping' ][ 'fields' ][ 'shipping_nif' ]     = [ 
-				'label'			=> __( ( isset( $apg_nif_settings[ 'etiqueta' ] ) ? esc_attr( $apg_nif_settings[ 'etiqueta' ] ) : 'NIF/CIF/NIE' ), 'wc-apg-nifcifnie-field' ),
+				'label'			=> esc_attr__( ( isset( $apg_nif_settings[ 'etiqueta' ] ) ? esc_attr( $apg_nif_settings[ 'etiqueta' ] ) : 'NIF/CIF/NIE' ), 'wc-apg-nifcifnie-field' ),
 				'description'	=> ''
 		];
         $campos[ 'shipping' ][ 'fields' ][ 'shipping_email' ]   = [ 
-				'label'			=> __( 'Email', 'woocommerce' ),
+				'label'			=> esc_attr__( 'Email', 'woocommerce' ),
 				'description'	=> ''
 		];
         $campos[ 'shipping' ][ 'fields' ][ 'shipping_phone' ]   = [ 
-				'label'			=> __( 'Telephone', 'woocommerce' ),
+				'label'			=> esc_attr__( 'Telephone', 'woocommerce' ),
 				'description'	=> ''
 		];
 

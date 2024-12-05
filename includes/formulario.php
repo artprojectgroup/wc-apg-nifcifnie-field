@@ -36,7 +36,7 @@ $tab    = 1;
 						<span class="woocommerce-help-tip" data-tip="<?php esc_attr_e( 'Type your own field placeholder.', 'wc-apg-nifcifnie-field' ); ?>"></span>
 					</label>
 				</th>
-				<td class="forminp"><input id="apg_nif_settings[placeholder]" name="apg_nif_settings[placeholder]" type="text" value="<?php echo ( isset( $apg_nif_settings[ 'placeholder' ] ) && ! empty( $apg_nif_settings[ 'placeholder' ] ) ? esc_attr( $apg_nif_settings[ 'placeholder' ] ) : __( 'NIF/CIF/NIE number', 'wc-apg-nifcifnie-field' ) ); ?>" tabindex="<?php echo $tab++; ?>" placeholder="<?php esc_attr_e( 'NIF/CIF/NIE number', 'wc-apg-nifcifnie-field' ); ?>" /></td>
+				<td class="forminp"><input id="apg_nif_settings[placeholder]" name="apg_nif_settings[placeholder]" type="text" value="<?php echo ( isset( $apg_nif_settings[ 'placeholder' ] ) && ! empty( $apg_nif_settings[ 'placeholder' ] ) ? esc_attr( $apg_nif_settings[ 'placeholder' ] ) : esc_attr__( 'NIF/CIF/NIE number', 'wc-apg-nifcifnie-field' ) ); ?>" tabindex="<?php echo $tab++; ?>" placeholder="<?php esc_attr_e( 'NIF/CIF/NIE number', 'wc-apg-nifcifnie-field' ); ?>" /></td>
 			</tr>
 			<tr valign="top">
 				<th scope="row" class="titledesc">
@@ -45,7 +45,7 @@ $tab    = 1;
 						<span class="woocommerce-help-tip" data-tip="<?php esc_attr_e( 'Type your own error message.', 'wc-apg-nifcifnie-field' ); ?>"></span>
 					</label>
 				</th>
-				<td class="forminp"><input id="apg_nif_settings[error]" name="apg_nif_settings[error]" type="text" value="<?php echo ( isset( $apg_nif_settings[ 'error' ] ) && ! empty( $apg_nif_settings[ 'error' ] ) ? esc_attr( $apg_nif_settings[ 'error' ] ) : __( 'Please enter a valid NIF/CIF/NIE.', 'wc-apg-nifcifnie-field' ) ); ?>" tabindex="<?php echo $tab++; ?>" placeholder="<?php esc_attr_e( 'Please enter a valid NIF/CIF/NIE.', 'wc-apg-nifcifnie-field' ); ?>" /></td>
+				<td class="forminp"><input id="apg_nif_settings[error]" name="apg_nif_settings[error]" type="text" value="<?php echo ( isset( $apg_nif_settings[ 'error' ] ) && ! empty( $apg_nif_settings[ 'error' ] ) ? esc_attr( $apg_nif_settings[ 'error' ] ) : esc_attr__( 'Please enter a valid NIF/CIF/NIE.', 'wc-apg-nifcifnie-field' ) ); ?>" tabindex="<?php echo $tab++; ?>" placeholder="<?php esc_attr_e( 'Please enter a valid NIF/CIF/NIE.', 'wc-apg-nifcifnie-field' ); ?>" /></td>
 			</tr>
 			<tr valign="top">
 				<th scope="row" class="titledesc"> <label for="apg_nif_settings[prioridad]">
@@ -58,8 +58,8 @@ $tab    = 1;
                         echo "<ol>";
                         $campos = WC()->countries->get_address_fields( WC()->countries->get_base_country(), 'billing_' );
                         foreach ( $campos as $campo ) {
-                            $etiqueta   = ( isset( $campo[ 'label' ] ) ) ? $campo[ 'label' ] : __( 'No label exists', 'wc-apg-nifcifnie-field' );
-                            $prioridad  = ( isset( $campo[ 'priority' ] ) ) ? $campo[ 'priority' ] : __( 'No priority', 'wc-apg-nifcifnie-field' );
+                            $etiqueta   = ( isset( $campo[ 'label' ] ) ) ? $campo[ 'label' ] : esc_attr__( 'No label exists', 'wc-apg-nifcifnie-field' );
+                            $prioridad  = ( isset( $campo[ 'priority' ] ) ) ? $campo[ 'priority' ] : esc_attr__( 'No priority', 'wc-apg-nifcifnie-field' );
                             echo "<li>$etiqueta: $prioridad.</li>";
                         }
                         echo "</ol>";
@@ -118,7 +118,7 @@ $tab    = 1;
 						<span class="woocommerce-help-tip" data-tip="<?php esc_attr_e( 'Type your own VIES VAT number field placeholder.', 'wc-apg-nifcifnie-field' ); ?>"></span>
 					</label>
 				</th>
-				<td class="forminp"><input id="apg_nif_settings[placeholder_vies]" name="apg_nif_settings[placeholder_vies]" type="text" value="<?php echo ( isset( $apg_nif_settings[ 'placeholder_vies' ] ) && ! empty( $apg_nif_settings[ 'placeholder_vies' ] ) ? esc_attr( $apg_nif_settings[ 'placeholder_vies' ] ) : __( 'NIF/CIF/NIE/VAT number', 'wc-apg-nifcifnie-field' ) ); ?>" tabindex="<?php echo $tab++; ?>" placeholder="<?php esc_attr_e( 'NIF/CIF/NIE/VAT number', 'wc-apg-nifcifnie-field' ); ?>" /></td>
+				<td class="forminp"><input id="apg_nif_settings[placeholder_vies]" name="apg_nif_settings[placeholder_vies]" type="text" value="<?php echo ( isset( $apg_nif_settings[ 'placeholder_vies' ] ) && ! empty( $apg_nif_settings[ 'placeholder_vies' ] ) ? esc_attr( $apg_nif_settings[ 'placeholder_vies' ] ) : esc_attr__( 'NIF/CIF/NIE/VAT number', 'wc-apg-nifcifnie-field' ) ); ?>" tabindex="<?php echo $tab++; ?>" placeholder="<?php esc_attr_e( 'NIF/CIF/NIE/VAT number', 'wc-apg-nifcifnie-field' ); ?>" /></td>
 			</tr>
 			<tr valign="top" class="vies">
 				<th scope="row" class="titledesc">
@@ -127,7 +127,7 @@ $tab    = 1;
 						<span class="woocommerce-help-tip" data-tip="<?php esc_attr_e( 'Type your own VIES VAT number error message.', 'wc-apg-nifcifnie-field' ); ?>"></span>
 					</label>
 				</th>
-				<td class="forminp"><input id="apg_nif_settings[error_vies]" name="apg_nif_settings[error_vies]" type="text" value="<?php echo ( isset( $apg_nif_settings[ 'error_vies' ] ) && ! empty( $apg_nif_settings[ 'error_vies' ] ) ? esc_attr( $apg_nif_settings[ 'error_vies' ] ) : __( 'Please enter a valid VIES VAT number.', 'wc-apg-nifcifnie-field' ) ); ?>" tabindex="<?php echo $tab++; ?>" placeholder="<?php esc_attr_e( 'Please enter a valid VIES VAT number.', 'wc-apg-nifcifnie-field' ); ?>" /></td>
+				<td class="forminp"><input id="apg_nif_settings[error_vies]" name="apg_nif_settings[error_vies]" type="text" value="<?php echo ( isset( $apg_nif_settings[ 'error_vies' ] ) && ! empty( $apg_nif_settings[ 'error_vies' ] ) ? esc_attr( $apg_nif_settings[ 'error_vies' ] ) : esc_attr__( 'Please enter a valid VIES VAT number.', 'wc-apg-nifcifnie-field' ) ); ?>" tabindex="<?php echo $tab++; ?>" placeholder="<?php esc_attr_e( 'Please enter a valid VIES VAT number.', 'wc-apg-nifcifnie-field' ); ?>" /></td>
 			</tr>
 			<tr valign="top" id="eori">
 				<th scope="row" class="titledesc">
@@ -191,7 +191,7 @@ $tab    = 1;
 						<span class="woocommerce-help-tip" data-tip="<?php esc_attr_e( 'Type your own EORI number field placeholder.', 'wc-apg-nifcifnie-field' ); ?>"></span>
 					</label>
 				</th>
-				<td class="forminp"><input id="apg_nif_settings[placeholder_eori]" name="apg_nif_settings[placeholder_eori]" type="text" value="<?php echo ( isset( $apg_nif_settings[ 'placeholder_eori' ] ) && ! empty( $apg_nif_settings[ 'placeholder_eori' ] ) ? esc_attr( $apg_nif_settings[ 'placeholder_eori' ] ) : __( 'NIF/CIF/NIE/EORI number', 'wc-apg-nifcifnie-field' ) ); ?>" tabindex="<?php echo $tab++; ?>" placeholder="<?php esc_attr_e( 'NIF/CIF/NIE/EORI number', 'wc-apg-nifcifnie-field' ); ?>" /></td>
+				<td class="forminp"><input id="apg_nif_settings[placeholder_eori]" name="apg_nif_settings[placeholder_eori]" type="text" value="<?php echo ( isset( $apg_nif_settings[ 'placeholder_eori' ] ) && ! empty( $apg_nif_settings[ 'placeholder_eori' ] ) ? esc_attr( $apg_nif_settings[ 'placeholder_eori' ] ) : esc_attr__( 'NIF/CIF/NIE/EORI number', 'wc-apg-nifcifnie-field' ) ); ?>" tabindex="<?php echo $tab++; ?>" placeholder="<?php esc_attr_e( 'NIF/CIF/NIE/EORI number', 'wc-apg-nifcifnie-field' ); ?>" /></td>
 			</tr>
 			<tr valign="top" class="eori">
 				<th scope="row" class="titledesc">
@@ -200,7 +200,7 @@ $tab    = 1;
 						<span class="woocommerce-help-tip" data-tip="<?php esc_attr_e( 'Type your own EORI number error message.', 'wc-apg-nifcifnie-field' ); ?>"></span>
 					</label>
 				</th>
-				<td class="forminp"><input id="apg_nif_settings[error_eori]" name="apg_nif_settings[error_eori]" type="text" value="<?php echo ( isset( $apg_nif_settings[ 'error_eori' ] ) && ! empty( $apg_nif_settings[ 'error_eori' ] ) ? esc_attr( $apg_nif_settings[ 'error_eori' ] ) : __( 'Please enter a valid EORI number.', 'wc-apg-nifcifnie-field' ) ); ?>" tabindex="<?php echo $tab++; ?>" placeholder="<?php esc_attr_e( 'Please enter a valid EORI number.', 'wc-apg-nifcifnie-field' ); ?>" /></td>
+				<td class="forminp"><input id="apg_nif_settings[error_eori]" name="apg_nif_settings[error_eori]" type="text" value="<?php echo ( isset( $apg_nif_settings[ 'error_eori' ] ) && ! empty( $apg_nif_settings[ 'error_eori' ] ) ? esc_attr( $apg_nif_settings[ 'error_eori' ] ) : esc_attr__( 'Please enter a valid EORI number.', 'wc-apg-nifcifnie-field' ) ); ?>" tabindex="<?php echo $tab++; ?>" placeholder="<?php esc_attr_e( 'Please enter a valid EORI number.', 'wc-apg-nifcifnie-field' ); ?>" /></td>
 			</tr>			
             <?php endif; ?>
 		</table>

@@ -29,11 +29,11 @@ function apg_nif_enlaces( $enlaces, $archivo ) {
 
 	if ( $archivo == DIRECCION_apg_nif ) {
 		$plugin		= apg_nif_plugin( $apg_nif[ 'plugin_uri' ] );
-		$enlaces[]	= '<a href="' . $apg_nif[ 'donacion' ] . '" target="_blank" title="' . __( 'Make a donation by ', 'wc-apg-nifcifnie-field' ) . 'APG"><span class="genericon genericon-cart"></span></a>';
+		$enlaces[]	= '<a href="' . $apg_nif[ 'donacion' ] . '" target="_blank" title="' . esc_attr__( 'Make a donation by ', 'wc-apg-nifcifnie-field' ) . 'APG"><span class="genericon genericon-cart"></span></a>';
 		$enlaces[]	= '<a href="'. $apg_nif[ 'plugin_url' ] . '" target="_blank" title="' . $apg_nif[ 'plugin' ] . '"><strong class="artprojectgroup">APG</strong></a>';
-		$enlaces[]	= '<a href="https://www.facebook.com/artprojectgroup" title="' . __( 'Follow us on ', 'wc-apg-nifcifnie-field' ) . 'Facebook" target="_blank"><span class="genericon genericon-facebook-alt"></span></a> <a href="https://twitter.com/artprojectgroup" title="' . __( 'Follow us on ', 'wc-apg-nifcifnie-field' ) . 'Twitter" target="_blank"><span class="genericon genericon-twitter"></span></a> <a href="https://es.linkedin.com/in/artprojectgroup" title="' . __( 'Follow us on ', 'wc-apg-nifcifnie-field' ) . 'LinkedIn" target="_blank"><span class="genericon genericon-linkedin"></span></a>';
-		$enlaces[]	= '<a href="https://profiles.wordpress.org/artprojectgroup/" title="' . __( 'More plugins on ', 'wc-apg-nifcifnie-field' ) . 'WordPress" target="_blank"><span class="genericon genericon-wordpress"></span></a>';
-		$enlaces[]	= '<a href="mailto:info@artprojectgroup.es" title="' . __( 'Contact with us by ', 'wc-apg-nifcifnie-field' ) . 'e-mail"><span class="genericon genericon-mail"></span></a> <a href="skype:artprojectgroup" title="' . __( 'Contact with us by ', 'wc-apg-nifcifnie-field' ) . 'Skype"><span class="genericon genericon-skype"></span></a>';
+		$enlaces[]	= '<a href="https://www.facebook.com/artprojectgroup" title="' . esc_attr__( 'Follow us on ', 'wc-apg-nifcifnie-field' ) . 'Facebook" target="_blank"><span class="genericon genericon-facebook-alt"></span></a> <a href="https://twitter.com/artprojectgroup" title="' . esc_attr__( 'Follow us on ', 'wc-apg-nifcifnie-field' ) . 'Twitter" target="_blank"><span class="genericon genericon-twitter"></span></a> <a href="https://es.linkedin.com/in/artprojectgroup" title="' . esc_attr__( 'Follow us on ', 'wc-apg-nifcifnie-field' ) . 'LinkedIn" target="_blank"><span class="genericon genericon-linkedin"></span></a>';
+		$enlaces[]	= '<a href="https://profiles.wordpress.org/artprojectgroup/" title="' . esc_attr__( 'More plugins on ', 'wc-apg-nifcifnie-field' ) . 'WordPress" target="_blank"><span class="genericon genericon-wordpress"></span></a>';
+		$enlaces[]	= '<a href="mailto:info@artprojectgroup.es" title="' . esc_attr__( 'Contact with us by ', 'wc-apg-nifcifnie-field' ) . 'e-mail"><span class="genericon genericon-mail"></span></a> <a href="skype:artprojectgroup" title="' . esc_attr__( 'Contact with us by ', 'wc-apg-nifcifnie-field' ) . 'Skype"><span class="genericon genericon-skype"></span></a>';
 		$enlaces[]	= apg_nif_plugin( $apg_nif[ 'plugin_uri' ] );
 	}
 	
@@ -46,8 +46,8 @@ function apg_nif_enlace_de_ajustes( $enlaces ) {
 	global $apg_nif;
 
 	$enlaces_de_ajustes = [
-		'<a href="' . $apg_nif[ 'ajustes' ] . '" title="' . __( 'Settings of ', 'wc-apg-nifcifnie-field' ) . $apg_nif[ 'plugin' ] .'">' . __( 'Settings', 'wc-apg-nifcifnie-field' ) . '</a>', 
-		'<a href="' . $apg_nif[ 'soporte' ] . '" title="' . __( 'Support of ', 'wc-apg-nifcifnie-field' ) . $apg_nif[ 'plugin' ] .'">' . __( 'Support', 'wc-apg-nifcifnie-field' ) . '</a>'
+		'<a href="' . $apg_nif[ 'ajustes' ] . '" title="' . esc_attr__( 'Settings of ', 'wc-apg-nifcifnie-field' ) . $apg_nif[ 'plugin' ] .'">' . esc_attr__( 'Settings', 'wc-apg-nifcifnie-field' ) . '</a>', 
+		'<a href="' . $apg_nif[ 'soporte' ] . '" title="' . esc_attr__( 'Support of ', 'wc-apg-nifcifnie-field' ) . $apg_nif[ 'plugin' ] .'">' . esc_attr__( 'Support', 'wc-apg-nifcifnie-field' ) . '</a>'
 	];
 	foreach ( $enlaces_de_ajustes as $enlace_de_ajustes ) {
 		array_unshift( $enlaces, $enlace_de_ajustes );
@@ -70,7 +70,7 @@ function apg_nif_plugin( $nombre ) {
 	if ( ! is_wp_error( $respuesta ) ) {
 		$plugin = json_decode( wp_remote_retrieve_body( $respuesta ) );
 	} else {
-	   return '<a title="' . sprintf( __( 'Please, rate %s:', 'wc-apg-nifcifnie-field' ), $apg_nif[ 'plugin' ] ) . '" href="' . $apg_nif[ 'puntuacion' ] . '?rate=5#postform" class="estrellas">' . __( 'Unknown rating', 'wc-apg-nifcifnie-field' ) . '</a>';
+	   return '<a title="' . sprintf( esc_attr__( 'Please, rate %s:', 'wc-apg-nifcifnie-field' ), $apg_nif[ 'plugin' ] ) . '" href="' . $apg_nif[ 'puntuacion' ] . '?rate=5#postform" class="estrellas">' . esc_attr__( 'Unknown rating', 'wc-apg-nifcifnie-field' ) . '</a>';
 	}
 
     $rating = [
@@ -83,7 +83,7 @@ function apg_nif_plugin( $nombre ) {
 	$estrellas = ob_get_contents();
 	ob_end_clean();
 
-	return '<a title="' . sprintf( __( 'Please, rate %s:', 'wc-apg-nifcifnie-field' ), $apg_nif[ 'plugin' ] ) . '" href="' . $apg_nif[ 'puntuacion' ] . '?rate=5#postform" class="estrellas">' . $estrellas . '</a>';
+	return '<a title="' . sprintf( esc_attr__( 'Please, rate %s:', 'wc-apg-nifcifnie-field' ), $apg_nif[ 'plugin' ] ) . '" href="' . $apg_nif[ 'puntuacion' ] . '?rate=5#postform" class="estrellas">' . $estrellas . '</a>';
 }
 
 //Hoja de estilo

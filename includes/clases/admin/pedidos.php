@@ -32,15 +32,15 @@ class APG_Campo_NIF_en_Admin_Pedidos {
 		global $apg_nif_settings;
 
         $campos[ 'nif' ]    = [ 
-			'label'	=> __( ( isset( $apg_nif_settings[ 'etiqueta' ] ) ? esc_attr( $apg_nif_settings[ 'etiqueta' ] ) : 'NIF/CIF/NIE' ), 'wc-apg-nifcifnie-field' ),
+			'label'	=> esc_attr__( ( isset( $apg_nif_settings[ 'etiqueta' ] ) ? esc_attr( $apg_nif_settings[ 'etiqueta' ] ) : 'NIF/CIF/NIE' ), 'wc-apg-nifcifnie-field' ),
 			'show'	=> false
 		];
         $campos[ 'phone' ]  = [ 
-			'label'	=> __( 'Telephone', 'woocommerce' ),
+			'label'	=> esc_attr__( 'Telephone', 'woocommerce' ),
 			'show'	=> true
 		];
         $campos[ 'email' ]  = [ 
-			'label'	=> __( 'Email address', 'woocommerce' ),
+			'label'	=> esc_attr__( 'Email address', 'woocommerce' ),
 			'show'	=> true
 		];
 
@@ -67,7 +67,7 @@ class APG_Campo_NIF_en_Admin_Pedidos {
         }
 
         foreach ( $campos as $campo => $datos ) {
-            if ( ! isset( $campos_ordenados[ $campo ] ) && $datos[ 'label' ] != __( ( isset( $apg_nif_settings[ 'etiqueta' ] ) ? esc_attr( $apg_nif_settings[ 'etiqueta' ] ) : 'NIF/CIF/NIE' ), 'wc-apg-nifcifnie-field' ) ) {
+            if ( ! isset( $campos_ordenados[ $campo ] ) && $datos[ 'label' ] != esc_attr__( ( isset( $apg_nif_settings[ 'etiqueta' ] ) ? esc_attr( $apg_nif_settings[ 'etiqueta' ] ) : 'NIF/CIF/NIE' ), 'wc-apg-nifcifnie-field' ) ) {
                 $campos_ordenados[ $campo ] = $datos;
             }
         }

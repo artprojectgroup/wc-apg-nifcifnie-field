@@ -2,7 +2,7 @@
 /*
 Plugin Name: WC - APG NIF/CIF/NIE Field
 Requires Plugins: woocommerce
-Version: 3.0.15
+Version: 3.1
 Plugin URI: https://wordpress.org/plugins/wc-apg-nifcifnie-field/
 Description: Add to WooCommerce a NIF/CIF/NIE field.
 Author URI: https://artprojectgroup.es/
@@ -62,7 +62,7 @@ if ( is_plugin_active( 'woocommerce/woocommerce.php' ) || is_network_only_plugin
 
 		//Añade en el menú a WooCommerce
 		public function apg_nif_admin_menu() {
-			add_submenu_page( 'woocommerce', __( 'APG NIF/CIF/NIE field', 'wc-apg-nifcifnie-field' ),  __( 'NIF/CIF/NIE field', 'wc-apg-nifcifnie-field' ) , 'manage_woocommerce', 'wc-apg-nifcifnie-field',  [ $this, 'apg_nif_tab' ] );
+			add_submenu_page( 'woocommerce', esc_attr__( 'APG NIF/CIF/NIE field', 'wc-apg-nifcifnie-field' ),  esc_attr__( 'NIF/CIF/NIE field', 'wc-apg-nifcifnie-field' ) , 'manage_woocommerce', 'wc-apg-nifcifnie-field',  [ $this, 'apg_nif_tab' ] );
 		}
 
 		//Registra las opciones
@@ -102,7 +102,7 @@ if ( is_plugin_active( 'woocommerce/woocommerce.php' ) || is_network_only_plugin
 function apg_nif_requiere_wc() {
 	global $apg_nif;
 		
-	echo '<div class="notice notice-error is-dismissible" id="wc-apg-nifcifnie-field"><h3>' . $apg_nif[ 'plugin' ] . '</h3><h4>' . __( 'This plugin requires WooCommerce active to run!', 'wc-apg-nifcifnie-field' ) . '</h4></div>';
+	echo '<div class="notice notice-error is-dismissible" id="wc-apg-nifcifnie-field"><h3>' . $apg_nif[ 'plugin' ] . '</h3><h4>' . esc_attr__( 'This plugin requires WooCommerce active to run!', 'wc-apg-nifcifnie-field' ) . '</h4></div>';
 	deactivate_plugins( DIRECCION_apg_nif );
 }
 
@@ -110,12 +110,16 @@ function apg_nif_requiere_wc() {
 function apg_nif_requiere_soap() {
 	global $apg_nif;
 		
-	echo '<div class="notice notice-error is-dismissible" id="wc-apg-nifcifnie-field"><h3>' . $apg_nif[ 'plugin' ] . '</h3><h4>' . __( 'This plugin requires the <a href="http://php.net/manual/en/class.soapclient.php">SoapClient</a> PHP class active to run!', 'wc-apg-nifcifnie-field' ) . '</h4></div>';
+	echo '<div class="notice notice-error is-dismissible" id="wc-apg-nifcifnie-field"><h3>' . $apg_nif[ 'plugin' ] . '</h3><h4>' . esc_attr__( 'This plugin requires the <a href="http://php.net/manual/en/class.soapclient.php">SoapClient</a> PHP class active to run!', 'wc-apg-nifcifnie-field' ) . '</h4></div>';
 }
 
 //Eliminamos todo rastro del plugin al desinstalarlo
+function apg_nif_instalar(){
+	register_uninstall_hook( __FILE__, 'apg_nif_desinstalar' );
+}
+
 function apg_nif_desinstalar() {
 	delete_transient( 'apg_nif_plugin' );
 	delete_option( 'apg_nif_settings' );
 }
-register_uninstall_hook( __FILE__, 'apg_nif_desinstalar' );
+register_activation_hook( __FILE__, 'apg_nif_instalar' );
