@@ -13,7 +13,7 @@ Stable tag: 3.1.0.2
 
 WC requires at least: 5.6
 
-WC tested up to: 9.5.1
+WC tested up to: 9.6
 
 License: GPLv3
 
