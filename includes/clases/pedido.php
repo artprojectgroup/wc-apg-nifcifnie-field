@@ -4,7 +4,6 @@ defined( 'ABSPATH' ) || exit;
 
 use Automattic\WooCommerce\Blocks\Package;
 use Automattic\WooCommerce\Blocks\Domain\Services\CheckoutFields;
-use Automattic\WooCommerce\Blocks\Utils\CartCheckoutUtils;
 
 /**
  * Añade los campos en el Pedido.
@@ -124,7 +123,7 @@ class APG_Campo_NIF_en_Pedido {
         ];
         
         //Sólo es operativo en los checkout clásicos
-        if ( ! CartCheckoutUtils::is_checkout_block_default() ) {
+        if ( ! WC_Blocks_Utils::has_block_in_page( wc_get_page_id('checkout'), 'woocommerce/checkout' ) ) {
             //Añade el correo electónico y el teléfono
             $campos[ 'email' ]  = [
                 'label'         => esc_attr__( 'Email address', 'woocommerce' ),
@@ -481,7 +480,7 @@ class APG_Campo_NIF_en_Pedido {
 
     //Valida el campo NIF/CIF/NIE - Bloques
     public function apg_nif_validacion_de_campo_bloques( WP_Error $errors, $fields, $group ) {
-        if ( CartCheckoutUtils::is_checkout_block_default() ) {
+        if ( WC_Blocks_Utils::has_block_in_page( wc_get_page_id('checkout'), 'woocommerce/checkout' ) ) {
             global $apg_nif_settings;
 
             //Variables
@@ -518,7 +517,7 @@ class APG_Campo_NIF_en_Pedido {
         global $apg_nif_settings;
         
         if ( is_checkout() ) {
-            $javascript = ( CartCheckoutUtils::is_checkout_block_default() ) ? "-bloques" : "" ;
+            $javascript = ( WC_Blocks_Utils::has_block_in_page( wc_get_page_id('checkout'), 'woocommerce/checkout' ) ) ? "-bloques" : "" ;
             //Añade el número VIES
             if ( isset( $apg_nif_settings[ 'validacion_vies' ] ) && $apg_nif_settings[ 'validacion_vies' ] == "1" ) {
                 wp_enqueue_script( 'apg_nif_vies', plugin_dir_url( DIRECCION_apg_nif ) . '/assets/js/valida' . $javascript . '-vies.js', [ 'jquery' ] );
