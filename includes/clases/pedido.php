@@ -23,39 +23,52 @@ class APG_Campo_NIF_en_Pedido {
         
         //Listado de países que se pueden validar
         $this->listado_paises   = [
-            'AT', //AUSTRIA 
-            'BE', //BÉLGICA 
-            'BG', //BULGARIA 
-            'CH', //SUIZA 
-            'CY', //CHIPRE 
-            'CZ', //REPÚBLICA CHECA
-            'DE', //ALEMANIA 
-            'DK', //DINAMARCA 
-            'EE', //ESTONIA 
-            'EL', //GRECIA 
-            'ES', //ESPAÑA 
-            'EU', //UNIÓN EUROPEA 
-            'FI', //FINLANDIA 
-            'FR', //FRANCIA 
-            'GB', //GRAN BRETAÑA 
-            'GR', //GRECIA
-            'HR', //CROACIA 
-            'HU', //HUNGRÍA 
-            'IE', //IRLANDA 
-            'IT', //ITALIA 
-            'LV', //LETONIA 
-            'LT', //LITUANIA 
-            'LU', //LUXEMBURGO 
-            'MT', //MALTA 
-            'NL', //PAÍSES BAJOS 
-            'NO', //NORUEGA 
-            'PL', //POLONIA 
-            'PT', //PORTUGAL 
-            'RO', //RUMANÍA 
-            'RS', //SERBIA 
-            'SI', //ESLOVENIA 
-            'SK', //REPÚBLICA ESLOVACA
-            'SE', //SUECIA             
+            'AL', //Albania
+            'AT', //Austria
+            'AR', //Argentina
+            'AX', //Islas de Åland
+            'BE', //Bélgica 
+            'BG', //Bulgaria 
+            'BY', //Bielorusia 
+            'CH', //Suiza
+            'CL', //Chile
+            'CY', //Chipre 
+            'CZ', //República Checa
+            'DE', //Alemania 
+            'DK', //Dinamarca 
+            'EE', //Estonia 
+            'ES', //España 
+            'EU', //Unión Europea 
+            'FI', //Finlandia
+            'FO', //Islas Feroe
+            'FR', //Francia 
+            'GB', //Gran Bretaña 
+            'GR', //Grecia
+            'HR', //Croacia 
+            'HU', //Hungría 
+            'IE', //Irlanda
+            'IS', //Islandia 
+            'IT', //Italia 
+            'LI', //Liechtenstein
+            'LT', //Lituania 
+            'LU', //Luxemburgo 
+            'LV', //Letonia
+            'MC', //Mónaco
+            'MD', //Moldavia
+            'ME', //Montenegro
+            'MK', //Macedonia del Norte
+            'MT', //Malta 
+            'NL', //Países Bajos 
+            'NO', //Noruega 
+            'PL', //Polonia 
+            'PT', //Portugal 
+            'RO', //Rumanía 
+            'RS', //Serbia 
+            'SE', //Suecia             
+            'SI', //Eslovenia 
+            'SK', //República Eslovaca
+            'SM', //San Marino
+            'UA', //Ucrania
         ];
         
         add_filter( 'woocommerce_default_address_fields', [ $this, 'apg_nif_campos_de_direccion' ] );
@@ -124,27 +137,29 @@ class APG_Campo_NIF_en_Pedido {
         
         //Sólo es operativo en los checkout clásicos
         if ( ! WC_Blocks_Utils::has_block_in_page( wc_get_page_id('checkout'), 'woocommerce/checkout' ) ) {
-            //Añade el correo electónico y el teléfono
-            $campos[ 'email' ]  = [
-                'label'         => esc_attr__( 'Email address', 'woocommerce' ),
-                'required'      => true,
-                'type'          => 'email',
-                'validate'      => [
-                    'email'
-                ],
-                'autocomplete'  => 'email username',
-                'priority'      => 110,
-            ];
-            $campos[ 'phone' ]  = [
-                'label'         => esc_attr__( 'Phone', 'woocommerce' ),
-                'required'      => true,
-                'type'          => 'tel',
-                'validate'      => [
-                    'phone'
-                ],
-                'autocomplete'  => 'tel',
-                'priority'      => 100,
-            ];
+            if ( apply_filters( 'apg_nif_add_fields', true ) ) { //Si no quieren añadirse: add_filter( 'apg_nif_add_fields', '__return_false' );
+                //Añade el correo electónico y el teléfono
+                $campos[ 'email' ]  = [
+                    'label'         => esc_attr__( 'Email address', 'woocommerce' ),
+                    'required'      => true,
+                    'type'          => 'email',
+                    'validate'      => [
+                        'email'
+                    ],
+                    'autocomplete'  => 'email username',
+                    'priority'      => 110,
+                ];
+                $campos[ 'phone' ]  = [
+                    'label'         => esc_attr__( 'Phone', 'woocommerce' ),
+                    'required'      => true,
+                    'type'          => 'tel',
+                    'validate'      => [
+                        'phone'
+                    ],
+                    'autocomplete'  => 'tel',
+                    'priority'      => 100,
+                ];
+            }
 
             //Fuerza la actualización del checkout con el código postal y la provincia/estado
             $campos[ 'postcode' ][ 'class' ][]  = 'update_totals_on_change';
@@ -239,14 +254,253 @@ class APG_Campo_NIF_en_Pedido {
         $facturacion    = WC()->countries->get_address_fields( WC()->countries->get_base_country(), 'billing_' );
 
         $campos[ 'shipping_nif' ][ 'required' ]     = ( isset( $apg_nif_settings[ 'requerido_envio' ] ) && $apg_nif_settings[ 'requerido_envio' ] == "1" ) ? true : false;
-        $campos[ 'shipping_email' ][ 'priority' ]   = $facturacion[ 'billing_email' ][ 'priority' ];
-        $campos[ 'shipping_phone' ][ 'priority' ]   = $facturacion[ 'billing_phone' ][ 'priority' ];
-
+        if ( apply_filters( 'apg_nif_add_fields', true ) ) { //Si no quieren añadirse: add_filter( 'apg_nif_add_fields', '__return_false' );
+            $campos[ 'shipping_email' ][ 'priority' ]   = $facturacion[ 'billing_email' ][ 'priority' ];
+            $campos[ 'shipping_phone' ][ 'priority' ]   = $facturacion[ 'billing_phone' ][ 'priority' ];
+        }
+        
         return $campos;
     }
 
-    //Valida el campo NIF/CIF/NIE
-    public function apg_nif_validacion( $nif ) {
+    /** 
+     * Valida el campo VAT number
+     * Basado en JS validator de John Gardner: http://www.braemoor.co.uk/software/vat.shtml y https://github.com/mnestorov/regex-patterns
+     */
+    public function apg_nif_validacion_internacional( $vat_number, $vat_country, $pais ) {
+        //Limpia el campo
+        $vat_number = preg_replace( '/[ -,.]/', '', $vat_number );
+        //Valida países específicos
+        if ( $vat_number == 'AR' || $pais == 'AR' ) { //Argentina
+            return $this->apg_nif_valida_cuit( $vat_number );
+        } else if ( $vat_number == 'CL' ||  $pais == 'CL' ) { //Chile
+            return $this->apg_nif_valida_rut( $vat_number );
+        } else if ( $vat_number == 'ES' || $pais == 'ES' ) { //España
+            return $this->apg_nif_valida_nif( $vat_number );
+        }
+        //Comprueba si incluye el país
+        if ( ! preg_match( "/^[a-zA-Z]+$/", substr( $vat_number, 0, 2 ) ) ) {
+            $vat_number = $vat_country . $vat_number;
+        }
+        //Comprueba la estructura del campo
+        switch ( substr( $vat_number, 0, 2 ) ) {
+            case 'AL': //Albania 
+                $eu_valido  = ( bool ) preg_match( '/^(AL)?J(\d{8}[A-Z])$/', $vat_number );
+                break;
+            case 'AT': //Austria 
+                $eu_valido  = ( bool ) preg_match( '/^(AT)?U(\d{8})$/', $vat_number );
+                break;
+            case 'AX': //Islas de Åland
+                $eu_valido  = ( bool ) preg_match( '/^(FI)?|(AX)?(\d{8})$/', $vat_number );
+                break;
+            case 'BE': //Bélgica 
+                $eu_valido  = ( bool ) preg_match( '/(BE)?(0?\d{9})$/', $vat_number );
+                break;
+            case 'BG': //Bulgaria 
+                $eu_valido  = ( bool ) preg_match( '/(BG)?(\d{9,10})$/', $vat_number );
+                break;
+            case 'BY': //Bielorusia 
+                $eu_valido  = ( bool ) preg_match( '/(BY)?(\d{9})$/', $vat_number );
+                break;
+            case 'CH': //Suiza 
+                $eu_valido  = ( bool ) preg_match( '/(CHE)?(\d{9})(MWST)?|(TVA)?|(IVA)?$/', $vat_number );
+                break;
+            case 'CY': //Chipre 
+                $eu_valido  = ( bool ) preg_match( '/^(CY)?([0-5|9]\d{7}[A-Z])$/', $vat_number );
+                break;
+            case 'CZ': //República Checa
+                $eu_valido  = ( bool ) preg_match( '/^(CZ)?(\d{8,10})(\d{3})?$/', $vat_number );
+                break;
+            case 'DE': //Alemania 
+                $eu_valido  = ( bool ) preg_match( '/^(DE)?([1-9]\d{8,9})/', $vat_number );
+                break;
+            case 'DK': //Dinamarca 
+                $eu_valido  = ( bool ) preg_match( '/^(DK)?(\d{8})$/', $vat_number );
+                break;
+            case 'EE': //Estonia 
+                $eu_valido  = ( bool ) preg_match( '/^(EE)?(10\d{7,9})$/', $vat_number );
+                break;
+            case 'ES': //España 
+                $eu_valido  = ( bool ) preg_match( '/^(ES)?([A-Z]\d{8})$/', $vat_number ) ||
+                    preg_match( '/^(ES)?([A-H|N-S|W]\d{7}[A-J])$/', $vat_number ) ||
+                    preg_match( '/^(ES)?([0-9|Y|Z]\d{7}[A-Z])$/', $vat_number ) ||
+                    preg_match( '/^(ES)?([K|L|M|X]\d{7}[A-Z])$/', $vat_number );
+                break;
+            case 'EU': //Unión Europea 
+                $eu_valido  = ( bool ) preg_match( '/^(EU)?(\d{9})$/', $vat_number );
+                break;
+            case 'FI': //Finlandia 
+                $eu_valido  = ( bool ) preg_match( '/^(FI)?(\d{8})$/', $vat_number );
+                break;
+            case 'FO': //Islas Feroe
+                $eu_valido  = ( bool ) preg_match( '/^(FO)?(\d{6})$/', $vat_number );
+                break;
+            case 'FR': //Francia 
+                $eu_valido  = ( bool ) preg_match( '/^(FR)?(\d{11})$/', $vat_number ) ||
+                    preg_match( '/^(FR)?([(A-H)|(J-N)|(P-Z)]\d{10})$/', $vat_number ) ||
+                    preg_match( '/^(FR)?(\d[(A-H)|(J-N)|(P-Z)]\d{9})$/', $vat_number ) ||
+                    preg_match( '/^(FR)?([(A-H)|(J-N)|(P-Z)]{2}\d{9})$/', $vat_number );
+                break;
+            case 'GB': //Gran Bretaña 
+                $eu_valido  = ( bool ) preg_match( '/^(GB)?(\d{9})$/', $vat_number ) ||
+                    preg_match( '/^(GB)?(\d{12})$/', $vat_number ) ||
+                    preg_match( '/^(GB)?(GD\d{3})$/', $vat_number ) ||
+                    preg_match( '/^(GB)?(HA\d{3})$/', $vat_number );
+                break;
+            case 'GR': //Grecia
+                $eu_valido  = ( bool ) preg_match( '/^(GR)?(\d{8,9})$/', $vat_number ) ||
+                    preg_match( '/^(EL)?(\d{9})$/', $vat_number );
+                break;
+            case 'HR': //Croacia 
+                $eu_valido  = ( bool ) preg_match( '/^(HR)?(\d{11})$/', $vat_number );
+                break;
+            case 'HU': //Hungría 
+                $eu_valido  = ( bool ) preg_match( '/^(HU)?(\d{8})$/', $vat_number );
+                break;
+            case 'IE': //Irlanda 
+                $eu_valido  = ( bool ) preg_match( '/^(IE)?(\d{7}[A-W])$/', $vat_number ) ||
+                    preg_match( '/^(IE)?([7-9][A-Z\*\+)]\d{5}[A-W])$/', $vat_number ) ||
+                    preg_match( '/^(IE)?(\d{7}[A-W][AH])$/', $vat_number );
+                break;
+            case 'IS': //Islandia 
+                $eu_valido  = ( bool ) preg_match( '/^(IS)?(\d{5,6})$/', $vat_number );
+                break;
+            case 'IT': //Italia 
+                $eu_valido  = ( bool ) preg_match( '/^(IT)?(\d{11})$/', $vat_number );
+                break;
+            case 'LI': //Liechtenstein 
+                $eu_valido  = ( bool ) preg_match( '/^(LI)?(\d{5})$/', $vat_number );
+                break;
+            case 'LT': //Lituania 
+                $eu_valido  = ( bool ) preg_match( '/^(LT)?(\d{9}|\d{12})$/', $vat_number );
+                break;
+            case 'LU': //Luxemburgo 
+                $eu_valido  = ( bool ) preg_match( '/^(LU)?(\d{8})$/', $vat_number );
+                break;
+            case 'LV': //Letonia 
+                $eu_valido  = ( bool ) preg_match( '/^(LV)?(\d{11})$/', $vat_number );
+                break;
+            case 'MC': //Mónaco 
+                $eu_valido  = ( bool ) preg_match( '/^(FR)?(\d[(A-H)|(J-N)|(P-Z)]\d{9})$/', $vat_number ) ||
+                    preg_match( '/^(FR)?([(A-H)|(J-N)|(P-Z)]{2}\d{9})$/', $vat_number );
+                break;
+            case 'MD': //Moldavia 
+                $eu_valido  = ( bool ) preg_match( '/^(MD)?(\d{8})$/', $vat_number );
+                break;
+            case 'ME': //Montenegro 
+                $eu_valido  = ( bool ) preg_match( '/^(ME)?(\d{8})$/', $vat_number );
+                break;
+            case 'MK': //Macedonia del Norte 
+                $eu_valido  = ( bool ) preg_match( '/^(MK)?(\d{13})$/', $vat_number );
+                break;
+            case 'MT': //Malta 
+                $eu_valido  = ( bool ) preg_match( '/^(MT)?([1-9]\d{7,8})$/', $vat_number );
+                break;
+            case 'NL': //Países Bajos 
+                $eu_valido  = ( bool ) preg_match( '/^(NL)?(\d{9})B\d{2}$/', $vat_number );
+                break;
+            case 'NO': //Noruega 
+                $eu_valido  = ( bool ) preg_match( '/^(NO)?(\d{9})(MVA)?$/', $vat_number );
+                break;
+            case 'PL': //Polonia 
+                $eu_valido  = ( bool ) preg_match( '/^(PL)?(\d{10})$/', $vat_number );
+                break;
+            case 'PT': //Portugal 
+                $eu_valido  = ( bool ) preg_match( '/^(PT)?(\d{9})$/', $vat_number );
+                break;
+            case 'RO': //Rumanía 
+                $eu_valido  = ( bool ) preg_match( '/^(RO)?([1-9]\d{2,10})$/', $vat_number );
+                break;
+            case 'RS': //Serbia 
+                $eu_valido  = ( bool ) preg_match( '/^(RS)?(\d{9})$/', $vat_number );
+                break;
+            case 'SE': //Suecia 
+                $eu_valido  = ( bool ) preg_match( '/^(SE)?(\d{10}01)$/', $vat_number );
+                break;
+            case 'SI': //Eslovenia 
+                $eu_valido  = ( bool ) preg_match( '/^(SI)?([1-9]\d{7,8})$/', $vat_number );
+                break;
+            case 'SK': //República Eslovaca
+                $eu_valido  = ( bool ) preg_match( '/^(SK)?([1-9]\d[(2-4)|(6-9)]\d{7})$/', $vat_number );
+                break;
+            case 'SM': //San Marino
+                $eu_valido  = ( bool ) preg_match( '/^(SM)?(\d{5}$/', $vat_number );
+                break;
+            case 'UA': //Ucrania
+                $eu_valido  = ( bool ) preg_match( '/^(UA)?(\d{12}$/', $vat_number );
+                break;
+            default:
+                $eu_valido  = false;
+        }
+
+        return $eu_valido;
+    }
+    
+    //Comprueba si el CUIT ingresado es válido (Argentina) - https://github.com/maurozadu/CUIT-Validator/blob/master/libs/cuit_validator.php
+    public function apg_nif_valida_cuit( $cuit ) {
+        $digits = [];
+        if ( strlen( $cuit ) != 13 ) {
+            return false;
+        }
+        for ( $i = 0; $i < strlen( $cuit ); $i++ ) {
+            if ( $i == 2 or $i == 11 ) {
+                if ( $cuit[ $i ] != '-' ) {
+                    return false;
+                }
+            } else {
+                if ( ! ctype_digit( $cuit[ $i ] ) ) {
+                    return false;
+                }
+                if ( $i < 12 ) {
+                    $digits[] = $cuit[ $i ];
+                }
+            }
+        }
+        $acum   = 0;
+        foreach ( [ 5, 4, 3, 2, 7, 6, 5, 4, 3, 2 ] as $i => $multiplicador ) {
+            $acum += $digits[ $i ] * $multiplicador;
+        }
+        $cmp    = 11 - ( $acum % 11 );
+        if ( $cmp == 11 ) {
+            $cmp    = 0;
+        }
+        if ( $cmp == 10 ) {
+            $cmp    = 9;
+        }
+        return ( $cuit[ 12 ] == $cmp );
+    }
+
+    //Comprueba si el RUT ingresado es válido (Chile) - https://gist.github.com/punchi/3a5c44e7aa7ac0609ce9e53365572541
+    public function apg_nif_valida_rut( $rut ) {
+        if ( ! preg_match( "/^[0-9.]+[-]?+[0-9kK]{1}/", $rut ) ) {
+            return false;
+        }
+
+        $rut    = preg_replace( '/[\.\-]/i', '', $rut );
+        $dv     = substr( $rut, -1 );
+        $numero = substr( $rut, 0, strlen( $rut ) - 1 );
+        $i      = 2;
+        $suma   = 0;
+        foreach ( array_reverse( str_split( $numero ) ) as $v ) {
+            if ( $i == 8 ) {
+                $i = 2;
+            }
+            $suma += $v * $i;
+            ++$i;
+        }
+        $dvr = 11 - ( $suma % 11 );
+
+        if ( $dvr == 11 ) {
+            $dvr = 0;
+        }
+        if ( $dvr == 10 ) {
+            $dvr = 'K';
+        }
+        
+        return ( $dvr == strtoupper( $dv ) ) ? true : false;       
+    }
+
+    //Valida el campo NIF/CIF/NIE (España)
+    public function apg_nif_valida_nif( $nif ) {
         $nif_valido = false;
         $nif        = preg_replace( '/[ -,.]/', '', $nif );
         $nif        = str_replace( 'ES', '', $nif );
@@ -301,180 +555,52 @@ class APG_Campo_NIF_en_Pedido {
 
         return $nif_valido;
     }
-
-    /** 
-     * Valida el campo VAT number
-     * Basado en JS validator de John Gardner: http://www.braemoor.co.uk/software/vat.shtml 
-     */
-    public static function apg_nif_validacion_eu( $vat_number, $pais ) {
-        $vat_number = preg_replace( '/[ -,.]/', '', $vat_number );
-        //Comprueba si incluye el país
-        if ( ! preg_match( "/^[a-zA-Z]+$/", substr( $vat_number, 0, 2 ) ) || strlen( $vat_number ) < 8 ) {
-            $vat_number = $pais . $vat_number;
-        }
-        //Valida el campo
-        switch ( substr( $vat_number, 0, 2 ) ) {
-            case 'AT': //AUSTRIA 
-                $eu_valido  = ( bool ) preg_match( '/^(AT)U(\d{8})$/', $vat_number );
-                break;
-            case 'BE': //BÉLGICA 
-                $eu_valido  = ( bool ) preg_match( '/(BE)(0?\d{9})$/', $vat_number );
-                break;
-            case 'BG': //BULGARIA 
-                $eu_valido  = ( bool ) preg_match( '/(BG)(\d{9,10})$/', $vat_number );
-                break;
-            case 'CH': //SUIZA 
-                $eu_valido  = ( bool ) preg_match( '/(CHE)(\d{9})(MWST)?$/', $vat_number );
-                break;
-            case 'CY': //CHIPRE 
-                $eu_valido  = ( bool ) preg_match( '/^(CY)([0-5|9]\d{7}[A-Z])$/', $vat_number );
-                break;
-            case 'CZ': //REPÚBLICA CHECA
-                $eu_valido  = ( bool ) preg_match( '/^(CZ)(\d{8,10})(\d{3})?$/', $vat_number );
-                break;
-            case 'DE': //ALEMANIA 
-                $eu_valido  = ( bool ) preg_match( '/^(DE)([1-9]\d{8,9})/', $vat_number );
-                break;
-            case 'DK': //DINAMARCA 
-                $eu_valido  = ( bool ) preg_match( '/^(DK)(\d{8})$/', $vat_number );
-                break;
-            case 'EE': //ESTONIA 
-                $eu_valido  = ( bool ) preg_match( '/^(EE)(10\d{7,9})$/', $vat_number );
-                break;
-            case 'EL': //GRECIA 
-                $eu_valido  = ( bool ) preg_match( '/^(EL)(\d{9})$/', $vat_number );
-                break;
-            case 'ES': //ESPAÑA 
-                $eu_valido  = ( bool ) preg_match( '/^(ES)([A-Z]\d{8})$/', $vat_number ) ||
-                    preg_match( '/^(ES)([A-H|N-S|W]\d{7}[A-J])$/', $vat_number ) ||
-                    preg_match( '/^(ES)([0-9|Y|Z]\d{7}[A-Z])$/', $vat_number ) ||
-                    preg_match( '/^(ES)([K|L|M|X]\d{7}[A-Z])$/', $vat_number );
-                break;
-            case 'EU': //UNIÓN EUROPEA 
-                $eu_valido  = ( bool ) preg_match( '/^(EU)(\d{9})$/', $vat_number );
-                break;
-            case 'FI': //FINLANDIA 
-                $eu_valido  = ( bool ) preg_match( '/^(FI)(\d{8})$/', $vat_number );
-                break;
-            case 'FR': //FRANCIA 
-                $eu_valido  = ( bool ) preg_match( '/^(FR)(\d{11})$/', $vat_number ) ||
-                    preg_match( '/^(FR)([(A-H)|(J-N)|(P-Z)]\d{10})$/', $vat_number ) ||
-                    preg_match( '/^(FR)(\d[(A-H)|(J-N)|(P-Z)]\d{9})$/', $vat_number ) ||
-                    preg_match( '/^(FR)([(A-H)|(J-N)|(P-Z)]{2}\d{9})$/', $vat_number );
-                break;
-            case 'GB': //GRAN BRETAÑA 
-                $eu_valido  = ( bool ) preg_match( '/^(GB)?(\d{9})$/', $vat_number ) ||
-                    preg_match( '/^(GB)?(\d{12})$/', $vat_number ) ||
-                    preg_match( '/^(GB)?(GD\d{3})$/', $vat_number ) ||
-                    preg_match( '/^(GB)?(HA\d{3})$/', $vat_number );
-                break;
-            case 'GR': //GRECIA
-                $eu_valido  = ( bool ) preg_match( '/^(GR)(\d{8,9})$/', $vat_number );
-                break;
-            case 'HR': //CROACIA 
-                $eu_valido  = ( bool ) preg_match( '/^(HR)(\d{11})$/', $vat_number );
-                break;
-            case 'HU': //HUNGRÍA 
-                $eu_valido  = ( bool ) preg_match( '/^(HU)(\d{8})$/', $vat_number );
-                break;
-            case 'IE': //IRLANDA 
-                $eu_valido  = ( bool ) preg_match( '/^(IE)(\d{7}[A-W])$/', $vat_number ) ||
-                    preg_match( '/^(IE)([7-9][A-Z\*\+)]\d{5}[A-W])$/', $vat_number ) ||
-                    preg_match( '/^(IE)(\d{7}[A-W][AH])$/', $vat_number );
-                break;
-            case 'IT': //ITALIA 
-                $eu_valido  = ( bool ) preg_match( '/^(IT)(\d{11})$/', $vat_number );
-                break;
-            case 'LV': //LETONIA 
-                $eu_valido  = ( bool ) preg_match( '/^(LV)(\d{11})$/', $vat_number );
-                break;
-            case 'LT': //LITUANIA 
-                $eu_valido  = ( bool ) preg_match( '/^(LT)(\d{9}|\d{12})$/', $vat_number );
-                break;
-            case 'LU': //LUXEMBURGO 
-                $eu_valido  = ( bool ) preg_match( '/^(LU)(\d{8})$/', $vat_number );
-                break;
-            case 'MT': //MALTA 
-                $eu_valido  = ( bool ) preg_match( '/^(MT)([1-9]\d{7,8})$/', $vat_number );
-                break;
-            case 'NL': //PAÍSES BAJOS 
-                $eu_valido  = ( bool ) preg_match( '/^(NL)(\d{9})B\d{2}$/', $vat_number );
-                break;
-            case 'NO': //NORUEGA 
-                $eu_valido  = ( bool ) preg_match( '/^(NO)(\d{9})$/', $vat_number );
-                break;
-            case 'PL': //POLONIA 
-                $eu_valido  = ( bool ) preg_match( '/^(PL)(\d{10})$/', $vat_number );
-                break;
-            case 'PT': //PORTUGAL 
-                $eu_valido  = ( bool ) preg_match( '/^(PT)(\d{9})$/', $vat_number );
-                break;
-            case 'RO': //RUMANÍA 
-                $eu_valido  = ( bool ) preg_match( '/^(RO)([1-9]\d{2,10})$/', $vat_number );
-                break;
-            case 'RS': //SERBIA 
-                $eu_valido  = ( bool ) preg_match( '/^(RS)(\d{9})$/', $vat_number );
-                break;
-            case 'SI': //ESLOVENIA 
-                $eu_valido  = ( bool ) preg_match( '/^(SI)([1-9]\d{7,8})$/', $vat_number );
-                break;
-            case 'SK': //REPÚBLICA ESLOVACA
-                $eu_valido  = ( bool ) preg_match( '/^(SK)([1-9]\d[(2-4)|(6-9)]\d{7})$/', $vat_number );
-                break;
-            case 'SE': //SUECIA 
-                $eu_valido  = ( bool ) preg_match( '/^(SE)(\d{10}01)$/', $vat_number );
-                break;
-            default:
-                $eu_valido  = false;
-        }
-
-        return $eu_valido;
-    }
-
+    
     //Valida el campo NIF/CIF/NIE
     public function apg_nif_validacion_de_campo() {
         global $apg_nif_settings;
         
-        //Variables
-        $facturacion    = true;
-        $envio          = true;
-        $pais           = strtoupper( substr( $_POST[ 'billing_nif' ], 0, 2 ) );
-
-        //Comprueba si es un número VAT válido
-        if ( ( $pais == $_POST[ 'billing_country' ] || $_POST[ 'billing_country' ] != "ES" ) && in_array( $_POST[ 'billing_country' ], $this->listado_paises ) ) {
-            $facturacion    = $this->apg_nif_validacion_eu( strtoupper( $_POST[ 'billing_nif' ] ), $_POST[ 'billing_country' ] );
-        }
-
-        //Comprueba el formulario de facturación
-        if ( $_POST[ 'billing_country' ] == "ES" && isset( $_POST[ 'billing_nif' ] ) ) {
-            $facturacion    = $this->apg_nif_validacion( strtoupper( $_POST[ 'billing_nif' ] ) );
-        }
-
-        //Comprueba el formulario de envío
-        if ( isset( $_POST[ 'shipping_country' ] ) && $_POST[ 'shipping_country' ] == "ES" && isset( $_POST[ 'shipping_nif' ] ) ) {
-            $envio          = $this->apg_nif_validacion( strtoupper( $_POST[ 'shipping_nif' ] ) );
-        }
-        
-        //Muestra el mensaje de error
-        if ( ! $facturacion || ! $envio ) {
-            //Mensaje de error para el formulario de facturación
-            if ( ! $facturacion && ! empty( $_POST[ 'billing_nif' ] ) ) {
-                wc_add_notice( $this->mensaje_error, 'error' );
+        //Validación
+        if ( isset( $apg_nif_settings[ 'validacion' ] ) && $apg_nif_settings[ 'validacion' ] == "1" ) {
+            //Variables
+            $facturacion    = true;
+            $envio          = true;
+            $pais           = strtoupper( substr( $_POST[ 'billing_nif' ], 0, 2 ) );
+            
+            //Comprueba el formulario de facturación
+            if ( isset( $_POST[ 'billing_nif' ] ) && isset( $_POST[ 'billing_country' ] ) && ( in_array( $pais, $this->listado_paises ) || in_array( $_POST[ 'billing_country' ], $this->listado_paises ) ) ) {
+                $facturacion    = $this->apg_nif_validacion_internacional( strtoupper( $_POST[ 'billing_nif' ] ), $_POST[ 'billing_country' ], $pais  );
             }
-            //Mensaje de error para el formulario de envío
-            if ( ! $envio && ! empty( $_POST[ 'shipping_nif' ] ) && $_POST[ 'ship_to_different_address' ] ) {
-                wc_add_notice( $this->mensaje_error . ' - ' . esc_attr__( 'Shipping details', 'woocommerce' ), 'error' );
+
+            //Comprueba el formulario de envío
+            if ( isset( $_POST[ 'shipping_nif' ] ) && isset( $_POST[ 'shipping_country' ] ) && ( in_array( $pais, $this->listado_paises ) || in_array( $_POST[ 'shipping_country' ], $this->listado_paises ) ) ) {
+                $envio          = $this->apg_nif_validacion_internacional( strtoupper( $_POST[ 'shipping_nif' ] ), $_POST[ 'shipping_country' ], $pais  );
+            }
+
+            //Muestra el mensaje de error
+            if ( ! $facturacion || ! $envio ) {
+                //Mensaje de error para el formulario de facturación
+                if ( ! $facturacion && ! empty( $_POST[ 'billing_nif' ] ) ) {
+                    wc_add_notice( $this->mensaje_error, 'error' );
+                }
+                //Mensaje de error para el formulario de envío
+                if ( ! $envio && ! empty( $_POST[ 'shipping_nif' ] ) && $_POST[ 'ship_to_different_address' ] ) {
+                    wc_add_notice( $this->mensaje_error . ' - ' . esc_attr__( 'Shipping details', 'woocommerce' ), 'error' );
+                }
+            }
+
+            //Muestra el mensaje de error personalizado
+            if ( apply_filters( "apg_nif_display_error_message", false, $_POST[ 'billing_nif' ], $_POST[ 'billing_country' ] ) ) {
+                wc_add_notice( apply_filters( "apg_nif_error_message", $this->mensaje_error, $_POST[ 'billing_nif' ], $_POST[ 'billing_country' ] ), 'error' );
             }
         }
         
-        //Muestra el mensaje de error EORI
-        if ( isset( $apg_nif_settings[ 'eori_paises' ] ) && in_array( $_POST[ 'billing_country' ], $apg_nif_settings[ 'eori_paises' ] ) && ! $_SESSION[ 'apg_eori' ] ) {
-            wc_add_notice( $this->mensaje_eori, 'error' );
-        }
-        
-        //Muestra el mensaje de error personalizado
-        if ( apply_filters( "apg_nif_display_error_message", false, $_POST[ 'billing_nif' ], $_POST[ 'billing_country' ] ) ) {
-            wc_add_notice( apply_filters( "apg_nif_error_message", $this->mensaje_error, $_POST[ 'billing_nif' ], $_POST[ 'billing_country' ] ), 'error' );
+        //Validación EORI
+        if ( isset( $apg_nif_settings[ 'validacion_eori' ] ) && $apg_nif_settings[ 'validacion_eori' ] == "1" ) {
+            //Muestra el mensaje de error EORI
+            if ( isset( $apg_nif_settings[ 'eori_paises' ] ) && in_array( $_POST[ 'billing_country' ], $apg_nif_settings[ 'eori_paises' ] ) && ! $_SESSION[ 'apg_eori' ] ) {
+                wc_add_notice( $this->mensaje_eori, 'error' );
+            }
         }
     }
 
@@ -482,32 +608,31 @@ class APG_Campo_NIF_en_Pedido {
     public function apg_nif_validacion_de_campo_bloques( WP_Error $errors, $fields, $group ) {
         if ( WC_Blocks_Utils::has_block_in_page( wc_get_page_id('checkout'), 'woocommerce/checkout' ) ) {
             global $apg_nif_settings;
+            
+            //Validación
+            if ( isset( $apg_nif_settings[ 'validacion' ] ) && $apg_nif_settings[ 'validacion' ] == "1" ) {
+                //Variables
+                $pais   = strtoupper( substr( $fields[ 'apg/nif' ], 0, 2 ) );
 
-            //Variables
-            $pais   = strtoupper( substr( $fields[ 'apg/nif' ], 0, 2 ) );
-        
-            //Comprueba si es un número VAT válido
-            if ( ( $pais == $fields[ 'country' ] || $fields[ 'country' ] != "ES" ) && in_array( $fields[ 'country' ], $this->listado_paises ) ) {
-                if ( ! $this->apg_nif_validacion_eu( strtoupper( $fields[ 'apg/nif' ] ), $fields[ 'country' ] ) ) {
-                    $errors->add( 'invalid_vat', $this->mensaje_error );
+                //Comprueba si es un número VAT válido
+                if ( ! empty( $fields[ 'apg/nif' ] ) && ( in_array( $pais, $this->listado_paises ) || in_array( $fields[ 'country' ], $this->listado_paises ) ) ) {
+                    if ( ! $this->apg_nif_validacion_internacional( strtoupper( $fields[ 'apg/nif' ] ), $fields[ 'country' ], $pais  ) ) {
+                        $errors->add( 'invalid_vat', $this->mensaje_error );
+                    }
+                }
+
+                //Muestra el mensaje de error personalizado
+                if ( apply_filters( "apg_nif_display_error_message", false, $fields[ 'apg/nif' ], $fields[ 'country' ] ) ) {
+                    $errors->add( 'invalid_eori', apply_filters( "apg_nif_error_message", $this->mensaje_error, $fields[ 'apg/nif' ], $fields[ 'country' ] ) );
                 }
             }
 
-            //Comprueba el campo NIF/CIF/NIE
-            if ( $fields[ 'country' ] == "ES" && isset( $fields[ 'apg/nif' ] ) && ! empty( $fields[ 'apg/nif' ] ) ) {
-                if ( ! $this->apg_nif_validacion( $fields[ 'apg/nif' ] ) ) {
-                    $errors->add( 'invalid_nif', $this->mensaje_error );
+            //Validación EORI
+            if ( isset( $apg_nif_settings[ 'validacion_eori' ] ) && $apg_nif_settings[ 'validacion_eori' ] == "1" ) {
+                //Muestra el mensaje de error EORI
+                if ( isset( $apg_nif_settings[ 'eori_paises' ] ) && in_array( $fields[ 'country' ], $apg_nif_settings[ 'eori_paises' ] ) && ! $_SESSION[ 'apg_eori' ] ) {
+                    $errors->add( 'invalid_eori', $this->mensaje_eori );
                 }
-            }
-
-            //Muestra el mensaje de error EORI
-            if ( isset( $apg_nif_settings[ 'eori_paises' ] ) && in_array( $fields[ 'country' ], $apg_nif_settings[ 'eori_paises' ] ) && ! $_SESSION[ 'apg_eori' ] ) {
-                $errors->add( 'invalid_eori', $this->mensaje_eori );
-            }
-
-            //Muestra el mensaje de error personalizado
-            if ( apply_filters( "apg_nif_display_error_message", false, $fields[ 'apg/nif' ], $fields[ 'country' ] ) ) {
-                $errors->add( 'invalid_eori', apply_filters( "apg_nif_error_message", $this->mensaje_error, $fields[ 'apg/nif' ], $fields[ 'country' ] ) );
             }
         }
     }
@@ -594,7 +719,7 @@ class APG_Campo_NIF_en_Pedido {
             if ( isset( $_POST[ 'billing_nif' ] ) && $_POST[ 'billing_nif' ] ) {
                 //Separa el país del VIES
                 $pais = strtoupper( substr( $_POST[ 'billing_nif' ], 0, 2 ) );
-                if ( ! empty( $pais ) && isset( $iso_vies[ $pais ] ) ) { //Hack para Irlanda y Grecia
+                if ( ! empty( $pais ) && isset( $iso_vies[ $pais ] ) ) { //Hack para Grecia
                     $pais   = $iso_vies[ $pais ];
                 }
                 if ( $pais == $_POST[ 'billing_country' ] ) { //El VIES incluye el prefijo
@@ -603,7 +728,7 @@ class APG_Campo_NIF_en_Pedido {
                     $pais   = $_POST[ 'billing_country' ];
                     $nif    = $_POST[ 'billing_nif' ];
                 }
-                if ( array_search( $pais, $iso_vies ) ) { //Hack para Irlanda y Grecia
+                if ( array_search( $pais, $iso_vies ) ) { //Hack para Grecia
                     $pais = array_search( $pais, $iso_vies );
                 }
 
@@ -671,7 +796,7 @@ class APG_Campo_NIF_en_Pedido {
             if ( isset( $_POST[ 'billing_nif' ] ) && $_POST[ 'billing_nif' ] ) {
                 //Comprueba el país
                 $pais = $_POST[ 'billing_country' ];
-                if ( ! empty( $pais ) && isset( $iso_vies[ $pais ] ) ) { //Hack para Irlanda y Grecia
+                if ( ! empty( $pais ) && isset( $iso_vies[ $pais ] ) ) { //Hack para Grecia
                     $pais   = $iso_vies[ $pais ];
                 }
                 if ( array_search( $pais, $iso_vies ) ) {

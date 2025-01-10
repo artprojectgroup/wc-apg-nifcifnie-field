@@ -4,7 +4,7 @@ Donate link: https://artprojectgroup.es/tienda/donacion
 Tags: nif, cif, nie, eori, vies
 Requires at least: 5.0
 Tested up to: 6.8
-Stable tag: 3.1.0.2
+Stable tag: 3.2
 WC requires at least: 5.6
 WC tested up to: 9.6
 License: GPLv3
@@ -31,6 +31,8 @@ Add to WooCommerce a NIF/CIF/NIE field.
 * Add and require phone and email fields in shipping form.
 * You can remove the phone and email fields from the default address.
 * You can display and customize an error message for the billing form using the `apg_nif_display_error_message` and `apg_nif_error_message` filters.
+* You can remove the Email and Phone fields from the submission form with the `apg_nif_add_fields` filter.
+* It validates documents from Albania, Austria, Argentina, Åland Islands, Belgium, Bulgaria, Belarus, Switzerland, Chile, Cyprus, Czech Republic, Germany, Denmark, Estonia, Spain, European Union, Finland, Faroe Islands, France, Great Britain, Greece, Croatia, Hungary, Ireland, Iceland, Italy, Liechtenstein, Lithuania, Luxembourg, Latvia, Monaco, Moldova, Montenegro, North Macedonia, Malta, Netherlands, Norway, Poland, Portugal, Romania, Romania, Spain, Sweden, United Kingdom, United States of America, Hungary, Iceland, Ireland, Italy, Liechtenstein, Lithuania, Luxembourg, Latvia, Monaco, Moldova, Montenegro, North Macedonia, Malta, Netherlands, Norway, Poland, Portugal, Romania, Serbia, Slovak Republic, Slovenia, Sweden, San Marino, and Ukraine.
 * 100% compatible with [WooCommerce PDF Invoices & Packing Slips](https://es.wordpress.org/plugins/woocommerce-pdf-invoices-packing-slips/).
 * 100% compatible with [WPML](https://wpml.org/?aid=80296&affiliate_key=m66Ss5ps0xoS).
 
@@ -84,6 +86,9 @@ If you need help to configuring or installing **WC - APG NIF/CIF/NIE field**, **
 3. Screenshot of WC - APG NIF/CIF/NIE field. Billing and shipping forms. Classic Shortcode.
 
 == Changelog ==
+= 3.2 =
+* Added 'apg_nif_add_fields' filter.
+* Improved validation.
 = 3.1.0.2 =
 * Small fixes.
 = 3.1.0.1 =
@@ -256,8 +261,9 @@ If you need help to configuring or installing **WC - APG NIF/CIF/NIE field**, **
 * Initial version.
 
 == Upgrade Notice ==
-= 3.1.0.2 =
-* Small fixes.
+= 3.2 =
+* Added 'apg_nif_add_fields' filter.
+* Improved validation.
 
 == Translations ==
 * *English*: by [**Art Project Group**](https://artprojectgroup.es/) (default language).
