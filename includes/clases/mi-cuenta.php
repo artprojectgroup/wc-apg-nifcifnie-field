@@ -53,8 +53,15 @@ class APG_Campo_NIF_en_Cuenta {
     
     //Elimina el campo duplicado en el formulario de Mi cuenta
     public function apg_nif_anade_campo_nif_formulario_direccion( $address, $load_address ) {
-        unset ( $address[ '_wc_' . $load_address . '/apg/nif' ] );
+        global $apg_nif_settings;
         
+        if ( ! has_block( 'woocommerce/checkout', wc_get_page_id( 'checkout' ) ) ) {
+            unset ( $address[ '_wc_' . $load_address . '/apg/nif' ] );
+        } else {
+            unset ( $address[ $load_address . '_nif' ] );            
+            $address[ '_wc_' . $load_address . '/apg/nif' ][ 'priority' ] = ( isset( $apg_nif_settings[ 'prioridad' ] ) ? esc_attr( $apg_nif_settings[ 'prioridad' ] ) : 31 ); //Prioridad del campo
+        }
+
         return $address;
     }
 }

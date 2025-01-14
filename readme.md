@@ -9,7 +9,7 @@ Requires at least: 5.0
 
 Tested up to: 6.8
 
-Stable tag: 3.2
+Stable tag: 3.2.0.1
 
 WC requires at least: 5.6
 
@@ -41,7 +41,53 @@ Añade a WooCommerce un campo NIF/CIF/NIE.
 * Puedes quitar los campos teléfono y correo electrónico de la dirección predeterminada.
 * Puedes mostrar y personalizar un mensaje de error para el formulario de facturación utilizando los filtros `apg_nif_display_error_message` y `apg_nif_error_message`.
 * Puedes quitar los campos Correo electrónico y Teléfono del formulario de envío con el filtro `apg_nif_add_fields`.
-* Valida documentos de Albania, Austria, Argentina, Islas de Åland, Bélgica, Bulgaria, Bielorusia, Suiza, Chile, Chipre, República Checa, Alemania, Dinamarca, Estonia, España, Unión Europea, Finlandia, Islas Feroe, Francia, Gran Bretaña, Grecia, Croacia, Hungría, Irlanda, Islandia, Italia, Liechtenstein, Lituania, Luxemburgo, Letonia, Mónaco, Moldavia, Montenegro, Macedonia del Norte, Malta, Países Bajos, Noruega, Polonia, Portugal, Rumanía, Serbia, Suecia, Eslovenia,  República Eslovaca, San Marino, y Ucrania.
+* Valida documentos de:
+ * Albania.
+ * Austria.
+ * Argentina.
+ * Islas de Åland.
+ * Bélgica.
+ * Bulgaria.
+ * Bielorusia.
+ * Suiza.
+ * Chile.
+ * Chipre.
+ * República Checa.
+ * Alemania.
+ * Dinamarca.
+ * Estonia.
+ * España.
+ * Unión Europea.
+ * Finlandia.
+ * Islas Feroe.
+ * Francia.
+ * Gran Bretaña.
+ * Grecia.
+ * Croacia.
+ * Hungría.
+ * Irlanda.
+ * Islandia.
+ * Italia.
+ * Liechtenstein.
+ * Lituania.
+ * Luxemburgo.
+ * Letonia.
+ * Mónaco.
+ * Moldavia.
+ * Montenegro.
+ * Macedonia del Norte.
+ * Malta.
+ * Países Bajos.
+ * Noruega.
+ * Polonia.
+ * Portugal.
+ * Rumanía.
+ * Serbia.
+ * Suecia.
+ * Eslovenia.
+ * República Eslovaca.
+ * San Marino.
+ * Ucrania.
 * 100% compatible con [WooCommerce PDF Invoices & Packing Slips](https://es.wordpress.org/plugins/woocommerce-pdf-invoices-packing-slips/).
 * 100% compatible con [WPML](https://wpml.org/?aid=80296&affiliate_key=m66Ss5ps0xoS).
 
@@ -90,6 +136,9 @@ Si necesitas ayuda para configurar o instalar **WC - APG NIF/CIF/NIE Field**, **
 *En ningún caso **Art Project Group** proporciona ningún tipo de soporte técnico gratuito.*
 
 ## Changelog
+### 3.2.0.1
+* Arreglos menores.
+
 ### 3.2
 * Añadido filtro 'apg_nif_add_fields'.
 * Mejora de la validación.

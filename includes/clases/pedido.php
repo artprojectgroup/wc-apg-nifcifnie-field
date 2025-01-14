@@ -268,21 +268,19 @@ class APG_Campo_NIF_en_Pedido {
      */
     public function apg_nif_validacion_internacional( $vat_number, $vat_country, $pais ) {
         //Limpia el campo
-        $vat_number = preg_replace( '/[ -,.]/', '', $vat_number );
+        $vat_number     = preg_replace( '/[ -,.]/', '', $vat_number );
+        //Comprueba el país a validar
+        $valida_pais    = ( preg_match( "/^[a-zA-Z]+$/", $pais ) ) ? $pais : $vat_country;
         //Valida países específicos
-        if ( $vat_number == 'AR' || $pais == 'AR' ) { //Argentina
+        if ( $valida_pais == 'AR' ) { //Argentina
             return $this->apg_nif_valida_cuit( $vat_number );
-        } else if ( $vat_number == 'CL' ||  $pais == 'CL' ) { //Chile
+        } else if ( $valida_pais == 'CL' ) { //Chile
             return $this->apg_nif_valida_rut( $vat_number );
-        } else if ( $vat_number == 'ES' || $pais == 'ES' ) { //España
+        } else if ( $valida_pais == 'ES' ) { //España
             return $this->apg_nif_valida_nif( $vat_number );
         }
-        //Comprueba si incluye el país
-        if ( ! preg_match( "/^[a-zA-Z]+$/", substr( $vat_number, 0, 2 ) ) ) {
-            $vat_number = $vat_country . $vat_number;
-        }
         //Comprueba la estructura del campo
-        switch ( substr( $vat_number, 0, 2 ) ) {
+        switch ( $valida_pais ) {
             case 'AL': //Albania 
                 $eu_valido  = ( bool ) preg_match( '/^(AL)?J(\d{8}[A-Z])$/', $vat_number );
                 break;
