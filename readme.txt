@@ -73,33 +73,10 @@ Add to WooCommerce a NIF/CIF/NIE field.
  * Poland.
  * Portugal.
  * Romania.
- * Romania.
- * Spain.
- * Sweden.
- * United Kingdom.
- * United States of America.
- * Hungary.
- * Iceland.
- * Ireland.
- * Italy.
- * Liechtenstein.
- * Lithuania.
- * Luxembourg.
- * Latvia.
- * Monaco.
- * Moldova.
- * Montenegro.
- * North Macedonia.
- * Malta.
- * Netherlands.
- * Norway.
- * Poland.
- * Portugal.
- * Romania.
  * Serbia.
- * Slovak Republic.
- * Slovenia.
  * Sweden.
+ * Slovenia.
+ * Slovak Republic.
  * San Marino.
  * Ukraine.
 * 100% compatible with [WooCommerce PDF Invoices & Packing Slips](https://es.wordpress.org/plugins/woocommerce-pdf-invoices-packing-slips/).
