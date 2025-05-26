@@ -141,6 +141,7 @@ Si necesitas ayuda para configurar o instalar **WC - APG NIF/CIF/NIE Field**, **
 * Añadida compatibilidad completa de la validación VIES y EORI al Bloque de Finalizar compra.
 * Mejora de rendimiento general.
 * Adecuación completa del código a los estándares de seguridad marcadas por WordPress.
+* Adición de validación de documentos para nuevos países.
 * Arreglos menores.
 
 ### 3.2.0.1
@@ -408,16 +409,20 @@ Dado que **WC - APG NIF/CIF/NIE Field** es totalmente gratuito, **Art Project Gr
 ¡Muchas gracias a todos!
 
 ## Servicios Externos
-1. Este plugin se conecta a la API de plugins de WordPress.org para obtener información sobre plugins.
- * Envía el enlace permanente del plugin cuando solicita datos.
- * Más información: [https://wordpress.org/about/privacy/](https://wordpress.org/about/privacy/).
-2. Este plugin se conecta a la API de validación del número IVA en VIES y de número EORI.
- * Envía el país y el número de IVA — validación VIES —.
- * Envía el número EORI.
- * Más información: [https://commission.europa.eu/privacy-policy-websites-managed-european-commission_es](https://commission.europa.eu/privacy-policy-websites-managed-european-commission_es).
-3. Este plugin se conecta a la API de validación de número EORI.
- * Envía el número EORI.
- * Más información: [https://www.gov.uk/help/privacy-notice](https://www.gov.uk/help/privacy-notice).
-4. Este plugin se conecta a la API de validación de número EORI.
- * Envía el número EORI.
- * Más información: [https://vatapp.net/privacy-policy](https://vatapp.net/privacy-policye).
+== Servicios externos ==
+1. A la API de plugins de WordPress.org para obtener información sobre plugins.  
+ - Envía el slug del plugin al solicitar los datos.  
+ - Más información: https://wordpress.org/about/privacy/
+
+2. A la API de validación de números de IVA (VIES) y de números EORI de la Comisión Europea.  
+ - Envía el país y el número de IVA (validación VIES).  
+ - Envía el número EORI.  
+ - Más información: https://commission.europa.eu/privacy-policy-websites-managed-european-commission_es
+
+3. A la API de validación de número EORI del Gobierno del Reino Unido.  
+ - Envía el número EORI.  
+ - Más información: https://www.gov.uk/help/privacy-notice
+
+4. A la API de validación de número EORI de VatApp.  
+ - Envía el número EORI.  
+ - Más información: https://vatapp.net/privacy-policy
