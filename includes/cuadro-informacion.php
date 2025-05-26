@@ -2,9 +2,9 @@
 	<div class="fila">
 		<div class="columna">
 			<p>
-				<?php _e( 'If you enjoyed and find helpful this plugin, please make a donation:', 'wc-apg-nifcifnie-field' ); ?>
+				<?php esc_attr_e( 'If you enjoyed and find helpful this plugin, please make a donation:', 'wc-apg-nifcifnie-field' ); ?>
 			</p>
-			<p><a href="<?php echo $apg_nif['donacion']; ?>" target="_blank" title="<?php _e( 'Make a donation by ', 'wc-apg-nifcifnie-field' ); ?>APG"><span class="genericon genericon-cart"></span></a>
+			<p><a href="<?php echo esc_url( $apg_nif[ 'donacion' ] ); ?>" target="_blank" title="<?php esc_attr_e( 'Make a donation by ', 'wc-apg-nifcifnie-field' ); ?>APG"><span class="genericon genericon-cart"></span></a>
 			</p>
 		</div>
 		<div class="columna">
@@ -16,41 +16,44 @@
 	<div class="fila">
 		<div class="columna">
 			<p>
-				<?php _e( 'Follow us:', 'wc-apg-nifcifnie-field' ); ?>
+				<?php esc_attr_e( 'Follow us:', 'wc-apg-nifcifnie-field' ); ?>
 			</p>
-			<p><a href="https://www.facebook.com/artprojectgroup" title="<?php _e( 'Follow us on ', 'wc-apg-nifcifnie-field' ); ?>Facebook" target="_blank"><span class="genericon genericon-facebook-alt"></span></a> <a href="https://twitter.com/artprojectgroup" title="<?php _e( 'Follow us on ', 'wc-apg-nifcifnie-field' ); ?>Twitter" target="_blank"><span class="genericon genericon-twitter"></span></a> <a href="http://es.linkedin.com/in/artprojectgroup" title="<?php _e( 'Follow us on ', 'wc-apg-nifcifnie-field' ); ?>LinkedIn" target="_blank"><span class="genericon genericon-linkedin"></span></a>
+			<p><a href="https://www.facebook.com/artprojectgroup" title="<?php esc_attr_e( 'Follow us on ', 'wc-apg-nifcifnie-field' ); ?>Facebook" target="_blank"><span class="genericon genericon-facebook-alt"></span></a> <a href="https://twitter.com/artprojectgroup" title="<?php esc_attr_e( 'Follow us on ', 'wc-apg-nifcifnie-field' ); ?>Twitter" target="_blank"><span class="genericon genericon-twitter"></span></a> <a href="http://es.linkedin.com/in/artprojectgroup" title="<?php esc_attr_e( 'Follow us on ', 'wc-apg-nifcifnie-field' ); ?>LinkedIn" target="_blank"><span class="genericon genericon-linkedin"></span></a>
 			</p>
 		</div>
 		<div class="columna">
 			<p>
-				<?php _e( 'More plugins:', 'wc-apg-nifcifnie-field' ); ?>
+				<?php esc_attr_e( 'More plugins:', 'wc-apg-nifcifnie-field' ); ?>
 			</p>
-			<p><a href="http://profiles.wordpress.org/artprojectgroup/" title="<?php _e( 'More plugins on ', 'wc-apg-nifcifnie-field' ); ?>WordPress" target="_blank"><span class="genericon genericon-wordpress"></span></a>
+			<p><a href="http://profiles.wordpress.org/artprojectgroup/" title="<?php esc_attr_e( 'More plugins on ', 'wc-apg-nifcifnie-field' ); ?>WordPress" target="_blank"><span class="genericon genericon-wordpress"></span></a>
 			</p>
 		</div>
 	</div>
 	<div class="fila">
 		<div class="columna">
 			<p>
-				<?php _e( 'Contact with us:', 'wc-apg-nifcifnie-field' ); ?>
+				<?php esc_attr_e( 'Contact with us:', 'wc-apg-nifcifnie-field' ); ?>
 			</p>
-			<p><a href="mailto:info@artprojectgroup.es" title="<?php _e( 'Contact with us by ', 'wc-apg-nifcifnie-field' ); ?>e-mail"><span class="genericon genericon-mail"></span></a> <a href="skype:artprojectgroup" title="<?php _e( 'Contact with us by ', 'wc-apg-nifcifnie-field' ); ?>Skype"><span class="genericon genericon-skype"></span></a>
+			<p><a href="mailto:info@artprojectgroup.es" title="<?php esc_attr_e( 'Contact with us by ', 'wc-apg-nifcifnie-field' ); ?>e-mail"><span class="genericon genericon-mail"></span></a></a>
 			</p>
 		</div>
 		<div class="columna">
 			<p>
-				<?php _e( 'Documentation and Support:', 'wc-apg-nifcifnie-field' ); ?>
+				<?php esc_attr_e( 'Documentation and Support:', 'wc-apg-nifcifnie-field' ); ?>
 			</p>
-			<p><a href="<?php echo $apg_nif['plugin_url']; ?>" title="<?php echo $apg_nif['plugin']; ?>"><span class="genericon genericon-book"></span></a> <a href="<?php echo $apg_nif['soporte']; ?>" title="<?php _e( 'Support', 'wc-apg-nifcifnie-field' ); ?>"><span class="genericon genericon-cog"></span></a>
+			<p><a href="<?php echo esc_url( $apg_nif[ 'plugin_url' ] ); ?>" title="<?php echo esc_attr( $apg_nif[ 'plugin' ] ); ?>"><span class="genericon genericon-book"></span></a> <a href="<?php echo esc_url( $apg_nif[ 'soporte' ] ); ?>" title="<?php esc_attr_e( 'Support', 'wc-apg-nifcifnie-field' ); ?>"><span class="genericon genericon-cog"></span></a>
 			</p>
 		</div>
 	</div>
 	<div class="fila final">
 		<div class="columna">
 			<p>
-				<?php echo sprintf( __( 'Please, rate %s:', 'wc-apg-nifcifnie-field' ), $apg_nif['plugin'] ); ?>
-			</p>
-			<?php echo apg_nif_plugin( $apg_nif['plugin_uri'] ); ?> </div>
+                <?php
+                // translators: %s is the plugin name (e.g., WC – APG Campo NIF/CIF/NIE)
+                echo sprintf( esc_attr__( 'Please, rate %s:', 'wc-apg-nifcifnie-field' ), esc_attr( $apg_nif[ 'plugin' ] ) );
+                ?>
+            </p>
+			<?php echo wp_kses_post( apg_nif_plugin( $apg_nif[ 'plugin_uri' ] ) ); ?> </div>
 		<div class="columna final"></div>
 	</div>
 </div>

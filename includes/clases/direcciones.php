@@ -9,6 +9,7 @@ class APG_Campo_NIF_en_Direcciones {
 	//Inicializa las acciones de Direcciones
 	public function __construct() {
 		add_filter( 'woocommerce_formatted_address_replacements', [ $this, 'apg_nif_formato_direccion_de_facturacion' ], 10, 2 );
+        add_filter( 'woocommerce_store_api_checkout_update_order', [ $this, 'apg_nif_formato_direccion_de_facturacion' ], 10, 2 );
 		add_filter( 'woocommerce_localisation_address_formats', [ $this, 'apg_nif_formato_direccion_localizacion' ], PHP_INT_MAX );
 		add_filter( 'woocommerce_order_formatted_billing_address', [ $this, 'apg_nif_anade_campo_nif_direccion_facturacion' ], 10, 2 );
 		add_filter( 'woocommerce_order_formatted_shipping_address', [ $this, 'apg_nif_anade_campo_nif_direccion_envio' ], 10, 2 );
@@ -26,7 +27,7 @@ class APG_Campo_NIF_en_Direcciones {
         return $campos;
 	}
 	
-	//Modificalos campos de las direcciones
+	//Modifica los campos de las direcciones
 	public function apg_nif_formato_direccion_localizacion( $direccion ) {
 		global $apg_nif_settings;
         

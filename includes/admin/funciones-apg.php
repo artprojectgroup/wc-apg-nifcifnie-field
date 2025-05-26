@@ -33,7 +33,7 @@ function apg_nif_enlaces( $enlaces, $archivo ) {
 		$enlaces[]	= '<a href="'. $apg_nif[ 'plugin_url' ] . '" target="_blank" title="' . $apg_nif[ 'plugin' ] . '"><strong class="artprojectgroup">APG</strong></a>';
 		$enlaces[]	= '<a href="https://www.facebook.com/artprojectgroup" title="' . esc_attr__( 'Follow us on ', 'wc-apg-nifcifnie-field' ) . 'Facebook" target="_blank"><span class="genericon genericon-facebook-alt"></span></a> <a href="https://twitter.com/artprojectgroup" title="' . esc_attr__( 'Follow us on ', 'wc-apg-nifcifnie-field' ) . 'Twitter" target="_blank"><span class="genericon genericon-twitter"></span></a> <a href="https://es.linkedin.com/in/artprojectgroup" title="' . esc_attr__( 'Follow us on ', 'wc-apg-nifcifnie-field' ) . 'LinkedIn" target="_blank"><span class="genericon genericon-linkedin"></span></a>';
 		$enlaces[]	= '<a href="https://profiles.wordpress.org/artprojectgroup/" title="' . esc_attr__( 'More plugins on ', 'wc-apg-nifcifnie-field' ) . 'WordPress" target="_blank"><span class="genericon genericon-wordpress"></span></a>';
-		$enlaces[]	= '<a href="mailto:info@artprojectgroup.es" title="' . esc_attr__( 'Contact with us by ', 'wc-apg-nifcifnie-field' ) . 'e-mail"><span class="genericon genericon-mail"></span></a> <a href="skype:artprojectgroup" title="' . esc_attr__( 'Contact with us by ', 'wc-apg-nifcifnie-field' ) . 'Skype"><span class="genericon genericon-skype"></span></a>';
+		$enlaces[]	= '<a href="mailto:info@artprojectgroup.es" title="' . esc_attr__( 'Contact with us by ', 'wc-apg-nifcifnie-field' ) . 'e-mail"><span class="genericon genericon-mail"></span></a>';
 		$enlaces[]	= apg_nif_plugin( $apg_nif[ 'plugin_uri' ] );
 	}
 	
@@ -70,7 +70,8 @@ function apg_nif_plugin( $nombre ) {
 	if ( ! is_wp_error( $respuesta ) ) {
 		$plugin = json_decode( wp_remote_retrieve_body( $respuesta ) );
 	} else {
-	   return '<a title="' . sprintf( esc_attr__( 'Please, rate %s:', 'wc-apg-nifcifnie-field' ), $apg_nif[ 'plugin' ] ) . '" href="' . $apg_nif[ 'puntuacion' ] . '?rate=5#postform" class="estrellas">' . esc_attr__( 'Unknown rating', 'wc-apg-nifcifnie-field' ) . '</a>';
+        // translators: %s is the plugin name (e.g., WC – APG Campo NIF/CIF/NIE)
+        return '<a title="' . sprintf( esc_attr__( 'Please, rate %s:', 'wc-apg-nifcifnie-field' ), $apg_nif[ 'plugin' ] ) . '" href="' . $apg_nif[ 'puntuacion' ] . '?rate=5#postform" class="estrellas">' . esc_attr__( 'Unknown rating', 'wc-apg-nifcifnie-field' ) . '</a>';
 	}
 
     $rating = [
@@ -83,14 +84,20 @@ function apg_nif_plugin( $nombre ) {
 	$estrellas = ob_get_contents();
 	ob_end_clean();
 
+    // translators: %s is the plugin name (e.g., WC – APG Campo NIF/CIF/NIE)
 	return '<a title="' . sprintf( esc_attr__( 'Please, rate %s:', 'wc-apg-nifcifnie-field' ), $apg_nif[ 'plugin' ] ) . '" href="' . $apg_nif[ 'puntuacion' ] . '?rate=5#postform" class="estrellas">' . $estrellas . '</a>';
 }
 
 //Hoja de estilo
 function apg_nif_estilo() {
-	if ( strpos( $_SERVER[ 'REQUEST_URI' ], 'wc-apg-nifcifnie-field' ) !== false || strpos( $_SERVER[ 'REQUEST_URI' ], 'plugins.php' ) !== false ) {
-		wp_register_style( 'apg_nif_hoja_de_estilo', plugins_url( 'assets/css/style.css', DIRECCION_apg_nif ) ); //Carga la hoja de estilo
-		wp_enqueue_style( 'apg_nif_hoja_de_estilo' );
-	}
+    if ( isset( $_SERVER[ 'REQUEST_URI' ] ) ) {
+        $request_uri = sanitize_text_field( wp_unslash( $_SERVER[ 'REQUEST_URI' ] ) );
+        if ( strpos( $request_uri, 'wc-apg-nifcifnie-field' ) !== false || strpos( $request_uri, 'plugins.php' ) !== false ) {
+            wp_register_style( 'apg_nif_hoja_de_estilo', plugins_url( 'assets/css/style.css', DIRECCION_apg_nif ), VERSION_apg_nif, 'all' ); //Carga la hoja de estilo
+            if ( ! wp_style_is( 'apg_nif_hoja_de_estilo', 'enqueued' ) ) {
+                wp_enqueue_style( 'apg_nif_hoja_de_estilo' );
+            }
+        }
+    }
 }
 add_action( 'admin_enqueue_scripts', 'apg_nif_estilo' );

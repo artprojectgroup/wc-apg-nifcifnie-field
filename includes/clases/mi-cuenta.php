@@ -10,8 +10,8 @@ class APG_Campo_NIF_en_Cuenta {
 	public function __construct() {
 		add_filter( 'woocommerce_my_account_my_address_formatted_address', [ $this, 'apg_nif_anade_campo_nif_editar_direccion' ], 10, 3 );
         add_filter( 'woocommerce_address_to_edit', [ $this, 'apg_nif_anade_campo_nif_formulario_direccion' ], 99, 2 );
-	}
-	
+    }
+    
 	//Añade el campo NIF a Editar mi dirección
 	public function apg_nif_anade_campo_nif_editar_direccion( $campos, $cliente, $formulario ) {
         if ( ! has_action( 'woocommerce_my_account_after_my_address' ) ) {

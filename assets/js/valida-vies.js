@@ -22,12 +22,20 @@ jQuery( function( $ ) {
             url: apg_nif_ajax.url,
             data: datos,
             success: function( response ) {
-                console.log( "WC - APG NIF/CIF/NIE Field: " + response );
-                if ( response == 0 && $( '#error_vies' ).length == 0 ) {
-                    $( '#billing_nif_field' ).append( '<div id="error_vies"><strong>' + apg_nif_ajax.error + '</strong></div>' );
-                } else if ( response != 0 && $( '#error_vies' ).length ) {
-                    $( '#error_vies' ).remove();
+                console.log( "Respuesta VIES:" );
+                console.log( response );
+                if (response.success && response.data.resultado === false) { //No es válido
+                    var texto = apg_nif_ajax.error;
+                } else if (response.success && response.data.resultado === 44) { //Error de VIES
+                    var texto = apg_nif_ajax.max;
                 }
+                if ($("#error_vies").length) { //Quita el error
+                    $("#error_vies").remove();
+                } 
+                if ( typeof texto !== 'undefined' ) { //Muestra el error
+                    $( '#billing_nif_field' ).append( '<div id="error_vies"><strong>' + texto + '</strong></div>' );
+                }
+      
                 $( 'body' ).trigger( 'update_checkout' );
             },
         } );

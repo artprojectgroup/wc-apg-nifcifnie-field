@@ -7,22 +7,22 @@ Tags: nif, cif, nie, eori, vies
 
 Requires at least: 5.0
 
-Tested up to: 6.8
+Tested up to: 6.9
 
-Stable tag: 3.2.0.1
+Stable tag: 4.0
 
 WC requires at least: 5.6
 
-WC tested up to: 9.6
+WC tested up to: 9.9
 
-License: GPLv3
+License: GNU General Public License v2 or later
 
-License URI: http://www.gnu.org/licenses/gpl-3.0.html
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
 Añade a WooCommerce un campo NIF/CIF/NIE.
 
 ## Description
-**IMPORTANTE: *WC - APG NIF/CIF/NIE Field* requiere WooCommerce 2.4.0 o superior y la clase PHP <a href="http://php.net/manual/es/class.soapclient.php">SoapClient</a>.**
+**IMPORTANTE: *WC - APG NIF/CIF/NIE Field* requiere WooCommerce 2.4.0 o superior y la clase PHP [SoapClient](http://php.net/manual/en/class.soapclient.php).**
 
 **WC - APG NIF/CIF/NIE Field** añade a tu tienda WooCommerce un nuevo campo NIF/CIF/NIE a todos los formularios de facturación y envío disponibles tanto para el administrador como para el cliente en WooCommerce.
 
@@ -37,6 +37,7 @@ Añade a WooCommerce un campo NIF/CIF/NIE.
 * Puedes seleccionar el/los país/es donde se validará el campo EORI.
 * Puedes personalizar la etiqueta y el marcador de posición del campo NIF/CIF/NIE, VIES VAT number o EORI.
 * Puedes personalizar el mensaje de error del campo NIF/CIF/NIE, VIES VAT number o EORI.
+* Puedes personalizar el mensaje de error si se supera el máximo de consultas a la API de comprobación del campo VIES VAT number.
 * Añade como requeridos los campos teléfono y correo electrónico al formulario de envío.
 * Puedes quitar los campos teléfono y correo electrónico de la dirección predeterminada.
 * Puedes mostrar y personalizar un mensaje de error para el formulario de facturación utilizando los filtros `apg_nif_display_error_message` y `apg_nif_error_message`.
@@ -136,6 +137,12 @@ Si necesitas ayuda para configurar o instalar **WC - APG NIF/CIF/NIE Field**, **
 *En ningún caso **Art Project Group** proporciona ningún tipo de soporte técnico gratuito.*
 
 ## Changelog
+### 4.0
+* Añadida compatibilidad completa de la validación VIES y EORI al Bloque de Finalizar compra.
+* Mejora de rendimiento general.
+* Adecuación completa del código a los estándares de seguridad marcadas por WordPress.
+* Arreglos menores.
+
 ### 3.2.0.1
 * Arreglos menores.
 
@@ -399,3 +406,18 @@ Dado que **WC - APG NIF/CIF/NIE Field** es totalmente gratuito, **Art Project Gr
 * A todos los que nos animáis con vuestros comentarios.
 
 ¡Muchas gracias a todos!
+
+## Servicios Externos
+1. Este plugin se conecta a la API de plugins de WordPress.org para obtener información sobre plugins.
+* Envía el enlace permanente del plugin cuando solicita datos.
+* Más información: [https://wordpress.org/about/privacy/](https://wordpress.org/about/privacy/).
+2. Este plugin se conecta a la API de validación del número IVA en VIES y de número EORI.
+* Envía el país y el número de IVA — validación VIES —.
+* Envía el número EORI.
+* Más información: [https://commission.europa.eu/privacy-policy-websites-managed-european-commission_es](https://commission.europa.eu/privacy-policy-websites-managed-european-commission_es).
+3. Este plugin se conecta a la API de validación de número EORI.
+* Envía el número EORI.
+* Más información: [https://www.gov.uk/help/privacy-notice](https://www.gov.uk/help/privacy-notice).
+4. Este plugin se conecta a la API de validación de número EORI.
+* Envía el número EORI.
+* Más información: [https://vatapp.net/privacy-policy](https://vatapp.net/privacy-policye).

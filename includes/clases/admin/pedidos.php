@@ -31,16 +31,17 @@ class APG_Campo_NIF_en_Admin_Pedidos {
 	public function apg_nif_anade_campo_nif_editar_direccion_pedido( $campos ) {
 		global $apg_nif_settings;
 
+        $etiqueta           = isset( $apg_nif_settings[ 'etiqueta' ] ) && $apg_nif_settings[ 'etiqueta' ] ? sanitize_text_field( $apg_nif_settings[ 'etiqueta' ] ) : esc_attr__( 'NIF/CIF/NIE', 'wc-apg-nifcifnie-field' );
         $campos[ 'nif' ]    = [ 
-			'label'	=> esc_attr__( ( isset( $apg_nif_settings[ 'etiqueta' ] ) ? esc_attr( $apg_nif_settings[ 'etiqueta' ] ) : 'NIF/CIF/NIE' ), 'wc-apg-nifcifnie-field' ),
+			'label'	=> $etiqueta,
 			'show'	=> false
 		];
         $campos[ 'phone' ]  = [ 
-			'label'	=> esc_attr__( 'Telephone', 'woocommerce' ),
+			'label'	=> esc_attr__( 'Telephone', 'wc-apg-nifcifnie-field' ),
 			'show'	=> true
 		];
         $campos[ 'email' ]  = [ 
-			'label'	=> esc_attr__( 'Email address', 'woocommerce' ),
+			'label'	=> esc_attr__( 'Email address', 'wc-apg-nifcifnie-field' ),
 			'show'	=> true
 		];
 
@@ -67,7 +68,7 @@ class APG_Campo_NIF_en_Admin_Pedidos {
         }
 
         foreach ( $campos as $campo => $datos ) {
-            if ( ! isset( $campos_ordenados[ $campo ] ) && $datos[ 'label' ] != esc_attr__( ( isset( $apg_nif_settings[ 'etiqueta' ] ) ? esc_attr( $apg_nif_settings[ 'etiqueta' ] ) : 'NIF/CIF/NIE' ), 'wc-apg-nifcifnie-field' ) ) {
+            if ( ! isset( $campos_ordenados[ $campo ] ) && $datos[ 'label' ] != $etiqueta ) {
                 $campos_ordenados[ $campo ] = $datos;
             }
         }
@@ -77,10 +78,17 @@ class APG_Campo_NIF_en_Admin_Pedidos {
 
 	//Carga el campo NIF en los pedidos creados manualmente
 	public function apg_nif_ajax( $datos_cliente ) {
-		$cliente	= ( int ) trim( stripslashes( $_POST[ 'user_id' ] ) );
-		$formulario	= esc_attr( trim( stripslashes( $_POST[ 'type_to_load' ] ) ) );
-
-		$datos_cliente[ $formulario . '_nif' ]    = get_user_meta( $cliente, $formulario . '_nif', true );
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- WooCommerce already validates nonce via 'get-customer-details'
+        if ( isset( $_POST[ 'user_id' ], $_POST[ 'type_to_load' ] ) ) {
+            // phpcs:ignore WordPress.Security.NonceVerification.Missing -- WooCommerce already validates nonce via 'get-customer-details'
+            $cliente    = absint( wp_unslash( $_POST[ 'user_id' ] ) );
+            // phpcs:ignore WordPress.Security.NonceVerification.Missing -- WooCommerce already validates nonce via 'get-customer-details'
+            $formulario = sanitize_text_field( wp_unslash( $_POST[ 'type_to_load' ] ) );
+            
+            if ( $cliente && in_array( $formulario, [ 'billing', 'shipping' ], true ) ) {
+                $datos_cliente[ $formulario . '_nif' ]  = get_user_meta( $cliente, $formulario . '_nif', true );
+            }
+        }
 
 		return $datos_cliente;
 	}
