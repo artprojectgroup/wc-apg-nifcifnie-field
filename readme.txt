@@ -341,15 +341,15 @@ Thank you very much to all!
 
 == External Services ==
 1. This plugin connects to the WordPress.org Plugins API to fetch plugin information.  
-* It sends the plugin slug when requesting data.
-* More information: [https://wordpress.org/about/privacy/](https://wordpress.org/about/privacy/)
+ * It sends the plugin slug when requesting data.
+ * More information: [https://wordpress.org/about/privacy/](https://wordpress.org/about/privacy/)
 2. This plugin connects to the VAT number validation API from VIES and the EORI number validation API.  
-* It sends the country and VAT number — VIES validation —.  
-* It sends the EORI number.  
-* More information: [https://commission.europa.eu/privacy-policy-websites-managed-european-commission_es](https://commission.europa.eu/privacy-policy-websites-managed-european-commission_es)
+ * It sends the country and VAT number — VIES validation —.  
+ * It sends the EORI number.  
+ * More information: [https://commission.europa.eu/privacy-policy-websites-managed-european-commission_es](https://commission.europa.eu/privacy-policy-websites-managed-european-commission_es)
 3. This plugin connects to the EORI number validation API.  
-* It sends the EORI number.  
-* More information: [https://www.gov.uk/help/privacy-notice](https://www.gov.uk/help/privacy-notice)
+ * It sends the EORI number.  
+ * More information: [https://www.gov.uk/help/privacy-notice](https://www.gov.uk/help/privacy-notice)
 4. This plugin connects to the EORI number validation API.  
-* It sends the EORI number.  
-* More information: [https://vatapp.net/privacy-policy](https://vatapp.net/privacy-policy)
+ * It sends the EORI number.  
+ * More information: [https://vatapp.net/privacy-policy](https://vatapp.net/privacy-policy)

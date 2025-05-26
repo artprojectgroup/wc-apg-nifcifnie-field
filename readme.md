@@ -409,15 +409,15 @@ Dado que **WC - APG NIF/CIF/NIE Field** es totalmente gratuito, **Art Project Gr
 
 ## Servicios Externos
 1. Este plugin se conecta a la API de plugins de WordPress.org para obtener información sobre plugins.
-* Envía el enlace permanente del plugin cuando solicita datos.
-* Más información: [https://wordpress.org/about/privacy/](https://wordpress.org/about/privacy/).
+ * Envía el enlace permanente del plugin cuando solicita datos.
+ * Más información: [https://wordpress.org/about/privacy/](https://wordpress.org/about/privacy/).
 2. Este plugin se conecta a la API de validación del número IVA en VIES y de número EORI.
-* Envía el país y el número de IVA — validación VIES —.
-* Envía el número EORI.
-* Más información: [https://commission.europa.eu/privacy-policy-websites-managed-european-commission_es](https://commission.europa.eu/privacy-policy-websites-managed-european-commission_es).
+ * Envía el país y el número de IVA — validación VIES —.
+ * Envía el número EORI.
+ * Más información: [https://commission.europa.eu/privacy-policy-websites-managed-european-commission_es](https://commission.europa.eu/privacy-policy-websites-managed-european-commission_es).
 3. Este plugin se conecta a la API de validación de número EORI.
-* Envía el número EORI.
-* Más información: [https://www.gov.uk/help/privacy-notice](https://www.gov.uk/help/privacy-notice).
+ * Envía el número EORI.
+ * Más información: [https://www.gov.uk/help/privacy-notice](https://www.gov.uk/help/privacy-notice).
 4. Este plugin se conecta a la API de validación de número EORI.
-* Envía el número EORI.
-* Más información: [https://vatapp.net/privacy-policy](https://vatapp.net/privacy-policye).
+ * Envía el número EORI.
+ * Más información: [https://vatapp.net/privacy-policy](https://vatapp.net/privacy-policye).
