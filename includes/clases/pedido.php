@@ -1,10 +1,7 @@
 <?php
 //Igual no deberías poder abrirme
 defined( 'ABSPATH' ) || exit;
-/*
-use Automattic\WooCommerce\Blocks\Package;
-use Automattic\WooCommerce\Blocks\Domain\Services\CheckoutFields;
-*/
+
 /**
  * Añade los campos en el Pedido.
  */
@@ -96,9 +93,8 @@ class APG_Campo_NIF_en_Pedido {
             }
             add_action( 'wp_ajax_nopriv_apg_nif_valida_VIES', [ $this, 'apg_nif_valida_VIES' ] );
             add_action( 'wp_ajax_apg_nif_valida_VIES', [ $this, 'apg_nif_valida_VIES' ] );
-            //add_action( 'init', [ $this, 'apg_nif_quita_iva' ] );
             add_action( 'woocommerce_checkout_update_order_review', [ $this, 'apg_nif_quita_iva' ] );
-            //add_action( 'woocommerce_before_calculate_totals', [ $this, 'apg_nif_quita_iva' ], 99 );
+            add_action( 'woocommerce_blocks_validate_location_address_fields', [ $this, 'apg_nif_validacion_de_campo_bloques' ], 10, 3 ); //Formulario de bloques
         }
         //Añade el número EORI
         if ( isset( $apg_nif_settings[ 'validacion_eori' ] ) && $apg_nif_settings[ 'validacion_eori' ] == "1" ) {
@@ -621,12 +617,12 @@ class APG_Campo_NIF_en_Pedido {
     public function apg_nif_validacion_de_campo_bloques( WP_Error $errors, $fields, $group ) {
         global $apg_nif_settings;
 
-        if ( ! is_checkout() && !( defined( 'WOOCOMMERCE_CHECKOUT' ) && WOOCOMMERCE_CHECKOUT ) && ! ( defined( 'DOING_AJAX' ) && DOING_AJAX ) ) {
-            return;
+        if ( ! defined( 'REST_REQUEST' ) || REST_REQUEST !== true ) {
+            return $errors;
         }
 
         if ( ! WC_Blocks_Utils::has_block_in_page( wc_get_page_id( 'checkout' ), 'woocommerce/checkout' ) ) {
-            return;
+            return $errors;
         }
 
         //Procesa los camops
@@ -676,13 +672,15 @@ class APG_Campo_NIF_en_Pedido {
             if ( ! wp_script_is( 'apg_nif_valida_bloques', 'enqueued' ) ) {
                 wp_enqueue_script( 'apg_nif_valida_bloques', plugin_dir_url( DIRECCION_apg_nif ) . 'assets/js/valida-bloques-nif.js', [ 'jquery' ], VERSION_apg_nif, true );
                 wp_localize_script( 'apg_nif_valida_bloques', 'apg_nif_ajax', [
-                    'url' => admin_url( 'admin-ajax.php' ),
+                    'url'   => admin_url( 'admin-ajax.php' ),
                     'error' => $this->mensaje_vies,
-                    'max' => $this->mensaje_max,
+                    'max'   => $this->mensaje_max,
+                    'vat'   => $this->mensaje_error,
                 ] );
                 wp_localize_script( 'apg_nif_valida_bloques', 'apg_nif_eori_ajax', [
-                    'url' => admin_url( 'admin-ajax.php' ),
+                    'url'   => admin_url( 'admin-ajax.php' ),
                     'error' => $this->mensaje_eori,
+                    'vat'   => $this->mensaje_error,
                     'lista' => $apg_nif_settings[ 'eori_paises' ] ?? [],
                 ] );
             }
@@ -691,13 +689,15 @@ class APG_Campo_NIF_en_Pedido {
             if ( ! wp_script_is( 'apg_nif_valida', 'enqueued' ) ) {
                 wp_enqueue_script( 'apg_nif_valida', plugin_dir_url( DIRECCION_apg_nif ) . 'assets/js/valida-nif.js', [ 'jquery' ], VERSION_apg_nif, true );
                 wp_localize_script( 'apg_nif_valida', 'apg_nif_ajax', [
-                    'url' => admin_url( 'admin-ajax.php' ),
+                    'url'   => admin_url( 'admin-ajax.php' ),
                     'error' => $this->mensaje_vies,
-                    'max' => $this->mensaje_max,
+                    'max'   => $this->mensaje_max,
+                    'vat'   => $this->mensaje_error,
                 ] );
                 wp_localize_script( 'apg_nif_valida', 'apg_nif_eori_ajax', [
-                    'url' => admin_url( 'admin-ajax.php' ),
+                    'url'   => admin_url( 'admin-ajax.php' ),
                     'error' => $this->mensaje_eori,
+                    'vat'   => $this->mensaje_error,
                     'lista' => $apg_nif_settings[ 'eori_paises' ] ?? [],
                 ] );
             }

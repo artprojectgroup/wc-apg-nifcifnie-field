@@ -46,8 +46,14 @@ jQuery(document).ready(function ($) {
                     if (res.usar_eori && res.valido_eori === false) {
                         texto = apg_nif_eori_ajax.error;
                         hay_error = true;
-                    } else if (!res.usar_eori && !res.valido_vies && !res.vat_valido) {
+                    } else if (res.usar_eori && res.valido_eori === false) {
+                        texto = apg_nif_eori_ajax.error;
+                        hay_error = true;
+                    } else if (res.usar_vies && res.valido_vies === false) {
                         texto = res.valido_vies === 44 ? apg_nif_ajax.max : apg_nif_ajax.error;
+                        hay_error = true;
+                    } else if (!res.vat_valido) {
+                        texto = apg_nif_ajax.vat;
                         hay_error = true;
                     }
 
@@ -72,6 +78,20 @@ jQuery(document).ready(function ($) {
 
                         if (typeof validation !== "undefined" && typeof validation.removeError === "function") {
                             validation.removeError(formulario + "-apg-nif");
+                        }
+                        
+                        // Fuerza actualización de la validación global si todo ha ido bien
+                        const event = new CustomEvent('checkout-blocks-validation-reset', {
+                            detail: {
+                                field: formulario + "-apg-nif"
+                            }
+                        });
+                        document.dispatchEvent(event);
+                        
+                        // Elimina también manualmente el aviso superior si existe
+                        const dismissBtn = document.querySelector('.wc-block-components-notice-banner__dismiss');
+                        if (dismissBtn) {
+                            dismissBtn.click();
                         }
                     }
                 }
