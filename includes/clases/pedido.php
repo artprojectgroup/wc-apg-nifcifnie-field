@@ -94,6 +94,7 @@ class APG_Campo_NIF_en_Pedido {
             add_action( 'wp_ajax_nopriv_apg_nif_valida_VIES', [ $this, 'apg_nif_valida_VIES' ] );
             add_action( 'wp_ajax_apg_nif_valida_VIES', [ $this, 'apg_nif_valida_VIES' ] );
             add_action( 'woocommerce_checkout_update_order_review', [ $this, 'apg_nif_quita_iva' ] );
+            add_action( 'woocommerce_checkout_process', [ $this, 'apg_nif_validacion_de_campo' ] );
             add_action( 'woocommerce_blocks_validate_location_address_fields', [ $this, 'apg_nif_validacion_de_campo_bloques' ], 10, 3 ); //Formulario de bloques
         }
         //Añade el número EORI
