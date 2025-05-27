@@ -9,7 +9,7 @@ Requires at least: 5.0
 
 Tested up to: 6.9
 
-Stable tag: 4.0
+Stable tag: 4.0.0.1
 
 WC requires at least: 5.6
 
@@ -137,6 +137,9 @@ Si necesitas ayuda para configurar o instalar **WC - APG NIF/CIF/NIE Field**, **
 *En ningún caso **Art Project Group** proporciona ningún tipo de soporte técnico gratuito.*
 
 ## Changelog
+### 4.0.0.1
+* Arreglos menores.
+
 ### 4.0
 * Añadida compatibilidad completa de la validación VIES y EORI al Bloque de Finalizar compra.
 * Mejora de rendimiento general.
@@ -410,19 +413,19 @@ Dado que **WC - APG NIF/CIF/NIE Field** es totalmente gratuito, **Art Project Gr
 
 ## Servicios Externos
 == Servicios externos ==
-1. A la API de plugins de WordPress.org para obtener información sobre plugins.  
- - Envía el slug del plugin al solicitar los datos.  
+1. A la API de plugins de WordPress.org para obtener información sobre plugins.
+ - Envía el slug del plugin al solicitar los datos.
  - Más información: https://wordpress.org/about/privacy/
 
-2. A la API de validación de números de IVA (VIES) y de números EORI de la Comisión Europea.  
- - Envía el país y el número de IVA (validación VIES).  
- - Envía el número EORI.  
+2. A la API de validación de números de IVA (VIES) y de números EORI de la Comisión Europea.
+ - Envía el país y el número de IVA (validación VIES).
+ - Envía el número EORI.
  - Más información: https://commission.europa.eu/privacy-policy-websites-managed-european-commission_es
 
-3. A la API de validación de número EORI del Gobierno del Reino Unido.  
- - Envía el número EORI.  
+3. A la API de validación de número EORI del Gobierno del Reino Unido.
+ - Envía el número EORI.
  - Más información: https://www.gov.uk/help/privacy-notice
 
-4. A la API de validación de número EORI de VatApp.  
- - Envía el número EORI.  
+4. A la API de validación de número EORI de VatApp.
+ - Envía el número EORI.
  - Más información: https://vatapp.net/privacy-policy

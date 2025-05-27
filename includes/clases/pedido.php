@@ -721,13 +721,12 @@ class APG_Campo_NIF_en_Pedido {
 
         $valido_eori    = false;
         $valido_vies    = false;
-        $vat_valido     = false;
-
+        $vat_valido     = $this->apg_nif_validacion_internacional( $nif, $pais_cliente, $prefijo_nif );
+        
         if ( $usar_eori ) {
             $valido_eori    = $this->apg_nif_comprobacion_eori( $nif, $pais_cliente );
         } elseif ( $vies_activo ) {
             $valido_vies    = $this->apg_nif_comprobacion_vies( $nif, $pais_cliente );
-            $vat_valido     = $this->apg_nif_validacion_internacional( $nif, $pais_cliente, $prefijo_nif );
         }
 
         $es_exento  = ( $valido_vies && $pais_cliente !== $pais_base && $prefijo_nif !== $pais_base );
@@ -793,7 +792,7 @@ class APG_Campo_NIF_en_Pedido {
     }
     
     //Realiza comprobaciones previas al VIES
-    public function apg_nif_comprobacion_vies( string $nif, string $pais_tienda ): int|bool {
+    public function apg_nif_comprobacion_vies( string $nif, string $pais_tienda ) {
         global $apg_nif_settings;
 
         if ( empty( $nif ) || empty( $pais_tienda ) ) {
@@ -848,7 +847,7 @@ class APG_Campo_NIF_en_Pedido {
     }
 
     //Comprueba la validez del VIES
-    public function apg_nif_es_valido_vies( string $nif_completo, string $pais_de_facturacion ): int|bool {
+    public function apg_nif_es_valido_vies( string $nif_completo, string $pais_de_facturacion ) {
         //Procesa los camops
         $pais       = strtoupper( substr( $nif_completo, 0, 2 ) );
         $nif        = preg_replace( '/^[A-Z]{2}/', '', strtoupper( $nif_completo ) );
