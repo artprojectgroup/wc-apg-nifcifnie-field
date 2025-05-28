@@ -78,12 +78,19 @@ class APG_Campo_NIF_en_Pedido {
         add_action( 'woocommerce_set_additional_field_value', [ $this, 'apg_nif_retrocompatibilidad_formulario_bloques' ], 10, 4 );
         add_filter( 'woocommerce_get_default_value_for_apg/nif', [ $this, 'apg_nif_retrocompatibilidad_campo_formulario_bloques' ], 10, 3 );
         add_action( 'woocommerce_blocks_loaded', [ $this, 'apg_nif_recarga_checkout' ] );
-        
-        //Valida el campo NIF/CIF/NIE
-        if ( isset( $apg_nif_settings[ 'validacion' ] ) && $apg_nif_settings[ 'validacion' ] == "1" ) {
+
+        //Validación
+        $valida_en_checkout = (
+            ( isset( $apg_nif_settings[ 'validacion' ] ) && $apg_nif_settings[ 'validacion' ] === '1' ) ||  //Valida el campo NIF/CIF/NIE
+            ( isset( $apg_nif_settings[ 'validacion_vies' ] ) && $apg_nif_settings[ 'validacion_vies' ] === '1' ) || //Valida el número VIES
+            ( isset( $apg_nif_settings[ 'validacion_eori' ] ) && $apg_nif_settings[ 'validacion_eori' ] === '1' ) //Valida el número EORI
+        );
+
+        if ( $valida_en_checkout ) {
             add_action( 'woocommerce_checkout_process', [ $this, 'apg_nif_validacion_de_campo' ] );
             add_action( 'woocommerce_blocks_validate_location_address_fields', [ $this, 'apg_nif_validacion_de_campo_bloques' ], 10, 3 ); //Formulario de bloques
         }
+
         //Añade el número VIES
         if ( isset( $apg_nif_settings[ 'validacion_vies' ] ) && $apg_nif_settings[ 'validacion_vies' ] == "1" ) {
             if ( function_exists( 'has_block' ) && has_block( 'woocommerce/checkout', wc_get_page_id( 'checkout' ) ) ) {
@@ -94,8 +101,6 @@ class APG_Campo_NIF_en_Pedido {
             add_action( 'wp_ajax_nopriv_apg_nif_valida_VIES', [ $this, 'apg_nif_valida_VIES' ] );
             add_action( 'wp_ajax_apg_nif_valida_VIES', [ $this, 'apg_nif_valida_VIES' ] );
             add_action( 'woocommerce_checkout_update_order_review', [ $this, 'apg_nif_quita_iva' ] );
-            add_action( 'woocommerce_checkout_process', [ $this, 'apg_nif_validacion_de_campo' ] );
-            add_action( 'woocommerce_blocks_validate_location_address_fields', [ $this, 'apg_nif_validacion_de_campo_bloques' ], 10, 3 ); //Formulario de bloques
         }
         //Añade el número EORI
         if ( isset( $apg_nif_settings[ 'validacion_eori' ] ) && $apg_nif_settings[ 'validacion_eori' ] == "1" ) {
@@ -106,8 +111,6 @@ class APG_Campo_NIF_en_Pedido {
             }
             add_action( 'wp_ajax_nopriv_apg_nif_valida_EORI', [ $this, 'apg_nif_valida_EORI' ] );
             add_action( 'wp_ajax_apg_nif_valida_EORI', [ $this, 'apg_nif_valida_EORI' ] );
-            add_action( 'woocommerce_checkout_process', [ $this, 'apg_nif_validacion_de_campo' ] );
-            add_action( 'woocommerce_blocks_validate_location_address_fields', [ $this, 'apg_nif_validacion_de_campo_bloques' ], 10, 3 ); //Formulario de bloques
         }
     }
 
@@ -138,6 +141,11 @@ class APG_Campo_NIF_en_Pedido {
     //Arregla la dirección predeterminada
     public function apg_nif_campos_de_direccion( $campos ) {
         global $apg_nif_settings;
+
+        //Sólo es operativo en los checkout clásicos
+        if ( WC_Blocks_Utils::has_block_in_page( wc_get_page_id( 'checkout' ), 'woocommerce/checkout' ) ) {
+            return $campos;
+        }
         
         $campos[ 'nif' ]    = [
             'label'         => $this->nombre_nif,
@@ -146,36 +154,33 @@ class APG_Campo_NIF_en_Pedido {
             'required'      => isset( $apg_nif_settings[ 'requerido' ] ) && $apg_nif_settings[ 'requerido' ] === '1',
         ];
         
-        //Sólo es operativo en los checkout clásicos
-        if ( ! WC_Blocks_Utils::has_block_in_page( wc_get_page_id( 'checkout' ), 'woocommerce/checkout' ) ) {
-            if ( apply_filters( 'apg_nif_add_fields', true ) ) { //Si no quieren añadirse: add_filter( 'apg_nif_add_fields', '__return_false' );
-                //Añade el correo electónico y el teléfono
-                $campos[ 'email' ]  = [
-                    'label'         => esc_attr__( 'Email address', 'wc-apg-nifcifnie-field' ),
-                    'required'      => true,
-                    'type'          => 'email',
-                    'validate'      => [
-                        'email'
-                    ],
-                    'autocomplete'  => 'email username',
-                    'priority'      => 110,
-                ];
-                $campos[ 'phone' ]  = [
-                    'label'         => esc_attr__( 'Phone', 'wc-apg-nifcifnie-field' ),
-                    'required'      => true,
-                    'type'          => 'tel',
-                    'validate'      => [
-                        'phone'
-                    ],
-                    'autocomplete'  => 'tel',
-                    'priority'      => 100,
-                ];
-            }
-
-            //Fuerza la actualización del checkout con el código postal y la provincia/estado
-            $campos[ 'postcode' ][ 'class' ][]  = 'update_totals_on_change';
-            $campos[ 'state' ][ 'class' ][]     = 'update_totals_on_change'; 
+        if ( apply_filters( 'apg_nif_add_fields', true ) ) { //Si no quieren añadirse: add_filter( 'apg_nif_add_fields', '__return_false' );
+            //Añade el correo electónico y el teléfono
+            $campos[ 'email' ]  = [
+                'label'         => esc_attr__( 'Email address', 'wc-apg-nifcifnie-field' ),
+                'required'      => true,
+                'type'          => 'email',
+                'validate'      => [
+                    'email'
+                ],
+                'autocomplete'  => 'email username',
+                'priority'      => 110,
+            ];
+            $campos[ 'phone' ]  = [
+                'label'         => esc_attr__( 'Phone', 'wc-apg-nifcifnie-field' ),
+                'required'      => true,
+                'type'          => 'tel',
+                'validate'      => [
+                    'phone'
+                ],
+                'autocomplete'  => 'tel',
+                'priority'      => 100,
+            ];
         }
+
+        //Fuerza la actualización del checkout con el código postal y la provincia/estado
+        $campos[ 'postcode' ][ 'class' ][]  = 'update_totals_on_change';
+        $campos[ 'state' ][ 'class' ][]     = 'update_totals_on_change'; 
 
         return $campos;
     }
@@ -212,6 +217,26 @@ class APG_Campo_NIF_en_Pedido {
             ] );              
         }
 
+        if ( function_exists( 'woocommerce_store_api_register_additional_field' ) ) {
+            woocommerce_store_api_register_additional_field(
+                'apg/nif', [
+                    'getter' => function ( $order, $group ) {
+                        $meta_key   = ( 'billing' === $group ) ? '_billing_nif' : '_shipping_nif';
+                        return $order->get_meta( $meta_key );
+                    },
+                    'setter' => function ( $order, $value, $group ) {
+                        $meta_key   = ( 'billing' === $group ) ? '_billing_nif' : '_shipping_nif';
+                        $order->update_meta_data( $meta_key, sanitize_text_field( $value ) );
+                    },
+                    'schema' => [
+                        'description'   => $this->nombre_nif,
+                        'type'          => 'string',
+                        'context'       => [ 'view', 'edit' ],
+                    ],
+                ]
+            );
+        }
+        
         //Limpia el campo NIF/CIF/NIE
         add_action( 'woocommerce_sanitize_additional_field', function( $field_value, $field_key ) {
             if ( 'apg/nif' === $field_key ) {
@@ -625,7 +650,7 @@ class APG_Campo_NIF_en_Pedido {
         if ( ! WC_Blocks_Utils::has_block_in_page( wc_get_page_id( 'checkout' ), 'woocommerce/checkout' ) ) {
             return $errors;
         }
-
+        
         //Procesa los camops
         $nif        = isset( $fields[ 'apg/nif' ] ) ? sanitize_text_field( $fields[ 'apg/nif' ] ) : '';
         $pais       = isset( $fields[ 'country' ] ) ? sanitize_text_field( $fields[ 'country' ] ) : '';
@@ -665,42 +690,53 @@ class APG_Campo_NIF_en_Pedido {
             return;
         }
 
+        //Comprueba que no se cargue por error  
+        $vies_activado      = isset( $apg_nif_settings[ 'validacion_vies' ] ) && $apg_nif_settings[ 'validacion_vies' ] === '1';
+        $eori_activado      = isset( $apg_nif_settings[ 'validacion_eori' ] ) && $apg_nif_settings[ 'validacion_eori' ] === '1';
+
+        //Si no está activado VIES ni EORI, no continúes
+        if ( ! $vies_activado && ! $eori_activado ) {
+            return;
+        }
+    
         //Detección segura del tipo de checkout
         $is_blocks_checkout = function_exists( 'has_block' ) && has_block( 'woocommerce/checkout', wc_get_page_id( 'checkout' ) );
 
         //Bloque de Finalizar Compra
-        if ( $is_blocks_checkout ) {
-            if ( ! wp_script_is( 'apg_nif_valida_bloques', 'enqueued' ) ) {
-                wp_enqueue_script( 'apg_nif_valida_bloques', plugin_dir_url( DIRECCION_apg_nif ) . 'assets/js/valida-bloques-nif.js', [ 'jquery' ], VERSION_apg_nif, true );
-                wp_localize_script( 'apg_nif_valida_bloques', 'apg_nif_ajax', [
-                    'url'   => admin_url( 'admin-ajax.php' ),
-                    'error' => $this->mensaje_vies,
-                    'max'   => $this->mensaje_max,
-                    'vat'   => $this->mensaje_error,
-                ] );
-                wp_localize_script( 'apg_nif_valida_bloques', 'apg_nif_eori_ajax', [
-                    'url'   => admin_url( 'admin-ajax.php' ),
-                    'error' => $this->mensaje_eori,
-                    'vat'   => $this->mensaje_error,
-                    'lista' => $apg_nif_settings[ 'eori_paises' ] ?? [],
-                ] );
-            }
-        //Finalizr Compra Clásico
-        } else {
-            if ( ! wp_script_is( 'apg_nif_valida', 'enqueued' ) ) {
-                wp_enqueue_script( 'apg_nif_valida', plugin_dir_url( DIRECCION_apg_nif ) . 'assets/js/valida-nif.js', [ 'jquery' ], VERSION_apg_nif, true );
-                wp_localize_script( 'apg_nif_valida', 'apg_nif_ajax', [
-                    'url'   => admin_url( 'admin-ajax.php' ),
-                    'error' => $this->mensaje_vies,
-                    'max'   => $this->mensaje_max,
-                    'vat'   => $this->mensaje_error,
-                ] );
-                wp_localize_script( 'apg_nif_valida', 'apg_nif_eori_ajax', [
-                    'url'   => admin_url( 'admin-ajax.php' ),
-                    'error' => $this->mensaje_eori,
-                    'vat'   => $this->mensaje_error,
-                    'lista' => $apg_nif_settings[ 'eori_paises' ] ?? [],
-                ] );
+        if ( defined( 'DIRECCION_apg_nif' ) && defined( 'VERSION_apg_nif' ) ) {
+            if ( $is_blocks_checkout ) {
+                if ( ! wp_script_is( 'apg_nif_valida_bloques', 'enqueued' ) ) {
+                    wp_enqueue_script( 'apg_nif_valida_bloques', plugin_dir_url( DIRECCION_apg_nif ) . 'assets/js/valida-bloques-nif.js', [ 'jquery' ], VERSION_apg_nif, true );
+                    wp_localize_script( 'apg_nif_valida_bloques', 'apg_nif_ajax', [
+                        'url'   => admin_url( 'admin-ajax.php' ),
+                        'error' => $this->mensaje_vies,
+                        'max'   => $this->mensaje_max,
+                        'vat'   => $this->mensaje_error,
+                    ] );
+                    wp_localize_script( 'apg_nif_valida_bloques', 'apg_nif_eori_ajax', [
+                        'url'   => admin_url( 'admin-ajax.php' ),
+                        'error' => $this->mensaje_eori,
+                        'vat'   => $this->mensaje_error,
+                        'lista' => $apg_nif_settings[ 'eori_paises' ] ?? [],
+                    ] );
+                }
+            //Finalizr Compra Clásico
+            } else {
+                if ( ! wp_script_is( 'apg_nif_valida', 'enqueued' ) ) {
+                    wp_enqueue_script( 'apg_nif_valida', plugin_dir_url( DIRECCION_apg_nif ) . 'assets/js/valida-nif.js', [ 'jquery' ], VERSION_apg_nif, true );
+                    wp_localize_script( 'apg_nif_valida', 'apg_nif_ajax', [
+                        'url'   => admin_url( 'admin-ajax.php' ),
+                        'error' => $this->mensaje_vies,
+                        'max'   => $this->mensaje_max,
+                        'vat'   => $this->mensaje_error,
+                    ] );
+                    wp_localize_script( 'apg_nif_valida', 'apg_nif_eori_ajax', [
+                        'url'   => admin_url( 'admin-ajax.php' ),
+                        'error' => $this->mensaje_eori,
+                        'vat'   => $this->mensaje_error,
+                        'lista' => $apg_nif_settings[ 'eori_paises' ] ?? [],
+                    ] );
+                }
             }
         }
     }
