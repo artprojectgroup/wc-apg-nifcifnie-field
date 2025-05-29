@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WooCommerce - APG NIF/CIF/NIE field\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-26 20:33+0000\n"
+"POT-Creation-Date: 2025-05-29 18:40+0000\n"
 "POT-Revision-Date: Wed Aug 10 2016 13:39:45 GMT+0200 (CEST)\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: \n"
@@ -24,7 +24,7 @@ msgstr ""
 "X-Generator: Loco https://localise.biz/"
 
 #. %s is the field label (e.g., NIF/CIF/NIE)
-#: includes/clases/pedido.php:206
+#: includes/clases/pedido.php:219
 #, php-format
 msgid "%s (optional)"
 msgstr ""
@@ -103,7 +103,7 @@ msgstr ""
 msgid "Email"
 msgstr ""
 
-#: includes/clases/pedido.php:157 includes/clases/admin/pedidos.php:44
+#: includes/clases/pedido.php:171 includes/clases/admin/pedidos.php:44
 msgid "Email address"
 msgstr ""
 
@@ -127,7 +127,7 @@ msgstr ""
 msgid "Error message"
 msgstr ""
 
-#: includes/formulario.php:137 includes/clases/pedido.php:131
+#: includes/formulario.php:137 includes/clases/pedido.php:142
 msgid "Error: maximum number of concurrent requests exceeded."
 msgstr ""
 
@@ -164,6 +164,10 @@ msgstr ""
 msgid "If you enjoyed and find helpful this plugin, please make a donation:"
 msgstr ""
 
+#: includes/clases/pedido.php:612
+msgid "Invalid context."
+msgstr ""
+
 #: includes/cuadro-informacion.php:7 includes/admin/funciones-apg.php:32
 msgid "Make a donation by "
 msgstr ""
@@ -176,7 +180,7 @@ msgstr ""
 msgid "More plugins:"
 msgstr ""
 
-#: includes/clases/pedido.php:121 includes/clases/admin/usuario.php:20
+#: includes/clases/pedido.php:132 includes/clases/admin/usuario.php:20
 #: includes/clases/admin/pedidos.php:34
 msgid "NIF/CIF/NIE"
 msgstr ""
@@ -190,12 +194,12 @@ msgid "NIF/CIF/NIE number"
 msgstr ""
 
 #: includes/formulario.php:192 includes/formulario.php:201
-#: includes/formulario.php:201 includes/clases/pedido.php:135
+#: includes/formulario.php:201 includes/clases/pedido.php:146
 msgid "NIF/CIF/NIE/EORI number"
 msgstr ""
 
 #: includes/formulario.php:110 includes/formulario.php:119
-#: includes/formulario.php:119 includes/clases/pedido.php:128
+#: includes/formulario.php:119 includes/clases/pedido.php:139
 msgid "NIF/CIF/NIE/VAT number"
 msgstr ""
 
@@ -207,35 +211,35 @@ msgstr ""
 msgid "No priority"
 msgstr ""
 
-#: includes/clases/pedido.php:167
+#: includes/clases/pedido.php:181
 msgid "Phone"
 msgstr ""
 
-#: includes/clases/pedido.php:122
+#: includes/clases/pedido.php:133
 msgctxt "placeholder"
 msgid "NIF/CIF/NIE number"
 msgstr ""
 
-#: includes/clases/pedido.php:136
+#: includes/clases/pedido.php:147
 msgctxt "placeholder"
 msgid "NIF/CIF/NIE/EORI number"
 msgstr ""
 
-#: includes/clases/pedido.php:129
+#: includes/clases/pedido.php:140
 msgctxt "placeholder"
 msgid "NIF/CIF/NIE/VAT number"
 msgstr ""
 
-#: includes/formulario.php:210 includes/clases/pedido.php:137
+#: includes/formulario.php:210 includes/clases/pedido.php:148
 msgid "Please enter a valid EORI number."
 msgstr ""
 
-#: includes/formulario.php:46 includes/clases/pedido.php:123
+#: includes/formulario.php:46 includes/clases/pedido.php:134
 msgid "Please enter a valid NIF/CIF/NIE."
 msgstr ""
 
 #: includes/formulario.php:128 includes/formulario.php:137
-#: includes/clases/pedido.php:130
+#: includes/clases/pedido.php:141
 msgid "Please enter a valid VIES VAT number."
 msgstr ""
 
@@ -266,7 +270,7 @@ msgstr ""
 msgid "Settings of "
 msgstr ""
 
-#: includes/clases/pedido.php:606
+#: includes/clases/pedido.php:460
 msgid "Shipping details"
 msgstr ""
 
