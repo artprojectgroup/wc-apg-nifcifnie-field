@@ -139,6 +139,7 @@ Si necesitas ayuda para configurar o instalar **WC - APG NIF/CIF/NIE Field**, **
 ## Changelog
 ### 4.0.0.4
 * Añadida validación al vuelo.
+* Mejora de la seguridad.
 * Arreglos menores.
 
 ### 4.0.0.3

@@ -135,6 +135,7 @@ If you need help to configuring or installing **WC - APG NIF/CIF/NIE field**, **
 == Changelog ==
 = 4.0.0.4 =
 * Added live validation.
+* Improved security.
 * Minor fixes.
 = 4.0.0.3 =
 * Minor fixes.
