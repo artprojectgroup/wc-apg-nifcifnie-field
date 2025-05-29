@@ -1,7 +1,4 @@
 jQuery(function ($) {
-    // Comprueba la lista de países compatibles con EORI
-    var listaEORI = apg_nif_eori_ajax.lista || [];
-
     // Valida ambos al inicio
     validarTodo();
 
@@ -21,11 +18,23 @@ jQuery(function ($) {
         // Limpia errores anteriores
         $('#error_vies, #error_eori').remove();
 
+        let action = "apg_nif_valida_VIES";
+        switch (apg_nif_ajax.validacion) {
+            case "eori":
+                action = "apg_nif_valida_EORI";
+                break;
+            case "vies":
+                action = "apg_nif_valida_VIES";
+                break;
+        }
+
         const datos = {
-            action: "apg_nif_valida_VIES",
+            action: action,
             billing_nif: nif,
             billing_country: pais,
+            nonce: apg_nif_ajax.nonce,
         };
+
 
         $.ajax({
             type: 'POST',
@@ -37,19 +46,21 @@ jQuery(function ($) {
                 if (response.success) {
                     const res = response.data;
                     const wrapper = $('#billing_nif_field');
-
-                    let texto = '';
                     let errorID = '';
-
-                    if (res.usar_eori && res.valido_eori === false) {
-                        texto = apg_nif_eori_ajax.error;
+                    let texto = '';
+                    
+                    // Limpia errores previos
+                    $('#error_vies, #error_eori, #error_vat').remove();
+                    
+                    if (action === "apg_nif_valida_VAT" && !res.vat_valido) {
+                        texto = apg_nif_ajax.vat_error;
+                        errorID = 'error_vat';
+                    } else if (res.usar_eori && res.valido_eori === false) {
+                        texto = apg_nif_ajax.eori_error;
                         errorID = 'error_eori';
                     } else if (res.usar_vies && res.valido_vies === false) {
-                        texto = res.valido_vies === 44 ? apg_nif_ajax.max : apg_nif_ajax.error;
+                        texto = res.valido_vies === 44 ? apg_nif_ajax.max_error : apg_nif_ajax.vies_error;
                         errorID = 'error_vies';
-                    } else if (!res.vat_valido) {
-                        texto = apg_nif_ajax.vat;
-                        errorID = 'error_vat';
                     }
 
                     if (texto && errorID && !$('#' + errorID).length) {

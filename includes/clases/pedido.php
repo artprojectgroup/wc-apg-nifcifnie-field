@@ -91,24 +91,35 @@ class APG_Campo_NIF_en_Pedido {
             add_action( 'woocommerce_blocks_validate_location_address_fields', [ $this, 'apg_nif_validacion_de_campo_bloques' ], 10, 3 ); //Formulario de bloques
         }
 
-        //Añade el número VIES
-        if ( isset( $apg_nif_settings[ 'validacion_vies' ] ) && $apg_nif_settings[ 'validacion_vies' ] == "1" ) {
+        //Carga el JavaScript
+        $necesita_ajax = (
+            ( isset( $apg_nif_settings[ 'validacion' ] ) && $apg_nif_settings[ 'validacion' ] === '1' ) || //Valida el campo NIF/CIF/NIE
+            ( isset( $apg_nif_settings[ 'validacion_vies' ] ) && $apg_nif_settings[ 'validacion_vies' ] === '1' ) || //Valida el número VIES
+            ( isset( $apg_nif_settings[ 'validacion_eori' ] ) && $apg_nif_settings[ 'validacion_eori' ] === '1' ) //Valida el número EORI
+        );
+
+        if ( $necesita_ajax ) {
             if ( function_exists( 'has_block' ) && has_block( 'woocommerce/checkout', wc_get_page_id( 'checkout' ) ) ) {
                 add_action( 'enqueue_block_assets', [ $this, 'apg_nif_carga_ajax' ] );
             } else {
                 add_action( 'wp_enqueue_scripts', [ $this, 'apg_nif_carga_ajax' ] );
             }
+        }
+        
+        //Añade validación al vuelo
+        if ( isset( $apg_nif_settings[ 'validacion' ] ) && $apg_nif_settings[ 'validacion' ] === '1' ) {            
+            add_action( 'wp_ajax_nopriv_apg_nif_valida_VAT', [ $this, 'apg_nif_valida_VAT' ] );
+            add_action( 'wp_ajax_apg_nif_valida_VAT', [ $this, 'apg_nif_valida_VAT' ] );
+        }  
+        
+        //Añade el número VIES
+        if ( isset( $apg_nif_settings[ 'validacion_vies' ] ) && $apg_nif_settings[ 'validacion_vies' ] === "1" ) {
             add_action( 'wp_ajax_nopriv_apg_nif_valida_VIES', [ $this, 'apg_nif_valida_VIES' ] );
             add_action( 'wp_ajax_apg_nif_valida_VIES', [ $this, 'apg_nif_valida_VIES' ] );
             add_action( 'woocommerce_checkout_update_order_review', [ $this, 'apg_nif_quita_iva' ] );
         }
         //Añade el número EORI
-        if ( isset( $apg_nif_settings[ 'validacion_eori' ] ) && $apg_nif_settings[ 'validacion_eori' ] == "1" ) {
-            if ( function_exists( 'has_block' ) && has_block( 'woocommerce/checkout', wc_get_page_id( 'checkout' ) ) ) {
-                add_action( 'enqueue_block_assets', [ $this, 'apg_nif_carga_ajax' ], 20 );
-            } else {
-                add_action( 'wp_enqueue_scripts', [ $this, 'apg_nif_carga_ajax' ], 20 );
-            }
+        if ( isset( $apg_nif_settings[ 'validacion_eori' ] ) && $apg_nif_settings[ 'validacion_eori' ] === "1" ) {
             add_action( 'wp_ajax_nopriv_apg_nif_valida_EORI', [ $this, 'apg_nif_valida_EORI' ] );
             add_action( 'wp_ajax_apg_nif_valida_EORI', [ $this, 'apg_nif_valida_EORI' ] );
         }
@@ -300,298 +311,104 @@ class APG_Campo_NIF_en_Pedido {
         return $campos;
     }
 
-    /** 
-     * Valida el campo VAT number
-     * Basado en JS validator de John Gardner: http://www.braemoor.co.uk/software/vat.shtml y https://github.com/mnestorov/regex-patterns
-     */
-    public function apg_nif_validacion_internacional( $vat_number, $vat_country, $pais ) {
-        //Limpia el campo
-        $vat_number     = preg_replace( '/[ -,.]/', '', $vat_number );
-        //Comprueba el país a validar
-        $valida_pais    = ( preg_match( "/^[a-zA-Z]+$/", $pais ) ) ? $pais : $vat_country;
+     //Valida el campo VAT number
+     public function apg_nif_validacion_internacional( $vat_number, $vat_country, $pais ) {
+         //Carga el validador
+        require_once plugin_dir_path( __FILE__ ) . 'validador.php';
+
+        //Limpia y normaliza
+        $vat_number     = preg_replace( '/[^A-Z0-9]/', '', strtoupper( $vat_number ) );
+        $vat_country    = strtoupper( $vat_country );
+        $pais           = strtoupper( $pais );
+
+        //Detecta prefijo de país en el número VAT (dos letras iniciales)
+        $prefijo_detectado  = '';
+        if ( preg_match( '/^[A-Z]{2}/', $vat_number, $match ) ) {
+            $prefijo_detectado  = $match[ 0 ];
+        }
+
+        //Prioriza el prefijo detectado, luego el país explícito, luego el de facturación
+        $valida_pais    = $prefijo_detectado ?: ( preg_match( '/^[A-Z]{2}$/', $pais ) ? $pais : $vat_country );
+
+        //Elimina el prefijo del número para validar
+        if ( $prefijo_detectado ) {
+            $vat_number = substr( $vat_number, 2 );
+        }
+
         //Valida países específicos
-        if ( $valida_pais == 'AR' ) { //Argentina
-            return $this->apg_nif_valida_cuit( $vat_number );
-        } else if ( $valida_pais == 'CL' ) { //Chile
-            return $this->apg_nif_valida_rut( $vat_number );
-        } else if ( $valida_pais == 'ES' ) { //España
-            return $this->apg_nif_valida_nif( $vat_number );
-        }
-        //Comprueba la estructura del campo
         switch ( $valida_pais ) {
-            case 'AL': //Albania 
-                $eu_valido  = ( bool ) preg_match( '/^(AL)?J(\d{8}[A-Z])$/', $vat_number );
-                break;
-            case 'AT': //Austria 
-                $eu_valido  = ( bool ) preg_match( '/^(AT)?U(\d{8})$/', $vat_number );
-                break;
-            case 'AX': //Islas de Åland
-                $eu_valido  = ( bool ) preg_match( '/^(FI)?|(AX)?(\d{8})$/', $vat_number );
-                break;
-            case 'BE': //Bélgica 
-                $eu_valido  = ( bool ) preg_match( '/(BE)?(0?\d{9})$/', $vat_number );
-                break;
-            case 'BG': //Bulgaria 
-                $eu_valido  = ( bool ) preg_match( '/(BG)?(\d{9,10})$/', $vat_number );
-                break;
-            case 'BY': //Bielorusia 
-                $eu_valido  = ( bool ) preg_match( '/(BY)?(\d{9})$/', $vat_number );
-                break;
-            case 'CH': //Suiza 
-                $eu_valido  = ( bool ) preg_match( '/(CHE)?(\d{9})(MWST)?|(TVA)?|(IVA)?$/', $vat_number );
-                break;
-            case 'CY': //Chipre 
-                $eu_valido  = ( bool ) preg_match( '/^(CY)?([0-5|9]\d{7}[A-Z])$/', $vat_number );
-                break;
+                /*
+            case 'AR': //Argentina
+                return apg_nif_valida_ar( $vat_number );
+            case 'AT': //Austria
+                return apg_nif_valida_at( $vat_number );
+            case 'BE': //Bélgica
+                return apg_nif_valida_be( $vat_number );
+            case 'BG': //Bulgaria
+                return apg_nif_valida_bg( $vat_number );
+            case 'CL': //Chile
+                return apg_nif_valida_cl( $vat_number );
             case 'CZ': //República Checa
-                $eu_valido  = ( bool ) preg_match( '/^(CZ)?(\d{8,10})(\d{3})?$/', $vat_number );
-                break;
-            case 'DE': //Alemania 
-                $eu_valido  = ( bool ) preg_match( '/^(DE)?([1-9]\d{8,9})/', $vat_number );
-                break;
-            case 'DK': //Dinamarca 
-                $eu_valido  = ( bool ) preg_match( '/^(DK)?(\d{8})$/', $vat_number );
-                break;
-            case 'EE': //Estonia 
-                $eu_valido  = ( bool ) preg_match( '/^(EE)?(10\d{7,9})$/', $vat_number );
-                break;
-            case 'ES': //España 
-                $eu_valido  = ( bool ) preg_match( '/^(ES)?([A-Z]\d{8})$/', $vat_number ) ||
-                    preg_match( '/^(ES)?([A-H|N-S|W]\d{7}[A-J])$/', $vat_number ) ||
-                    preg_match( '/^(ES)?([0-9|Y|Z]\d{7}[A-Z])$/', $vat_number ) ||
-                    preg_match( '/^(ES)?([K|L|M|X]\d{7}[A-Z])$/', $vat_number );
-                break;
-            case 'EU': //Unión Europea 
-                $eu_valido  = ( bool ) preg_match( '/^(EU)?(\d{9})$/', $vat_number );
-                break;
-            case 'FI': //Finlandia 
-                $eu_valido  = ( bool ) preg_match( '/^(FI)?(\d{8})$/', $vat_number );
-                break;
-            case 'FO': //Islas Feroe
-                $eu_valido  = ( bool ) preg_match( '/^(FO)?(\d{6})$/', $vat_number );
-                break;
-            case 'FR': //Francia 
-                $eu_valido  = ( bool ) preg_match( '/^(FR)?(\d{11})$/', $vat_number ) ||
-                    preg_match( '/^(FR)?([(A-H)|(J-N)|(P-Z)]\d{10})$/', $vat_number ) ||
-                    preg_match( '/^(FR)?(\d[(A-H)|(J-N)|(P-Z)]\d{9})$/', $vat_number ) ||
-                    preg_match( '/^(FR)?([(A-H)|(J-N)|(P-Z)]{2}\d{9})$/', $vat_number );
-                break;
-            case 'GB': //Gran Bretaña 
-                $eu_valido  = ( bool ) preg_match( '/^(GB)?(\d{9})$/', $vat_number ) ||
-                    preg_match( '/^(GB)?(\d{12})$/', $vat_number ) ||
-                    preg_match( '/^(GB)?(GD\d{3})$/', $vat_number ) ||
-                    preg_match( '/^(GB)?(HA\d{3})$/', $vat_number );
-                break;
+                return apg_nif_valida_cz( $vat_number );
+            case 'DE': //Alemania
+                return apg_nif_valida_de( $vat_number );
+            case 'DK': //Dinamarca
+                return apg_nif_valida_dk( $vat_number );
+            case 'EE': //Estonia
+                return apg_nif_valida_ee( $vat_number );
+            case 'EL': //Grecia (código alternativo a GR)
             case 'GR': //Grecia
-                $eu_valido  = ( bool ) preg_match( '/^(GR)?(\d{8,9})$/', $vat_number ) ||
-                    preg_match( '/^(EL)?(\d{9})$/', $vat_number );
-                break;
-            case 'HR': //Croacia 
-                $eu_valido  = ( bool ) preg_match( '/^(HR)?(\d{11})$/', $vat_number );
-                break;
-            case 'HU': //Hungría 
-                $eu_valido  = ( bool ) preg_match( '/^(HU)?(\d{8})$/', $vat_number );
-                break;
-            case 'IE': //Irlanda 
-                $eu_valido  = ( bool ) preg_match( '/^(IE)?(\d{7}[A-W])$/', $vat_number ) ||
-                    preg_match( '/^(IE)?([7-9][A-Z\*\+)]\d{5}[A-W])$/', $vat_number ) ||
-                    preg_match( '/^(IE)?(\d{7}[A-W][AH])$/', $vat_number );
-                break;
-            case 'IS': //Islandia 
-                $eu_valido  = ( bool ) preg_match( '/^(IS)?(\d{5,6})$/', $vat_number );
-                break;
-            case 'IT': //Italia 
-                $eu_valido  = ( bool ) preg_match( '/^(IT)?(\d{11})$/', $vat_number );
-                break;
-            case 'LI': //Liechtenstein 
-                $eu_valido  = ( bool ) preg_match( '/^(LI)?(\d{5})$/', $vat_number );
-                break;
-            case 'LT': //Lituania 
-                $eu_valido  = ( bool ) preg_match( '/^(LT)?(\d{9}|\d{12})$/', $vat_number );
-                break;
-            case 'LU': //Luxemburgo 
-                $eu_valido  = ( bool ) preg_match( '/^(LU)?(\d{8})$/', $vat_number );
-                break;
-            case 'LV': //Letonia 
-                $eu_valido  = ( bool ) preg_match( '/^(LV)?(\d{11})$/', $vat_number );
-                break;
-            case 'MC': //Mónaco 
-                $eu_valido  = ( bool ) preg_match( '/^(FR)?(\d[(A-H)|(J-N)|(P-Z)]\d{9})$/', $vat_number ) ||
-                    preg_match( '/^(FR)?([(A-H)|(J-N)|(P-Z)]{2}\d{9})$/', $vat_number );
-                break;
-            case 'MD': //Moldavia 
-                $eu_valido  = ( bool ) preg_match( '/^(MD)?(\d{8})$/', $vat_number );
-                break;
-            case 'ME': //Montenegro 
-                $eu_valido  = ( bool ) preg_match( '/^(ME)?(\d{8})$/', $vat_number );
-                break;
-            case 'MK': //Macedonia del Norte 
-                $eu_valido  = ( bool ) preg_match( '/^(MK)?(\d{13})$/', $vat_number );
-                break;
-            case 'MT': //Malta 
-                $eu_valido  = ( bool ) preg_match( '/^(MT)?([1-9]\d{7,8})$/', $vat_number );
-                break;
-            case 'NL': //Países Bajos 
-                $eu_valido  = ( bool ) preg_match( '/^(NL)?(\d{9})B\d{2}$/', $vat_number );
-                break;
-            case 'NO': //Noruega 
-                $eu_valido  = ( bool ) preg_match( '/^(NO)?(\d{9})(MVA)?$/', $vat_number );
-                break;
-            case 'PL': //Polonia 
-                $eu_valido  = ( bool ) preg_match( '/^(PL)?(\d{10})$/', $vat_number );
-                break;
-            case 'PT': //Portugal 
-                $eu_valido  = ( bool ) preg_match( '/^(PT)?(\d{9})$/', $vat_number );
-                break;
-            case 'RO': //Rumanía 
-                $eu_valido  = ( bool ) preg_match( '/^(RO)?([1-9]\d{2,10})$/', $vat_number );
-                break;
-            case 'RS': //Serbia 
-                $eu_valido  = ( bool ) preg_match( '/^(RS)?(\d{9})$/', $vat_number );
-                break;
-            case 'SE': //Suecia 
-                $eu_valido  = ( bool ) preg_match( '/^(SE)?(\d{10}01)$/', $vat_number );
-                break;
-            case 'SI': //Eslovenia 
-                $eu_valido  = ( bool ) preg_match( '/^(SI)?([1-9]\d{7,8})$/', $vat_number );
-                break;
-            case 'SK': //República Eslovaca
-                $eu_valido  = ( bool ) preg_match( '/^(SK)?([1-9]\d[(2-4)|(6-9)]\d{7})$/', $vat_number );
-                break;
-            case 'SM': //San Marino
-                $eu_valido  = ( bool ) preg_match( '/^(SM)?(\d{5}$/', $vat_number );
-                break;
-            case 'UA': //Ucrania
-                $eu_valido  = ( bool ) preg_match( '/^(UA)?(\d{12}$/', $vat_number );
-                break;
+                return apg_nif_valida_gr( $vat_number );
+            case 'ES': //España
+                return apg_nif_valida_es( $vat_number );
+            case 'FI': //Finlandia
+                return apg_nif_valida_fi( $vat_number );
+            case 'FR': //Francia
+                return apg_nif_valida_fr( $vat_number );
+            case 'HR': //Croacia
+                return apg_nif_valida_hr( $vat_number );
+            case 'HU': //Hungría
+                return apg_nif_valida_hu( $vat_number );
+            case 'IE': //Irlanda
+                return apg_nif_valida_ie( $vat_number );
+            case 'IT': //Italia
+                return apg_nif_valida_it( $vat_number );
+            case 'LT': //Lituania
+                return apg_nif_valida_lt( $vat_number );
+            case 'LU': //Luxemburgo
+                return apg_nif_valida_lu( $vat_number );
+            case 'LV': //Letonia
+                return apg_nif_valida_lv( $vat_number );
+            case 'MT': //Malta
+                return apg_nif_valida_mt( $vat_number );
+            case 'NL': //Países Bajos
+                return apg_nif_valida_nl( $vat_number );
+            case 'NO': //Noruega
+                return apg_nif_valida_no( $vat_number );
+            case 'PL': //Polonia
+                return apg_nif_valida_pl( $vat_number );
+            case 'PT': //Portugal
+                return apg_nif_valida_pt( $vat_number );
+            case 'RO': //Rumanía
+                return apg_nif_valida_ro( $vat_number );
+            case 'SE': //Suecia
+                return apg_nif_valida_se( $vat_number );
+            case 'SI': //Eslovenia
+                return apg_nif_valida_si( $vat_number );
+            case 'SK': //Eslovaquia
+                return apg_nif_valida_sk( $vat_number );
+                */
+            case 'AR': //Argentina
+                return apg_nif_valida_ar( $vat_number );
+            case 'CL': //Chile
+                return apg_nif_valida_cl( $vat_number );
+            case 'ES': //España
+                return apg_nif_valida_es( $vat_number );
             default:
-                $eu_valido  = false;
+                return apg_nif_valida_regex( $valida_pais, $vat_number );
         }
-
-        return $eu_valido;
-    }
-    
-    //Comprueba si el CUIT ingresado es válido (Argentina) - https://github.com/maurozadu/CUIT-Validator/blob/master/libs/cuit_validator.php
-    public function apg_nif_valida_cuit( $cuit ) {
-        $digits = [];
-        if ( strlen( $cuit ) != 13 ) {
-            return false;
-        }
-        for ( $i = 0; $i < strlen( $cuit ); $i++ ) {
-            if ( $i == 2 or $i == 11 ) {
-                if ( $cuit[ $i ] != '-' ) {
-                    return false;
-                }
-            } else {
-                if ( ! ctype_digit( $cuit[ $i ] ) ) {
-                    return false;
-                }
-                if ( $i < 12 ) {
-                    $digits[] = $cuit[ $i ];
-                }
-            }
-        }
-        $acum   = 0;
-        foreach ( [ 5, 4, 3, 2, 7, 6, 5, 4, 3, 2 ] as $i => $multiplicador ) {
-            $acum += $digits[ $i ] * $multiplicador;
-        }
-        $cmp    = 11 - ( $acum % 11 );
-        if ( $cmp == 11 ) {
-            $cmp    = 0;
-        }
-        if ( $cmp == 10 ) {
-            $cmp    = 9;
-        }
-        return ( $cuit[ 12 ] == $cmp );
     }
 
-    //Comprueba si el RUT ingresado es válido (Chile) - https://gist.github.com/punchi/3a5c44e7aa7ac0609ce9e53365572541
-    public function apg_nif_valida_rut( $rut ) {
-        if ( ! preg_match( "/^[0-9.]+[-]?+[0-9kK]{1}/", $rut ) ) {
-            return false;
-        }
-
-        $rut    = preg_replace( '/[\.\-]/i', '', $rut );
-        $dv     = substr( $rut, -1 );
-        $numero = substr( $rut, 0, strlen( $rut ) - 1 );
-        $i      = 2;
-        $suma   = 0;
-        foreach ( array_reverse( str_split( $numero ) ) as $v ) {
-            if ( $i == 8 ) {
-                $i = 2;
-            }
-            $suma += $v * $i;
-            ++$i;
-        }
-        $dvr = 11 - ( $suma % 11 );
-
-        if ( $dvr == 11 ) {
-            $dvr = 0;
-        }
-        if ( $dvr == 10 ) {
-            $dvr = 'K';
-        }
-        
-        return ( $dvr == strtoupper( $dv ) ) ? true : false;       
-    }
-
-    //Valida el campo NIF/CIF/NIE (España)
-    public function apg_nif_valida_nif( $nif ) {
-        $nif_valido = false;
-        $nif        = preg_replace( '/[ -,.]/', '', $nif );
-        $nif        = str_replace( 'ES', '', $nif );
-
-        for ( $i = 0; $i < 9; $i++ ) {
-            $numero[ $i ]   = substr( $nif, $i, 1 );
-        }
-
-        if ( ! preg_match( '/((^[A-Z]{1}[0-9]{7}[A-Z0-9]{1}$|^[T]{1}[A-Z0-9]{8}$)|^[0-9]{8}[A-Z]{1}$)/', $nif ) ) { //No tiene formato válido
-            return false;
-        }
-
-        if ( preg_match( '/(^[0-9]{8}[A-Z]{1}$)/', $nif ) ) {
-            if ( $numero[ 8 ] == substr( 'TRWAGMYFPDXBNJZSQVHLCKE', substr( $nif, 0, 8 ) % 23, 1 ) ) { //NIF válido
-                $nif_valido = true;
-            }
-        }
-
-        $suma   = $numero[ 2 ] + $numero[ 4 ] + $numero[ 6 ];
-        for ( $i = 1; $i < 8; $i += 2 ) {
-            if ( 2 * $numero[ $i ] >= 10 ) {
-                $suma   += substr( ( 2 * $numero[ $i ] ), 0, 1 ) + substr( ( 2 * $numero[ $i ] ), 1, 1 );
-            } else {
-                $suma   += 2 * $numero[ $i ];
-            }
-        }
-        $suma_numero    = 10 - substr( $suma, strlen( $suma ) - 1, 1 );
-
-        if ( preg_match( '/^[KLM]{1}/', $nif ) ) { //NIF especial válido
-            if ( $numero[ 8 ] == chr( 64 + $suma_numero ) ) {
-                $nif_valido = true;
-            }
-        }
-
-        if ( preg_match( '/^[ABCDEFGHJNPQRSUVW]{1}/', $nif ) && isset( $numero[ 8 ] ) ) {
-            if ( $numero[ 8 ] == chr( 64 + $suma_numero ) || $numero[ 8 ] == substr( $suma_numero, strlen( $suma_numero ) - 1, 1 ) ) { //CIF válido
-                $nif_valido = true;
-            }
-        }
-
-        if ( preg_match( '/^[T]{1}/', $nif ) ) {
-            if ( $numero[ 8 ] == preg_match( '/^[T]{1}[A-Z0-9]{8}$/', $nif ) ) { //NIE válido (T)
-                $nif_valido = true;
-            }
-        }
-
-        if ( preg_match( '/^[XYZ]{1}/', $nif ) ) { //NIE válido (XYZ)
-            if ( $numero[ 8 ] == substr( 'TRWAGMYFPDXBNJZSQVHLCKE', substr( str_replace( [ 'X', 'Y', 'Z' ], [ '0', '1', '2' ], $nif ), 0, 8 ) % 23, 1 ) ) {
-                $nif_valido = true;
-            }
-        }
-
-        return $nif_valido;
-    }
-    
     //Valida el campo NIF/CIF/NIE
     public function apg_nif_validacion_de_campo() {
         global $apg_nif_settings;
@@ -685,59 +502,43 @@ class APG_Campo_NIF_en_Pedido {
     public function apg_nif_carga_ajax() {
         global $apg_nif_settings;
 
-        //Funcional si estamos en el checkout
+        //Funcional únicamente en el checkout
         if ( ! is_checkout() ) {
-            return;
-        }
-
-        //Comprueba que no se cargue por error  
-        $vies_activado      = isset( $apg_nif_settings[ 'validacion_vies' ] ) && $apg_nif_settings[ 'validacion_vies' ] === '1';
-        $eori_activado      = isset( $apg_nif_settings[ 'validacion_eori' ] ) && $apg_nif_settings[ 'validacion_eori' ] === '1';
-
-        //Si no está activado VIES ni EORI, no continúes
-        if ( ! $vies_activado && ! $eori_activado ) {
             return;
         }
     
         //Detección segura del tipo de checkout
         $is_blocks_checkout = function_exists( 'has_block' ) && has_block( 'woocommerce/checkout', wc_get_page_id( 'checkout' ) );
 
-        //Bloque de Finalizar Compra
+        //Script y manejador unificado
+        $script_handle      = 'apg_nif_validacion';
+        $script_file        = $is_blocks_checkout ? 'valida-bloques-nif.js' : 'valida-nif.js';
+        
+        //Sólo carga si está correctamente definido
         if ( defined( 'DIRECCION_apg_nif' ) && defined( 'VERSION_apg_nif' ) ) {
-            if ( $is_blocks_checkout ) {
-                if ( ! wp_script_is( 'apg_nif_valida_bloques', 'enqueued' ) ) {
-                    wp_enqueue_script( 'apg_nif_valida_bloques', plugin_dir_url( DIRECCION_apg_nif ) . 'assets/js/valida-bloques-nif.js', [ 'jquery' ], VERSION_apg_nif, true );
-                    wp_localize_script( 'apg_nif_valida_bloques', 'apg_nif_ajax', [
-                        'url'   => admin_url( 'admin-ajax.php' ),
-                        'error' => $this->mensaje_vies,
-                        'max'   => $this->mensaje_max,
-                        'vat'   => $this->mensaje_error,
-                    ] );
-                    wp_localize_script( 'apg_nif_valida_bloques', 'apg_nif_eori_ajax', [
-                        'url'   => admin_url( 'admin-ajax.php' ),
-                        'error' => $this->mensaje_eori,
-                        'vat'   => $this->mensaje_error,
-                        'lista' => $apg_nif_settings[ 'eori_paises' ] ?? [],
-                    ] );
-                }
-            //Finalizr Compra Clásico
-            } else {
-                if ( ! wp_script_is( 'apg_nif_valida', 'enqueued' ) ) {
-                    wp_enqueue_script( 'apg_nif_valida', plugin_dir_url( DIRECCION_apg_nif ) . 'assets/js/valida-nif.js', [ 'jquery' ], VERSION_apg_nif, true );
-                    wp_localize_script( 'apg_nif_valida', 'apg_nif_ajax', [
-                        'url'   => admin_url( 'admin-ajax.php' ),
-                        'error' => $this->mensaje_vies,
-                        'max'   => $this->mensaje_max,
-                        'vat'   => $this->mensaje_error,
-                    ] );
-                    wp_localize_script( 'apg_nif_valida', 'apg_nif_eori_ajax', [
-                        'url'   => admin_url( 'admin-ajax.php' ),
-                        'error' => $this->mensaje_eori,
-                        'vat'   => $this->mensaje_error,
-                        'lista' => $apg_nif_settings[ 'eori_paises' ] ?? [],
-                    ] );
-                }
+            //Evita cargar el script más de una vez
+            if ( ! wp_script_is( $script_handle, 'enqueued' ) ) {
+                wp_enqueue_script( $script_handle, plugin_dir_url( DIRECCION_apg_nif ) . 'assets/js/' . $script_file, [ 'jquery' ], VERSION_apg_nif, true );
             }
+            
+            //Evalúa la prioridad antes de pasarla al JavaScript
+            $tipo_validacion = 'vat';
+            if ( isset( $apg_nif_settings[ 'validacion_eori' ] ) && $apg_nif_settings[ 'validacion_eori' ] === '1' ) {
+                $tipo_validacion = 'eori';
+            } elseif ( isset( $apg_nif_settings[ 'validacion_vies' ] ) && $apg_nif_settings[ 'validacion_vies' ] === '1' ) {
+                $tipo_validacion = 'vies';
+            }
+            
+            //Localiza variables compartidas con JavaScript
+            wp_localize_script( $script_handle, 'apg_nif_ajax', [
+                'url'           => admin_url( 'admin-ajax.php' ),
+                'vies_error'    => $this->mensaje_vies,
+                'max_error'     => $this->mensaje_max,
+                'vat_error'     => $this->mensaje_error,
+                'eori_error'    => $this->mensaje_eori,
+                'validacion'    => $tipo_validacion,
+                'nonce'         => wp_create_nonce( 'apg_nif_nonce' ),
+            ] );
         }
     }
     
@@ -758,8 +559,8 @@ class APG_Campo_NIF_en_Pedido {
 
         $valido_eori    = false;
         $valido_vies    = false;
-        $vat_valido     = $this->apg_nif_validacion_internacional( $nif, $pais_cliente, $prefijo_nif );
-        
+        $vat_valido     = ( in_array( $pais_cliente, $this->listado_paises, true ) ) ? $this->apg_nif_validacion_internacional( $nif, $pais_cliente, $prefijo_nif ) : true;
+
         if ( $usar_eori ) {
             $valido_eori    = $this->apg_nif_comprobacion_eori( $nif, $pais_cliente );
         } elseif ( $vies_activo ) {
@@ -788,43 +589,49 @@ class APG_Campo_NIF_en_Pedido {
         }
     }
     
-    //Valida el campo VIES
-    public function apg_nif_valida_VIES() {
-        global $apg_nif_settings;
-
+    //Recoge los datos para el campo NIF/CIF/NIE, VIES y EORI
+    private function apg_nif_recoge_datos_ajax(): array {
         //No funciona en el panel de administración (excepto AJAX)
-        if ( is_admin() && ! wp_doing_ajax() ) { 
-            return;
+        if ( is_admin() && ! wp_doing_ajax() ) {
+            wp_send_json_error( __( 'Invalid context.', 'wc-apg-nifcifnie-field' ) );
         }
 
-        //Procesa los camops
-        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- WooCommerce already validates nonce via 'get-customer-details'
-        $pais                   = isset( $_POST[ 'billing_country' ] ) ? sanitize_text_field( wp_unslash( $_POST[ 'billing_country' ] ) ) : '';
-        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- WooCommerce already validates nonce via 'get-customer-details'
-        $billing_nif            = isset( $_POST[ 'billing_nif' ] ) ? sanitize_text_field( wp_unslash( $_POST[ 'billing_nif' ] ) ) : '';
+        //Verifica el nonce
+        check_ajax_referer( 'apg_nif_nonce', 'nonce' );
 
-        $resultado              = $this->apg_nif_valida_exencion( $billing_nif, $pais );
+        //Procesa los campos
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- WooCommerce already validates nonce via 'get-customer-details'
+        $pais   = isset( $_POST[ 'billing_country' ] ) ? sanitize_text_field( wp_unslash( $_POST[ 'billing_country' ] ) ) : '';
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- WooCommerce already validates nonce via 'get-customer-details'
+        $nif    = isset( $_POST[ 'billing_nif' ] ) ? sanitize_text_field( wp_unslash( $_POST[ 'billing_nif' ] ) ) : '';
+
+        return [ $nif, $pais ];
+    }
+    
+    //Valida el campo NIF/CIF/NIE
+    public function apg_nif_valida_VAT() {
+        list( $nif, $pais ) = $this->apg_nif_recoge_datos_ajax();
+        $prefijo_nif        = strtoupper( substr( $nif, 0, 2 ) );
+        $valido             = $this->apg_nif_validacion_internacional( $nif, $pais, $prefijo_nif );
+
+        wp_send_json_success( [ 'vat_valido' => $valido ] );
+    }
+    
+    //Valida el campo VIES
+    public function apg_nif_valida_VIES() {
+        list( $nif, $pais ) = $this->apg_nif_recoge_datos_ajax();
+        $resultado          = $this->apg_nif_valida_exencion( $nif, $pais );
         WC()->session->set( 'apg_nif', $resultado[ 'es_exento' ] );
+        
         wp_send_json_success( $resultado );
     }
     
     //Valida el campo EORI
     public function apg_nif_valida_EORI() {
-        global $apg_nif_settings;
-
-        //No funciona en el panel de administración (excepto AJAX)
-        if ( is_admin() && ! wp_doing_ajax() ) { 
-            return;
-        }
-
-        //Procesa los camops
-        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- WooCommerce already validates nonce via 'get-customer-details'
-        $pais                   = isset( $_POST[ 'billing_country' ] ) ? sanitize_text_field( wp_unslash( $_POST[ 'billing_country' ] ) ) : '';
-        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- WooCommerce already validates nonce via 'get-customer-details'
-        $billing_nif            = isset( $_POST[ 'billing_nif' ] ) ? sanitize_text_field( wp_unslash( $_POST[ 'billing_nif' ] ) ) : '';
-
-        $resultado              = $this->apg_nif_valida_exencion( $billing_nif, $pais );
+        list( $nif, $pais ) = $this->apg_nif_recoge_datos_ajax();
+        $resultado          = $this->apg_nif_valida_exencion( $nif, $pais );
         WC()->session->set( 'apg_eori', $resultado[ 'valido_eori' ] );
+        
         wp_send_json_success( $resultado );
     }
     

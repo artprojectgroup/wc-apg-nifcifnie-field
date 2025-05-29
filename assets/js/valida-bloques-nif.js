@@ -10,10 +10,21 @@ jQuery(document).ready(function ($) {
 
         if (!campoNIF.length || !campoPais.length || !campoNIF.val() || !campoPais.val()) return;
 
+        let action = "apg_nif_valida_VIES";
+        switch (apg_nif_ajax.validacion) {
+            case "eori":
+                action = "apg_nif_valida_EORI";
+                break;
+            case "vies":
+                action = "apg_nif_valida_VIES";
+                break;
+        }
+        
         const datos = {
-            action: "apg_nif_valida_VIES",
+            action: action,
             billing_nif: campoNIF.val(),
             billing_country: campoPais.val(),
+            nonce: apg_nif_ajax.nonce,
         };
 
         $(".wp-block-woocommerce-checkout-totals-block").block({
@@ -38,22 +49,55 @@ jQuery(document).ready(function ($) {
                 $("#" + errorID).remove();
                 wrapper.attr("aria-invalid", "false").closest(".wc-block-components-text-input").removeClass("has-error");
 
+                //Valida NIF/CIF/NIE
+                if (action === 'apg_nif_valida_VAT') {
+                    const wrapper = $("#" + formulario + " .wc-block-components-address-form__apg-nif");
+                    const errorID = "error_nif";
+
+                    $("#" + errorID).remove();
+                    wrapper.attr("aria-invalid", "false").closest(".wc-block-components-text-input").removeClass("has-error");
+
+                    if (response.data.vat_valido !== true) {
+                        if (!$("#" + errorID).length) {
+                            wrapper.append('<div id="' + errorID + '"><strong>' + apg_nif_ajax.vat_error + "</strong></div>");
+                        }
+
+                        wrapper.attr("aria-invalid", "true").closest(".wc-block-components-text-input").addClass("has-error");
+
+                        if (typeof validation !== "undefined" && typeof validation.addError === "function") {
+                            validation.addError({
+                                field: formulario + "-apg-nif",
+                                message: apg_nif_ajax.vat_error,
+                            });
+                        }
+                    } else {
+                        if (typeof validation !== "undefined" && typeof validation.removeError === "function") {
+                            validation.removeError(formulario + "-apg-nif");
+                        }
+                    }
+
+                    $(".wp-block-woocommerce-checkout-totals-block").unblock();
+                    
+                    return; // Evita que siga ejecutando lógica VIES/EORI
+                }
+                
+                //Valida VIES y EORI
                 if (response.success) {
                     const res = response.data;
                     let texto = "";
                     let hay_error = false;
 
                     if (res.usar_eori && res.valido_eori === false) {
-                        texto = apg_nif_eori_ajax.error;
+                        texto = apg_nif_ajax.eori_error;
                         hay_error = true;
                     } else if (res.usar_eori && res.valido_eori === false) {
-                        texto = apg_nif_eori_ajax.error;
+                        texto = apg_nif_ajax.eori_error;
                         hay_error = true;
                     } else if (res.usar_vies && res.valido_vies === false) {
-                        texto = res.valido_vies === 44 ? apg_nif_ajax.max : apg_nif_ajax.error;
+                        texto = res.valido_vies === 44 ? apg_nif_ajax.max_error : apg_nif_ajax.vies_error;
                         hay_error = true;
                     } else if (!res.vat_valido) {
-                        texto = apg_nif_ajax.vat;
+                        texto = apg_nif_ajax.vat_error;
                         hay_error = true;
                     }
 
@@ -79,7 +123,7 @@ jQuery(document).ready(function ($) {
                         if (typeof validation !== "undefined" && typeof validation.removeError === "function") {
                             validation.removeError(formulario + "-apg-nif");
                         }
-                        
+
                         // Fuerza actualización de la validación global si todo ha ido bien
                         const event = new CustomEvent('checkout-blocks-validation-reset', {
                             detail: {
@@ -87,7 +131,7 @@ jQuery(document).ready(function ($) {
                             }
                         });
                         document.dispatchEvent(event);
-                        
+
                         // Elimina también manualmente el aviso superior si existe
                         const dismissBtn = document.querySelector('.wc-block-components-notice-banner__dismiss');
                         if (dismissBtn) {
