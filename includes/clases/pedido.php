@@ -169,7 +169,7 @@ class APG_Campo_NIF_en_Pedido {
             //Añade el correo electónico y el teléfono
             $campos[ 'email' ]  = [
                 'label'         => esc_attr__( 'Email address', 'wc-apg-nifcifnie-field' ),
-                'required'      => true,
+                'required'      => false,
                 'type'          => 'email',
                 'validate'      => [
                     'email'
@@ -179,7 +179,7 @@ class APG_Campo_NIF_en_Pedido {
             ];
             $campos[ 'phone' ]  = [
                 'label'         => esc_attr__( 'Phone', 'wc-apg-nifcifnie-field' ),
-                'required'      => true,
+                'required'      => false,
                 'type'          => 'tel',
                 'validate'      => [
                     'phone'
