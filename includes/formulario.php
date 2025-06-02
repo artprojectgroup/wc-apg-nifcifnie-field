@@ -6,11 +6,11 @@ $tab    = 1;
 ?>
 <div class="wrap woocommerce">
 	<h2>
-		<?php esc_attr_e( 'APG NIF/CIF/NIE field Options.', 'wc-apg-nifcifnie-field' ); ?>
+		<?php esc_html_e( 'APG NIF/CIF/NIE field Options.', 'wc-apg-nifcifnie-field' ); ?>
 	</h2>
 	<h3><a href="<?php echo esc_url( $apg_nif[ 'plugin_url' ] ); ?>" title="Art Project Group"><?php echo esc_attr( $apg_nif[ 'plugin' ] ); ?></a></h3>
 	<p>
-		<?php esc_attr_e( 'Add to WooCommerce a NIF/CIF/NIE field, validate the field before submit and let to the admin configure the billing and shipping forms.', 'wc-apg-nifcifnie-field' ); ?>
+		<?php esc_html_e( 'Add to WooCommerce a NIF/CIF/NIE field, validate the field before submit and let to the admin configure the billing and shipping forms.', 'wc-apg-nifcifnie-field' ); ?>
 	</p>
 	<?php include( 'cuadro-informacion.php' ); ?>
 	<form method="post" action="options.php">
@@ -21,7 +21,7 @@ $tab    = 1;
 			<tr valign="top" class="campo">
 				<th scope="row" class="titledesc">
 					<label for="apg_nif_settings[etiqueta]">
-						<?php esc_attr_e( 'Field label', 'wc-apg-nifcifnie-field' ); ?>
+						<?php esc_html_e( 'Field label', 'wc-apg-nifcifnie-field' ); ?>
 						<span class="woocommerce-help-tip" data-tip="<?php esc_attr_e( 'Type your own field label.', 'wc-apg-nifcifnie-field' ); ?>"></span>
 					</label>
 				</th>
@@ -30,7 +30,7 @@ $tab    = 1;
 			<tr valign="top" class="campo">
 				<th scope="row" class="titledesc">
 					<label for="apg_nif_settings[placeholder]">
-						<?php esc_attr_e( 'Field placeholder', 'wc-apg-nifcifnie-field' ); ?>
+						<?php esc_html_e( 'Field placeholder', 'wc-apg-nifcifnie-field' ); ?>
 						<span class="woocommerce-help-tip" data-tip="<?php esc_attr_e( 'Type your own field placeholder.', 'wc-apg-nifcifnie-field' ); ?>"></span>
 					</label>
 				</th>
@@ -39,7 +39,7 @@ $tab    = 1;
 			<tr valign="top">
 				<th scope="row" class="titledesc">
 					<label for="apg_nif_settings[error]">
-						<?php esc_attr_e( 'Error message', 'wc-apg-nifcifnie-field' ); ?>
+						<?php esc_html_e( 'Error message', 'wc-apg-nifcifnie-field' ); ?>
 						<span class="woocommerce-help-tip" data-tip="<?php esc_attr_e( 'Type your own error message.', 'wc-apg-nifcifnie-field' ); ?>"></span>
 					</label>
 				</th>
@@ -47,17 +47,17 @@ $tab    = 1;
 			</tr>
 			<tr valign="top">
 				<th scope="row" class="titledesc"> <label for="apg_nif_settings[prioridad]">
-						<?php esc_attr_e( 'Field priority', 'wc-apg-nifcifnie-field' ); ?>
+						<?php esc_html_e( 'Field priority', 'wc-apg-nifcifnie-field' ); ?>
 						<span class="woocommerce-help-tip" data-tip="<?php esc_attr_e( 'Enter the field priority.', 'wc-apg-nifcifnie-field' ); ?>"></span> </label>
 				</th>
 				<td class="forminp"><input id="apg_nif_settings[prioridad]" name="apg_nif_settings[prioridad]" type="number" value="<?php echo ( isset( $apg_nif_settings[ 'prioridad' ] ) && ! empty( $apg_nif_settings[ 'prioridad' ] ) ? esc_attr( $apg_nif_settings[ 'prioridad' ] ) : 31 ); ?>" tabindex="<?php echo esc_html( $tab ); $tab++; ?>" placeholder="31" />
 					<p class="description"><?php
-                        esc_attr_e( 'Your current values are:', 'wc-apg-nifcifnie-field' );
+                        esc_html_e( 'Your current values are:', 'wc-apg-nifcifnie-field' );
                         echo "<ol>";
                         $campos = WC()->countries->get_address_fields( WC()->countries->get_base_country(), 'billing_' );
                         foreach ( $campos as $campo ) {
-                            $etiqueta   = ( isset( $campo[ 'label' ] ) ) ? $campo[ 'label' ] : esc_attr__( 'No label exists', 'wc-apg-nifcifnie-field' );
-                            $prioridad  = ( isset( $campo[ 'priority' ] ) ) ? $campo[ 'priority' ] : esc_attr__( 'No priority', 'wc-apg-nifcifnie-field' );
+                            $etiqueta   = ( isset( $campo[ 'label' ] ) ) ? $campo[ 'label' ] : esc_html__( 'No label exists', 'wc-apg-nifcifnie-field' );
+                            $prioridad  = ( isset( $campo[ 'priority' ] ) ) ? $campo[ 'priority' ] : esc_html__( 'No priority', 'wc-apg-nifcifnie-field' );
                             echo '<li>' . esc_html( $etiqueta ) . ': ' . esc_html( $prioridad ) . '.</li>';
                         }
                         echo "</ol>";
@@ -66,7 +66,7 @@ $tab    = 1;
 			<tr valign="top">
 				<th scope="row" class="titledesc">
 					<label for="apg_nif_settings[requerido]">
-						<?php esc_attr_e( 'Require billing field?', 'wc-apg-nifcifnie-field' ); ?>
+						<?php esc_html_e( 'Require billing field?', 'wc-apg-nifcifnie-field' ); ?>
 						<span class="woocommerce-help-tip" data-tip="<?php esc_attr_e( 'Check if you need to require the field.', 'wc-apg-nifcifnie-field' ); ?>"></span>
 					</label>
 				</th>
@@ -75,7 +75,7 @@ $tab    = 1;
 			<tr valign="top">
 				<th scope="row" class="titledesc">
 					<label for="apg_nif_settings[requerido_envio]">
-						<?php esc_attr_e( 'Require shipping field?', 'wc-apg-nifcifnie-field' ); ?>
+						<?php esc_html_e( 'Require shipping field?', 'wc-apg-nifcifnie-field' ); ?>
 						<span class="woocommerce-help-tip" data-tip="<?php esc_attr_e( 'Check if you need to require the field.', 'wc-apg-nifcifnie-field' ); ?>"></span>
 					</label>
 				</th>
@@ -84,7 +84,7 @@ $tab    = 1;
 			<tr valign="top" id="requerido">
 				<th scope="row" class="titledesc">
 					<label for="apg_nif_settings[validacion]">
-						<?php esc_attr_e( 'Validate field?', 'wc-apg-nifcifnie-field' ); ?>
+						<?php esc_html_e( 'Validate field?', 'wc-apg-nifcifnie-field' ); ?>
 						<span class="woocommerce-help-tip" data-tip="<?php esc_attr_e( 'Check if you want to validate the field before submit.', 'wc-apg-nifcifnie-field' ); ?>"></span>
 					</label>
 				</th>
@@ -94,7 +94,7 @@ $tab    = 1;
 			<tr valign="top" id="vies">
 				<th scope="row" class="titledesc">
 					<label for="apg_nif_settings[validacion_vies]">
-						<?php esc_attr_e( 'Allow VIES VAT number?', 'wc-apg-nifcifnie-field' ); ?>
+						<?php esc_html_e( 'Allow VIES VAT number?', 'wc-apg-nifcifnie-field' ); ?>
 						<span class="woocommerce-help-tip" data-tip="<?php esc_attr_e( 'Check if you want to allow and validate VIES VAT number.', 'wc-apg-nifcifnie-field' ); ?>"></span>
 					</label>
 				</th>
@@ -103,7 +103,7 @@ $tab    = 1;
 			<tr valign="top" class="vies campo_vies">
 				<th scope="row" class="titledesc">
 					<label for="apg_nif_settings[etiqueta_vies]">
-						<?php esc_attr_e( 'VIES VAT number field label', 'wc-apg-nifcifnie-field' ); ?>
+						<?php esc_html_e( 'VIES VAT number field label', 'wc-apg-nifcifnie-field' ); ?>
 						<span class="woocommerce-help-tip" data-tip="<?php esc_attr_e( 'Type your own VIES VAT number field label.', 'wc-apg-nifcifnie-field' ); ?>"></span>
 					</label>
 				</th>
@@ -112,7 +112,7 @@ $tab    = 1;
 			<tr valign="top" class="vies campo_vies">
 				<th scope="row" class="titledesc">
 					<label for="apg_nif_settings[placeholder_vies]">
-						<?php esc_attr_e( 'VIES VAT number field placeholder', 'wc-apg-nifcifnie-field' ); ?>
+						<?php esc_html_e( 'VIES VAT number field placeholder', 'wc-apg-nifcifnie-field' ); ?>
 						<span class="woocommerce-help-tip" data-tip="<?php esc_attr_e( 'Type your own VIES VAT number field placeholder.', 'wc-apg-nifcifnie-field' ); ?>"></span>
 					</label>
 				</th>
@@ -121,7 +121,7 @@ $tab    = 1;
 			<tr valign="top" class="vies">
 				<th scope="row" class="titledesc">
 					<label for="apg_nif_settings[error_vies]">
-						<?php esc_attr_e( 'VIES VAT number error message', 'wc-apg-nifcifnie-field' ); ?>
+						<?php esc_html_e( 'VIES VAT number error message', 'wc-apg-nifcifnie-field' ); ?>
 						<span class="woocommerce-help-tip" data-tip="<?php esc_attr_e( 'Type your own VIES VAT number error message.', 'wc-apg-nifcifnie-field' ); ?>"></span>
 					</label>
 				</th>
@@ -130,7 +130,7 @@ $tab    = 1;
 			<tr valign="top" class="vies">
 				<th scope="row" class="titledesc">
 					<label for="apg_nif_settings[error_vies_max]">
-						<?php esc_attr_e( 'VIES VAT number request error message', 'wc-apg-nifcifnie-field' ); ?>
+						<?php esc_html_e( 'VIES VAT number request error message', 'wc-apg-nifcifnie-field' ); ?>
 						<span class="woocommerce-help-tip" data-tip="<?php esc_attr_e( 'Type your own VIES VAT number request error message.', 'wc-apg-nifcifnie-field' ); ?>"></span>
 					</label>
 				</th>
@@ -139,7 +139,7 @@ $tab    = 1;
 			<tr valign="top" id="eori">
 				<th scope="row" class="titledesc">
 					<label for="apg_nif_settings[validacion_eori]">
-						<?php esc_attr_e( 'Allow EORI number?', 'wc-apg-nifcifnie-field' ); ?>
+						<?php esc_html_e( 'Allow EORI number?', 'wc-apg-nifcifnie-field' ); ?>
 						<span class="woocommerce-help-tip" data-tip="<?php esc_attr_e( 'Check if you want to allow and validate EORI number.', 'wc-apg-nifcifnie-field' ); ?>"></span>
 					</label>
 				</th>
@@ -164,7 +164,7 @@ $tab    = 1;
             <tr valign="top" class="eori">
                 <th scope="row" class="titledesc">
 					<label for="apg_nif_settings[eori_paises]">
-						<?php esc_attr_e( 'Countries to validate EORI number', 'wc-apg-nifcifnie-field' ); ?>
+						<?php esc_html_e( 'Countries to validate EORI number', 'wc-apg-nifcifnie-field' ); ?>
 						<span class="woocommerce-help-tip" data-tip="<?php esc_attr_e( 'Select the list of countries where the EORI number must be validated.', 'wc-apg-nifcifnie-field' ); ?>"></span>
 					</label>
                 </th>
@@ -185,7 +185,7 @@ $tab    = 1;
 			<tr valign="top" class="eori">
 				<th scope="row" class="titledesc">
 					<label for="apg_nif_settings[etiqueta_eori]">
-						<?php esc_attr_e( 'EORI number field label', 'wc-apg-nifcifnie-field' ); ?>
+						<?php esc_html_e( 'EORI number field label', 'wc-apg-nifcifnie-field' ); ?>
 						<span class="woocommerce-help-tip" data-tip="<?php esc_attr_e( 'Type your own EORI number field label.', 'wc-apg-nifcifnie-field' ); ?>"></span>
 					</label>
 				</th>
@@ -194,7 +194,7 @@ $tab    = 1;
 			<tr valign="top" class="eori">
 				<th scope="row" class="titledesc">
 					<label for="apg_nif_settings[placeholder_eori]">
-						<?php esc_attr_e( 'EORI number field placeholder', 'wc-apg-nifcifnie-field' ); ?>
+						<?php esc_html_e( 'EORI number field placeholder', 'wc-apg-nifcifnie-field' ); ?>
 						<span class="woocommerce-help-tip" data-tip="<?php esc_attr_e( 'Type your own EORI number field placeholder.', 'wc-apg-nifcifnie-field' ); ?>"></span>
 					</label>
 				</th>
@@ -203,7 +203,7 @@ $tab    = 1;
 			<tr valign="top" class="eori">
 				<th scope="row" class="titledesc">
 					<label for="apg_nif_settings[error_eori]">
-						<?php esc_attr_e( 'EORI number error message', 'wc-apg-nifcifnie-field' ); ?>
+						<?php esc_html_e( 'EORI number error message', 'wc-apg-nifcifnie-field' ); ?>
 						<span class="woocommerce-help-tip" data-tip="<?php esc_attr_e( 'Type your own EORI number error message.', 'wc-apg-nifcifnie-field' ); ?>"></span>
 					</label>
 				</th>

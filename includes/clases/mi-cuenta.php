@@ -47,7 +47,7 @@ class APG_Campo_NIF_en_Cuenta {
 
             return $campos_ordenados;
         }
-        
+
         return $campos;
 	}
     

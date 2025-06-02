@@ -37,7 +37,7 @@ class APG_Campo_NIF_en_Admin_Pedidos {
 			'show'	=> false
 		];
         $campos[ 'phone' ]  = [ 
-			'label'	=> esc_attr__( 'Telephone', 'wc-apg-nifcifnie-field' ),
+			'label'	=> esc_attr__( 'Phone', 'wc-apg-nifcifnie-field' ),
 			'show'	=> true
 		];
         $campos[ 'email' ]  = [ 
@@ -72,7 +72,7 @@ class APG_Campo_NIF_en_Admin_Pedidos {
                 $campos_ordenados[ $campo ] = $datos;
             }
         }
-        
+
         return $campos_ordenados;
 	}
 

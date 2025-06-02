@@ -153,8 +153,8 @@ class APG_Campo_NIF_en_Pedido {
     public function apg_nif_campos_de_direccion( $campos ) {
         global $apg_nif_settings;
 
-        //Sólo es operativo en los checkout clásicos
-        if ( WC_Blocks_Utils::has_block_in_page( wc_get_page_id( 'checkout' ), 'woocommerce/checkout' ) ) {
+        //Sólo es operativo en los checkout clásicos y Mi cuenta
+        if ( is_checkout() && WC_Blocks_Utils::has_block_in_page( wc_get_page_id( 'checkout' ), 'woocommerce/checkout' ) ) {
             return $campos;
         }
         
