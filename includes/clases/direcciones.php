@@ -13,8 +13,8 @@ class APG_Campo_NIF_en_Direcciones {
 		add_filter( 'woocommerce_localisation_address_formats', [ $this, 'apg_nif_formato_direccion_localizacion' ], PHP_INT_MAX );
 		add_filter( 'woocommerce_order_formatted_billing_address', [ $this, 'apg_nif_anade_campo_nif_direccion' ], 10, 2 );
 		add_filter( 'woocommerce_order_formatted_shipping_address', [ $this, 'apg_nif_anade_campo_nif_direccion' ], 10, 2 );
-        add_filter( 'woocommerce_customer_get_billing_company', [ $this, 'apg_nif_muestra_nif_en_bloques' ], 10, 2 );
-        add_filter( 'woocommerce_customer_get_shipping_company', [ $this, 'apg_nif_muestra_nif_en_bloques' ], 10, 2 );
+        //add_filter( 'woocommerce_customer_get_billing_company', [ $this, 'apg_nif_muestra_nif_en_bloques' ], 10, 2 );
+        //add_filter( 'woocommerce_customer_get_shipping_company', [ $this, 'apg_nif_muestra_nif_en_bloques' ], 10, 2 );
     }
 
     //Reemplaza los nombres de los campos con sus datos
@@ -45,10 +45,11 @@ class APG_Campo_NIF_en_Direcciones {
     
 	//Añade el NIF a Bloques
     public function apg_nif_muestra_nif_en_bloques( $company, $customer ) {
-        if ( is_admin() || ! function_exists( 'wc_get_page_id' ) || ! is_checkout() ) {
+        // Evita aplicar en admin, POST o edición de dirección
+        if ( is_admin() || is_wc_endpoint_url( 'edit-address' ) || ( defined( 'DOING_AJAX' ) && DOING_AJAX ) || ( isset( $_POST['action'] ) && $_POST['action'] === 'edit_address' ) || ( isset( $_SERVER['REQUEST_URI'] ) && strpos( $_SERVER['REQUEST_URI'], '/edit-address/' ) !== false ) ) {
             return $company;
         }
-
+        
         //Detecta si es billing o shipping
         $called_filter  = current_filter();
         $tipo           = strpos( $called_filter, 'billing' ) !== false ? 'billing' : 'shipping';

@@ -154,7 +154,7 @@ class APG_Campo_NIF_en_Pedido {
         global $apg_nif_settings;
 
         //Sólo es operativo en los checkout clásicos y Mi cuenta
-        if ( is_checkout() && WC_Blocks_Utils::has_block_in_page( wc_get_page_id( 'checkout' ), 'woocommerce/checkout' ) ) {
+        if ( WC_Blocks_Utils::has_block_in_page( wc_get_page_id( 'checkout' ), 'woocommerce/checkout' ) ) {
             return $campos;
         }
         
@@ -302,10 +302,19 @@ class APG_Campo_NIF_en_Pedido {
 
         $facturacion    = WC()->countries->get_address_fields( WC()->countries->get_base_country(), 'billing_' );
 
+        $campos[ 'shipping_nif' ][ 'label' ]        = $this->nombre_nif;
         $campos[ 'shipping_nif' ][ 'required' ]     = isset( $apg_nif_settings[ 'requerido_envio' ] ) && $apg_nif_settings[ 'requerido_envio' ] === '1';
         if ( apply_filters( 'apg_nif_add_fields', true ) ) { //Si no quieren añadirse: add_filter( 'apg_nif_add_fields', '__return_false' );
             $campos[ 'shipping_email' ][ 'priority' ]   = $facturacion[ 'billing_email' ][ 'priority' ];
+            $campos[ 'shipping_email' ][ 'label' ]      = $facturacion[ 'billing_email' ][ 'label' ];
+
             $campos[ 'shipping_phone' ][ 'priority' ]   = $facturacion[ 'billing_phone' ][ 'priority' ];
+            $campos[ 'shipping_phone' ][ 'label' ]      = $facturacion[ 'billing_phone' ][ 'label' ];
+        }
+        
+        //Campo para bloques  - no requerido
+        if ( function_exists( 'has_block' ) && has_block( 'woocommerce/checkout', wc_get_page_id( 'checkout' ) ) ) {
+            $campos[ 'shipping_nif' ][ 'required' ] = false;
         }
         
         return $campos;
