@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WooCommerce - APG NIF/CIF/NIE field\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-29 18:40+0000\n"
+"POT-Creation-Date: 2025-06-03 12:08+0000\n"
 "POT-Revision-Date: Wed Aug 10 2016 13:39:45 GMT+0200 (CEST)\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: \n"
@@ -79,11 +79,11 @@ msgstr ""
 msgid "Choose countries / regions&hellip;"
 msgstr ""
 
-#: includes/cuadro-informacion.php:37 includes/admin/funciones-apg.php:36
+#: includes/cuadro-informacion.php:33 includes/admin/funciones-apg.php:30
 msgid "Contact with us by "
 msgstr ""
 
-#: includes/cuadro-informacion.php:35
+#: includes/cuadro-informacion.php:31
 msgid "Contact with us:"
 msgstr ""
 
@@ -95,15 +95,12 @@ msgstr ""
 msgid "Country / Region"
 msgstr ""
 
-#: includes/cuadro-informacion.php:42
+#: includes/cuadro-informacion.php:37
 msgid "Documentation and Support:"
 msgstr ""
 
-#: includes/clases/admin/usuario.php:30
-msgid "Email"
-msgstr ""
-
-#: includes/clases/pedido.php:171 includes/clases/admin/pedidos.php:44
+#: includes/clases/pedido.php:171 includes/clases/admin/usuario.php:30
+#: includes/clases/admin/pedidos.php:44
 msgid "Email address"
 msgstr ""
 
@@ -143,12 +140,12 @@ msgstr ""
 msgid "Field priority"
 msgstr ""
 
-#: includes/cuadro-informacion.php:21 includes/admin/funciones-apg.php:34
-#: includes/admin/funciones-apg.php:34 includes/admin/funciones-apg.php:34
+#: includes/cuadro-informacion.php:19 includes/admin/funciones-apg.php:28
+#: includes/admin/funciones-apg.php:28 includes/admin/funciones-apg.php:28
 msgid "Follow us on "
 msgstr ""
 
-#: includes/cuadro-informacion.php:19
+#: includes/cuadro-informacion.php:17
 msgid "Follow us:"
 msgstr ""
 
@@ -164,19 +161,19 @@ msgstr ""
 msgid "If you enjoyed and find helpful this plugin, please make a donation:"
 msgstr ""
 
-#: includes/clases/pedido.php:612
+#: includes/clases/pedido.php:621
 msgid "Invalid context."
 msgstr ""
 
-#: includes/cuadro-informacion.php:7 includes/admin/funciones-apg.php:32
+#: includes/cuadro-informacion.php:7 includes/admin/funciones-apg.php:26
 msgid "Make a donation by "
 msgstr ""
 
-#: includes/cuadro-informacion.php:28 includes/admin/funciones-apg.php:35
+#: includes/cuadro-informacion.php:25 includes/admin/funciones-apg.php:29
 msgid "More plugins on "
 msgstr ""
 
-#: includes/cuadro-informacion.php:26
+#: includes/cuadro-informacion.php:23
 msgid "More plugins:"
 msgstr ""
 
@@ -211,7 +208,8 @@ msgstr ""
 msgid "No priority"
 msgstr ""
 
-#: includes/clases/pedido.php:181
+#: includes/clases/pedido.php:181 includes/clases/admin/usuario.php:34
+#: includes/clases/admin/pedidos.php:40
 msgid "Phone"
 msgstr ""
 
@@ -244,8 +242,8 @@ msgid "Please enter a valid VIES VAT number."
 msgstr ""
 
 #. %s is the plugin name (e.g., WC – APG Campo NIF/CIF/NIE)
-#: includes/cuadro-informacion.php:53 includes/admin/funciones-apg.php:74
-#: includes/admin/funciones-apg.php:88
+#: includes/cuadro-informacion.php:47 includes/admin/funciones-apg.php:68
+#: includes/admin/funciones-apg.php:82
 #, php-format
 msgid "Please, rate %s:"
 msgstr ""
@@ -262,28 +260,24 @@ msgstr ""
 msgid "Select the list of countries where the EORI number must be validated."
 msgstr ""
 
-#: includes/admin/funciones-apg.php:49
+#: includes/admin/funciones-apg.php:43
 msgid "Settings"
 msgstr ""
 
-#: includes/admin/funciones-apg.php:49
+#: includes/admin/funciones-apg.php:43
 msgid "Settings of "
 msgstr ""
 
-#: includes/clases/pedido.php:460
+#: includes/clases/pedido.php:469
 msgid "Shipping details"
 msgstr ""
 
-#: includes/cuadro-informacion.php:44 includes/admin/funciones-apg.php:50
+#: includes/cuadro-informacion.php:39 includes/admin/funciones-apg.php:44
 msgid "Support"
 msgstr ""
 
-#: includes/admin/funciones-apg.php:50
+#: includes/admin/funciones-apg.php:44
 msgid "Support of "
-msgstr ""
-
-#: includes/clases/admin/usuario.php:34 includes/clases/admin/pedidos.php:40
-msgid "Telephone"
 msgstr ""
 
 #: apg-nif.php:149
@@ -336,7 +330,7 @@ msgstr ""
 msgid "Type your own VIES VAT number request error message."
 msgstr ""
 
-#: includes/admin/funciones-apg.php:74
+#: includes/admin/funciones-apg.php:68
 msgid "Unknown rating"
 msgstr ""
 
