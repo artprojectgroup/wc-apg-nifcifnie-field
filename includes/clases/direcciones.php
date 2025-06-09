@@ -12,9 +12,7 @@ class APG_Campo_NIF_en_Direcciones {
         add_filter( 'woocommerce_store_api_checkout_update_order', [ $this, 'apg_nif_formato_direccion_de_facturacion' ], 10, 2 );
 		add_filter( 'woocommerce_localisation_address_formats', [ $this, 'apg_nif_formato_direccion_localizacion' ], PHP_INT_MAX );
 		add_filter( 'woocommerce_order_formatted_billing_address', [ $this, 'apg_nif_anade_campo_nif_direccion' ], 10, 2 );
-		add_filter( 'woocommerce_order_formatted_shipping_address', [ $this, 'apg_nif_anade_campo_nif_direccion' ], 10, 2 );
-        //add_filter( 'woocommerce_customer_get_billing_company', [ $this, 'apg_nif_muestra_nif_en_bloques' ], 10, 2 );
-        //add_filter( 'woocommerce_customer_get_shipping_company', [ $this, 'apg_nif_muestra_nif_en_bloques' ], 10, 2 );
+		add_filter( 'woocommerce_order_formatted_shipping_address', [ $this, 'apg_nif_anade_campo_nif_direccion' ], 10, 2 );    
     }
 
     //Reemplaza los nombres de los campos con sus datos
@@ -42,32 +40,6 @@ class APG_Campo_NIF_en_Direcciones {
 
         return $direccion;
 	}
-    
-	//Añade el NIF a Bloques
-    public function apg_nif_muestra_nif_en_bloques( $company, $customer ) {
-        // Evita aplicar en admin, POST o edición de dirección
-        if ( is_admin() || is_wc_endpoint_url( 'edit-address' ) || ( defined( 'DOING_AJAX' ) && DOING_AJAX ) || ( isset( $_POST['action'] ) && $_POST['action'] === 'edit_address' ) || ( isset( $_SERVER['REQUEST_URI'] ) && strpos( $_SERVER['REQUEST_URI'], '/edit-address/' ) !== false ) ) {
-            return $company;
-        }
-        
-        //Detecta si es billing o shipping
-        $called_filter  = current_filter();
-        $tipo           = strpos( $called_filter, 'billing' ) !== false ? 'billing' : 'shipping';
-        
-        //Obtiene el NIF correspondiente
-        $meta_key   = "_wc_{$tipo}/apg/nif";
-        $nif        = $customer->get_meta( $meta_key );
-
-        //No hay NIF
-        if ( ! $nif ) {
-            return $company;
-        }
-
-        //Elimina posibles NIF previos que estén al final del company
-        $company_clean = preg_replace( '/,\s*[A-Z]{0,2}[-\s]?[A-Z0-9]{7,12}[A-Z]?$/i', '', $company );
-
-        return trim( $company_clean . ', ' . $nif, ', ' );
-    }
 
 	//Añade el NIF y el teléfono a la dirección de facturación y envío
     public function apg_nif_anade_campo_nif_direccion( $campos, $pedido ) {

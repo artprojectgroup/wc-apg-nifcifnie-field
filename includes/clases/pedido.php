@@ -14,6 +14,8 @@ class APG_Campo_NIF_en_Pedido {
             $mensaje_max,    
             $mensaje_eori,
             $listado_paises;
+    
+    private static $pais_bloques    = '';
 
     //Inicializa las acciones de Pedido
     public function __construct() {
@@ -438,7 +440,7 @@ class APG_Campo_NIF_en_Pedido {
         
         //Validación para el formulario de facturación
         if ( ( $billing_nif || $es_requerido ) && isset( $apg_nif_settings[ 'validacion' ] ) && $apg_nif_settings[ 'validacion' ] === '1' ) {
-            $validacion     = $this->apg_nif_valida_exencion( $billing_nif, $billing_country );
+            $validacion     = $this->apg_nif_valida_exencion( $billing_nif, $billing_country, $shipping_country );
 
             //Mensaje de error
             if ( ! $validacion[ 'usar_eori' ] && ! $validacion[ 'valido_vies' ] && ! $validacion[ 'vat_valido' ] ) {
@@ -462,7 +464,7 @@ class APG_Campo_NIF_en_Pedido {
         //Validación para el formulario de envío
         // phpcs:ignore WordPress.Security.NonceVerification.Missing -- WooCommerce already validates nonce via 'get-customer-details'
         if ( ( $shipping_nif || $es_requerido_envio ) && isset( $_POST[ 'ship_to_different_address' ] ) ) {
-            $validacion_envio   = $this->apg_nif_valida_exencion( $shipping_nif, $shipping_country );
+            $validacion_envio   = $this->apg_nif_valida_exencion( $shipping_nif, $shipping_country, $shipping_country );
 
             //Mensaje de error
             if ( ! $validacion_envio[ 'usar_eori' ] && ! $validacion_envio[ 'valido_vies' ] && ! $validacion_envio[ 'vat_valido' ] ) {
@@ -493,14 +495,21 @@ class APG_Campo_NIF_en_Pedido {
         //Procesa los camops
         $nif            = isset( $fields[ 'apg/nif' ] ) ? sanitize_text_field( $fields[ 'apg/nif' ] ) : '';
         $pais           = isset( $fields[ 'country' ] ) ? sanitize_text_field( $fields[ 'country' ] ) : '';
+        
+        //Guarda el país de facturación para usarlo cuando llegue el grupo shipping
+        if ( $group === 'billing' ) {
+            self::$pais_bloques = $pais;
+        }
+        $pais_factura   = ( $group === 'billing' ) ? $pais : ( self::$pais_bloques ?: $pais );
+        $pais_envio     = ( $group === 'shipping' ) ? $pais : '';
 
         //Confirma si es requerido
         $es_requerido   = isset( $apg_nif_settings[ 'requerido' ] ) && $apg_nif_settings[ 'requerido' ] === '1';
 
         //Solo valida si el campo está relleno o es obligatorio
         if ( ( $nif || $es_requerido ) && isset( $apg_nif_settings[ 'validacion' ] ) && $apg_nif_settings[ 'validacion' ] === '1' ) {
-            $validacion = $this->apg_nif_valida_exencion( $nif, $pais );
-
+            $validacion = $this->apg_nif_valida_exencion( $nif, $pais_factura, $pais_envio );
+            
             //Comprueba si es un número VAT válido
             if ( ! $validacion[ 'usar_eori' ] && ! $validacion[ 'valido_vies' ] && ! $validacion[ 'vat_valido' ] ) {
                 $errors->add( 'invalid_vat', $this->mensaje_error );
@@ -568,7 +577,7 @@ class APG_Campo_NIF_en_Pedido {
     }
     
     //Valida la excepción de impuestos
-    public function apg_nif_valida_exencion( string $nif, string $pais_cliente ): array {
+    public function apg_nif_valida_exencion( string $nif, string $pais_cliente, string $pais_envio = '' ): array {
         global $apg_nif_settings;
 
         $pais_base      = WC()->countries->get_base_country();
@@ -593,7 +602,12 @@ class APG_Campo_NIF_en_Pedido {
         }
 
         $es_exento  = ( $valido_vies && $pais_cliente !== $pais_base && $prefijo_nif !== $pais_base );
-
+        
+        //Si el envío es a España, no hay exención
+        if ( strtoupper( $pais_envio ) === strtoupper( $pais_base ) ) {
+            $es_exento  = false;
+        }
+        
         return [
             'es_exento'     => $es_exento,
             'valido_vies'   => $valido_vies,
@@ -626,16 +640,18 @@ class APG_Campo_NIF_en_Pedido {
 
         //Procesa los campos
         // phpcs:ignore WordPress.Security.NonceVerification.Missing -- WooCommerce already validates nonce via 'get-customer-details'
-        $pais   = isset( $_POST[ 'billing_country' ] ) ? sanitize_text_field( wp_unslash( $_POST[ 'billing_country' ] ) ) : '';
+        $nif        = isset( $_POST[ 'billing_nif' ] ) ? sanitize_text_field( wp_unslash( $_POST[ 'billing_nif' ] ) ) : '';
         // phpcs:ignore WordPress.Security.NonceVerification.Missing -- WooCommerce already validates nonce via 'get-customer-details'
-        $nif    = isset( $_POST[ 'billing_nif' ] ) ? sanitize_text_field( wp_unslash( $_POST[ 'billing_nif' ] ) ) : '';
+        $pais       = isset( $_POST[ 'billing_country' ] ) ? sanitize_text_field( wp_unslash( $_POST[ 'billing_country' ] ) ) : '';
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- WooCommerce already validates nonce via 'get-customer-details'
+        $pais_envio = isset( $_POST[ 'shipping_country' ] ) ? sanitize_text_field( wp_unslash( $_POST[ 'shipping_country' ] ) ) : '';
 
-        return [ $nif, $pais ];
+        return [ $nif, $pais, $pais_envio ];
     }
     
     //Valida el campo NIF/CIF/NIE
     public function apg_nif_valida_VAT() {
-        list( $nif, $pais ) = $this->apg_nif_recoge_datos_ajax();
+        list( $nif, $pais, $pais_envio ) = $this->apg_nif_recoge_datos_ajax();
         $prefijo_nif        = strtoupper( substr( $nif, 0, 2 ) );
         $valido             = $this->apg_nif_validacion_internacional( $nif, $pais, $prefijo_nif );
 
@@ -644,8 +660,8 @@ class APG_Campo_NIF_en_Pedido {
     
     //Valida el campo VIES
     public function apg_nif_valida_VIES() {
-        list( $nif, $pais ) = $this->apg_nif_recoge_datos_ajax();
-        $resultado          = $this->apg_nif_valida_exencion( $nif, $pais );
+        list( $nif, $pais, $pais_envio ) = $this->apg_nif_recoge_datos_ajax();
+        $resultado          = $this->apg_nif_valida_exencion( $nif, $pais, $pais_envio );
         WC()->session->set( 'apg_nif', $resultado[ 'es_exento' ] );
         
         wp_send_json_success( $resultado );
@@ -653,8 +669,8 @@ class APG_Campo_NIF_en_Pedido {
     
     //Valida el campo EORI
     public function apg_nif_valida_EORI() {
-        list( $nif, $pais ) = $this->apg_nif_recoge_datos_ajax();
-        $resultado          = $this->apg_nif_valida_exencion( $nif, $pais );
+        list( $nif, $pais, $pais_envio ) = $this->apg_nif_recoge_datos_ajax();
+        $resultado          = $this->apg_nif_valida_exencion( $nif, $pais, $pais_envio );
         WC()->session->set( 'apg_eori', $resultado[ 'valido_eori' ] );
         
         wp_send_json_success( $resultado );

@@ -10,6 +10,7 @@ jQuery(function ($) {
     function validarTodo(tipo) {
         const campoNIF = $(`#${tipo}_nif`);
         const campoPais = $(`#${tipo}_country`);
+        const campoEnvio = $(`#shipping_country`);
         const wrapper = $(`#${tipo}_nif_field`);
 
         if (!campoNIF.length || !campoPais.length || !campoNIF.val() || !campoPais.val()) return;
@@ -31,6 +32,7 @@ jQuery(function ($) {
             action: action,
             billing_nif: campoNIF.val(), // mismo nombre esperado por el AJAX
             billing_country: campoPais.val(),
+            shipping_country: campoEnvio.val(),
             nonce: apg_nif_ajax.nonce,
         };
 
@@ -53,7 +55,7 @@ jQuery(function ($) {
                     } else if (res.usar_eori && res.valido_eori === false) {
                         texto = apg_nif_ajax.eori_error;
                         errorID = `error_eori_${tipo}`;
-                    } else if (res.usar_vies && res.valido_vies === false) {
+                    } else if (action === "apg_nif_valida_VIES" && res.valido_vies === false) {
                         texto = res.valido_vies === 44 ? apg_nif_ajax.max_error : apg_nif_ajax.vies_error;
                         errorID = `error_vies_${tipo}`;
                     }

@@ -12,7 +12,8 @@ jQuery(document).ready(function ($) {
 
         const campoNIF = $("#" + formulario + "-apg-nif");
         const campoPais = $("#" + formulario + "-country");
-
+        const campoEnvio = $("#shipping-country");
+        
         if (!campoNIF.length || !campoPais.length || !campoNIF.val() || !campoPais.val()) return;
 
         let action = "apg_nif_valida_VAT";
@@ -25,10 +26,12 @@ jQuery(document).ready(function ($) {
             action: action,
             billing_nif: campoNIF.val(),
             billing_country: campoPais.val(),
+            shipping_country: campoEnvio.val(),
             nonce: apg_nif_ajax.nonce,
         };
 
         $(".wp-block-woocommerce-checkout-totals-block").block({ message: null, overlayCSS: { background: "#fff", opacity: 0.6 } });
+        yaValidado[formulario] = true;
 
         $.ajax({
             type: "POST",
@@ -37,7 +40,7 @@ jQuery(document).ready(function ($) {
             success: function (response) {
                 const wrapper = $("#" + formulario + " .wc-block-components-address-form__apg-nif");
                 const errorID = "error_nif";
-                console.log("WC - APG NIF/CIF/NIE Field:");
+                console.log("WC - APG NIF/CIF/NIE Field (" + formulario + "):");
                 console.log(response);
 
                 $("#" + errorID).remove();
@@ -45,13 +48,11 @@ jQuery(document).ready(function ($) {
 
                 if (action === "apg_nif_valida_VAT") {
                     if (!response.data?.vat_valido) {
-                        yaValidado[formulario] = true;
                         wrapper.append(`<div id="${errorID}"><strong>${apg_nif_ajax.vat_error}</strong></div>`);
                         wrapper.attr("aria-invalid", "true").closest(".wc-block-components-text-input").addClass("has-error");
                         validation?.addError?.({ field: formulario + "-apg-nif", message: apg_nif_ajax.vat_error });
                     } else {
                         validation?.removeError?.(formulario + "-apg-nif");
-                        yaValidado[formulario] = true;
                     }
 
                     $(".wp-block-woocommerce-checkout-totals-block").unblock();
@@ -75,7 +76,6 @@ jQuery(document).ready(function ($) {
                     }
 
                     if (hay_error) {
-                        yaValidado[formulario] = true;
                         wrapper.append(`<div id="${errorID}"><strong>${texto}</strong></div>`);
                         wrapper.attr("aria-invalid", "true").closest(".wc-block-components-text-input").addClass("has-error");
                         validation?.addError?.({ field: formulario + "-apg-nif", message: texto });
@@ -83,7 +83,6 @@ jQuery(document).ready(function ($) {
                         $("#" + errorID).remove();
                         wrapper.attr("aria-invalid", "false").closest(".wc-block-components-text-input").removeClass("has-error");
                         validation?.removeError?.(formulario + "-apg-nif");
-                        yaValidado[formulario] = true;
 
                         const event = new CustomEvent('checkout-blocks-validation-reset', {
                             detail: { field: formulario + "-apg-nif" }
