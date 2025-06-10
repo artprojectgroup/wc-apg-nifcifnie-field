@@ -56,7 +56,7 @@ class APG_Campo_NIF_en_Cuenta {
     public function apg_nif_anade_campo_nif_formulario_direccion( $address, $load_address ) {
         global $apg_nif_settings;
 
-        if ( !has_block( 'woocommerce/checkout', wc_get_page_id( 'checkout' ) ) ) {
+        if ( ! has_block( 'woocommerce/checkout', wc_get_page_id( 'checkout' ) ) ) {
             unset( $address[ '_wc_' . $load_address . '/apg/nif' ] );
         } else {
             unset( $address[ $load_address . '_nif' ] );
@@ -68,8 +68,10 @@ class APG_Campo_NIF_en_Cuenta {
 
     //Sincroniza el campo xxx_nif y _wc_xxx/apg/nif
     public function apg_nif_validar_direccion_despues_de_guardar( $address, $load_address ) {
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- WooCommerce already validates nonce via 'woocommerce_after_save_address_validations'
         if ( isset( $_POST[ "_wc_{$load_address}/apg/nif" ] ) ) {
-            $_POST[ "{$load_address}_nif" ] = sanitize_text_field( $_POST[ "_wc_{$load_address}/apg/nif" ] );
+            // phpcs:ignore WordPress.Security.NonceVerification.Missing -- WooCommerce already validates nonce via 'woocommerce_after_save_address_validation'
+            $_POST[ "{$load_address}_nif" ] = sanitize_text_field( wp_unslash( $_POST[ "_wc_{$load_address}/apg/nif" ] ) );
         }
     }
 }

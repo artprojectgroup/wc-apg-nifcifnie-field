@@ -18,11 +18,11 @@ class APG_Campo_NIF_en_Usuarios {
 		global $apg_nif_settings;
 
         $etiqueta                                               = isset( $apg_nif_settings['etiqueta'] ) && $apg_nif_settings['etiqueta'] ? sanitize_text_field( $apg_nif_settings['etiqueta'] ) : esc_attr__( 'NIF/CIF/NIE', 'wc-apg-nifcifnie-field' );
-        $campos[ 'billing' ][ 'fields' ][ '_billing_nif' ]       = [ 
+        $campos[ 'billing' ][ 'fields' ][ 'billing_nif' ]       = [ 
 				'label'			=> $etiqueta,
 				'description'	=> '',
 		];
-        $campos[ 'shipping' ][ 'fields' ][ '_shipping_nif' ]     = [ 
+        $campos[ 'shipping' ][ 'fields' ][ 'shipping_nif' ]     = [ 
 				'label'			=> $etiqueta,
 				'description'	=> '',
 		];
@@ -55,8 +55,8 @@ class APG_Campo_NIF_en_Usuarios {
 		$campos_ordenados[ 'billing' ][ 'title' ]     = $campos[ 'billing' ][ 'title' ];
 		$campos_ordenados[ 'shipping' ][ 'title' ]    = $campos[ 'shipping' ][ 'title' ];
 		foreach ( $orden_de_campos as $campo ) {
-            $billing    = $campo === 'nif' ? '_billing_nif' : 'billing_' . $campo;
-            $shipping   = $campo === 'nif' ? '_shipping_nif' : 'shipping_' . $campo;
+            $billing    = $campo === 'nif' ? 'billing_nif' : 'billing_' . $campo;
+            $shipping   = $campo === 'nif' ? 'shipping_nif' : 'shipping_' . $campo;
             
 			$campos_ordenados[ 'billing' ][ 'fields' ][ $billing ]    = $campos[ 'billing' ][ 'fields' ][ $billing ];
 			$campos_ordenados[ 'shipping' ][ 'fields' ][ $shipping ]  = $campos[ 'shipping' ][ 'fields' ][ $shipping ];
@@ -79,7 +79,7 @@ class APG_Campo_NIF_en_Usuarios {
 	
 	//Añade el NIF a la dirección de facturación
 	public function apg_nif_anade_campo_nif_usuario_direccion_facturacion( $campos, $cliente ) {
-		$campos[ 'nif' ]      = get_user_meta( $cliente, '_billing_nif', true );
+		$campos[ 'nif' ]      = get_user_meta( $cliente, 'billing_nif', true );
 		$campos[ 'phone' ]    = get_user_meta( $cliente, 'billing_phone', true );
 		$campos[ 'email' ]    = get_user_meta( $cliente, 'billing_email', true );
 
@@ -88,7 +88,7 @@ class APG_Campo_NIF_en_Usuarios {
 	 
 	//Añade el NIF a la dirección de envío
 	public function apg_nif_anade_campo_nif_usuario_direccion_envio( $campos, $cliente ) {
-		$campos[ 'nif' ]      = get_user_meta( $cliente, '_shipping_nif', true );
+		$campos[ 'nif' ]      = get_user_meta( $cliente, 'shipping_nif', true );
 		$campos[ 'phone' ]    = get_user_meta( $cliente, 'shipping_phone', true );
 		$campos[ 'email' ]    = get_user_meta( $cliente, 'shipping_email', true );
 		

@@ -234,11 +234,11 @@ class APG_Campo_NIF_en_Pedido {
             woocommerce_store_api_register_additional_field(
                 'apg/nif', [
                     'getter' => function ( $order, $group ) {
-                        $meta_key   = ( 'billing' === $group ) ? '_billing_nif' : '_shipping_nif';
+                        $meta_key   = ( 'billing' === $group ) ? 'billing_nif' : 'shipping_nif';
                         return $order->get_meta( $meta_key );
                     },
                     'setter' => function ( $order, $value, $group ) {
-                        $meta_key   = ( 'billing' === $group ) ? '_billing_nif' : '_shipping_nif';
+                        $meta_key   = ( 'billing' === $group ) ? 'billing_nif' : 'shipping_nif';
                         $order->update_meta_data( $meta_key, sanitize_text_field( $value ) );
                     },
                     'schema' => [
@@ -288,12 +288,12 @@ class APG_Campo_NIF_en_Pedido {
 			return;
 		}
 
-		$clave    = ( 'billing' === $group ) ? '_billing_nif' : '_shipping_nif';
+		$clave    = ( 'billing' === $group ) ? 'billing_nif' : 'shipping_nif';
 
 		$wc_object->update_meta_data( $clave, $value, true );
 	}
     public function apg_nif_retrocompatibilidad_campo_formulario_bloques( $value, $group, $wc_object ) {
-		$clave    = ( 'billing' === $group ) ? '_billing_nif' : '_shipping_nif';
+		$clave    = ( 'billing' === $group ) ? 'billing_nif' : 'shipping_nif';
 
 		return $wc_object->get_meta( $clave );
 	}

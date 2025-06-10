@@ -2,7 +2,7 @@
 /*
 Plugin Name: WC - APG NIF/CIF/NIE Field
 Requires Plugins: woocommerce
-Version: 4.1
+Version: 4.1.0.1
 Plugin URI: https://wordpress.org/plugins/wc-apg-nifcifnie-field/
 Description: Add to WooCommerce a NIF/CIF/NIE field.
 Author URI: https://artprojectgroup.es/
@@ -27,10 +27,33 @@ defined( 'ABSPATH' ) || exit;
 
 //Definimos constantes
 define( 'DIRECCION_apg_nif', plugin_basename( __FILE__ ) );
-define( 'VERSION_apg_nif', '4.1' );
+define( 'VERSION_apg_nif', '4.1.0.1' );
 
 //Funciones generales de APG
 include_once( 'includes/admin/funciones-apg.php' );
+
+//Actualiza los usermeta
+function apg_nif_actualiza_usermeta() {
+    global $wpdb;
+    
+    //Versión que registramos tras la última actualización
+    $version    = get_option( 'apg_nif_actualizado', '0.0.0' );
+
+    //Si la versión anterior es menor que la 4.1.0.1  ejecuta la actualización
+    if ( version_compare( $version, '4.1', '<' ) ) {
+        //Migra _billing_nif a billing_nif
+        // phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+        $wpdb->query( "UPDATE {$wpdb->usermeta} SET meta_key = 'billing_nif' WHERE meta_key = '_billing_nif'" );
+
+        //Migra _shipping_nif a shipping_nif
+        // phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+        $wpdb->query( "UPDATE {$wpdb->usermeta} SET meta_key = 'shipping_nif' WHERE meta_key = '_shipping_nif'" );
+
+        //Marcamos que ya actualizamos los usermeta
+        update_option( 'apg_nif_actualizado', VERSION_apg_nif );
+    }
+}
+add_action( 'admin_init', 'apg_nif_actualiza_usermeta' );
 
 //¿Está activo WooCommerce?
 include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
@@ -158,4 +181,5 @@ register_activation_hook( __FILE__, 'apg_nif_instalar' );
 function apg_nif_desinstalar() {    
 	delete_transient( 'apg_nif_plugin' );
 	delete_option( 'apg_nif_settings' );
+    delete_option( 'apg_nif_actualizado' );
 }

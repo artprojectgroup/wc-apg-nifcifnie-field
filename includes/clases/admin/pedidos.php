@@ -21,8 +21,8 @@ class APG_Campo_NIF_en_Admin_Pedidos {
 	
     //Añade el NIF en las búsquedas de pedidos
     public function apg_nif_anade_campo_nif_busqueda( $search_fields ) { 
-        $search_fields[]    = '_billing_nif';
-        $search_fields[]    = '_shipping_nif';
+        $search_fields[]    = 'billing_nif';
+        $search_fields[]    = 'shipping_nif';
         
         return $search_fields;
     }
