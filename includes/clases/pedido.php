@@ -565,6 +565,7 @@ class APG_Campo_NIF_en_Pedido {
             
             //Localiza variables compartidas con JavaScript
             wp_localize_script( $script_handle, 'apg_nif_ajax', [
+                'pais_base'     => WC()->countries->get_base_country(),
                 'url'           => admin_url( 'admin-ajax.php' ),
                 'vies_error'    => $this->mensaje_vies,
                 'max_error'     => $this->mensaje_max,

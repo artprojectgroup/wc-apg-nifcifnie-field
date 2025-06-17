@@ -60,14 +60,16 @@ jQuery(document).ready(function ($) {
                 }
 
                 if (response.success) {
+                    const paisCliente = campoPais.val().toUpperCase();
+                    const paisTienda = apg_nif_ajax.pais_base.toUpperCase();
                     const res = response.data;
                     let texto = "";
                     let hay_error = false;
 
-                    if (res.usar_eori && res.valido_eori === false) {
+                    if (res.usar_eori && res.valido_eori === false && paisCliente !== paisTienda) {
                         texto = apg_nif_ajax.eori_error;
                         hay_error = true;
-                    } else if (res.usar_vies && res.valido_vies === false) {
+                    } else if (res.usar_vies && res.valido_vies === false && paisCliente !== paisTienda) {
                         texto = res.valido_vies === 44 ? apg_nif_ajax.max_error : apg_nif_ajax.vies_error;
                         hay_error = true;
                     } else if (!res.vat_valido) {

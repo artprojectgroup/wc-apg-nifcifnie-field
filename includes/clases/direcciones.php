@@ -32,7 +32,7 @@ class APG_Campo_NIF_en_Direcciones {
 		global $apg_nif_settings;
         
         //Comprueba si no es la página de Finalizar compra ni la de Gracias - Evita problemas con Bloques
-        if ( ! is_page( wc_get_page_id( 'checkout' ) ) || is_wc_endpoint_url( 'order-received' ) ) {
+        if ( ! is_page( wc_get_page_id( 'checkout' ) ) || ! empty( is_wc_endpoint_url( 'order-received' ) ) ) {
             foreach ( $direccion as $id => $formato ) {
                 $direccion[ $id ] = str_replace( "{company}", "{company}\n{nif}", $formato );
             }
