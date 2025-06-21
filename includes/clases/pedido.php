@@ -153,17 +153,17 @@ class APG_Campo_NIF_en_Pedido {
 
     //Arregla la dirección predeterminada
     public function apg_nif_campos_de_direccion( $campos ) {
-        global $apg_nif_settings;
-
         //Sólo es operativo en los checkout clásicos y Mi cuenta
         if ( WC_Blocks_Utils::has_block_in_page( wc_get_page_id( 'checkout' ), 'woocommerce/checkout' ) ) {
             return $campos;
         }
         
+        global $apg_nif_settings;
+        
         $campos[ 'nif' ]    = [
             'label'         => $this->nombre_nif,
             'placeholder'   => $this->placeholder,
-            'priority'      => $this->priority,
+            'priority'      => ( int ) $this->priority,
             'required'      => isset( $apg_nif_settings[ 'requerido' ] ) && $apg_nif_settings[ 'requerido' ] === '1',
         ];
         
@@ -202,9 +202,8 @@ class APG_Campo_NIF_en_Pedido {
     public function apg_nif_formulario_de_facturacion( $campos ) {
         global $apg_nif_settings;
 
-        $is_checkout = is_checkout() || ( defined( 'WOOCOMMERCE_CHECKOUT' ) && WOOCOMMERCE_CHECKOUT ) || ( defined( 'DOING_AJAX' ) && DOING_AJAX );
-        $campos[ 'billing_nif' ][ 'required' ]  = ( isset( $apg_nif_settings[ 'requerido' ] ) && $apg_nif_settings[ 'requerido' ] === '1' && $is_checkout );
-        
+        $campos[ 'billing_nif' ][ 'required' ]  = ( isset( $apg_nif_settings[ 'requerido' ] ) && $apg_nif_settings[ 'requerido' ] === '1' );
+
         return $campos;
     }
     
@@ -312,11 +311,6 @@ class APG_Campo_NIF_en_Pedido {
 
             $campos[ 'shipping_phone' ][ 'priority' ]   = $facturacion[ 'billing_phone' ][ 'priority' ];
             $campos[ 'shipping_phone' ][ 'label' ]      = $facturacion[ 'billing_phone' ][ 'label' ];
-        }
-        
-        //Campo para bloques  - no requerido
-        if ( function_exists( 'has_block' ) && has_block( 'woocommerce/checkout', wc_get_page_id( 'checkout' ) ) ) {
-            $campos[ 'shipping_nif' ][ 'required' ] = false;
         }
         
         return $campos;

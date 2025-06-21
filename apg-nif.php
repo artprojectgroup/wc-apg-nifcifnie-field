@@ -2,7 +2,7 @@
 /*
 Plugin Name: WC - APG NIF/CIF/NIE Field
 Requires Plugins: woocommerce
-Version: 4.2
+Version: 4.3
 Plugin URI: https://wordpress.org/plugins/wc-apg-nifcifnie-field/
 Description: Add to WooCommerce a NIF/CIF/NIE field.
 Author URI: https://artprojectgroup.es/
@@ -27,7 +27,7 @@ defined( 'ABSPATH' ) || exit;
 
 //Definimos constantes
 define( 'DIRECCION_apg_nif', plugin_basename( __FILE__ ) );
-define( 'VERSION_apg_nif', '4.2' );
+define( 'VERSION_apg_nif', '4.3' );
 
 //Funciones generales de APG
 include_once( 'includes/admin/funciones-apg.php' );
@@ -118,35 +118,51 @@ if ( is_plugin_active( 'woocommerce/woocommerce.php' ) || is_network_only_plugin
 
     //Sanitización de opciones
     function apg_nif_sanitiza_opciones( $opciones ) {
-        $limpio = [];
+        $predeterminadas    = [
+            //Campos de texto
+            'etiqueta'             => 'NIF/CIF/NIE',
+            'placeholder'          => __( 'NIF/CIF/NIE number', 'wc-apg-nifcifnie-field' ),
+            'error'                => __( 'Please enter a valid NIF/CIF/NIE.', 'wc-apg-nifcifnie-field' ),
+            'prioridad'            => '31',
+             //Checkboxes
+            'requerido'            => '0',
+            'requerido_envio'      => '0',
+            'validacion'           => '0',
+            //VIES
+            'validacion_vies'      => '0',
+            'etiqueta_vies'        => 'NIF/CIF/NIE/VAT number',
+            'placeholder_vies'     => __( 'NIF/CIF/NIE/VAT number', 'wc-apg-nifcifnie-field' ),
+            'error_vies'           => __( 'Please enter a valid VIES VAT number.', 'wc-apg-nifcifnie-field' ),
+            'error_vies_max'       => __( 'Error: maximum number of concurrent requests exceeded.', 'wc-apg-nifcifnie-field' ),
+            //EORI
+            'validacion_eori'      => '0',
+            'etiqueta_eori'        => 'NIF/CIF/NIE/EORI number',
+            'placeholder_eori'     => __( 'NIF/CIF/NIE/EORI number', 'wc-apg-nifcifnie-field' ),
+            'error_eori'           => __( 'Please enter a valid EORI number.', 'wc-apg-nifcifnie-field' ),
+            'eori_paises'          => [],
+        ];
 
-        //Campos de texto
-        $limpio[ 'etiqueta' ]           = isset( $opciones[ 'etiqueta' ] ) ? sanitize_text_field( $opciones[ 'etiqueta' ] ) : '';
-        $limpio[ 'placeholder' ]        = isset( $opciones[ 'placeholder' ] ) ? sanitize_text_field( $opciones[ 'placeholder' ] ) : '';
-        $limpio[ 'error' ]              = isset( $opciones[ 'error' ] ) ? sanitize_text_field( $opciones[ 'error' ] ) : '';
-        $limpio[ 'prioridad' ]          = isset( $opciones[ 'prioridad' ] ) ? strval( intval( $opciones[ 'prioridad' ] ) ) : '31';
-        
-        //Checkboxes
-        $limpio[ 'requerido' ]          = isset( $opciones[ 'requerido' ] ) ? '1' : '0';
-        $limpio[ 'validacion' ]         = isset( $opciones[ 'validacion' ] ) ? '1' : '0';
-        $limpio[ 'requerido_envio' ]    = isset( $opciones[ 'requerido_envio' ] ) ? '1' : '0';
-        
-        //VIES
-        $limpio[ 'validacion_vies' ]    = isset( $opciones[ 'validacion_vies' ] ) ? '1' : '0';
-        $limpio[ 'etiqueta_vies' ]      = isset( $opciones[ 'etiqueta_vies' ] ) ? sanitize_text_field( $opciones[ 'etiqueta_vies' ] ) : '';
-        $limpio[ 'placeholder_vies' ]   = isset( $opciones[ 'placeholder_vies' ] ) ? sanitize_text_field( $opciones[ 'placeholder_vies' ] ) : '';
-        $limpio[ 'error_vies' ]         = isset( $opciones[ 'error_vies' ] ) ? sanitize_text_field( $opciones[ 'error_vies' ] ) : '';
-        $limpio[ 'error_vies_max' ]     = isset( $opciones[ 'error_vies_max' ] ) ? sanitize_text_field( $opciones[ 'error_vies_max' ] ) : '';
+        $opciones           = wp_parse_args( $opciones, $predeterminadas );
 
-        //EORI
-        $limpio[ 'validacion_eori' ]    = isset( $opciones[ 'validacion_eori' ] ) ? '1' : '0';
-        $limpio[ 'etiqueta_eori' ]      = isset( $opciones[ 'etiqueta_eori' ] ) ? sanitize_text_field( $opciones[ 'etiqueta_eori' ] ) : '';
-        $limpio[ 'placeholder_eori' ]   = isset( $opciones[ 'placeholder_eori' ] ) ? sanitize_text_field( $opciones[ 'placeholder_eori' ] ) : '';
-        $limpio[ 'error_eori' ]         = isset( $opciones[ 'error_eori' ] ) ? sanitize_text_field( $opciones[ 'error_eori' ] ) : '';
-
-        $limpio[ 'eori_paises' ]        = isset( $opciones[ 'eori_paises' ] ) && is_array( $opciones[ 'eori_paises' ] ) ? array_map( 'sanitize_text_field', $opciones[ 'eori_paises' ] ) : [];
-
-        return $limpio;
+        return [
+            'etiqueta'             => sanitize_text_field( $opciones[ 'etiqueta' ] ),
+            'placeholder'          => sanitize_text_field( $opciones[ 'placeholder' ] ),
+            'error'                => sanitize_text_field( $opciones[ 'error' ] ),
+            'prioridad'            => strval( intval( $opciones[ 'prioridad' ] ) ),
+            'requerido'            => $opciones[ 'requerido' ] === '1' ? '1' : '0',
+            'requerido_envio'      => $opciones[ 'requerido_envio' ] === '1' ? '1' : '0',
+            'validacion'           => $opciones[ 'validacion' ] === '1' ? '1' : '0',
+            'validacion_vies'      => $opciones[ 'validacion_vies' ] === '1' ? '1' : '0',
+            'etiqueta_vies'        => sanitize_text_field( $opciones[ 'etiqueta_vies' ] ),
+            'placeholder_vies'     => sanitize_text_field( $opciones[ 'placeholder_vies' ] ),
+            'error_vies'           => sanitize_text_field( $opciones[ 'error_vies' ] ),
+            'error_vies_max'       => sanitize_text_field( $opciones[ 'error_vies_max' ] ),
+            'validacion_eori'      => $opciones[ 'validacion_eori' ] === '1' ? '1' : '0',
+            'etiqueta_eori'        => sanitize_text_field( $opciones[ 'etiqueta_eori' ] ),
+            'placeholder_eori'     => sanitize_text_field( $opciones[ 'placeholder_eori' ] ),
+            'error_eori'           => sanitize_text_field( $opciones[ 'error_eori' ] ),
+            'eori_paises'          => is_array( $opciones[ 'eori_paises' ] ) ? array_map( 'sanitize_text_field', $opciones[ 'eori_paises' ] ) : [],
+        ];
     }
     
     //Carga el plugin asegurándonos de que se haya cargado WooCommerce previamente. Previene error con wc_get_page_id
