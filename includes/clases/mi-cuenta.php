@@ -11,7 +11,7 @@ class APG_Campo_NIF_en_Cuenta {
 		add_filter( 'woocommerce_my_account_my_address_formatted_address', [ $this, 'apg_nif_anade_campo_nif_editar_direccion' ], 10, 3 );
         add_filter( 'woocommerce_address_to_edit', [ $this, 'apg_nif_anade_campo_nif_formulario_direccion' ], 99, 2 );
         add_action( 'wp_enqueue_scripts', [ $this, 'apg_oculta_campo_nif_duplicado' ] );
-        add_action( 'woocommerce_after_save_address_validation', [ $this, 'apg_nif_validar_direccion_despues_de_guardar' ], 10, 2 );
+        add_action( 'woocommerce_customer_save_address', [ $this, 'apg_guardar_nif_en_mi_cuenta' ], 10, 4 );
     }
     
 	//Añade el campo NIF a Editar mi dirección
@@ -74,11 +74,33 @@ class APG_Campo_NIF_en_Cuenta {
     }
 
     //Sincroniza el campo xxx_nif y _wc_xxx/apg/nif
-    public function apg_nif_validar_direccion_despues_de_guardar( $address, $load_address ) {
-        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- WooCommerce already validates nonce via 'woocommerce_after_save_address_validations'
-        if ( isset( $_POST[ "_wc_{$load_address}/apg/nif" ] ) ) {
-            // phpcs:ignore WordPress.Security.NonceVerification.Missing -- WooCommerce already validates nonce via 'woocommerce_after_save_address_validation'
-            $_POST[ "{$load_address}_nif" ] = sanitize_text_field( wp_unslash( $_POST[ "_wc_{$load_address}/apg/nif" ] ) );
+    public function apg_guardar_nif_en_mi_cuenta( $user_id, $address_type ) {
+        $contador_argmunentos   = func_num_args();
+        $argmunentos            = func_get_args();
+
+        $campo_origen           = "{$address_type}_nif";
+        $campo_destino          = "_wc_{$address_type}/apg/nif";
+
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- WooCommerce already validates nonce via 'woocommerce_customer_save_address'
+        if ( isset( $_POST[ $campo_origen ] ) ) {
+            // phpcs:ignore WordPress.Security.NonceVerification.Missing -- WooCommerce already validates nonce via 'woocommerce_customer_save_address'
+            $valor  = sanitize_text_field( wp_unslash( $_POST[ $campo_origen ] ) );
+            
+            if ( $contador_argmunentos === 4 && isset( $argmunentos[ 3 ] ) && is_object( $argmunentos[ 3 ] ) ) {
+                // Caso backend: tenemos el objeto WC_Customer
+                $customer   = $argmunentos[ 3 ];
+                $customer->update_meta_data( $campo_origen, $valor );
+                // phpcs:ignore WordPress.Security.NonceVerification.Missing -- WooCommerce already validates nonce via 'woocommerce_customer_save_address'
+                if ( isset( $_POST[ $campo_destino ] ) ) {
+                    // phpcs:ignore WordPress.Security.NonceVerification.Missing -- WooCommerce already validates nonce via 'woocommerce_customer_save_address'
+                    $_POST[ $campo_destino ]    = $valor;
+                    $customer->update_meta_data( $campo_origen, $valor );
+                }
+                $customer->save();
+            } else {
+                update_user_meta( $user_id, $campo_origen, $valor );
+                update_user_meta( $user_id, $campo_destino, $valor );
+            }
         }
     }
 }

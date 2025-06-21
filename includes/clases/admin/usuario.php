@@ -58,8 +58,13 @@ class APG_Campo_NIF_en_Usuarios {
             $billing    = $campo === 'nif' ? 'billing_nif' : 'billing_' . $campo;
             $shipping   = $campo === 'nif' ? 'shipping_nif' : 'shipping_' . $campo;
             
-			$campos_ordenados[ 'billing' ][ 'fields' ][ $billing ]    = $campos[ 'billing' ][ 'fields' ][ $billing ];
-			$campos_ordenados[ 'shipping' ][ 'fields' ][ $shipping ]  = $campos[ 'shipping' ][ 'fields' ][ $shipping ];
+            if ( isset( $campos[ 'billing' ][ 'fields' ][ $billing ] ) ) {
+                $campos_ordenados[ 'billing' ][ 'fields' ][ $billing ]    = $campos[ 'billing' ][ 'fields' ][ $billing ];
+            }
+            
+            if ( isset( $campos[ 'shipping' ][ 'fields' ][ $shipping ] ) ) {
+                $campos_ordenados[ 'shipping' ][ 'fields' ][ $shipping ]  = $campos[ 'shipping' ][ 'fields' ][ $shipping ];
+            }
 		}
         foreach ( $campos[ 'billing' ][ 'fields' ] as $campo => $datos ) {
             if ( ! isset( $campos_ordenados[ 'billing' ][ 'fields' ][ $campo ] ) ) {
