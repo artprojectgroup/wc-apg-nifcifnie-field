@@ -69,7 +69,7 @@ jQuery(document).ready(function ($) {
                     if (res.usar_eori && res.valido_eori === false && paisCliente !== paisTienda) {
                         texto = apg_nif_ajax.eori_error;
                         hay_error = true;
-                    } else if (res.usar_vies && res.valido_vies === false && paisCliente !== paisTienda) {
+                    } else if (res.valido_vies === false && paisCliente !== paisTienda) {
                         texto = res.valido_vies === 44 ? apg_nif_ajax.max_error : apg_nif_ajax.vies_error;
                         hay_error = true;
                     } else if (!res.vat_valido) {
@@ -92,15 +92,36 @@ jQuery(document).ready(function ($) {
                         document.dispatchEvent(event);
                         document.querySelector('.wc-block-components-notice-banner__dismiss')?.click();
                     }
-                }
+                    
+                    const validoVIES = res.valido_vies === true || res.valido_vies === '1';
+                    const exento = (validoVIES && res.es_exento) ? '1' : '0';
+        
+                    fetch('/?wc-ajax=apg_nif_quita_iva_bloques', {
+                        method: 'POST',
+                        credentials: 'same-origin',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: 'exento=' + exento,
+                    })
+                    .then(r => r.json())
+                    .then(data => {
+                        console.log('VAT exception:', data);
 
-                extensionCartUpdate?.({ namespace: "apg_nif_valida_vies" }).finally(() => {
-                    if (window.wp?.data) {
-                        window.wp.data.dispatch("wc/store/cart").invalidateResolution("getCartTotals");
-                        window.wp.data.dispatch("wc/store/cart").invalidateResolution("getShippingRates");
-                    }
-                    $(".wp-block-woocommerce-checkout-totals-block").unblock();
-                });
+                        // Solo actualiza totales si la petición ha tenido éxito
+                        if (data.success) {
+                            extensionCartUpdate?.({ namespace: "apg_nif_valida_vies" }).finally(() => {
+                                if (window.wp?.data) {
+                                    window.wp.data.dispatch("wc/store/cart").invalidateResolution("getCartTotals");
+                                    window.wp.data.dispatch("wc/store/cart").invalidateResolution("getShippingRates");
+                                }
+                                $(".wp-block-woocommerce-checkout-totals-block").unblock();
+                            });
+                        } else {
+                            $(".wp-block-woocommerce-checkout-totals-block").unblock();
+                        }
+                    });
+                }
             },
         });
     }

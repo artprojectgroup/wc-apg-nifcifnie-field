@@ -119,6 +119,8 @@ class APG_Campo_NIF_en_Pedido {
             add_action( 'wp_ajax_nopriv_apg_nif_valida_VIES', [ $this, 'apg_nif_valida_VIES' ] );
             add_action( 'wp_ajax_apg_nif_valida_VIES', [ $this, 'apg_nif_valida_VIES' ] );
             add_action( 'woocommerce_checkout_update_order_review', [ $this, 'apg_nif_quita_iva' ] );
+            add_action( 'wc_ajax_nopriv_apg_nif_quita_iva_bloques', [ $this, 'apg_nif_quita_iva_bloques' ] );
+            add_action( 'wc_ajax_apg_nif_quita_iva_bloques', [ $this, 'apg_nif_quita_iva_bloques' ] );
         }
         //Añade el número EORI
         if ( isset( $apg_nif_settings[ 'validacion_eori' ] ) && $apg_nif_settings[ 'validacion_eori' ] === "1" ) {
@@ -275,7 +277,7 @@ class APG_Campo_NIF_en_Pedido {
             woocommerce_store_api_register_update_callback( [
                     'namespace' => 'apg_nif_valida_vies',
                     'callback'  => function() {
-                        $this->apg_nif_quita_iva( true );
+                        return []; //Reemplaza a $this->apg_nif_quita_iva()
                     },
             ] );
        }
@@ -613,15 +615,46 @@ class APG_Campo_NIF_en_Pedido {
     }
 
     //Quita impuestos si el NIF/VAT es válido en VIES
-    public function apg_nif_quita_iva( $actualiza = false) {
-        if ( $actualiza || is_checkout() || defined( 'WOOCOMMERCE_CHECKOUT' ) || ( defined( 'DOING_AJAX' ) && DOING_AJAX ) ) {
-            if ( WC()->session ) {
-                $valor  = WC()->session->get( 'apg_nif' );
-                $exento = $valor === true || $valor === '1' || $valor === 1;
-                WC()->customer->set_is_vat_exempt( $exento );
-            }
+    public function apg_nif_quita_iva( $post_data = '' ) {
+        if ( $post_data === true || empty( $post_data ) ) {
+            // phpcs:ignore WordPress.Security.NonceVerification.Missing -- WooCommerce already validates nonce in woocommerce_checkout_update_order_review
+            $data   = $_POST;
+        } elseif ( is_string( $post_data ) && strpos( $post_data, '&' ) !== false ) {
+            parse_str( $post_data, $data );
+        } elseif ( is_array( $post_data ) ) {
+            $data   = $post_data;
+        } else {
+            $data   = [];
         }
+
+        //Extrae los datos necesarios
+        $nif        = isset( $data[ 'billing_nif' ] ) ? sanitize_text_field( $data[ 'billing_nif' ] ) : '';
+        $pais       = isset( $data[ 'billing_country' ] ) ? sanitize_text_field( $data[ 'billing_country' ] ) : '';
+        $pais_envio = isset( $data[ 'shipping_country' ] ) ? sanitize_text_field( $data[ 'shipping_country' ] ) : '';
+        
+        //no hay datos
+        if ( empty( $nif ) || empty( $pais ) ) {
+            return;
+        }
+
+        //Valida y aplica la exención 
+        $resultado  = $this->apg_nif_valida_exencion( $nif, $pais, $pais_envio );
+        $exento     = $resultado[ 'valido_vies' ] && $resultado[ 'es_exento' ];
+
+        WC()->customer->set_is_vat_exempt( $exento );
     }
+    
+    //Quita impuestos si el NIF/VAT es válido en VIES - Bloques
+    public function apg_nif_quita_iva_bloques() {
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing
+        $exento = ! empty( $_POST['exento'] ) && $_POST['exento'] !== '0';
+
+        if ( function_exists( 'WC' ) ) {
+            WC()->customer->set_is_vat_exempt( $exento );
+        }
+
+        wp_send_json_success( [ 'exento' => $exento ] );
+}
     
     //Recoge los datos para el campo NIF/CIF/NIE, VIES y EORI
     private function apg_nif_recoge_datos_ajax(): array {
@@ -656,7 +689,8 @@ class APG_Campo_NIF_en_Pedido {
     //Valida el campo VIES
     public function apg_nif_valida_VIES() {
         list( $nif, $pais, $pais_envio ) = $this->apg_nif_recoge_datos_ajax();
-        $resultado          = $this->apg_nif_valida_exencion( $nif, $pais, $pais_envio );
+        $resultado  = $this->apg_nif_valida_exencion( $nif, $pais, $pais_envio );
+        //Necesario para gestionar los impuestos en los envíos en algunas instalaciones personalizadas
         WC()->session->set( 'apg_nif', $resultado[ 'es_exento' ] );
         
         wp_send_json_success( $resultado );
@@ -665,8 +699,7 @@ class APG_Campo_NIF_en_Pedido {
     //Valida el campo EORI
     public function apg_nif_valida_EORI() {
         list( $nif, $pais, $pais_envio ) = $this->apg_nif_recoge_datos_ajax();
-        $resultado          = $this->apg_nif_valida_exencion( $nif, $pais, $pais_envio );
-        WC()->session->set( 'apg_eori', $resultado[ 'valido_eori' ] );
+        $resultado  = $this->apg_nif_valida_exencion( $nif, $pais, $pais_envio );
         
         wp_send_json_success( $resultado );
     }
@@ -713,12 +746,12 @@ class APG_Campo_NIF_en_Pedido {
             "SK",
         ];
 
-        // Si el país del NIF no es VIES-compatible, no validar
+        //Si el país del NIF no es VIES-compatible, no validar
         if ( ! in_array( $pais_vies, $paises_validos, true ) ) {
             return false;
         }
 
-        // Si el país requiere EORI, no validar VIES
+        //Si el país requiere EORI, no validar VIES
         if ( isset( $apg_nif_settings[ 'validacion_eori' ], $apg_nif_settings[ 'eori_paises' ] ) && $apg_nif_settings[ 'validacion_eori' ] === '1' && in_array( $pais_vies, $apg_nif_settings[ 'eori_paises' ], true ) && in_array( $pais_tienda, $apg_nif_settings[ 'eori_paises' ], true ) ) {
             return false;
         }
@@ -732,7 +765,7 @@ class APG_Campo_NIF_en_Pedido {
         $pais       = strtoupper( substr( $nif_completo, 0, 2 ) );
         $nif        = preg_replace( '/^[A-Z]{2}/', '', strtoupper( $nif_completo ) );
 
-        // Hack para Grecia
+        //Hack para Grecia
         $iso_vies   = [ 'EL' => 'GR' ];
 
         if ( isset( $iso_vies[ $pais ] ) ) {
@@ -765,12 +798,12 @@ class APG_Campo_NIF_en_Pedido {
             //Comprueba el VIES por otra vía
             $respuesta  = wp_remote_get( "https://ec.europa.eu/taxation_customs/vies/rest-api/ms/$pais/vat/$nif" );
             if ( is_wp_error( $respuesta ) ) {
-                return false; // error de conexión
+                return false; //error de conexión
             }
             
             $data       = json_decode( wp_remote_retrieve_body( $respuesta ) );
             
-            // Devuelve 44 si hay error de concurrencia o servicio no disponible
+            //Devuelve 44 si hay error de concurrencia o servicio no disponible
             if ( isset( $data->userError ) && in_array( $data->userError, [ 'MS_MAX_CONCURRENT_REQ', 'MS_UNAVAILABLE' ], true ) ) {
                 return 44;
             }

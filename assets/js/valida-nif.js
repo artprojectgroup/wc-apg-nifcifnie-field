@@ -60,7 +60,7 @@ jQuery(function ($) {
                         if (res.usar_eori && res.valido_eori === false && paisCliente !== paisTienda) {
                             texto   = apg_nif_ajax.eori_error;
                             errorID = `error_eori_${tipo}`;
-                        } else if (res.usar_vies && res.valido_vies === false && paisCliente !== paisTienda) {
+                        } else if (res.valido_vies === false && paisCliente !== paisTienda) {
                             texto   = res.valido_vies === 44 ? apg_nif_ajax.max_error : apg_nif_ajax.vies_error;
                             errorID = `error_vies_${tipo}`;
                         } else if (!res.vat_valido) {
