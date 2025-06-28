@@ -13,7 +13,7 @@ Stable tag: 4.4
 
 WC requires at least: 5.6
 
-WC tested up to: 9.9.4
+WC tested up to: 10.0
 
 License: GNU General Public License v2 or later
 
