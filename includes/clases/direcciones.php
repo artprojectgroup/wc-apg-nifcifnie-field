@@ -13,6 +13,7 @@ class APG_Campo_NIF_en_Direcciones {
 		add_filter( 'woocommerce_localisation_address_formats', [ $this, 'apg_nif_formato_direccion_localizacion' ], PHP_INT_MAX );
 		add_filter( 'woocommerce_order_formatted_billing_address', [ $this, 'apg_nif_anade_campo_nif_direccion' ], 10, 2 );
 		add_filter( 'woocommerce_order_formatted_shipping_address', [ $this, 'apg_nif_anade_campo_nif_direccion' ], 10, 2 );    
+        add_action( 'wp_enqueue_scripts', [ $this, 'apg_nif_oculta_campo_nif_duplicado' ] );        
     }
 
     //Reemplaza los nombres de los campos con sus datos
@@ -61,6 +62,15 @@ class APG_Campo_NIF_en_Direcciones {
         $campos['phone']    = $tipo === 'billing' ? $pedido->get_billing_phone() : $pedido->get_shipping_phone();
 
         return $campos;
+    }
+    
+    //Oculta el campo duplicado en la página Gracias
+    public function apg_nif_oculta_campo_nif_duplicado() {
+        if ( is_wc_endpoint_url( 'order-received' ) ) {
+            wp_register_style( 'apg-nif-hack', false, [], VERSION_apg_nif );
+            wp_enqueue_style( 'apg-nif-hack' );
+            wp_add_inline_style( 'apg-nif-hack', '.wc-block-components-additional-fields-list { display: none !important; } .woocommerce-customer-details--phone, .woocommerce-customer-details--email { margin: 0; }' );
+        }
     }
 }
 new APG_Campo_NIF_en_Direcciones();

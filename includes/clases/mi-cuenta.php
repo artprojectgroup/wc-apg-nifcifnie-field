@@ -10,8 +10,8 @@ class APG_Campo_NIF_en_Cuenta {
 	public function __construct() {
 		add_filter( 'woocommerce_my_account_my_address_formatted_address', [ $this, 'apg_nif_anade_campo_nif_editar_direccion' ], 10, 3 );
         add_filter( 'woocommerce_address_to_edit', [ $this, 'apg_nif_anade_campo_nif_formulario_direccion' ], 99, 2 );
-        add_action( 'wp_enqueue_scripts', [ $this, 'apg_oculta_campo_nif_duplicado' ] );
-        add_action( 'woocommerce_customer_save_address', [ $this, 'apg_guardar_nif_en_mi_cuenta' ], 10, 4 );
+        add_action( 'wp_enqueue_scripts', [ $this, 'apg_nif_oculta_campo_nif_duplicado' ] );
+        add_action( 'woocommerce_customer_save_address', [ $this, 'apg_nif_guardar_nif_en_mi_cuenta' ], 10, 4 );
     }
     
 	//Añade el campo NIF a Editar mi dirección
@@ -65,7 +65,7 @@ class APG_Campo_NIF_en_Cuenta {
     }
 
     //Oculta el campo duplicado en el formulario de direcciones de Mi cuenta
-    public function apg_oculta_campo_nif_duplicado() {
+    public function apg_nif_oculta_campo_nif_duplicado() {
         if ( is_account_page() && is_wc_endpoint_url( 'edit-address' ) ) {
             wp_register_style( 'apg-nif-hack', false, [], VERSION_apg_nif );
             wp_enqueue_style( 'apg-nif-hack' );
@@ -74,7 +74,7 @@ class APG_Campo_NIF_en_Cuenta {
     }
 
     //Sincroniza el campo xxx_nif y _wc_xxx/apg/nif
-    public function apg_guardar_nif_en_mi_cuenta( $user_id, $address_type ) {
+    public function apg_nif_guardar_nif_en_mi_cuenta( $user_id, $address_type ) {
         $contador_argmunentos   = func_num_args();
         $argmunentos            = func_get_args();
 

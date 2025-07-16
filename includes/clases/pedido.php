@@ -420,7 +420,7 @@ class APG_Campo_NIF_en_Pedido {
     public function apg_nif_validacion_de_campo() {
         global $apg_nif_settings;
 
-        //Procesa los camops
+        //Procesa los campos
         // phpcs:ignore WordPress.Security.NonceVerification.Missing -- WooCommerce already validates nonce via 'get-customer-details'
         $billing_nif        = isset( $_POST[ 'billing_nif' ] ) ? sanitize_text_field( wp_unslash( $_POST[ 'billing_nif' ] ) ) : '';
         // phpcs:ignore WordPress.Security.NonceVerification.Missing -- WooCommerce already validates nonce via 'get-customer-details'
@@ -488,7 +488,7 @@ class APG_Campo_NIF_en_Pedido {
             return $errors;
         }
         
-        //Procesa los camops
+        //Procesa los campos
         $nif            = isset( $fields[ 'apg/nif' ] ) ? sanitize_text_field( $fields[ 'apg/nif' ] ) : '';
         $pais           = isset( $fields[ 'country' ] ) ? sanitize_text_field( $fields[ 'country' ] ) : '';
         
@@ -761,7 +761,7 @@ class APG_Campo_NIF_en_Pedido {
 
     //Comprueba la validez del VIES
     public function apg_nif_es_valido_vies( string $nif_completo, string $pais_de_facturacion ) {
-        //Procesa los camops
+        //Procesa los campos
         $pais       = strtoupper( substr( $nif_completo, 0, 2 ) );
         $nif        = preg_replace( '/^[A-Z]{2}/', '', strtoupper( $nif_completo ) );
 
@@ -772,8 +772,9 @@ class APG_Campo_NIF_en_Pedido {
             $pais   = $iso_vies[ $pais ];
         }
 
-        if ( array_search( $pais, $iso_vies, true ) ) {
-            $pais   = array_search( $pais, $iso_vies, true );
+        $key    = array_search( $pais, $iso_vies, true );
+        if ( $key !== false ) {
+            $pais   = $key;
         }
         
         //Gestión de caché
@@ -904,8 +905,9 @@ new APG_Campo_NIF_en_Pedido();
  * @return array
  */
 function json_split_objects( $json ) {
-    $q      = FALSE;
-    $len    = strlen( $json );
+    $q          = false;
+    $len        = strlen( $json );
+    $objects    = [];
     for ( $l = $c = $i = 0; $i < $len; $i++ ) {
         $json[ $i ] == '"' && ( $i > 0 ? $json[ $i - 1 ] : '' ) != '\\' && $q = !$q;
         if ( ! $q && in_array( $json[ $i ], array( " ", "\r", "\n", "\t" ) ) ) {

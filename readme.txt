@@ -4,7 +4,7 @@ Donate link: https://artprojectgroup.es/tienda/donacion
 Tags: nif, cif, nie, eori, vies
 Requires at least: 5.0
 Tested up to: 6.9
-Stable tag: 4.4
+Stable tag: 4.4.0.1
 WC requires at least: 5.6
 WC tested up to: 10.0
 License: GNU General Public License v2 or later
@@ -133,6 +133,8 @@ If you need help to configuring or installing **WC - APG NIF/CIF/NIE field**, **
 3. Screenshot of WC - APG NIF/CIF/NIE field. Billing and shipping forms. Classic Shortcode.
 
 == Changelog ==
+= 4.4.0.1 =
+* Minor fixes.
 = 4.4 =
 * Fixed tax exemption handling.
 * Minor fixes.
@@ -350,8 +352,7 @@ If you need help to configuring or installing **WC - APG NIF/CIF/NIE field**, **
 * Initial version.
 
 == Upgrade Notice ==
-= 4.4 =
-* Fixed tax exemption handling.
+= 4.4.0.1 =
 * Minor fixes.
 
 == Translations ==
@@ -362,7 +363,7 @@ If you need help to configuring or installing **WC - APG NIF/CIF/NIE field**, **
 Since **WC - APG NIF/CIF/NIE field** is totally free, **Art Project Group** only provides payment [**Technical Support**](https://artprojectgroup.es/tienda/ticket-de-soporte) service. In any case **Art Project Group** provide any kind of free technical support.
 
 == Donation ==
-Did you liked and you have proved useful **WC - APG NIF/CIF/NIE field** on your website? We would appreciate a [small donation](https://artprojectgroup.es/tienda/donacion) that will help us to continue improving this plugin and create more plugins totally free for the entire WordPress community.
+Did you like and find **WC - APG NIF/CIF/NIE field** useful on your website? We would appreciate a [small donation](https://artprojectgroup.es/tienda/donacion) that will help us to continue improving this plugin and create more plugins totally free for the entire WordPress community.
 
 == Thanks ==
 * To all that use it.
