@@ -1,7 +1,37 @@
 <?php
+/**
+ * Página de ajustes del plugin WC – APG NIF/CIF/NIE Field.
+ *
+ * Renderiza el formulario de opciones en el admin de WooCommerce
+ * (etiquetas, placeholders, prioridad, obligatoriedad y validaciones
+ * NIF/VIES/EORI), además de los scripts para mostrar/ocultar campos.
+ *
+ * @package WC_APG_NIFCIFNIE_Field
+ */
+
+// Igual no deberías poder abrirme.
+defined( 'ABSPATH' ) || exit;
+
+/**
+ * Variables globales del plugin.
+ *
+ * @global array<string,string> $apg_nif           Metadatos estáticos del plugin (URLs, nombre, etc.).
+ * @global array<string,mixed>  $apg_nif_settings  Opciones guardadas del plugin (puede estar vacío).
+ */
 global $apg_nif, $apg_nif_settings;
 
+/**
+ * Muestra notificaciones de la API de Settings.
+ *
+ * @see https://developer.wordpress.org/reference/functions/settings_errors/
+ */
 settings_errors(); 
+
+/**
+ * Control de tabulación para los campos del formulario.
+ *
+ * @var int $tab
+ */
 $tab    = 1;
 ?>
 <div class="wrap woocommerce">
@@ -90,7 +120,7 @@ $tab    = 1;
 				</th>
 				<td class="forminp"><input id="apg_nif_settings[validacion]" name="apg_nif_settings[validacion]" type="checkbox" value="1" <?php checked( isset( $apg_nif_settings[ 'validacion' ] ) ? $apg_nif_settings[ 'validacion' ] : '', 1 ); ?> tabindex="<?php echo esc_html( $tab ); $tab++; ?>" /></td>
 			</tr>
-			<?php if ( class_exists( 'Soapclient' ) ) : ?>
+			<?php if ( class_exists( 'SoapClient' ) ) : ?>
 			<tr valign="top" id="vies">
 				<th scope="row" class="titledesc">
 					<label for="apg_nif_settings[validacion_vies]">
@@ -146,7 +176,16 @@ $tab    = 1;
 				<td class="forminp"><input class="muestra_eori" id="apg_nif_settings[validacion_eori]" name="apg_nif_settings[validacion_eori]" type="checkbox" value="1" <?php checked( isset( $apg_nif_settings[ 'validacion_eori' ] ) ? $apg_nif_settings[ 'validacion_eori' ] : '', 1 ); ?> tabindex="<?php echo esc_html( $tab ); $tab++; ?>" /></td>
 			</tr>
             <?php
-            //Amplía la lista de países de la Unión Europa con Reino Unido, Noruega y Suiza
+            /**
+             * Amplía el listado de países de la UE aceptados por WooCommerce.
+             *
+             * Añade Reino Unido (GB), Noruega (NO), Suiza (CH) y Tailandia (TH)
+             * al array que devuelve el filtro `woocommerce_european_union_countries`.
+             *
+             * @param array<int,string> $countries Códigos de país de la UE.
+             * @param string            $type      Contexto del filtro (no usado).
+             * @return array<int,string> Lista extendida de códigos de país.
+             */
             function apg_nif_amplia_paises( $countries, $type ) { 
                 array_push( $countries, 'GB', 'NO', 'CH', 'TH' );
 
@@ -154,11 +193,19 @@ $tab    = 1;
             }
             add_filter( 'woocommerce_european_union_countries', 'apg_nif_amplia_paises', 10, 2 );
             
-            //Variables
-            $seleccion  = isset( $apg_nif_settings[ 'eori_paises' ] ) ? (array) $apg_nif_settings[ 'eori_paises' ] : []; //Países seleccionados previamente
+            // Variables para el multiselect de países (EORI).
+            /** @var array<int,string> $seleccion Países previamente seleccionados. */
+            $seleccion  = isset( $apg_nif_settings[ 'eori_paises' ] ) ? (array) $apg_nif_settings[ 'eori_paises' ] : [];
+
+			/** @var \WC_Countries $countries Objeto de países. */
             $countries  = new WC_Countries();
-            $europa     = $countries->get_european_union_countries(); //Países de la Unión Europea
-            $countries  = WC()->countries->countries; //Listado completo de países
+
+			/** @var array<int,string> $europa Códigos de países de la UE. */
+            $europa     = $countries->get_european_union_countries();
+
+            /** @var array<string,string> $countries Listado completo de países (código => nombre). */
+			$countries  = WC()->countries->countries;
+			
             asort( $countries );            
             ?>
             <tr valign="top" class="eori">
@@ -222,16 +269,17 @@ $tab    = 1;
 </style>
 <script>
 jQuery( document ).ready( function( $ ) {
-    //Muestra u oculta los campos
+    // Muestra u oculta los campos VIES/EORI según los checkboxes.
     ( function( $ ) {
         $.fn.comprueba_campos = function() {
-            //Muestra u oculta ls campos nativos
+            // Muestra u oculta los campos nativos.
             if ( $( ".muestra_vies" ).is( ":checked" ) || $( ".muestra_eori" ).is( ":checked" ) ) {
                 $( ".campo" ).hide();
             } else {
                 $( ".campo" ).show();
             }
-            //Muestra u oculta ls campos VIES
+			
+            // Muestra u oculta los campos VIES.
             if ( $( ".muestra_eori" ).is( ":checked" ) ) {
                 $( ".campo_vies" ).hide();
             } else if ( $( ".muestra_vies" ).is( ":checked" ) ) {
@@ -241,17 +289,17 @@ jQuery( document ).ready( function( $ ) {
     } )( jQuery );
     
     /* VIES */
-    if ( $( ".muestra_vies" ).is( ":checked" ) ) { //Muestra los campos
+    if ( $( ".muestra_vies" ).is( ":checked" ) ) { // Muestra los campos.
         $( '.vies' ).toggle().comprueba_campos();
     }
-    $( ".muestra_vies" ).change( function() { //Cambia la visualización según valor
+    $( ".muestra_vies" ).change( function() { // Cambia la visualización según valor.
         $( '.vies' ).toggle().comprueba_campos();
     });
     /* EORI */
-    if ( $( ".muestra_eori" ).is( ":checked" ) ) { //Muestra los campos
+    if ( $( ".muestra_eori" ).is( ":checked" ) ) { // Muestra los campos.
         $( '.eori' ).toggle().comprueba_campos();
     }
-    $( ".muestra_eori" ).change( function() { //Cambia la visualización según valor
+    $( ".muestra_eori" ).change( function() { // Cambia la visualización según valor.
         $( '.eori' ).toggle().comprueba_campos();
     });              
 });

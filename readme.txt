@@ -4,9 +4,9 @@ Donate link: https://artprojectgroup.es/tienda/donacion
 Tags: nif, cif, nie, eori, vies
 Requires at least: 5.0
 Tested up to: 6.9
-Stable tag: 4.4.0.1
+Stable tag: 4.5
 WC requires at least: 5.6
-WC tested up to: 10.0
+WC tested up to: 10.1.1
 License: GNU General Public License v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -82,6 +82,7 @@ Add to WooCommerce a NIF/CIF/NIE field.
  * Ukraine.
 * 100% compatible with [WooCommerce PDF Invoices & Packing Slips](https://es.wordpress.org/plugins/woocommerce-pdf-invoices-packing-slips/).
 * 100% compatible with [WPML](https://wpml.org/?aid=80296&affiliate_key=m66Ss5ps0xoS).
+* 100% compatible with [Checkout Field Editor (Checkout Manager) for WooCommerce](https://wordpress.org/plugins/woo-checkout-field-editor-pro/)
 
 = Translations =
 * Español ([**Art Project Group**](https://artprojectgroup.es/)).
@@ -133,6 +134,10 @@ If you need help to configuring or installing **WC - APG NIF/CIF/NIE field**, **
 3. Screenshot of WC - APG NIF/CIF/NIE field. Billing and shipping forms. Classic Shortcode.
 
 == Changelog ==
+= 4.5 =
+* Added PHPDoc blocks throughout the code.
+* Fixed compatibility with Checkout Field Editor (Checkout Manager) for WooCommerce.
+* Minor fixes.
 = 4.4.0.1 =
 * Minor fixes.
 = 4.4 =
@@ -352,7 +357,9 @@ If you need help to configuring or installing **WC - APG NIF/CIF/NIE field**, **
 * Initial version.
 
 == Upgrade Notice ==
-= 4.4.0.1 =
+= 4.5 =
+* Added PHPDoc blocks throughout the code.
+* Fixed compatibility with Checkout Field Editor (Checkout Manager) for WooCommerce.
 * Minor fixes.
 
 == Translations ==

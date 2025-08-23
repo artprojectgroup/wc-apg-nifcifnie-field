@@ -1,12 +1,35 @@
 <?php
-//Igual no deberías poder abrirme
+/**
+ * Extensiones para el área "Mi cuenta" de WooCommerce.
+ *
+ * - Muestra NIF/email/teléfono en la vista de direcciones del cliente.
+ * - Ajusta los campos del formulario de edición de direcciones (no duplica NIF).
+ * - Oculta el campo NIF duplicado cuando procede.
+ * - Sincroniza los metadatos `xxx_nif` y `_wc_xxx/apg/nif` al guardar.
+ *
+ * @package WC_APG_NIFCIFNIE_Field
+ */
+
+// Igual no deberías poder abrirme.
 defined( 'ABSPATH' ) || exit;
 
 /**
  * Añade los campos en Mi Cuenta.
  */
 class APG_Campo_NIF_en_Cuenta {
-	//Inicializa las acciones de Mi Cuenta
+
+	/**
+	 * Inicializa los hooks del área "Mi cuenta".
+	 *
+	 * Hooks:
+	 * - `woocommerce_my_account_my_address_formatted_address` para añadir NIF/email/teléfono
+	 *    al array de dirección mostrado en "Mi cuenta".
+	 * - `woocommerce_address_to_edit` para marcar como no requerido el campo NIF duplicado.
+	 * - `wp_enqueue_scripts` para ocultar el campo duplicado en el formulario de direcciones.
+	 * - `woocommerce_customer_save_address` para sincronizar metadatos al guardar la dirección.
+	 *
+	 * @return void
+	 */
 	public function __construct() {
 		add_filter( 'woocommerce_my_account_my_address_formatted_address', [ $this, 'apg_nif_anade_campo_nif_editar_direccion' ], 10, 3 );
         add_filter( 'woocommerce_address_to_edit', [ $this, 'apg_nif_anade_campo_nif_formulario_direccion' ], 99, 2 );
@@ -14,14 +37,23 @@ class APG_Campo_NIF_en_Cuenta {
         add_action( 'woocommerce_customer_save_address', [ $this, 'apg_nif_guardar_nif_en_mi_cuenta' ], 10, 4 );
     }
     
-	//Añade el campo NIF a Editar mi dirección
+	/**
+	 * Añade NIF, email y teléfono al array de dirección mostrado en "Mi cuenta".
+	 *
+	 * Hook: `woocommerce_my_account_my_address_formatted_address`.
+	 *
+	 * @param array<string,mixed> $campos     Dirección ya formateada (clave => valor).
+	 * @param int                 $cliente    ID del usuario/cliente.
+	 * @param string              $formulario Contexto: 'billing' o 'shipping'.
+	 * @return array<string,mixed> Dirección con claves `nif`, `email` y `phone` (y ordenada si aplica).
+	 */
 	public function apg_nif_anade_campo_nif_editar_direccion( $campos, $cliente, $formulario ) {
         if ( ! has_action( 'woocommerce_my_account_after_my_address' ) ) {
             $campos[ 'nif' ]      = get_user_meta( $cliente, $formulario . '_nif', true );
             $campos[ 'email' ]    = get_user_meta( $cliente, $formulario . '_email', true );
             $campos[ 'phone' ]    = get_user_meta( $cliente, $formulario . '_phone', true );
 
-            //Ordena los campos
+			// Orden recomendado de campos.
             $orden_de_campos      = [
                 "first_name", 
                 "last_name", 
@@ -55,7 +87,17 @@ class APG_Campo_NIF_en_Cuenta {
         return $campos;
 	}
     
-    //Quita el campo duplicado requerido formulario de Mi cuenta
+	/**
+	 * Marca como no requerido el campo NIF duplicado en el formulario de direcciones.
+	 *
+	 * Hook: `woocommerce_address_to_edit`.
+	 *
+	 * @global array<string,mixed> $apg_nif_settings Ajustes del plugin (no usados aquí).
+	 *
+	 * @param array<string,array<string,mixed>> $address      Array de campos de la dirección a editar.
+	 * @param string                            $load_address Contexto: 'billing' o 'shipping'.
+	 * @return array<string,array<string,mixed>> Campos con `_wc_{context}/apg/nif` no requerido.
+	 */
     public function apg_nif_anade_campo_nif_formulario_direccion( $address, $load_address ) {
         global $apg_nif_settings;
 
@@ -64,7 +106,13 @@ class APG_Campo_NIF_en_Cuenta {
         return $address;
     }
 
-    //Oculta el campo duplicado en el formulario de direcciones de Mi cuenta
+	/**
+	 * Oculta el campo NIF duplicado en el formulario de "Mi cuenta" > Direcciones.
+	 *
+	 * Hook: `wp_enqueue_scripts`.
+	 *
+	 * @return void
+	 */
     public function apg_nif_oculta_campo_nif_duplicado() {
         if ( is_account_page() && is_wc_endpoint_url( 'edit-address' ) ) {
             wp_register_style( 'apg-nif-hack', false, [], VERSION_apg_nif );
@@ -73,7 +121,21 @@ class APG_Campo_NIF_en_Cuenta {
         }
     }
 
-    //Sincroniza el campo xxx_nif y _wc_xxx/apg/nif
+	/**
+	 * Sincroniza `{$address_type}_nif` y `_wc_{$address_type}/apg/nif` al guardar direcciones.
+	 *
+	 * Hook: `woocommerce_customer_save_address`.
+	 *
+	 * Esta acción puede invocarse con 2 o 4 argumentos según la versión de WooCommerce:
+	 * - (clásico) `$user_id`, `$address_type`.
+	 * - (extendido) `$user_id`, `$address_type`, `$address`, `$customer`.
+	 *
+	 * @param int                      $user_id       ID del usuario.
+	 * @param string                   $address_type  'billing' o 'shipping'.
+	 * @param array<string,mixed>|null $address       (Opcional) Datos del formulario de dirección.
+	 * @param \WC_Customer|null        $customer      (Opcional) Objeto cliente cuando está disponible.
+	 * @return void
+	 */
     public function apg_nif_guardar_nif_en_mi_cuenta( $user_id, $address_type ) {
         $contador_argmunentos   = func_num_args();
         $argmunentos            = func_get_args();
@@ -104,4 +166,5 @@ class APG_Campo_NIF_en_Cuenta {
         }
     }
 }
+
 new APG_Campo_NIF_en_Cuenta();

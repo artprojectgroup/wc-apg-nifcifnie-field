@@ -1,8 +1,31 @@
 <?php
-//Igual no deberías poder abrirme
+/**
+ * Utilidades de administración para el plugin
+ * "WC - APG NIF/CIF/NIE Field".
+ *
+ * Contiene enlaces del listado de plugins, enlace de Ajustes,
+ * recuperación de valoración desde WordPress.org y carga de estilos
+ * en la administración.
+ *
+ * @package   WC_APG_NIFCIFNIE_Field
+ */
+
+// Igual no deberías poder abrirme.
 defined( 'ABSPATH' ) || exit;
 
-//Definimos las variables
+/**
+ * Datos estáticos del plugin usados en la administración.
+ *
+ * @var array{
+ *   plugin:string,
+ *   plugin_uri:string,
+ *   donacion:string,
+ *   soporte:string,
+ *   plugin_url:string,
+ *   ajustes:string,
+ *   puntuacion:string
+ * }
+ */
 $apg_nif = [	
 	'plugin' 		=> 'WC - APG NIF/CIF/NIE Field', 
 	'plugin_uri' 	=> 'wc-apg-nifcifnie-field', 
@@ -12,12 +35,30 @@ $apg_nif = [
 	'ajustes' 		=> 'admin.php?page=wc-apg-nifcifnie-field', 
 	'puntuacion' 	=> 'https://www.wordpress.org/support/view/plugin-reviews/wc-apg-nifcifnie-field'
 ];
+
+/** @var mixed|null $envios_adicionales */
+/** @var mixed|null $limpieza */
 $envios_adicionales = $limpieza = NULL;
 
-//Carga la configuración del plugin
+/**
+ * Carga la configuración guardada del plugin.
+ *
+ * @var array<string,mixed>|false $apg_nif_settings
+ */
 $apg_nif_settings	= get_option( 'apg_nif_settings' );
 
-//Enlaces adicionales personalizados
+/**
+ * Añade enlaces personalizados (donación, soporte, redes, rating, etc.)
+ * en la fila del plugin dentro de "Plugins" (admin).
+ *
+ * Hook: `plugin_row_meta`.
+ *
+ * @global array $apg_nif
+ *
+ * @param string[] $enlaces Lista existente de enlaces.
+ * @param string   $archivo Ruta del archivo principal del plugin mostrado.
+ * @return string[] Enlaces con los adicionales del plugin si aplica.
+ */
 function apg_nif_enlaces( $enlaces, $archivo ) {
 	global $apg_nif;
 
@@ -35,7 +76,16 @@ function apg_nif_enlaces( $enlaces, $archivo ) {
 }
 add_filter( 'plugin_row_meta', 'apg_nif_enlaces', 10, 2 );
 
-//Añade el botón de configuración
+/**
+ * Añade los enlaces "Ajustes" y "Soporte" en la fila de acciones del plugin.
+ *
+ * Hook: `plugin_action_links_{plugin_basename}`.
+ *
+ * @global array $apg_nif
+ *
+ * @param string[] $enlaces Enlaces actuales de acción del plugin.
+ * @return string[] Enlaces actualizados con Ajustes y Soporte al principio.
+ */
 function apg_nif_enlace_de_ajustes( $enlaces ) { 
 	global $apg_nif;
 
@@ -49,10 +99,26 @@ function apg_nif_enlace_de_ajustes( $enlaces ) {
 	
 	return $enlaces; 
 }
+
+/**
+ * Basename del plugin usado para construir el hook de acción.
+ *
+ * @var string
+ */
 $plugin = DIRECCION_apg_nif; 
 add_filter( "plugin_action_links_$plugin", 'apg_nif_enlace_de_ajustes' );
 
-//Obtiene toda la información sobre el plugin
+/**
+ * Recupera información del plugin desde la API de WordPress.org y
+ * devuelve el HTML de las estrellas de valoración enlazadas.
+ *
+ * Usa un transient para cachear la respuesta 24h.
+ *
+ * @global array $apg_nif
+ *
+ * @param string $nombre Slug del plugin en WordPress.org.
+ * @return string HTML con las estrellas de valoración (o texto alternativo si falla).
+ */
 function apg_nif_plugin( $nombre ) {
 	global $apg_nif;
 
@@ -82,12 +148,20 @@ function apg_nif_plugin( $nombre ) {
 	return '<a title="' . sprintf( esc_attr__( 'Please, rate %s:', 'wc-apg-nifcifnie-field' ), $apg_nif[ 'plugin' ] ) . '" href="' . $apg_nif[ 'puntuacion' ] . '?rate=5#postform" class="estrellas">' . $estrellas . '</a>';
 }
 
-//Hoja de estilo
+/**
+ * Registra y encola la hoja de estilos del plugin en el admin cuando
+ * el usuario se encuentra en páginas relevantes (propias del plugin
+ * o en la pantalla de "Plugins").
+ *
+ * Hook: `admin_enqueue_scripts`.
+ *
+ * @return void
+ */
 function apg_nif_estilo() {
     if ( isset( $_SERVER[ 'REQUEST_URI' ] ) ) {
         $request_uri = sanitize_text_field( wp_unslash( $_SERVER[ 'REQUEST_URI' ] ) );
         if ( strpos( $request_uri, 'wc-apg-nifcifnie-field' ) !== false || strpos( $request_uri, 'plugins.php' ) !== false ) {
-            wp_register_style( 'apg_nif_hoja_de_estilo', plugins_url( 'assets/css/style.css', DIRECCION_apg_nif ), VERSION_apg_nif, 'all' ); //Carga la hoja de estilo
+            wp_register_style( 'apg_nif_hoja_de_estilo', plugins_url( 'assets/css/style.css', DIRECCION_apg_nif ), VERSION_apg_nif, 'all' ); // Carga la hoja de estilo.
             if ( ! wp_style_is( 'apg_nif_hoja_de_estilo', 'enqueued' ) ) {
                 wp_enqueue_style( 'apg_nif_hoja_de_estilo' );
             }

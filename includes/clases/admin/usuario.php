@@ -1,19 +1,48 @@
 <?php
-//Igual no deberías poder abrirme
+/**
+ * Campos extra de NIF/CIF/NIE para Usuarios en WooCommerce (panel de administración).
+ *
+ * - Inserta los campos NIF en los metaboxes de facturación y envío del perfil de usuario.
+ * - Añade NIF, teléfono y email a las columnas de direcciones del listado de usuarios.
+ *
+ * @package WC_APG_NIFCIFNIE_Field
+ */
+
+// Igual no deberías poder abrirme.
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Añade los campos en Usuarios.
+ * Añade/ordena campos NIF para usuarios en WooCommerce (panel de administración).
  */
 class APG_Campo_NIF_en_Usuarios {
-	//Inicializa las acciones de Usuario
+	
+	/**
+	 * Inicializa los hooks relacionados con usuarios.
+	 *
+	 * Hooks:
+	 * - `woocommerce_customer_meta_fields` para añadir/ordenar campos en el perfil.
+	 * - `woocommerce_user_column_billing_address` para mostrar datos extra en la columna de facturación.
+	 * - `woocommerce_user_column_shipping_address` para mostrar datos extra en la columna de envío.
+	 *
+	 * @return void
+	 */
 	public function __construct() {
 		add_filter( 'woocommerce_customer_meta_fields', [ $this, 'apg_nif_anade_campos_administracion_usuarios' ] );
 		add_filter( 'woocommerce_user_column_billing_address', [ $this, 'apg_nif_anade_campo_nif_usuario_direccion_facturacion' ], 1, 2 );
 		add_filter( 'woocommerce_user_column_shipping_address', [ $this, 'apg_nif_anade_campo_nif_usuario_direccion_envio' ], 1, 2 );
     }
 
-	//Añade el campo CIF/NIF a usuarios
+	/**
+	 * Añade los campos NIF (facturación y envío) y reordena el conjunto
+	 * de campos en el perfil del usuario (panel de administración).
+	 *
+	 * Hook: `woocommerce_customer_meta_fields`.
+	 *
+	 * @global array<string,mixed> $apg_nif_settings Ajustes del plugin (p.ej. etiqueta).
+	 *
+	 * @param array<string,mixed> $campos Estructura de campos de WooCommerce para el perfil de usuario.
+	 * @return array<string,mixed> Conjunto de campos actualizado/ordenado.
+	 */
 	public function apg_nif_anade_campos_administracion_usuarios( $campos ) {
 		global $apg_nif_settings;
 
@@ -35,7 +64,7 @@ class APG_Campo_NIF_en_Usuarios {
 				'description'	=> '',
         ];
 
-        //Ordena los campos
+		// Orden recomendado de campos.
 		$orden_de_campos  = [
 			"first_name", 
 			"last_name", 
@@ -51,7 +80,7 @@ class APG_Campo_NIF_en_Usuarios {
 			"country", 
 		];
 		
-        //Rellena el nuevo listado
+		// Rellena el nuevo listado manteniendo los títulos de secciones.
 		$campos_ordenados[ 'billing' ][ 'title' ]     = $campos[ 'billing' ][ 'title' ];
 		$campos_ordenados[ 'shipping' ][ 'title' ]    = $campos[ 'shipping' ][ 'title' ];
 		foreach ( $orden_de_campos as $campo ) {
@@ -66,6 +95,8 @@ class APG_Campo_NIF_en_Usuarios {
                 $campos_ordenados[ 'shipping' ][ 'fields' ][ $shipping ]  = $campos[ 'shipping' ][ 'fields' ][ $shipping ];
             }
 		}
+		
+		// Asegura que no se pierda ningún campo no contemplado en el orden.
         foreach ( $campos[ 'billing' ][ 'fields' ] as $campo => $datos ) {
             if ( ! isset( $campos_ordenados[ 'billing' ][ 'fields' ][ $campo ] ) ) {
                 $campos_ordenados[ 'billing' ][ 'fields' ][ $campo ] = $datos;
@@ -77,12 +108,19 @@ class APG_Campo_NIF_en_Usuarios {
             }
         }
 
-        $campos_ordenados = apply_filters( 'wcbcf_customer_meta_fields', $campos_ordenados );
-
         return $campos_ordenados;
 	}
 	
-	//Añade el NIF a la dirección de facturación
+	/**
+	 * Inserta NIF, teléfono y email en la columna "Dirección de facturación"
+	 * del listado de usuarios en el panel de administración.
+	 *
+	 * Hook: `woocommerce_user_column_billing_address`.
+	 *
+	 * @param array<string,mixed> $campos  Datos existentes a mostrar en la columna.
+	 * @param int                 $cliente ID del usuario.
+	 * @return array<string,mixed> Datos de columna con NIF/phone/email añadidos.
+	 */
 	public function apg_nif_anade_campo_nif_usuario_direccion_facturacion( $campos, $cliente ) {
 		$campos[ 'nif' ]      = get_user_meta( $cliente, 'billing_nif', true );
 		$campos[ 'phone' ]    = get_user_meta( $cliente, 'billing_phone', true );
@@ -91,7 +129,16 @@ class APG_Campo_NIF_en_Usuarios {
         return $campos;
 	}
 	 
-	//Añade el NIF a la dirección de envío
+	/**
+	 * Inserta NIF, teléfono y email en la columna "Dirección de envío"
+	 * del listado de usuarios en el panel de administración.
+	 *
+	 * Hook: `woocommerce_user_column_shipping_address`.
+	 *
+	 * @param array<string,mixed> $campos  Datos existentes a mostrar en la columna.
+	 * @param int                 $cliente ID del usuario.
+	 * @return array<string,mixed> Datos de columna con NIF/phone/email añadidos.
+	 */
 	public function apg_nif_anade_campo_nif_usuario_direccion_envio( $campos, $cliente ) {
 		$campos[ 'nif' ]      = get_user_meta( $cliente, 'shipping_nif', true );
 		$campos[ 'phone' ]    = get_user_meta( $cliente, 'shipping_phone', true );
@@ -100,4 +147,5 @@ class APG_Campo_NIF_en_Usuarios {
 		return $campos;
 	}
 }
+
 new APG_Campo_NIF_en_Usuarios();
