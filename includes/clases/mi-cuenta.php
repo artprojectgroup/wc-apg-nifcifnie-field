@@ -55,19 +55,21 @@ class APG_Campo_NIF_en_Cuenta {
 
 			// Orden recomendado de campos.
             $orden_de_campos      = [
-                "first_name", 
-                "last_name", 
-                "company", 
+                "first_name",
+                "last_name",
+                "company",
                 "nif",
                 "email",
                 "phone",
-                "address_1", 
-                "address_2", 
-                "postcode", 
+                "address_1",
+                "address_2",
+                "postcode",
                 "city",
                 "state",
-                "country", 
+                "country",
             ];
+
+            $campos_ordenados = [];
 
             foreach ( $orden_de_campos as $campo ) {
                 if ( isset( $campos[ $campo ] ) ) {
