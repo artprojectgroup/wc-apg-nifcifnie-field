@@ -1,3 +1,6 @@
+/**
+ * Validates customer identification numbers during classic checkout.
+ */
 jQuery(function ($) {
     validarTodo('billing');
     validarTodo('shipping');
@@ -7,6 +10,14 @@ jQuery(function ($) {
         validarTodo('shipping');
     });
 
+    $('#ship-to-different-address-checkbox').on('change', function () {
+        if (!$(this).is(':checked')) {
+            $('#shipping_country').val('');
+        }
+        validarTodo('billing');
+        $('body').trigger('update_checkout');
+    });
+    
     function validarTodo(tipo) {
         const campoNIF = $(`#${tipo}_nif`);
         const campoPais = $(`#${tipo}_country`);
@@ -41,8 +52,10 @@ jQuery(function ($) {
             url: apg_nif_ajax.url,
             data: datos,
             success: function (response) {
-                console.log(`WC - APG NIF/CIF/NIE Field (${tipo}):`);
-                console.log(response);
+                if (window.debug) {
+                    console.log(`WC - APG NIF/CIF/NIE Field (${tipo}):`);
+                    console.log(response);
+                }
 
                 if (response.success) {
                     const paisCliente = campoPais.val().toUpperCase();

@@ -176,7 +176,7 @@ function apg_nif_valida_bg( string $vat ): bool {
  *
  * @see https://gist.github.com/punchi/3a5c44e7aa7ac0609ce9e53365572541
  */
-function apg_nif_valida_cl( $vat ) {
+function apg_nif_valida_cl( string $vat ): bool {
     // Eliminar puntos y guión.
     $vat    = strtoupper( preg_replace( '/[^0-9K]/', '', $vat ) );
     if ( strlen( $vat ) < 2 ) {
@@ -348,7 +348,7 @@ function apg_nif_valida_ee( string $vat ): bool {
  * @param string $vat Identificador español (con o sin 'ES').
  * @return bool       true si pasa las reglas/dígitos; false si no.
  */
-function apg_nif_valida_es( $vat ) {
+function apg_nif_valida_es( string $vat ): bool {
     $vat_valido = false;
     $vat        = preg_replace( '/[ -,.]/', '', $vat );
     $vat        = str_replace( 'ES', '', $vat );

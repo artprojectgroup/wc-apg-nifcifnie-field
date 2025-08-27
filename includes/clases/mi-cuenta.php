@@ -55,19 +55,21 @@ class APG_Campo_NIF_en_Cuenta {
 
 			// Orden recomendado de campos.
             $orden_de_campos      = [
-                "first_name", 
-                "last_name", 
-                "company", 
+                "first_name",
+                "last_name",
+                "company",
                 "nif",
                 "email",
                 "phone",
-                "address_1", 
-                "address_2", 
-                "postcode", 
+                "address_1",
+                "address_2",
+                "postcode",
                 "city",
                 "state",
-                "country", 
+                "country",
             ];
+            
+            $campos_ordenados      = [];
 
             foreach ( $orden_de_campos as $campo ) {
                 if ( isset( $campos[ $campo ] ) ) {
@@ -92,15 +94,11 @@ class APG_Campo_NIF_en_Cuenta {
 	 *
 	 * Hook: `woocommerce_address_to_edit`.
 	 *
-	 * @global array<string,mixed> $apg_nif_settings Ajustes del plugin (no usados aquí).
-	 *
 	 * @param array<string,array<string,mixed>> $address      Array de campos de la dirección a editar.
 	 * @param string                            $load_address Contexto: 'billing' o 'shipping'.
 	 * @return array<string,array<string,mixed>> Campos con `_wc_{context}/apg/nif` no requerido.
 	 */
     public function apg_nif_anade_campo_nif_formulario_direccion( $address, $load_address ) {
-        global $apg_nif_settings;
-
         $address[ '_wc_' . $load_address . '/apg/nif' ][ 'required' ] = false;
 
         return $address;
@@ -137,8 +135,8 @@ class APG_Campo_NIF_en_Cuenta {
 	 * @return void
 	 */
     public function apg_nif_guardar_nif_en_mi_cuenta( $user_id, $address_type ) {
-        $contador_argmunentos   = func_num_args();
-        $argmunentos            = func_get_args();
+        $contador_argumentos   = func_num_args();
+        $argumentos            = func_get_args();
 
         $campo_origen           = "{$address_type}_nif";
         $campo_destino          = "_wc_{$address_type}/apg/nif";
@@ -148,9 +146,9 @@ class APG_Campo_NIF_en_Cuenta {
             // phpcs:ignore WordPress.Security.NonceVerification.Missing -- WooCommerce already validates nonce via 'woocommerce_customer_save_address'
             $valor  = sanitize_text_field( wp_unslash( $_POST[ $campo_origen ] ) );
             
-            if ( $contador_argmunentos === 4 && isset( $argmunentos[ 3 ] ) && is_object( $argmunentos[ 3 ] ) ) {
+            if ( $contador_argumentos === 4 && isset( $argumentos[ 3 ] ) && is_object( $argumentos[ 3 ] ) ) {
                 // Caso backend: tenemos el objeto WC_Customer
-                $customer   = $argmunentos[ 3 ];
+                $customer   = $argumentos[ 3 ];
                 $customer->update_meta_data( $campo_origen, $valor );
                 // phpcs:ignore WordPress.Security.NonceVerification.Missing -- WooCommerce already validates nonce via 'woocommerce_customer_save_address'
                 if ( isset( $_POST[ $campo_destino ] ) ) {

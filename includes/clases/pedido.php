@@ -1200,7 +1200,7 @@ new APG_Campo_NIF_en_Pedido();
  * @see http://ryanuber.com/07-31-2012/split-and-decode-json-php.html
  */
 
-function json_split_objects( $json ) {
+function json_split_objects( string $json ): array {
     $q          = false;
     $len        = strlen( $json );
     $objects    = [];

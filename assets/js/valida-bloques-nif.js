@@ -1,3 +1,6 @@
+/**
+ * Validates customer identification numbers in WooCommerce checkout blocks.
+ */
 jQuery(document).ready(function ($) {
     const { extensionCartUpdate, validation } = wc.blocksCheckout || {};
 
@@ -40,8 +43,10 @@ jQuery(document).ready(function ($) {
             success: function (response) {
                 const wrapper = $("#" + formulario + " .wc-block-components-address-form__apg-nif");
                 const errorID = "error_nif";
-                console.log("WC - APG NIF/CIF/NIE Field (" + formulario + "):");
-                console.log(response);
+                if (window.debug) {
+                    console.log("WC - APG NIF/CIF/NIE Field (" + formulario + "):");
+                    console.log(response);
+                }
 
                 $("#" + errorID).remove();
                 wrapper.attr("aria-invalid", "false").closest(".wc-block-components-text-input").removeClass("has-error");
@@ -106,7 +111,9 @@ jQuery(document).ready(function ($) {
                     })
                     .then(r => r.json())
                     .then(data => {
-                        console.log('VAT exception:', data);
+                        if (window.debug) {
+                            console.log('VAT exception:', data);
+                        }
 
                         // Solo actualiza totales si la petición ha tenido éxito
                         if (data.success) {

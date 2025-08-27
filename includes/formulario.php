@@ -176,20 +176,23 @@ $tab    = 1;
 				<td class="forminp"><input class="muestra_eori" id="apg_nif_settings[validacion_eori]" name="apg_nif_settings[validacion_eori]" type="checkbox" value="1" <?php checked( isset( $apg_nif_settings[ 'validacion_eori' ] ) ? $apg_nif_settings[ 'validacion_eori' ] : '', 1 ); ?> tabindex="<?php echo esc_html( $tab ); $tab++; ?>" /></td>
 			</tr>
             <?php
-            /**
-             * Amplía el listado de países de la UE aceptados por WooCommerce.
-             *
-             * Añade Reino Unido (GB), Noruega (NO), Suiza (CH) y Tailandia (TH)
-             * al array que devuelve el filtro `woocommerce_european_union_countries`.
-             *
-             * @param array<int,string> $countries Códigos de país de la UE.
-             * @param string            $type      Contexto del filtro (no usado).
-             * @return array<int,string> Lista extendida de códigos de país.
-             */
-            function apg_nif_amplia_paises( $countries, $type ) { 
-                array_push( $countries, 'GB', 'NO', 'CH', 'TH' );
+			if ( ! function_exists( 'apg_nif_amplia_paises' ) ) {
+                /**
+                 * Amplía el listado de países de la UE aceptados por WooCommerce.
+                 *
+                 * Añade Reino Unido (GB), Noruega (NO), Suiza (CH) y Tailandia (TH)
+                 * al array que devuelve el filtro `woocommerce_european_union_countries`.
+                 *
+                 * @param array<int,string> $countries Códigos de país de la UE.
+                 * @param string            $type      Contexto del filtro (no usado).
+                 * @return array<int,string> Lista extendida de códigos de país.
+                 */
+                function apg_nif_amplia_paises( $countries, $type ) {
+                    array_push( $countries, 'GB', 'NO', 'CH', 'TH' );
 
                 return $countries;
+                    return $countries;
+                }
             }
             add_filter( 'woocommerce_european_union_countries', 'apg_nif_amplia_paises', 10, 2 );
             
