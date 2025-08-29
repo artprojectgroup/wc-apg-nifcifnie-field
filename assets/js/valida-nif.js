@@ -13,6 +13,11 @@ jQuery(function ($) {
     $('#ship-to-different-address-checkbox').on('change', function () {
         if (!$(this).is(':checked')) {
             $('#shipping_country').val('');
+        } else {
+            const campoEnvio = $('#shipping_country');
+            if (!campoEnvio.val()) {
+                campoEnvio.val(apg_nif_ajax.pais_base).trigger('change');
+            }
         }
         validarTodo('billing');
         $('body').trigger('update_checkout');
