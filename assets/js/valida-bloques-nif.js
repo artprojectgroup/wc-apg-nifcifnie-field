@@ -25,9 +25,12 @@ jQuery(document).ready(function ($) {
             case "vies": action = "apg_nif_valida_VIES"; break;
         }
 
+        const nif = campoNIF.val().replace(/[^A-Z0-9]/g, '');
+        campoNIF.val(nif);
+
         const datos = {
             action: action,
-            billing_nif: campoNIF.val(),
+            billing_nif: nif,
             billing_country: campoPais.val(),
             shipping_country: campoEnvio.val(),
             nonce: apg_nif_ajax.nonce,

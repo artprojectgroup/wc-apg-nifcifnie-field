@@ -1045,8 +1045,9 @@ class APG_Campo_NIF_en_Pedido {
 	 */
     public function apg_nif_es_valido_vies( string $nif_completo, string $pais_de_facturacion ) {
         // Procesa los campos.
-        $pais       = strtoupper( substr( $nif_completo, 0, 2 ) );
-        $nif        = preg_replace( '/^[A-Z]{2}/', '', strtoupper( $nif_completo ) );
+        $nif_completo = preg_replace( '/[^A-Z0-9]/', '', strtoupper( $nif_completo ) );
+        $pais         = substr( $nif_completo, 0, 2 );
+        $nif          = substr( $nif_completo, 2 );
 
 		// Hack para Grecia.
         $iso_vies   = [ 'EL' => 'GR' ];
