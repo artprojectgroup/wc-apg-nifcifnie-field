@@ -2,7 +2,24 @@
  * Validates customer identification numbers in WooCommerce checkout blocks.
  */
 jQuery(document).ready(function ($) {
+    // Forzar sólo letras y números (mayúsculas) en escritura
+    $(document).on("input", "#billing-apg-nif, #shipping-apg-nif", function () {
+        const original = $(this).val();
+        const limpio = original.replace(/[^a-zA-Z0-9-]/g, "").toUpperCase();
+        if (limpio !== original) $(this).val(limpio);
+    });
+
+    // Forzar sólo letras y números (mayúsculas) al pegar
+    $(document).on("paste", "#billing-apg-nif, #shipping-apg-nif", function (e) {
+        e.preventDefault(); // evita que el navegador pegue tal cual
+        const textoPegado = (e.originalEvent || e).clipboardData.getData("text");
+        const limpio = textoPegado.replace(/[^a-zA-Z0-9-]/g, "").toUpperCase();
+        document.execCommand("insertText", false, limpio);
+    });
+
     const { extensionCartUpdate, validation } = wc.blocksCheckout || {};
+    const EU_VIES_COUNTRIES = ['AT','BE','BG','HR','CY','CZ','DE','DK','EE','ES','FI','FR','GR','HU','IE','IT','LT','LU','LV','MT','NL','PL','PT','RO','SE','SI','SK','XI']; // 'XI' = Irlanda del Norte
+    const esUE = (c) => EU_VIES_COUNTRIES.includes((c || '').toUpperCase());
 
     // Estado para evitar validaciones múltiples por cambio de focus o carga
     const yaValidado = {
@@ -25,12 +42,9 @@ jQuery(document).ready(function ($) {
             case "vies": action = "apg_nif_valida_VIES"; break;
         }
 
-        const nif = campoNIF.val().replace(/[^A-Z0-9]/g, '');
-        campoNIF.val(nif);
-
         const datos = {
             action: action,
-            billing_nif: nif,
+            billing_nif: campoNIF.val(),
             billing_country: campoPais.val(),
             shipping_country: campoEnvio.val(),
             nonce: apg_nif_ajax.nonce,
@@ -70,6 +84,7 @@ jQuery(document).ready(function ($) {
                 if (response.success) {
                     const paisCliente = campoPais.val().toUpperCase();
                     const paisTienda = apg_nif_ajax.pais_base.toUpperCase();
+                    const requiereVIES = esUE(paisCliente) && esUE(paisTienda) && paisCliente !== paisTienda;
                     const res = response.data;
                     let texto = "";
                     let hay_error = false;
@@ -77,7 +92,7 @@ jQuery(document).ready(function ($) {
                     if (res.usar_eori && res.valido_eori === false && paisCliente !== paisTienda) {
                         texto = apg_nif_ajax.eori_error;
                         hay_error = true;
-                    } else if (res.valido_vies === false && paisCliente !== paisTienda) {
+                    } else if (requiereVIES && res.valido_vies === false) {
                         texto = res.valido_vies === 44 ? apg_nif_ajax.max_error : apg_nif_ajax.vies_error;
                         hay_error = true;
                     } else if (!res.vat_valido) {
@@ -101,7 +116,7 @@ jQuery(document).ready(function ($) {
                         document.querySelector('.wc-block-components-notice-banner__dismiss')?.click();
                     }
                     
-                    const validoVIES = res.valido_vies === true || res.valido_vies === '1';
+                    const validoVIES = requiereVIES && (res.valido_vies === true || res.valido_vies === '1');
                     const exento = (validoVIES && res.es_exento) ? '1' : '0';
         
                     fetch('/?wc-ajax=apg_nif_quita_iva_bloques', {

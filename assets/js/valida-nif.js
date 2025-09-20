@@ -2,6 +2,8 @@
  * Validates customer identification numbers during classic checkout.
  */
 jQuery(function ($) {
+    const EU_VIES_COUNTRIES = ['AT','BE','BG','HR','CY','CZ','DE','DK','EE','ES','FI','FR','GR','HU','IE','IT','LT','LU','LV','MT','NL','PL','PT','RO','SE','SI','SK','XI'];
+    const esUE = (c) => EU_VIES_COUNTRIES.includes((c || '').toUpperCase());
     validarTodo('billing');
     validarTodo('shipping');
 
@@ -44,7 +46,7 @@ jQuery(function ($) {
                 break;
         }
 
-        const nif = campoNIF.val().replace(/[^A-Z0-9]/g, '');
+        const nif = campoNIF.val().toUpperCase().replace(/[^A-Z0-9-]/g, '');
         campoNIF.val(nif);
         
         const datos = {
@@ -68,6 +70,7 @@ jQuery(function ($) {
                 if (response.success) {
                     const paisCliente = campoPais.val().toUpperCase();
                     const paisTienda = apg_nif_ajax.pais_base.toUpperCase();
+                    const requiereVIES = esUE(paisCliente) && esUE(paisTienda) && paisCliente !== paisTienda;
                     const res = response.data;
                     let texto = '';
                     let errorID = '';
@@ -81,7 +84,7 @@ jQuery(function ($) {
                         if (res.usar_eori && res.valido_eori === false && paisCliente !== paisTienda) {
                             texto   = apg_nif_ajax.eori_error;
                             errorID = `error_eori_${tipo}`;
-                        } else if (res.valido_vies === false && paisCliente !== paisTienda) {
+                        } else if (requiereVIES && res.valido_vies === false) {
                             texto   = res.valido_vies === 44 ? apg_nif_ajax.max_error : apg_nif_ajax.vies_error;
                             errorID = `error_vies_${tipo}`;
                         } else if (!res.vat_valido) {
