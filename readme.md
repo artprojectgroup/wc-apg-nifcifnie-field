@@ -9,11 +9,11 @@ Requires at least: 5.0
 
 Tested up to: 6.9
 
-Stable tag: 4.5.0.2
+Stable tag: 4.6
 
 WC requires at least: 5.6
 
-WC tested up to: 10.1.2
+WC tested up to: 10.2.1
 
 License: GNU General Public License v2 or later
 
@@ -44,6 +44,7 @@ Añade a WooCommerce un campo NIF/CIF/NIE.
 * Puedes quitar los campos Correo electrónico y Teléfono del formulario de envío con el filtro `apg_nif_add_fields`.
 * Valida documentos de:
  * Albania.
+ * Andorra.
  * Austria.
  * Argentina.
  * Islas de Åland.
@@ -138,6 +139,10 @@ Si necesitas ayuda para configurar o instalar **WC - APG NIF/CIF/NIE Field**, **
 *En ningún caso **Art Project Group** proporciona ningún tipo de soporte técnico gratuito.*
 
 ## Changelog
+### 4.5
+* Adición de validación de documentos para nuevos países.
+* Arreglos menores.
+ 
 ### 4.5.0.2
 * Arreglos menores.
 

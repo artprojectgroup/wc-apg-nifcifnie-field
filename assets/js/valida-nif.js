@@ -24,7 +24,7 @@ jQuery(function ($) {
         validarTodo('billing');
         $('body').trigger('update_checkout');
     });
-    
+
     function validarTodo(tipo) {
         const campoNIF = $(`#${tipo}_nif`);
         const campoPais = $(`#${tipo}_country`);

@@ -4,9 +4,9 @@ Donate link: https://artprojectgroup.es/tienda/donacion
 Tags: nif, cif, nie, eori, vies
 Requires at least: 5.0
 Tested up to: 6.9
-Stable tag: 4.5.0.2
+Stable tag: 4.6
 WC requires at least: 5.6
-WC tested up to: 10.1.2
+WC tested up to: 10.2.1
 License: GNU General Public License v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -35,6 +35,7 @@ Add to WooCommerce a NIF/CIF/NIE field.
 * You can remove the Email and Phone fields from the submission form with the `apg_nif_add_fields` filter.
 * It validates documents from:
  * Albania.
+ * Andorra.
  * Austria.
  * Argentina.
  * Åland Islands.
@@ -134,6 +135,9 @@ If you need help to configuring or installing **WC - APG NIF/CIF/NIE field**, **
 3. Screenshot of WC - APG NIF/CIF/NIE field. Billing and shipping forms. Classic Shortcode.
 
 == Changelog ==
+= 4.6 =
+* Addition of document validation for new countries.
+* Minor fixes.
 = 4.5.0.2 =
 * Minor fixes.
 = 4.5.0.1 =
@@ -361,7 +365,8 @@ If you need help to configuring or installing **WC - APG NIF/CIF/NIE field**, **
 * Initial version.
 
 == Upgrade Notice ==
-= 4.5.0.2 =
+= 4.6 =
+* Addition of document validation for new countries.
 * Minor fixes.
 
 == Translations ==

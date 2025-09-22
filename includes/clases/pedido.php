@@ -104,6 +104,7 @@ class APG_Campo_NIF_en_Pedido {
 		// Listado de países que se pueden validar.
         $this->listado_paises   = [
             'AL', // Albania.
+            'AD', // Andorra.
             'AT', // Austria.
             'AR', // Argentina.
             'AX', // Islas de Åland.
