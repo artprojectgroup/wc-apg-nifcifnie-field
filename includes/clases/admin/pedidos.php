@@ -35,8 +35,8 @@ class APG_Campo_NIF_en_Admin_Pedidos {
 	 */
 	public function __construct() {
         add_filter( 'woocommerce_shop_order_search_fields', [ $this, 'apg_nif_anade_campo_nif_busqueda' ] );
-		add_filter( 'woocommerce_admin_billing_fields', [ $this, 'apg_nif_anade_campo_nif_editar_direccion_pedido' ] );
-		add_filter( 'woocommerce_admin_shipping_fields', [ $this, 'apg_nif_anade_campo_nif_editar_direccion_pedido' ] );
+		add_filter( 'woocommerce_admin_billing_fields', [ $this, 'apg_nif_anade_campo_nif_editar_direccion_pedido' ], 10, 3 );
+		add_filter( 'woocommerce_admin_shipping_fields', [ $this, 'apg_nif_anade_campo_nif_editar_direccion_pedido' ], 10, 3 );
 		if ( version_compare( WC_VERSION, '2.7', '<' ) ) { 
 			add_filter( 'woocommerce_found_customer_details', [ $this, 'apg_nif_ajax' ] );
       	} else { 
@@ -70,54 +70,69 @@ class APG_Campo_NIF_en_Admin_Pedidos {
 	 *
 	 * @global array<string,mixed> $apg_nif_settings Ajustes del plugin (p. ej. etiqueta del campo).
 	 *
-	 * @param array<string,array<string,mixed>> $campos Definición de campos mostrados en el metabox.
+     * @param array<string,array<string,mixed>> $campos  Conjunto de campos actuales mostrados en el metabox
+     *                                                   (clave => definición), antes de la reordenación.
+     * @param WC_Order|mixed                      $order   Pedido actual. Si está disponible y es instancia de
+     *                                                   WC_Order, se utilizarán los metadatos `billing_nif` o
+     *                                                   `shipping_nif` según el hook en ejecución.
+     * @param string                              $context Contexto de los campos: suele ser 'billing' o 'shipping',
 	 * @return array<string,array<string,mixed>> Conjunto de campos reordenado, con NIF añadido.
 	 */
-	public function apg_nif_anade_campo_nif_editar_direccion_pedido( $campos ) {
+	public function apg_nif_anade_campo_nif_editar_direccion_pedido( $campos, $order, $context ) {
 		global $apg_nif_settings;
 
-        $etiqueta           = isset( $apg_nif_settings[ 'etiqueta' ] ) && $apg_nif_settings[ 'etiqueta' ] ? sanitize_text_field( $apg_nif_settings[ 'etiqueta' ] ) : esc_attr__( 'NIF/CIF/NIE', 'wc-apg-nifcifnie-field' );
-        $campos[ 'nif' ]    = [ 
-			'label'	=> $etiqueta,
-			'show'	=> false
+		$etiqueta           = isset( $apg_nif_settings[ 'etiqueta' ] ) && $apg_nif_settings[ 'etiqueta' ] ? sanitize_text_field( $apg_nif_settings[ 'etiqueta' ] ) : esc_attr__( 'NIF/CIF/NIE', 'wc-apg-nifcifnie-field' );
+		$campos[ 'nif' ]    = [
+				'label' => $etiqueta,
+				'show'  => false,
 		];
-        $campos[ 'phone' ]  = [ 
-			'label'	=> esc_attr__( 'Phone', 'wc-apg-nifcifnie-field' ),
-			'show'	=> true
+
+		if ( $order instanceof WC_Order ) {
+			if ( 'woocommerce_admin_shipping_fields' === current_filter() ) {
+				$campos[ 'nif' ][ 'value' ] = $order->get_meta( 'shipping_nif' );
+			} else {
+				$campos[ 'nif' ][ 'value' ] = $order->get_meta( 'billing_nif' );
+			}
+		}
+		$campos[ 'phone' ]  = [
+				'label' => esc_attr__( 'Phone', 'wc-apg-nifcifnie-field' ),
+				'show'  => true
 		];
-        $campos[ 'email' ]  = [ 
-			'label'	=> esc_attr__( 'Email address', 'wc-apg-nifcifnie-field' ),
-			'show'	=> true
+		$campos[ 'email' ]  = [
+				'label' => esc_attr__( 'Email address', 'wc-apg-nifcifnie-field' ),
+				'show'  => true
 		];
 
 		// Orden recomendado de campos.
 		$orden_de_campos = [
-			"first_name", 
-			"last_name", 
-			"company", 
-			"nif", 
+			"first_name",
+			"last_name",
+			"company",
+			"nif",
 			"email",
 			"phone",
-			"address_1", 
-			"address_2", 
-			"postcode", 
+			"address_1",
+			"address_2",
+			"postcode",
 			"city",
 			"state",
-			"country", 
+			"country",
 		];
         		
-        foreach ( $orden_de_campos as $campo ) {
-            if ( isset( $campos[ $campo ] ) ) {
-                $campos_ordenados[ $campo ] = $campos[ $campo ];
-            }
-        }
+		$campos_ordenados = [];
 
-        // Asegura que no se pierda ningún campo no contemplado en el orden anterior.
-        foreach ( $campos as $campo => $datos ) {
-            if ( ! isset( $campos_ordenados[ $campo ] ) && $datos[ 'label' ] != $etiqueta ) {
-                $campos_ordenados[ $campo ] = $datos;
-            }
-        }
+		foreach ( $orden_de_campos as $campo ) {
+			if ( isset( $campos[ $campo ] ) ) {
+				$campos_ordenados[ $campo ] = $campos[ $campo ];
+			}
+		}
+
+		// Asegura que no se pierda ningún campo no contemplado en el orden anterior.
+		foreach ( $campos as $campo => $datos ) {
+			if ( ! isset( $campos_ordenados[ $campo ] ) && $datos[ 'label' ] != $etiqueta ) {
+				$campos_ordenados[ $campo ] = $datos;
+			}
+		}
 
         return $campos_ordenados;
 	}
