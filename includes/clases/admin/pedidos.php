@@ -88,16 +88,16 @@ class APG_Campo_NIF_en_Admin_Pedidos {
 		if ( $order instanceof WC_Order ) {
 			// Detecta si estamos en el hook de envío o de facturación usando el nombre del filtro.
 			$es_envio = ( 'woocommerce_admin_shipping_fields' === current_filter() );
-			$meta_key = $es_envio ? '_shipping_nif' : '_billing_nif';
 
 			// Preferimos el valor guardado en el pedido.
 			// Si está vacío, intentamos completar con el dato del CLIENTE asociado.
-			$valor_nif = $order->get_meta( $meta_key );
+			$valor_nif = $order->get_meta( $es_envio ? '_shipping_nif' : '_billing_nif' );
 
 			$customer_id = $order->get_customer_id();
 			if ( $customer_id && '' === $valor_nif ) {
 				$customer  = new WC_Customer( $customer_id );
-				$valor_nif = $customer->get_meta( $meta_key, true );
+				// En el cliente la meta key no lleva guion bajo.
+				$valor_nif = $customer->get_meta( $es_envio ? 'shipping_nif' : 'billing_nif', true );
 			}
 
 			if ( '' !== $valor_nif ) {
