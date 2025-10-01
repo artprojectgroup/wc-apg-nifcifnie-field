@@ -149,23 +149,61 @@ function apg_nif_plugin( $nombre ) {
 }
 
 /**
- * Registra y encola la hoja de estilos del plugin en el admin cuando
- * el usuario se encuentra en páginas relevantes (propias del plugin
- * o en la pantalla de "Plugins").
+ * Registra/encola estilos y JS necesarios en el admin en las pantallas relevantes.
  *
  * Hook: `admin_enqueue_scripts`.
  *
+ * @param string $hook Hook de pantalla actual en el admin (por ejemplo, 'woocommerce_page_wc-admin').
  * @return void
  */
-function apg_nif_estilo() {
+function apg_nif_estilo( $hook ) {
     if ( isset( $_SERVER[ 'REQUEST_URI' ] ) ) {
         $request_uri = sanitize_text_field( wp_unslash( $_SERVER[ 'REQUEST_URI' ] ) );
         if ( strpos( $request_uri, 'wc-apg-nifcifnie-field' ) !== false || strpos( $request_uri, 'plugins.php' ) !== false ) {
-            wp_register_style( 'apg_nif_hoja_de_estilo', plugins_url( 'assets/css/style.css', DIRECCION_apg_nif ), VERSION_apg_nif, 'all' ); // Carga la hoja de estilo.
+            // Carga/registro de la hoja de estilo del plugin con firma correcta (deps, ver, media)
+            wp_register_style( 'apg_nif_hoja_de_estilo', plugins_url( 'assets/css/style.css', DIRECCION_apg_nif ), [], VERSION_apg_nif, 'all' );
             if ( ! wp_style_is( 'apg_nif_hoja_de_estilo', 'enqueued' ) ) {
                 wp_enqueue_style( 'apg_nif_hoja_de_estilo' );
             }
         }
     }
+    // Solo cargar en WooCommerce Admin
+    if ( 'woocommerce_page_wc-admin' === $hook ) {
+        wp_enqueue_script( 'wc-apg-clientes-nif', plugins_url( 'assets/js/clientes-nif.js', DIRECCION_apg_nif ), [ 'wp-hooks', 'wp-api-fetch', 'wc-admin-app' ], VERSION_apg_nif, true );
+
+        // Textos que consumirá el JS (multilingüe)
+        wp_localize_script( 'wc-apg-clientes-nif', 'APGNIF', [ 'i18n' => [ 'downloadWithNif'     => __( 'Download (with NIF/CIF/NIE)', 'wc-apg-nifcifnie-field' ), ], ]);
+    }
 }
 add_action( 'admin_enqueue_scripts', 'apg_nif_estilo' );
+
+/**
+ * Añade el campo `billing_nif` a la respuesta del endpoint de clientes de WooCommerce Admin
+ * (`/wc-analytics/reports/customers`).
+ *
+ * Hook: `woocommerce_rest_prepare_report_customers`.
+ *
+ * @param WP_REST_Response $response Respuesta REST a modificar.
+ * @param array            $report   Datos del reporte del cliente.
+ * @param WP_REST_Request  $request  Petición REST actual.
+ * @return WP_REST_Response Respuesta modificada con el campo `billing_nif`.
+ */
+add_filter( 'woocommerce_rest_prepare_report_customers', function( $response, $report, $request ) {
+    if ( ! isset( $response->data ) ) {
+        return $response;
+    }
+    // ID de usuario asociado al registro del reporte
+    $user_id = isset( $response->data['user_id'] ) ? (int) $response->data['user_id'] : 0;
+    if ( $user_id ) {
+        // Recupera el NIF del meta del usuario
+        $nif = get_user_meta( $user_id, 'billing_nif', true );
+        if ( '' !== $nif && null !== $nif ) {
+            $response->data['billing_nif'] = $nif;
+        } else {
+            $response->data['billing_nif'] = '';
+        }
+    } else {
+        $response->data['billing_nif'] = '';
+    }
+    return $response;
+}, 10, 3 );

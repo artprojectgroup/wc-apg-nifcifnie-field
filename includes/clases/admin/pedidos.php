@@ -68,15 +68,13 @@ class APG_Campo_NIF_en_Admin_Pedidos {
 	 * - `woocommerce_admin_billing_fields`
 	 * - `woocommerce_admin_shipping_fields`
 	 *
-	 * @global array<string,mixed> $apg_nif_settings Ajustes del plugin (p. ej. etiqueta del campo).
+	 * @global array<string,mixed> $apg_nif_settings Ajustes del plugin (p.ej. etiqueta del campo).
 	 *
-     * @param array<string,array<string,mixed>> $campos  Conjunto de campos actuales mostrados en el metabox
-     *                                                   (clave => definición), antes de la reordenación.
-     * @param WC_Order|mixed                      $order   Pedido actual. Si está disponible y es instancia de
-     *                                                   WC_Order, se utilizarán los metadatos `billing_nif` o
-     *                                                   `shipping_nif` según el hook en ejecución.
-     * @param string                              $context Contexto de los campos: suele ser 'billing' o 'shipping',
-	 * @return array<string,array<string,mixed>> Conjunto de campos reordenado, con NIF añadido.
+	 * @param array<string,array<string,mixed>> $campos  Conjunto de campos actuales del metabox (clave => definición).
+	 * @param WC_Order|mixed                     $order   Pedido actual o null si no aplica.
+	 * @param string                             $context Contexto de renderizado: normalmente 'view' o 'edit'.
+	 *
+	 * @return array<string,array<string,mixed>> Conjunto de campos reordenado (con NIF añadido si procede).
 	 */
 	public function apg_nif_anade_campo_nif_editar_direccion_pedido( $campos, $order, $context ) {
 		global $apg_nif_settings;
@@ -88,12 +86,25 @@ class APG_Campo_NIF_en_Admin_Pedidos {
 		];
 
 		if ( $order instanceof WC_Order ) {
-			if ( 'woocommerce_admin_shipping_fields' === current_filter() ) {
-				$campos[ 'nif' ][ 'value' ] = $order->get_meta( 'shipping_nif' );
-			} else {
-				$campos[ 'nif' ][ 'value' ] = $order->get_meta( 'billing_nif' );
+			// Detecta si estamos en el hook de envío o de facturación usando el nombre del filtro.
+			$es_envio = ( 'woocommerce_admin_shipping_fields' === current_filter() );
+			$meta_key = $es_envio ? '_shipping_nif' : '_billing_nif';
+
+			// Preferimos el valor guardado en el pedido.
+			// Si está vacío, intentamos completar con el dato del CLIENTE asociado.
+			$valor_nif = $order->get_meta( $meta_key );
+
+			$customer_id = $order->get_customer_id();
+			if ( $customer_id && '' === $valor_nif ) {
+				$customer  = new WC_Customer( $customer_id );
+				$valor_nif = $customer->get_meta( $meta_key, true );
+			}
+
+			if ( '' !== $valor_nif ) {
+				$campos['nif']['value'] = $valor_nif;
 			}
 		}
+
 		$campos[ 'phone' ]  = [
 				'label' => esc_attr__( 'Phone', 'wc-apg-nifcifnie-field' ),
 				'show'  => true
