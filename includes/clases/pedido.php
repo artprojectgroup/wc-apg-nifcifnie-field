@@ -807,6 +807,14 @@ class APG_Campo_NIF_en_Pedido {
         $prefijo_nif    = strtoupper( substr( $nif, 0, 2 ) );
         $pais_cliente   = strtoupper( $pais_cliente );
 
+        // Normaliza el NIF/VAT y detecta el prefijo.
+        $prefijo_valido   = preg_match( '/^[A-Z]{2}$/', $prefijo_nif ) === 1;
+        $nif_normalizado  = strtoupper( preg_replace( '/[^A-Z0-9]/', '', $nif ) );
+        if ( ! $prefijo_valido ) {
+            $nif_normalizado = $pais_cliente . $nif_normalizado;
+            $prefijo_nif     = $pais_cliente;
+        }
+
         $eori_activo    = isset( $apg_nif_settings[ 'validacion_eori' ] ) && $apg_nif_settings[ 'validacion_eori' ] === '1';
         $vies_activo    = isset( $apg_nif_settings[ 'validacion_vies' ] ) && $apg_nif_settings[ 'validacion_vies' ] === '1';
         $eori_paises    = $apg_nif_settings[ 'eori_paises' ] ?? [];
@@ -816,12 +824,11 @@ class APG_Campo_NIF_en_Pedido {
 
         $valido_eori    = false;
         $valido_vies    = false;
-        $vat_valido     = ( in_array( $pais_cliente, $this->listado_paises, true ) ) ? $this->apg_nif_validacion_internacional( $nif, $pais_cliente, $prefijo_nif ) : true;
-
+        $vat_valido     = ( in_array( $pais_cliente, $this->listado_paises, true ) ) ? $this->apg_nif_validacion_internacional( $nif_normalizado, $pais_cliente, $prefijo_nif ) : true;
         if ( $usar_eori ) {
-            $valido_eori    = $this->apg_nif_comprobacion_eori( $nif, $pais_cliente );
+            $valido_eori    = $this->apg_nif_comprobacion_eori( $nif_normalizado, $pais_cliente );
         } elseif ( $vies_activo ) {
-            $valido_vies    = $this->apg_nif_comprobacion_vies( $nif, $pais_cliente );
+            $valido_vies    = $this->apg_nif_comprobacion_vies( $nif_normalizado, $pais_cliente );
         }
 
         $es_exento  = ( $valido_vies && $pais_cliente !== $pais_base && $prefijo_nif !== $pais_base );
@@ -933,6 +940,9 @@ class APG_Campo_NIF_en_Pedido {
     public function apg_nif_valida_VAT() {
         list( $nif, $pais, $pais_envio ) = $this->apg_nif_recoge_datos_ajax();
         $prefijo_nif        = strtoupper( substr( $nif, 0, 2 ) );
+        if ( preg_match( '/^[0-9]{2}$/', $prefijo_nif ) ) {
+            $prefijo_nif = strtoupper( $pais );
+        }
         $valido             = $this->apg_nif_validacion_internacional( $nif, $pais, $prefijo_nif );
 
         wp_send_json_success( [ 'vat_valido' => $valido ] );
