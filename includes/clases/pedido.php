@@ -874,7 +874,7 @@ class APG_Campo_NIF_en_Pedido {
         
         // No hay datos.
         if ( empty( $nif ) || empty( $pais ) ) {
-            return;
+            WC()->customer->set_is_vat_exempt( false );
         }
 
         // Valida y aplica la exención.

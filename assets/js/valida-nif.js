@@ -31,7 +31,7 @@ jQuery(function ($) {
         const campoEnvio = $(`#shipping_country`);
         const wrapper = $(`#${tipo}_nif_field`);
 
-        if (!campoNIF.length || !campoPais.length || !campoNIF.val() || !campoPais.val()) return;
+        if (!campoNIF.length || !campoPais.length) return;
 
         // Limpia errores previos
         $(`#error_vies_${tipo}, #error_eori_${tipo}, #error_vat_${tipo}`).remove();

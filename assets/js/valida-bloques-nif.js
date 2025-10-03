@@ -144,7 +144,7 @@ jQuery(document).ready(function ($) {
     function validarNIFyMostrarErrores(formulario) {
         const campoNIF = $("#" + formulario + "-apg-nif");
         const campoPais = $("#" + formulario + "-country");
-        if (!campoNIF.length || !campoPais.length || !campoNIF.val() || !campoPais.val()) return;
+        if (!campoNIF.length || !campoPais.length) return;
 
         const payload = getPayload(formulario);
 
