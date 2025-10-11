@@ -71,12 +71,12 @@ class APG_Campo_NIF_en_Admin_Pedidos {
 	 * @global array<string,mixed> $apg_nif_settings Ajustes del plugin (p.ej. etiqueta del campo).
 	 *
 	 * @param array<string,array<string,mixed>> $campos  Conjunto de campos actuales del metabox (clave => definición).
-	 * @param WC_Order|mixed                     $order   Pedido actual o null si no aplica.
-	 * @param string                             $context Contexto de renderizado: normalmente 'view' o 'edit'.
+	 * @param WC_Order|mixed|null               $order   Pedido actual o null si no aplica.
+	 * @param string                            $context Contexto de renderizado: normalmente 'view' o 'edit'.
 	 *
 	 * @return array<string,array<string,mixed>> Conjunto de campos reordenado (con NIF añadido si procede).
 	 */
-	public function apg_nif_anade_campo_nif_editar_direccion_pedido( $campos, $order, $context ) {
+	public function apg_nif_anade_campo_nif_editar_direccion_pedido( $campos, $order = null, $context = 'view' ) {
 		global $apg_nif_settings;
 
 		$etiqueta           = isset( $apg_nif_settings[ 'etiqueta' ] ) && $apg_nif_settings[ 'etiqueta' ] ? sanitize_text_field( $apg_nif_settings[ 'etiqueta' ] ) : esc_attr__( 'NIF/CIF/NIE', 'wc-apg-nifcifnie-field' );
