@@ -48,6 +48,12 @@ jQuery(function ($) {
 
         const nif = campoNIF.val().toUpperCase().replace(/[^A-Z0-9-]/g, '');
         campoNIF.val(nif);
+        // Si el campo no es requerido y está vacío, no validar ni mostrar errores
+        if (!apg_nif_ajax?.requerido && !nif) {
+            $(`#error_vies_${tipo}, #error_eori_${tipo}, #error_vat_${tipo}`).remove();
+            $('body').trigger('update_checkout');
+            return;
+        }
         
         const datos = {
             action: action,

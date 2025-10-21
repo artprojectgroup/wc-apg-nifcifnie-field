@@ -148,6 +148,43 @@ jQuery(document).ready(function ($) {
 
         const payload = getPayload(formulario);
 
+        // Si el campo es opcional y está vacío, no validar ni mostrar errores
+        if (!apg_nif_ajax?.requerido && !payload.nif) {
+            const wrapper = $("#" + formulario + " .wc-block-components-address-form__apg-nif");
+            const errorID = "error_nif";
+
+            // Quitar error visual y de la API de validación
+            if (formulario === 'billing') muteBillingObserver++;
+            try {
+                $("#" + errorID).remove();
+                wrapper.attr("aria-invalid", "false").closest(".wc-block-components-text-input").removeClass("has-error");
+                validation?.removeError?.(formulario + "-apg-nif");
+            } finally {
+                if (formulario === 'billing') muteBillingObserver--;
+            }
+
+            // Asegurar que no quede exención de IVA aplicada si el usuario borró el número
+            fetch('/?wc-ajax=apg_nif_quita_iva_bloques', {
+                method: 'POST',
+                credentials: 'same-origin',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: 'exento=0',
+            })
+            .then(r => r.json())
+            .then(() => {
+                if (window.wp?.data) {
+                    window.wp.data.dispatch("wc/store/cart").invalidateResolution("getCartTotals");
+                    window.wp.data.dispatch("wc/store/cart").invalidateResolution("getShippingRates");
+                }
+            })
+            .catch(() => {})
+            .finally(() => {
+                estado[formulario].inFlight = false;
+                $(".wp-block-woocommerce-checkout-totals-block").unblock();
+            });
+            return; // No continuamos con la petición AJAX
+        }
+
         // Evitar reentrada y duplicados (misma data)
         if (estado[formulario].inFlight) return;
         if (iguales(payload, estado[formulario].last)) return;

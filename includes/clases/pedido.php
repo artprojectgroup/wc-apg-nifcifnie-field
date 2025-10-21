@@ -779,6 +779,7 @@ class APG_Campo_NIF_en_Pedido {
                 'vat_error'     => $this->mensaje_error,
                 'eori_error'    => $this->mensaje_eori,
                 'validacion'    => $tipo_validacion,
+                'requerido'     => ( isset( $apg_nif_settings['requerido'] ) && $apg_nif_settings['requerido'] === '1' ),
                 'nonce'         => wp_create_nonce( 'apg_nif_nonce' ),
             ] );
         }
