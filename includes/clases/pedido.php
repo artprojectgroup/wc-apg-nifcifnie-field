@@ -829,7 +829,8 @@ class APG_Campo_NIF_en_Pedido {
         if ( $usar_eori ) {
             $valido_eori    = $this->apg_nif_comprobacion_eori( $nif_normalizado, $pais_cliente );
         } elseif ( $vies_activo ) {
-            $valido_vies    = $this->apg_nif_comprobacion_vies( $nif_normalizado, $pais_cliente );
+            // Validar VIES solo si el país de compra NO es el país base de la tienda.
+            $valido_vies    = $this->apg_nif_comprobacion_vies( $nif_normalizado, $pais_base );
         }
 
         $es_exento  = ( $valido_vies && $pais_cliente !== $pais_base && $prefijo_nif !== $pais_base );
@@ -999,6 +1000,11 @@ class APG_Campo_NIF_en_Pedido {
         }
 
         $pais_vies      = strtoupper( substr( $nif, 0, 2 ) );
+        // No validar VIES cuando el país del comprador coincide con el país base de la tienda.
+        // Evita comprobaciones innecesarias y mensajes de error en ventas nacionales.
+        if ( strtoupper( $pais_vies ) === strtoupper( $pais_tienda ) ) {
+            return false;
+        }
 		
         // Listado de países válidos.
         $paises_validos = [

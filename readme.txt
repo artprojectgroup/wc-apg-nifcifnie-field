@@ -4,9 +4,9 @@ Donate link: https://artprojectgroup.es/tienda/donacion
 Tags: nif, cif, nie, eori, vies
 Requires at least: 5.0
 Tested up to: 6.9
-Stable tag: 4.7.0.4
+Stable tag: 4.7.0.5
 WC requires at least: 5.6
-WC tested up to: 10.3.0
+WC tested up to: 10.3.4
 License: GNU General Public License v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -136,6 +136,8 @@ If you need help to configuring or installing **WC - APG NIF/CIF/NIE field**, **
 3. Screenshot of WC - APG NIF/CIF/NIE field. Billing and shipping forms. Classic Shortcode.
 
 == Changelog ==
+= 4.7.0.5 =
+* Minor fixes.
 = 4.7.0.4 =
 * Minor fixes.
 = 4.7.0.3 =
@@ -379,7 +381,7 @@ If you need help to configuring or installing **WC - APG NIF/CIF/NIE field**, **
 * Initial version.
 
 == Upgrade Notice ==
-= 4.7.0.4 =
+= 4.7.0.5 =
 * Minor fixes.
 
 == Translations ==
