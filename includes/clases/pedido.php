@@ -828,9 +828,8 @@ class APG_Campo_NIF_en_Pedido {
         $vat_valido     = ( in_array( $pais_cliente, $this->listado_paises, true ) ) ? $this->apg_nif_validacion_internacional( $nif_normalizado, $pais_cliente, $prefijo_nif ) : true;
         if ( $usar_eori ) {
             $valido_eori    = $this->apg_nif_comprobacion_eori( $nif_normalizado, $pais_cliente );
-        } elseif ( $vies_activo ) {
-            // Validar VIES solo si el país de compra NO es el país base de la tienda.
-            $valido_vies    = $this->apg_nif_comprobacion_vies( $nif_normalizado, $pais_base );
+        } elseif ( $vies_activo && $pais_cliente !== $pais_base && $prefijo_nif !== $pais_base ) {
+            $valido_vies    = $this->apg_nif_comprobacion_vies( $nif_normalizado, $pais_cliente );
         }
 
         $es_exento  = ( $valido_vies && $pais_cliente !== $pais_base && $prefijo_nif !== $pais_base );
@@ -1000,11 +999,6 @@ class APG_Campo_NIF_en_Pedido {
         }
 
         $pais_vies      = strtoupper( substr( $nif, 0, 2 ) );
-        // No validar VIES cuando el país del comprador coincide con el país base de la tienda.
-        // Evita comprobaciones innecesarias y mensajes de error en ventas nacionales.
-        if ( strtoupper( $pais_vies ) === strtoupper( $pais_tienda ) ) {
-            return false;
-        }
 		
         // Listado de países válidos.
         $paises_validos = [
@@ -1096,6 +1090,7 @@ class APG_Campo_NIF_en_Pedido {
             $resultado  = isset( $respuesta->valid ) && $respuesta->valid === true;
             // Guarda en caché.
             set_transient( $cache_key, $resultado, 30 * DAY_IN_SECONDS );
+
             return $resultado;
         } catch ( SoapFault $e ) {
             // Comprueba el VIES por otra vía.
@@ -1112,7 +1107,8 @@ class APG_Campo_NIF_en_Pedido {
             }
             $resultado  = isset( $data->isValid ) && $data->isValid === true;
             // Guarda en caché.
-            set_transient( $cache_key, $resultado, 30 * DAY_IN_SECONDS );            
+            set_transient( $cache_key, $resultado, 30 * DAY_IN_SECONDS );
+
             return $resultado;
         }
         
