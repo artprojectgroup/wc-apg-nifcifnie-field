@@ -4,8 +4,6 @@
 jQuery(function ($) {
     const EU_VIES_COUNTRIES = ['AT','BE','BG','HR','CY','CZ','DE','DK','EE','ES','FI','FR','GR','HU','IE','IT','LT','LU','LV','MT','NL','PL','PT','RO','SE','SI','SK','XI'];
     const esUE = (c) => EU_VIES_COUNTRIES.includes((c || '').toUpperCase());
-    validarTodo('billing');
-    validarTodo('shipping');
 
     $('#billing_nif, #billing_country, #shipping_nif, #shipping_country').on('change', function () {
         validarTodo('billing');
@@ -21,7 +19,6 @@ jQuery(function ($) {
                 campoEnvio.val(apg_nif_ajax.pais_base).trigger('change');
             }
         }
-        validarTodo('billing');
         $('body').trigger('update_checkout');
     });
 
@@ -48,8 +45,9 @@ jQuery(function ($) {
 
         const nif = campoNIF.val().toUpperCase().replace(/[^A-Z0-9-]/g, '');
         campoNIF.val(nif);
-        // Si el campo no es requerido y está vacío, no validar ni mostrar errores
-        if (!apg_nif_ajax?.requerido && !nif) {
+        // Si el campo está vacío, no validar ni mostrar errores. Dejamos que WooCommerce
+        // se encargue de mostrar el mensaje de "campo obligatorio" si procede.
+        if (!nif) {
             $(`#error_vies_${tipo}, #error_eori_${tipo}, #error_vat_${tipo}`).remove();
             $('body').trigger('update_checkout');
             return;
@@ -99,13 +97,40 @@ jQuery(function ($) {
                         }
                     }                    
 
-                    if (texto && errorID && !$('#' + errorID).length) {
-                        wrapper.append('<div id="' + errorID + '"><strong>' + texto + '</strong></div>');
+                    if (texto && errorID) {
+                        wrapper.removeClass('woocommerce-validated')
+                               .addClass('woocommerce-invalid woocommerce-invalid-required-field');
+
+                        if (!$('#' + errorID).length) {
+                            wrapper.append(
+                                '<p id="' + errorID + '" class="checkout-inline-error-message">' +
+                                    texto +
+                                '</p>'
+                            );
+                        }
                     }
+                }
+
+                if (response.success && (!texto || !errorID)) {
+                    wrapper.removeClass('woocommerce-invalid woocommerce-invalid-required-field')
+                           .addClass('woocommerce-validated');
                 }
 
                 $('body').trigger('update_checkout');
             }
         });
     }
+    // Cuando WooCommerce muestra errores al enviar el pedido, vuelve a pintar el mensaje
+    // debajo del campo NIF, ya que antes elimina todos los .checkout-inline-error-message.
+    $(document.body).on('checkout_error', function () {
+        const billingNif  = ($('#billing_nif').val() || '').trim();
+        const shippingNif = ($('#shipping_nif').val() || '').trim();
+
+        if (billingNif) {
+            validarTodo('billing');
+        }
+        if (shippingNif) {
+            validarTodo('shipping');
+        }
+    });
 });

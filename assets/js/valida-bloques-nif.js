@@ -25,17 +25,17 @@ jQuery(document).ready(function ($) {
             .toUpperCase()
     );
 
-    // Normaliza los valores iniciales.
+    // Normaliza los valores iniciales sin disparar validación
     $(SELECTOR_NIF).each(function () {
         const limpio = sanitizeNif($(this).val());
-        if (limpio !== $(this).val()) {
+        // Solo toca el valor y notifica a React si realmente ha cambiado
+        if (limpio !== ($(this).val() || "")) {
             setNativeValue(this, limpio);
+            try {
+                this.dispatchEvent(new Event('input', { bubbles: true }));
+                this.dispatchEvent(new Event('change', { bubbles: true }));
+            } catch (e) {}
         }
-        // Notificar a React de un posible cambio inicial
-        try {
-            this.dispatchEvent(new Event('input', { bubbles: true }));
-            this.dispatchEvent(new Event('change', { bubbles: true }));
-        } catch (e) {}
     });
 
     // Forzar sólo letras y números (mayúsculas) en escritura
@@ -145,19 +145,25 @@ jQuery(document).ready(function ($) {
         const campoNIF = $("#" + formulario + "-apg-nif");
         const campoPais = $("#" + formulario + "-country");
         if (!campoNIF.length || !campoPais.length) return;
+        const wrapper = $("#" + formulario + " .wc-block-components-address-form__apg-nif");
+        const input   = wrapper.find('input');
+        const errorDivId = `error_nif_${formulario}`;
+        const errorDivSelector = "#" + errorDivId.replace(/(:|\.|\[|\]|,|=|@|\/)/g, "\\$1");
+        const errorPId   = `validate-error-${formulario}_apg/nif`;
+        const errorPSelector = "#" + errorPId.replace(/(:|\.|\[|\]|,|=|@|\/)/g, "\\$1");
 
         const payload = getPayload(formulario);
 
-        // Si el campo es opcional y está vacío, no validar ni mostrar errores
-        if (!apg_nif_ajax?.requerido && !payload.nif) {
-            const wrapper = $("#" + formulario + " .wc-block-components-address-form__apg-nif");
-            const errorID = "error_nif";
-
+        // Si el campo está vacío, no validar ni mostrar errores (aunque sea requerido,
+        // dejamos que sea WooCommerce Blocks quien gestione el "campo obligatorio")
+        if (!payload.nif) {
             // Quitar error visual y de la API de validación
             if (formulario === 'billing') muteBillingObserver++;
             try {
-                $("#" + errorID).remove();
-                wrapper.attr("aria-invalid", "false").closest(".wc-block-components-text-input").removeClass("has-error");
+                $(errorDivSelector).remove();
+                $(errorPSelector).remove();
+                input.attr("aria-invalid", "false").removeAttr("aria-errormessage");
+                wrapper.closest(".wc-block-components-text-input").removeClass("has-error");
                 validation?.removeError?.(formulario + "-apg-nif");
             } finally {
                 if (formulario === 'billing') muteBillingObserver--;
@@ -209,7 +215,10 @@ jQuery(document).ready(function ($) {
             success: function (response) {
                 estado[formulario].inFlight = false;
                 const wrapper = $("#" + formulario + " .wc-block-components-address-form__apg-nif");
-                const errorID = "error_nif";
+                const input   = wrapper.find('input');
+                const errorDivId = `error_nif_${formulario}`;
+                const errorDivSelector = "#" + errorDivId.replace(/(:|\.|\[|\]|,|=|@|\/)/g, "\\$1");
+                const errorPId   = `validate-error-${formulario}_apg/nif`;
                 if (window.debug) {
                     console.log("WC - APG NIF/CIF/NIE Field (" + formulario + "):");
                     console.log(response);
@@ -217,8 +226,10 @@ jQuery(document).ready(function ($) {
 
                 if (formulario === 'billing') muteBillingObserver++;
                 try {
-                    $("#" + errorID).remove();
-                    wrapper.attr("aria-invalid", "false").closest(".wc-block-components-text-input").removeClass("has-error");
+                    $(errorDivSelector).remove();
+                    $(errorPSelector).remove();
+                    input.attr("aria-invalid", "false").removeAttr("aria-errormessage");
+                    wrapper.closest(".wc-block-components-text-input").removeClass("has-error");
                 } finally {
                     if (formulario === 'billing') muteBillingObserver--;
                 }
@@ -227,8 +238,20 @@ jQuery(document).ready(function ($) {
                     if (!response.data?.vat_valido) {
                         if (formulario === 'billing') muteBillingObserver++;
                         try {
-                            wrapper.append(`<div id="${errorID}"><strong>${apg_nif_ajax.vat_error}</strong></div>`);
-                            wrapper.attr("aria-invalid", "true").closest(".wc-block-components-text-input").addClass("has-error");
+                            $(errorDivSelector).remove();
+                            $(errorPSelector).remove();
+                            wrapper.find('label').after(
+                                `<div id="${errorDivId}" class="wc-block-components-validation-error" role="alert">
+                                     <p id="${errorPId}">
+                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -2 24 24" width="24" height="24" aria-hidden="true" focusable="false">
+                                             <path d="M10 2c4.42 0 8 3.58 8 8s-3.58 8-8 8-8-3.58-8-8 3.58-8 8-8zm1.13 9.38l.35-6.46H8.52l.35 6.46h2.26zm-.09 3.36c.24-.23.37-.55.37-.96 0-.42-.12-.74-.36-.97s-.59-.35-1.06-.35-.82.12-1.07.35-.37.55-.37.97c0 .41.13.73.38.96.26.23.61.34 1.06.34s.8-.11 1.05-.34z"></path>
+                                         </svg>
+                                         <span>${apg_nif_ajax.vat_error}</span>
+                                     </p>
+                                 </div>`
+                            );
+                            input.attr("aria-invalid", "true").attr("aria-errormessage", errorPId);
+                            wrapper.closest(".wc-block-components-text-input").addClass("has-error");
                         } finally {
                             if (formulario === 'billing') muteBillingObserver--;
                         }
@@ -264,8 +287,20 @@ jQuery(document).ready(function ($) {
                     if (hay_error) {
                         if (formulario === 'billing') muteBillingObserver++;
                         try {
-                            wrapper.append(`<div id="${errorID}"><strong>${texto}</strong></div>`);
-                            wrapper.attr("aria-invalid", "true").closest(".wc-block-components-text-input").addClass("has-error");
+                            $(errorDivSelector).remove();
+                            $(errorPSelector).remove();
+                            wrapper.find('label').after(
+                                `<div id="${errorDivId}" class="wc-block-components-validation-error" role="alert">
+                                     <p id="${errorPId}">
+                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -2 24 24" width="24" height="24" aria-hidden="true" focusable="false">
+                                             <path d="M10 2c4.42 0 8 3.58 8 8s-3.58 8-8 8-8-3.58-8-8 3.58-8 8-8zm1.13 9.38l.35-6.46H8.52l.35 6.46h2.26zm-.09 3.36c.24-.23.37-.55.37-.96 0-.42-.12-.74-.36-.97s-.59-.35-1.06-.35-.82.12-1.07.35-.37.55-.37.97c0 .41.13.73.38.96.26.23.61.34 1.06.34s.8-.11 1.05-.34z"></path>
+                                         </svg>
+                                         <span>${texto}</span>
+                                     </p>
+                                 </div>`
+                            );
+                            input.attr("aria-invalid", "true").attr("aria-errormessage", errorPId);
+                            wrapper.closest(".wc-block-components-text-input").addClass("has-error");
                             validation?.addError?.({ field: formulario + "-apg-nif", message: texto });
                         } finally {
                             if (formulario === 'billing') muteBillingObserver--;
@@ -273,8 +308,10 @@ jQuery(document).ready(function ($) {
                     } else {
                         if (formulario === 'billing') muteBillingObserver++;
                         try {
-                            $("#" + errorID).remove();
-                            wrapper.attr("aria-invalid", "false").closest(".wc-block-components-text-input").removeClass("has-error");
+                            $(errorDivSelector).remove();
+                            $(errorPSelector).remove();
+                            input.attr("aria-invalid", "false").removeAttr("aria-errormessage");
+                            wrapper.closest(".wc-block-components-text-input").removeClass("has-error");
                             validation?.removeError?.(formulario + "-apg-nif");
 
                             const event = new CustomEvent('checkout-blocks-validation-reset', {
@@ -342,10 +379,22 @@ jQuery(document).ready(function ($) {
 
     // Eventos para detectar cambio en campos de billing y shipping
     $(document).on("change", "#billing-apg-nif, #billing-country", function () {
+        const valor = ($("#billing-apg-nif").val() || "").trim();
+        if (!valor) {
+            // Si se borra el NIF, limpiamos errores y exención sin llamar al validador
+            validarNIFyMostrarErrores("billing");
+            return;
+        }        
         scheduleValidate("billing");
     });
 
     $(document).on("change", "#shipping-apg-nif, #shipping-country", function () {
+        const valor = ($("#shipping-apg-nif").val() || "").trim();
+        if (!valor) {
+            // Si se borra el NIF, limpiamos errores y exención sin llamar al validador
+            validarNIFyMostrarErrores("shipping");
+            return;
+        }        
         scheduleValidate("shipping");
     });
 
@@ -361,6 +410,9 @@ jQuery(document).ready(function ($) {
         if (!billingFields || !window.MutationObserver) return;
 
         const onMutate = () => {
+            // Solo valida si ya hay un NIF informado; evita validar automáticamente al primer render vacío
+            const valor = $("#billing-apg-nif").val() || '';
+            if (!valor) return;
             scheduleValidate("billing");
         };
 
@@ -379,18 +431,31 @@ jQuery(document).ready(function ($) {
         observer.observe(billingFields, { childList: true, subtree: true });
     })();
 
-    // Valida al cargar si la dirección es la misma (cuando aparece el checkbox)
+    // Espera a que aparezca el checkbox de "usar misma dirección", pero sin forzar validación automáticamente
     let checkInterval = setInterval(function () {
         const $checkbox = $(".wc-block-checkout__use-address-for-billing .wc-block-components-checkbox__input");
         if ($checkbox && $checkbox.length) {
-            scheduleValidate("shipping");
+            //scheduleValidate("shipping");
             clearInterval(checkInterval);
         }
     }, 500);
 
-    // Valida al cambiar el checkbox de "usar misma dirección"
+    // Valida al cambiar el checkbox de "usar misma dirección" sólo si hay contenido
     $(document).on("change", ".wc-block-checkout__use-address-for-billing .wc-block-components-checkbox__input", function () {
-        scheduleValidate("billing");
-        scheduleValidate("shipping");
+        const billingNif  = ($("#billing-apg-nif").val() || "").trim();
+        const shippingNif = ($("#shipping-apg-nif").val() || "").trim();
+
+        if (billingNif) {
+            scheduleValidate("billing");
+        } else {
+            // Si se ha quedado vacío, asegúrate de limpiar errores/IVA
+            validarNIFyMostrarErrores("billing");
+        }
+
+        if (shippingNif) {
+            scheduleValidate("shipping");
+        } else {
+            validarNIFyMostrarErrores("shipping");
+        }
     });
 });

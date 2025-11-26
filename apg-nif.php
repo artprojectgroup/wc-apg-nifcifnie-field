@@ -2,7 +2,7 @@
 /*
 Plugin Name: WC - APG NIF/CIF/NIE Field
 Requires Plugins: woocommerce
-Version: 4.7.0.6
+Version: 4.8.0
 Plugin URI: https://wordpress.org/plugins/wc-apg-nifcifnie-field/
 Description: Add to WooCommerce a NIF/CIF/NIE field.
 Author URI: https://artprojectgroup.es/
@@ -12,18 +12,15 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Requires at least: 5.0
 Tested up to: 6.9
 WC requires at least: 5.6
-WC tested up to: 10.3.4
+WC tested up to: 10.4.0
 
 Text Domain: wc-apg-nifcifnie-field
 Domain Path: /languages
+
+@package   WC_APG_NIFCIFNIE_Field
+@category Core
+@author Art Project Group
 */
-/**
- * Bootstrap del plugin WC – APG NIF/CIF/NIE Field.
- *
- * @package   WC_APG_NIFCIFNIE_Field
- * @category  Core
- * @author    Art Project Group
- */
 
 // Igual no deberías poder abrirme.
 defined( 'ABSPATH' ) || exit;
@@ -38,7 +35,7 @@ define( 'DIRECCION_apg_nif', plugin_basename( __FILE__ ) );
  * Constante con la versión actual del plugin.
  * @var string
  */
-define( 'VERSION_apg_nif', '4.7.0.6' );
+define( 'VERSION_apg_nif', '4.8.0' );
 
 // Funciones generales de APG.
 include_once( 'includes/admin/funciones-apg.php' );
