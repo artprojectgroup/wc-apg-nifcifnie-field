@@ -190,7 +190,6 @@ $tab    = 1;
                 function apg_nif_amplia_paises( $countries, $type ) {
                     array_push( $countries, 'GB', 'NO', 'CH', 'TH' );
 
-                return $countries;
                     return $countries;
                 }
             }

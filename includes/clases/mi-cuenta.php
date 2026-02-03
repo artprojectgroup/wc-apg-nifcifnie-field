@@ -154,7 +154,7 @@ class APG_Campo_NIF_en_Cuenta {
                 if ( isset( $_POST[ $campo_destino ] ) ) {
                     // phpcs:ignore WordPress.Security.NonceVerification.Missing -- WooCommerce already validates nonce via 'woocommerce_customer_save_address'
                     $_POST[ $campo_destino ]    = $valor;
-                    $customer->update_meta_data( $campo_origen, $valor );
+                    $customer->update_meta_data( $campo_destino, $valor );
                 }
                 $customer->save();
             } else {

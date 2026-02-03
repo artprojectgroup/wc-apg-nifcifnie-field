@@ -804,6 +804,17 @@ class APG_Campo_NIF_en_Pedido {
     public function apg_nif_valida_exencion( string $nif, string $pais_cliente, string $pais_envio = '' ): array {
         global $apg_nif_settings;
 
+        // Permite omitir toda la validación por país/condición externa.
+        if ( apply_filters( 'apg_nif_skip_validation', false, $nif, $pais_cliente, $pais_envio ) ) {
+            return [
+                'es_exento'   => false,
+                'valido_vies' => false,
+                'valido_eori' => false,
+                'usar_eori'   => false,
+                'vat_valido'  => true,
+            ];
+        }
+
         $pais_base      = WC()->countries->get_base_country();
         $prefijo_nif    = strtoupper( substr( $nif, 0, 2 ) );
         $pais_cliente   = strtoupper( $pais_cliente );
@@ -876,6 +887,7 @@ class APG_Campo_NIF_en_Pedido {
         // No hay datos.
         if ( empty( $nif ) || empty( $pais ) ) {
             WC()->customer->set_is_vat_exempt( false );
+            return;
         }
 
         // Valida y aplica la exención.

@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WooCommerce - APG NIF/CIF/NIE field\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-01 11:10+0000\n"
+"POT-Creation-Date: 2026-02-03 10:50+0000\n"
 "POT-Revision-Date: Wed Aug 10 2016 13:39:45 GMT+0200 (CEST)\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: \n"
@@ -48,7 +48,7 @@ msgstr ""
 msgid "Allow VIES VAT number?"
 msgstr ""
 
-#: apg-nif.php:132
+#: apg-nif.php:129
 msgid "APG NIF/CIF/NIE field"
 msgstr ""
 
@@ -76,7 +76,7 @@ msgstr ""
 msgid "Check if you want to validate the field before submit."
 msgstr ""
 
-#: includes/formulario.php:222
+#: includes/formulario.php:221
 msgid "Choose countries / regions&hellip;"
 msgstr ""
 
@@ -88,11 +88,11 @@ msgstr ""
 msgid "Contact with us:"
 msgstr ""
 
-#: includes/formulario.php:217
+#: includes/formulario.php:216
 msgid "Countries to validate EORI number"
 msgstr ""
 
-#: includes/formulario.php:222
+#: includes/formulario.php:221
 msgid "Country / Region"
 msgstr ""
 
@@ -100,7 +100,7 @@ msgstr ""
 msgid "Documentation and Support:"
 msgstr ""
 
-#: includes/admin/funciones-apg.php:175
+#: includes/admin/funciones-apg.php:177
 msgid "Download (with NIF/CIF/NIE)"
 msgstr ""
 
@@ -113,23 +113,27 @@ msgstr ""
 msgid "Enter the field priority."
 msgstr ""
 
-#: includes/formulario.php:256
+#: includes/formulario.php:255
 msgid "EORI number error message"
 msgstr ""
 
-#: includes/formulario.php:238
+#: includes/formulario.php:237
 msgid "EORI number field label"
 msgstr ""
 
-#: includes/formulario.php:247
+#: includes/formulario.php:246
 msgid "EORI number field placeholder"
+msgstr ""
+
+#: includes/admin/funciones-apg.php:178
+msgid "Error generating CSV."
 msgstr ""
 
 #: includes/formulario.php:72
 msgid "Error message"
 msgstr ""
 
-#: apg-nif.php:197 includes/formulario.php:167
+#: apg-nif.php:194 includes/formulario.php:167
 #: includes/clases/pedido.php:232
 msgid "Error: maximum number of concurrent requests exceeded."
 msgstr ""
@@ -168,7 +172,7 @@ msgid ""
 "If you enjoyed and find helpful this plugin, please make a donation:"
 msgstr ""
 
-#: includes/clases/pedido.php:909
+#: includes/clases/pedido.php:929
 msgid "Invalid context."
 msgstr ""
 
@@ -189,20 +193,20 @@ msgstr ""
 msgid "NIF/CIF/NIE"
 msgstr ""
 
-#: apg-nif.php:132
+#: apg-nif.php:129
 msgid "NIF/CIF/NIE field"
 msgstr ""
 
-#: apg-nif.php:185 includes/formulario.php:67 includes/formulario.php:67
+#: apg-nif.php:182 includes/formulario.php:67 includes/formulario.php:67
 msgid "NIF/CIF/NIE number"
 msgstr ""
 
-#: apg-nif.php:201 includes/formulario.php:242 includes/formulario.php:251
-#: includes/formulario.php:251 includes/clases/pedido.php:237
+#: apg-nif.php:198 includes/formulario.php:241 includes/formulario.php:250
+#: includes/formulario.php:250 includes/clases/pedido.php:237
 msgid "NIF/CIF/NIE/EORI number"
 msgstr ""
 
-#: apg-nif.php:195 includes/formulario.php:140 includes/formulario.php:149
+#: apg-nif.php:192 includes/formulario.php:140 includes/formulario.php:149
 #: includes/formulario.php:149 includes/clases/pedido.php:229
 msgid "NIF/CIF/NIE/VAT number"
 msgstr ""
@@ -235,17 +239,17 @@ msgctxt "placeholder"
 msgid "NIF/CIF/NIE/VAT number"
 msgstr ""
 
-#: apg-nif.php:202 includes/formulario.php:260 includes/formulario.php:260
+#: apg-nif.php:199 includes/formulario.php:259 includes/formulario.php:259
 #: includes/clases/pedido.php:239
 msgid "Please enter a valid EORI number."
 msgstr ""
 
-#: apg-nif.php:186 includes/formulario.php:76 includes/formulario.php:76
+#: apg-nif.php:183 includes/formulario.php:76 includes/formulario.php:76
 #: includes/clases/pedido.php:224
 msgid "Please enter a valid NIF/CIF/NIE."
 msgstr ""
 
-#: apg-nif.php:196 includes/formulario.php:158 includes/formulario.php:158
+#: apg-nif.php:193 includes/formulario.php:158 includes/formulario.php:158
 #: includes/formulario.php:167 includes/clases/pedido.php:231
 msgid "Please enter a valid VIES VAT number."
 msgstr ""
@@ -265,7 +269,7 @@ msgstr ""
 msgid "Require shipping field?"
 msgstr ""
 
-#: includes/formulario.php:218
+#: includes/formulario.php:217
 msgid ""
 "Select the list of countries where the EORI number must be validated."
 msgstr ""
@@ -290,25 +294,25 @@ msgstr ""
 msgid "Support of "
 msgstr ""
 
-#: apg-nif.php:268
+#: apg-nif.php:265
 msgid ""
 "This plugin requires the <a href=\"http://php.net/manual/en/class."
 "soapclient.php\">SoapClient</a> PHP class active to run!"
 msgstr ""
 
-#: apg-nif.php:255
+#: apg-nif.php:252
 msgid "This plugin requires WooCommerce active to run!"
 msgstr ""
 
-#: includes/formulario.php:257
+#: includes/formulario.php:256
 msgid "Type your own EORI number error message."
 msgstr ""
 
-#: includes/formulario.php:239
+#: includes/formulario.php:238
 msgid "Type your own EORI number field label."
 msgstr ""
 
-#: includes/formulario.php:248
+#: includes/formulario.php:247
 msgid "Type your own EORI number field placeholder."
 msgstr ""
 

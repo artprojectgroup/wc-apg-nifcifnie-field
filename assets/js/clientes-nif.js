@@ -9,6 +9,7 @@
 	// Localized strings injected by PHP (see apg_nif_estilo in funciones-apg.php)
 	const I18N = (window.APGNIF && window.APGNIF.i18n) ? window.APGNIF.i18n : {};
 	const DOWNLOAD_WITH_NIF = I18N.downloadWithNif || 'Download (with NIF/CIF/NIE)';
+	const ERROR_MSG = I18N.errorGenerating || 'Error generating CSV.';
 
 	// ---- Helpers -------------------------------------------------------------
 

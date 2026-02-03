@@ -172,7 +172,12 @@ function apg_nif_estilo( $hook ) {
         wp_enqueue_script( 'wc-apg-clientes-nif', plugins_url( 'assets/js/clientes-nif.js', DIRECCION_apg_nif ), [ 'wp-hooks', 'wp-api-fetch', 'wc-admin-app' ], VERSION_apg_nif, true );
 
         // Textos que consumirá el JS (multilingüe)
-        wp_localize_script( 'wc-apg-clientes-nif', 'APGNIF', [ 'i18n' => [ 'downloadWithNif'     => __( 'Download (with NIF/CIF/NIE)', 'wc-apg-nifcifnie-field' ), ], ]);
+        wp_localize_script( 'wc-apg-clientes-nif', 'APGNIF', [
+            'i18n' => [
+                'downloadWithNif' => __( 'Download (with NIF/CIF/NIE)', 'wc-apg-nifcifnie-field' ),
+                'errorGenerating' => __( 'Error generating CSV.', 'wc-apg-nifcifnie-field' ),
+            ],
+        ] );
     }
 }
 add_action( 'admin_enqueue_scripts', 'apg_nif_estilo' );

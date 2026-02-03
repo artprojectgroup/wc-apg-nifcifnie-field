@@ -71,13 +71,14 @@ jQuery(function ($) {
                     console.log(response);
                 }
 
+                let texto = '';
+                let errorID = '';
+
                 if (response.success) {
                     const paisCliente = campoPais.val().toUpperCase();
                     const paisTienda = apg_nif_ajax.pais_base.toUpperCase();
                     const requiereVIES = esUE(paisCliente) && esUE(paisTienda) && paisCliente !== paisTienda;
-                    const res = response.data;
-                    let texto = '';
-                    let errorID = '';
+                    const res = response.data || {};
 
                     if (action === "apg_nif_valida_VAT") {
                         if (!res.vat_valido) {

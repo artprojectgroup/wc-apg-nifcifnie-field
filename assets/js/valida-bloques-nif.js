@@ -269,7 +269,7 @@ jQuery(document).ready(function ($) {
                     const paisCliente = campoPais.val().toUpperCase();
                     const paisTienda = apg_nif_ajax.pais_base.toUpperCase();
                     const requiereVIES = esUE(paisCliente) && esUE(paisTienda) && paisCliente !== paisTienda;
-                    const res = response.data;
+                    const res = response.data || {};
                     let texto = "";
                     let hay_error = false;
 
