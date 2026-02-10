@@ -15,7 +15,7 @@ defined( 'ABSPATH' ) || exit;
  * Añade/ordena campos NIF para usuarios en WooCommerce (panel de administración).
  */
 class APG_Campo_NIF_en_Usuarios {
-	
+
 	/**
 	 * Inicializa los hooks relacionados con usuarios.
 	 *
@@ -27,10 +27,10 @@ class APG_Campo_NIF_en_Usuarios {
 	 * @return void
 	 */
 	public function __construct() {
-		add_filter( 'woocommerce_customer_meta_fields', [ $this, 'apg_nif_anade_campos_administracion_usuarios' ] );
-		add_filter( 'woocommerce_user_column_billing_address', [ $this, 'apg_nif_anade_campo_nif_usuario_direccion_facturacion' ], 1, 2 );
-		add_filter( 'woocommerce_user_column_shipping_address', [ $this, 'apg_nif_anade_campo_nif_usuario_direccion_envio' ], 1, 2 );
-    }
+		add_filter( 'woocommerce_customer_meta_fields', array( $this, 'apg_nif_anade_campos_administracion_usuarios' ) );
+		add_filter( 'woocommerce_user_column_billing_address', array( $this, 'apg_nif_anade_campo_nif_usuario_direccion_facturacion' ), 1, 2 );
+		add_filter( 'woocommerce_user_column_shipping_address', array( $this, 'apg_nif_anade_campo_nif_usuario_direccion_envio' ), 1, 2 );
+	}
 
 	/**
 	 * Añade los campos NIF (facturación y envío) y reordena el conjunto
@@ -46,71 +46,72 @@ class APG_Campo_NIF_en_Usuarios {
 	public function apg_nif_anade_campos_administracion_usuarios( $campos ) {
 		global $apg_nif_settings;
 
-        $etiqueta                                               = isset( $apg_nif_settings['etiqueta'] ) && $apg_nif_settings['etiqueta'] ? sanitize_text_field( $apg_nif_settings['etiqueta'] ) : esc_attr__( 'NIF/CIF/NIE', 'wc-apg-nifcifnie-field' );
-        $campos[ 'billing' ][ 'fields' ][ 'billing_nif' ]       = [ 
-				'label'			=> $etiqueta,
-				'description'	=> '',
-		];
-        $campos[ 'shipping' ][ 'fields' ][ 'shipping_nif' ]     = [ 
-				'label'			=> $etiqueta,
-				'description'	=> '',
-		];
-        $campos[ 'shipping' ][ 'fields' ][ 'shipping_email' ]   = [ 
-				'label'			=> esc_attr__( 'Email address', 'wc-apg-nifcifnie-field' ),
-				'description'	=> '',
-		];
-        $campos[ 'shipping' ][ 'fields' ][ 'shipping_phone' ]   = [ 
-				'label'			=> esc_attr__( 'Phone', 'wc-apg-nifcifnie-field' ),
-				'description'	=> '',
-        ];
+		$etiqueta = isset( $apg_nif_settings['etiqueta'] ) && $apg_nif_settings['etiqueta'] ? sanitize_text_field( $apg_nif_settings['etiqueta'] ) : esc_attr__( 'NIF/CIF/NIE', 'wc-apg-nifcifnie-field' );
+
+		$campos['billing']['fields']['billing_nif'] = array(
+			'label'       => $etiqueta,
+			'description' => '',
+		);
+		$campos['shipping']['fields']['shipping_nif'] = array(
+			'label'       => $etiqueta,
+			'description' => '',
+		);
+		$campos['shipping']['fields']['shipping_email'] = array(
+			'label'       => esc_attr__( 'Email address', 'wc-apg-nifcifnie-field' ),
+			'description' => '',
+		);
+		$campos['shipping']['fields']['shipping_phone'] = array(
+			'label'       => esc_attr__( 'Phone', 'wc-apg-nifcifnie-field' ),
+			'description' => '',
+		);
 
 		// Orden recomendado de campos.
-		$orden_de_campos  = [
-			"first_name", 
-			"last_name", 
-			"company", 
-			"nif", 
-			"email",
-			"phone",
-			"address_1", 
-			"address_2", 
-			"postcode", 
-			"city",
-			"state",
-			"country", 
-		];
-		
-		// Rellena el nuevo listado manteniendo los títulos de secciones.
-		$campos_ordenados[ 'billing' ][ 'title' ]     = $campos[ 'billing' ][ 'title' ];
-		$campos_ordenados[ 'shipping' ][ 'title' ]    = $campos[ 'shipping' ][ 'title' ];
-		foreach ( $orden_de_campos as $campo ) {
-            $billing    = $campo === 'nif' ? 'billing_nif' : 'billing_' . $campo;
-            $shipping   = $campo === 'nif' ? 'shipping_nif' : 'shipping_' . $campo;
-            
-            if ( isset( $campos[ 'billing' ][ 'fields' ][ $billing ] ) ) {
-                $campos_ordenados[ 'billing' ][ 'fields' ][ $billing ]    = $campos[ 'billing' ][ 'fields' ][ $billing ];
-            }
-            
-            if ( isset( $campos[ 'shipping' ][ 'fields' ][ $shipping ] ) ) {
-                $campos_ordenados[ 'shipping' ][ 'fields' ][ $shipping ]  = $campos[ 'shipping' ][ 'fields' ][ $shipping ];
-            }
-		}
-		
-		// Asegura que no se pierda ningún campo no contemplado en el orden.
-        foreach ( $campos[ 'billing' ][ 'fields' ] as $campo => $datos ) {
-            if ( ! isset( $campos_ordenados[ 'billing' ][ 'fields' ][ $campo ] ) ) {
-                $campos_ordenados[ 'billing' ][ 'fields' ][ $campo ] = $datos;
-            }
-        }
-        foreach ( $campos[ 'shipping' ][ 'fields' ] as $campo => $datos ) {
-            if ( ! isset( $campos_ordenados[ 'shipping' ][ 'fields' ][ $campo ] ) ) {
-                $campos_ordenados[ 'shipping' ][ 'fields' ][ $campo ] = $datos;
-            }
-        }
+		$orden_de_campos = array(
+			'first_name',
+			'last_name',
+			'company',
+			'nif',
+			'email',
+			'phone',
+			'address_1',
+			'address_2',
+			'postcode',
+			'city',
+			'state',
+			'country',
+		);
 
-        return $campos_ordenados;
+		// Rellena el nuevo listado manteniendo los títulos de secciones.
+		$campos_ordenados['billing']['title']  = $campos['billing']['title'];
+		$campos_ordenados['shipping']['title'] = $campos['shipping']['title'];
+		foreach ( $orden_de_campos as $campo ) {
+			$billing  = ( 'nif' === $campo ) ? 'billing_nif' : 'billing_' . $campo;
+			$shipping = ( 'nif' === $campo ) ? 'shipping_nif' : 'shipping_' . $campo;
+
+			if ( isset( $campos['billing']['fields'][ $billing ] ) ) {
+				$campos_ordenados['billing']['fields'][ $billing ] = $campos['billing']['fields'][ $billing ];
+			}
+
+			if ( isset( $campos['shipping']['fields'][ $shipping ] ) ) {
+				$campos_ordenados['shipping']['fields'][ $shipping ] = $campos['shipping']['fields'][ $shipping ];
+			}
+		}
+
+		// Asegura que no se pierda ningún campo no contemplado en el orden.
+		foreach ( $campos['billing']['fields'] as $campo => $datos ) {
+			if ( ! isset( $campos_ordenados['billing']['fields'][ $campo ] ) ) {
+				$campos_ordenados['billing']['fields'][ $campo ] = $datos;
+			}
+		}
+		foreach ( $campos['shipping']['fields'] as $campo => $datos ) {
+			if ( ! isset( $campos_ordenados['shipping']['fields'][ $campo ] ) ) {
+				$campos_ordenados['shipping']['fields'][ $campo ] = $datos;
+			}
+		}
+
+		return $campos_ordenados;
 	}
-	
+
 	/**
 	 * Inserta NIF, teléfono y email en la columna "Dirección de facturación"
 	 * del listado de usuarios en el panel de administración.
@@ -122,13 +123,13 @@ class APG_Campo_NIF_en_Usuarios {
 	 * @return array<string,mixed> Datos de columna con NIF/phone/email añadidos.
 	 */
 	public function apg_nif_anade_campo_nif_usuario_direccion_facturacion( $campos, $cliente ) {
-		$campos[ 'nif' ]      = get_user_meta( $cliente, 'billing_nif', true );
-		$campos[ 'phone' ]    = get_user_meta( $cliente, 'billing_phone', true );
-		$campos[ 'email' ]    = get_user_meta( $cliente, 'billing_email', true );
+		$campos['nif']   = get_user_meta( $cliente, 'billing_nif', true );
+		$campos['phone'] = get_user_meta( $cliente, 'billing_phone', true );
+		$campos['email'] = get_user_meta( $cliente, 'billing_email', true );
 
-        return $campos;
+		return $campos;
 	}
-	 
+
 	/**
 	 * Inserta NIF, teléfono y email en la columna "Dirección de envío"
 	 * del listado de usuarios en el panel de administración.
@@ -140,10 +141,10 @@ class APG_Campo_NIF_en_Usuarios {
 	 * @return array<string,mixed> Datos de columna con NIF/phone/email añadidos.
 	 */
 	public function apg_nif_anade_campo_nif_usuario_direccion_envio( $campos, $cliente ) {
-		$campos[ 'nif' ]      = get_user_meta( $cliente, 'shipping_nif', true );
-		$campos[ 'phone' ]    = get_user_meta( $cliente, 'shipping_phone', true );
-		$campos[ 'email' ]    = get_user_meta( $cliente, 'shipping_email', true );
-		
+		$campos['nif']   = get_user_meta( $cliente, 'shipping_nif', true );
+		$campos['phone'] = get_user_meta( $cliente, 'shipping_phone', true );
+		$campos['email'] = get_user_meta( $cliente, 'shipping_email', true );
+
 		return $campos;
 	}
 }

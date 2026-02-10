@@ -27,30 +27,34 @@ defined( 'ABSPATH' ) || exit;
 function apg_nif_valida_ar( string $vat ): bool {
     // Limpia guiones, espacios y puntos.
     $vat    = preg_replace( '/[^\d]/', '', $vat );
-    $len    = strlen($vat);
+    $len    = strlen( $vat );
 
     // 1) DNI: 7 u 8 dígitos numéricos (sin checksum)
-    if ($len >= 7 && $len <= 8 && ctype_digit($vat)) {
+    if ( $len >= 7 && $len <= 8 && ctype_digit( $vat ) ) {
         return true;
     }
 
     // 2) CUIT: exactamente 11 dígitos con dígito verificador
-    if ($len !== 11 || !ctype_digit($vat)) {
+    if ( $len !== 11 || ! ctype_digit( $vat ) ) {
         return false;
     }
 
     // Extrae dígitos y calcula verificador.
-    $mult   = [ 5, 4, 3, 2, 7, 6, 5, 4, 3, 2 ];
+    $mult   = array( 5, 4, 3, 2, 7, 6, 5, 4, 3, 2 );
     $suma   = 0;
     for ( $i = 0; $i < 10; $i++ ) {
-        $suma   += ( int ) $vat[ $i ] * $mult[ $i ];
+    $suma   += (int) $vat[ $i ] * $mult[ $i ];
     }
     $resto          = $suma % 11;
     $verificador    = 11 - $resto;
-    if ( $verificador === 11 )$verificador = 0;
-    if ( $verificador === 10 )$verificador = 9;
+    if ( 11 === $verificador ) {
+        $verificador = 0;
+    }
+    if ( 10 === $verificador ) {
+        $verificador = 9;
+    }
 
-    return ( int ) $vat[ 10 ] === $verificador;
+    return (int) substr( $vat, -1 ) === $verificador;
 }
 
 /**
@@ -72,14 +76,14 @@ function apg_nif_valida_at( string $vat ): bool {
     $vat = preg_replace( '/^U/', '', $vat );
 
     // Deben quedar EXACTAMENTE 8 dígitos
-    if ( strlen( $vat ) !== 8 || !ctype_digit( $vat ) ) {
+    if ( strlen( $vat ) !== 8 || ! ctype_digit( $vat ) ) {
         return false;
     }
 
-    $check_digit = ( int )$vat[ 7 ];
+    $check_digit = (int) substr( $vat, -1 );
     $vat_number = substr( $vat, 0, 7 ); // Changed variable name for clarity.
 
-    $multipliers = [ 1, 2, 1, 2, 1, 2, 1 ];
+    $multipliers = array( 1, 2, 1, 2, 1, 2, 1 );
     $sum = 0;
 
     for ( $i = 0; $i < 7; $i++ ) {
@@ -143,20 +147,22 @@ function apg_nif_valida_bg( string $vat ): bool {
                 $sum += (int) $vat[ $i ] * ( $i + 3 );
             }
             $check = $sum % 11;
-            if ( $check === 10 ) $check = 0;
+            if ( 10 === $check ) {
+                $check = 0;
+            }
         }
-        return (int) $vat[8] === $check;
+        return (int) substr( $vat, -1 ) === $check;
     }
 
     if ( strlen( $vat ) === 10 ) {
         // Persona física o extranjero.
         $month = intval( substr( $vat, 2, 2 ) );
         if ( $month >= 1 && $month <= 12 ) {
-            $mult = [2, 4, 8, 5, 10, 9, 7, 3, 6];
+            $mult = array(2, 4, 8, 5, 10, 9, 7, 3, 6);
         } elseif ( $month >= 21 && $month <= 32 ) {
-            $mult = [2, 4, 8, 5, 10, 9, 7, 3, 6];
+            $mult = array(2, 4, 8, 5, 10, 9, 7, 3, 6);
         } elseif ( $month >= 41 && $month <= 52 ) {
-            $mult = [2, 4, 8, 5, 10, 9, 7, 3, 6];
+            $mult = array(2, 4, 8, 5, 10, 9, 7, 3, 6);
         } else {
             return false;
         }
@@ -166,9 +172,11 @@ function apg_nif_valida_bg( string $vat ): bool {
             $sum += (int) $vat[ $i ] * $mult[ $i ];
         }
         $check = $sum % 11;
-        if ( $check === 10 ) $check = 0;
+        if ( 10 === $check ) {
+            $check = 0;
+        }
 
-        return (int) $vat[9] === $check;
+        return (int) substr( $vat, -1 ) === $check;
     }
 
     return false;
@@ -186,7 +194,7 @@ function apg_nif_valida_ch( string $vat ): bool {
         return false;
     }
 
-    $mult   = [ 5, 4, 3, 2, 7, 6, 5, 4 ];
+    $mult   = array( 5, 4, 3, 2, 7, 6, 5, 4 );
     $suma   = 0;
     for ( $i = 0; $i < 8; $i++ ) {
         $suma += (int) $vat[ $i ] * $mult[ $i ];
@@ -194,11 +202,11 @@ function apg_nif_valida_ch( string $vat ): bool {
 
     $resto = $suma % 11;
     $digito = ( 11 - $resto ) % 11;
-    if ( $digito === 10 ) {
+    if ( 10 === $digito ) {
         return false; // Dígito 10 no permitido.
     }
 
-    return (int) $vat[8] === $digito;
+    return (int) substr( $vat, -1 ) === $digito;
 }
 
 /**
@@ -263,11 +271,11 @@ function apg_nif_valida_cy( string $vat ): bool {
     }
 
     $numero = substr( $vat, 0, 8 );
-    if ( ! ctype_digit( $numero ) || $numero[0] === '0' ) {
+    if ( ! ctype_digit( $numero ) || '0' === $numero[0] ) {
         return false;
     }
 
-    $mult = [1, 2, 1, 2, 1, 2, 1, 2];
+    $mult = array(1, 2, 1, 2, 1, 2, 1, 2);
     $suma = 0;
     for ( $i = 0; $i < 8; $i++ ) {
         $producto = (int) $numero[ $i ] * $mult[ $i ];
@@ -280,7 +288,7 @@ function apg_nif_valida_cy( string $vat ): bool {
     $check = $suma % 26;
     $letra = chr( $check + 65 );
 
-    return $vat[8] === $letra;
+    return substr( $vat, -1 ) === $letra;
 }
 
 /**
@@ -297,7 +305,9 @@ function apg_nif_valida_cz( string $vat ): bool {
     $vat = preg_replace( '/[^0-9]/', '', $vat );
     $length = strlen( $vat );
 
-    if ( $length !== 8 && $length !== 9 && $length !== 10 ) return false;
+    if ( $length !== 8 && $length !== 9 && $length !== 10 ) {
+        return false;
+    }
 
     if ( $length === 8 ) {
         $sum = 0;
@@ -305,9 +315,13 @@ function apg_nif_valida_cz( string $vat ): bool {
             $sum += (int) $vat[ $i ] * ( 8 - $i );
         }
         $check = 11 - ( $sum % 11 );
-        if ( $check === 10 ) $check = 0;
-        if ( $check === 11 ) $check = 1;
-        return (int) $vat[7] === $check;
+        if ( 10 === $check ) {
+            $check = 0;
+        }
+        if ( 11 === $check ) {
+            $check = 1;
+        }
+        return (int) substr( $vat, -1 ) === $check;
     }
 
     if ( $length === 9 || $length === 10 ) {
@@ -335,21 +349,21 @@ function apg_nif_valida_de( string $vat ): bool {
 	$product = 10;
 	for ( $i = 0; $i < 8; $i++ ) {
 		// Convertir el carácter a un entero restando el valor ASCII de '0'.
-		$digit = (int) $vat[$i];
-		$sum = ($digit + $product) % 10;
-		if ($sum === 0) {
+		$digit = (int) $vat[ $i ];
+		$sum   = ( $digit + $product ) % 10;
+		if ( 0 === $sum ) {
 			$sum = 10;
 		}
-		$product = (2 * $sum) % 11;
+		$product = ( 2 * $sum ) % 11;
 	}
 	$check = 11 - $product;
-	if ($check === 10) {
+	if ( 10 === $check ) {
 		$check = 0;
-	} elseif ($check === 11) {
+	} elseif ( 11 === $check ) {
 		$check = 1;
 	}
 
-	return (int) $vat[8] === $check;
+	return (int) substr( $vat, -1 ) === $check;
 }
 
 /**
@@ -364,7 +378,7 @@ function apg_nif_valida_dk( string $vat ): bool {
         return false;
     }
 
-    $mult = [2, 7, 6, 5, 4, 3, 2, 1];
+    $mult = array(2, 7, 6, 5, 4, 3, 2, 1);
     $sum = 0;
 
     for ( $i = 0; $i < 8; $i++ ) {
@@ -382,26 +396,26 @@ function apg_nif_valida_dk( string $vat ): bool {
  * @param string $vat VAT estonio.
  * @return bool       true si válido; false si no.
  */
-function apg_nif_valida_ee(string $vat): bool {
-    // Normaliza: quita separadores, mayúsculas y prefijo EE
-    $vat = strtoupper($vat);
-    $vat = preg_replace('/[^A-Z0-9]/', '', $vat ?? '');
-    $vat = preg_replace('/^EE/', '', $vat);
+function apg_nif_valida_ee( string $vat ): bool {
+    // Normaliza: quita separadores, mayúsculas y prefijo EE.
+    $vat = strtoupper( $vat );
+    $vat = preg_replace( '/[^A-Z0-9]/', '', $vat ?? '' );
+    $vat = preg_replace( '/^EE/', '', $vat );
 
     // Deben quedar exactamente 9 dígitos
-    if (!preg_match('/^\d{9}$/', $vat)) {
+    if ( ! preg_match( '/^\d{9}$/', $vat ) ) {
         return false;
     }
 
-    $digits  = array_map('intval', str_split($vat));
-    $weights = [3, 7, 1, 3, 7, 1, 3, 7];
+    $digits  = array_map( 'intval', str_split( $vat ) );
+    $weights = array( 3, 7, 1, 3, 7, 1, 3, 7 );
 
     $sum = 0;
-    for ($i = 0; $i < 8; $i++) {
-        $sum += $digits[$i] * $weights[$i];
+    for ( $i = 0; $i < 8; $i++ ) {
+        $sum += $digits[ $i ] * $weights[ $i ];
     }
 
-    $check = (10 - ($sum % 10)) % 10;
+    $check = ( 10 - ( $sum % 10 ) ) % 10;
     return $check === $digits[8];
 }
 
@@ -421,8 +435,9 @@ function apg_nif_valida_es( string $vat ): bool {
     $vat        = preg_replace( '/[ -,.]/', '', $vat );
     $vat        = str_replace( 'ES', '', $vat );
 
+    $numero = array();
     for ( $i = 0; $i < 9; $i++ ) {
-        $numero[ $i ]   = substr( $vat, $i, 1 );
+        $numero[ $i ] = substr( $vat, $i, 1 );
     }
 
     if ( ! preg_match( '/((^[A-Z]{1}[0-9]{7}[A-Z0-9]{1}$|^[T]{1}[A-Z0-9]{8}$)|^[0-9]{8}[A-Z]{1}$)/', $vat ) ) { // No tiene formato válido.
@@ -430,43 +445,44 @@ function apg_nif_valida_es( string $vat ): bool {
     }
 
     if ( preg_match( '/(^[0-9]{8}[A-Z]{1}$)/', $vat ) ) {
-        if ( $numero[ 8 ] == substr( 'TRWAGMYFPDXBNJZSQVHLCKE', substr( $vat, 0, 8 ) % 23, 1 ) ) { // NIF válido.
+        if ( $numero[8] == substr( 'TRWAGMYFPDXBNJZSQVHLCKE', substr( $vat, 0, 8 ) % 23, 1 ) ) { // NIF válido.
             $vat_valido = true;
         }
     }
 
-    $suma = intval($numero[2]) + intval($numero[4]) + intval($numero[6]);
+    $suma = intval( $numero[2] ) + intval( $numero[4] ) + intval( $numero[6] );
     for ( $i = 1; $i < 8; $i += 2 ) {
-        $dig = intval($numero[$i]);
-        if (2 * $dig >= 10) {
-            $doble = (string)(2 * $dig);
-            $suma += intval(substr($doble, 0, 1)) + intval(substr($doble, 1, 1));
+        $dig = intval( $numero[ $i ] );
+        if ( 2 * $dig >= 10 ) {
+            $doble = (string) ( 2 * $dig );
+            $suma += intval( substr( $doble, 0, 1 ) ) + intval( substr( $doble, 1, 1 ) );
         } else {
             $suma += 2 * $dig;
         }
     }
-    $suma_numero    = 10 - substr( $suma, strlen( $suma ) - 1, 1 );
+    $suma_numero = 10 - ( $suma % 10 );
+    if ( 10 === $suma_numero ) {
+        $suma_numero = 0;
+    }
 
     if ( preg_match( '/^[KLM]{1}/', $vat ) ) { // NIF especial válido.
-        if ( $numero[ 8 ] == chr( 64 + $suma_numero ) ) {
+        if ( $numero[8] == chr( 64 + $suma_numero ) ) {
             $vat_valido = true;
         }
     }
 
-    if ( preg_match( '/^[ABCDEFGHJNPQRSUVW]{1}/', $vat ) && isset( $numero[ 8 ] ) ) {
-        if ( $numero[ 8 ] == chr( 64 + $suma_numero ) || $numero[ 8 ] == substr( $suma_numero, strlen( $suma_numero ) - 1, 1 ) ) { // CIF válido.
+    if ( preg_match( '/^[ABCDEFGHJNPQRSUVW]{1}/', $vat ) && isset( $numero[8] ) ) {
+        if ( $numero[8] == chr( 64 + $suma_numero ) || $numero[8] == substr( (string) $suma_numero, -1, 1 ) ) { // CIF válido.
             $vat_valido = true;
         }
     }
 
-    if ( preg_match( '/^[T]{1}/', $vat ) ) {
-        if ( $numero[ 8 ] == preg_match( '/^[T]{1}[A-Z0-9]{8}$/', $vat ) ) { // NIE válido (T).
-            $vat_valido = true;
-        }
+    if ( preg_match( '/^[T]{1}[A-Z0-9]{8}$/', $vat ) ) { // NIE válido (T).
+        $vat_valido = true;
     }
 
     if ( preg_match( '/^[XYZ]{1}/', $vat ) ) { // NIE válido (XYZ).
-        if ( $numero[ 8 ] == substr( 'TRWAGMYFPDXBNJZSQVHLCKE', substr( str_replace( [ 'X', 'Y', 'Z' ], [ '0', '1', '2' ], $vat ), 0, 8 ) % 23, 1 ) ) {
+        if ( $numero[8] == substr( 'TRWAGMYFPDXBNJZSQVHLCKE', substr( str_replace( array( 'X', 'Y', 'Z' ), array( '0', '1', '2' ), $vat ), 0, 8 ) % 23, 1 ) ) {
             $vat_valido = true;
         }
     }
@@ -494,7 +510,7 @@ function apg_nif_valida_gb( string $vat ): bool {
     }
 
     $base = substr( $vat, 0, 9 );
-    $weights = [8, 7, 6, 5, 4, 3, 2, 10];
+    $weights = array(8, 7, 6, 5, 4, 3, 2, 10);
     $sum = 0;
     for ( $i = 0; $i < 8; $i++ ) {
         $sum += (int) $base[ $i ] * $weights[ $i ];
@@ -539,7 +555,7 @@ function apg_nif_valida_gr( string $vat ): bool {
 		$suma += intval( $vat[ $i ] ) * pow( 2, 8 - $i );
 	}
     
-	return intval( $vat[8] ) === ( $suma % 11 ) % 10;
+	return intval( substr( $vat, -1 ) ) === ( $suma % 11 ) % 10;
 }
 
 /**
@@ -554,21 +570,21 @@ function apg_nif_valida_fi( string $vat ): bool {
         return false;
     }
 
-    $mult = [ 7, 9, 10, 5, 8, 4, 2 ];
+    $mult = array( 7, 9, 10, 5, 8, 4, 2 );
     $suma = 0;
     for ( $i = 0; $i < 7; $i++ ) {
         $suma += intval( $vat[ $i ] ) * $mult[ $i ];
     }
     $resto = $suma % 11;
-    if ( $resto == 0 ){
-        $control = 0;
-    } elseif ( $resto == 1 ) {
-        return false;
-    } else {
-        $control = 11 - $resto;
-    }
+	if ( 0 === $resto ) {
+		$control = 0;
+	} elseif ( 1 === $resto ) {
+		return false;
+	} else {
+		$control = 11 - $resto;
+	}
     
-    return $control === intval( $vat[7] );
+	return $control === intval( substr( $vat, -1 ) );
 }
 
 /**
@@ -615,7 +631,9 @@ function apg_nif_valida_fr( string $vat ): bool {
  */
 function apg_nif_valida_hr( string $vat ): bool {
     $vat = preg_replace( '/[^0-9]/', '', $vat );
-    if ( strlen( $vat ) !== 11 ) return false;
+    if ( strlen( $vat ) !== 11 ) {
+        return false;
+    }
 
     $product = 10;
     for ( $i = 0; $i < 10; $i++ ) {
@@ -625,7 +643,7 @@ function apg_nif_valida_hr( string $vat ): bool {
     }
     $check = ( 11 - $product ) % 10;
 
-    return ( int )$vat[ 10 ] === $check;
+    return (int) substr( $vat, -1 ) === $check;
 }
 
 /**
@@ -635,29 +653,29 @@ function apg_nif_valida_hr( string $vat ): bool {
  * @return bool       true si válido; false si no.
  */
 function apg_nif_valida_hu( string $vat ): bool {
-    $vat = preg_replace('/[^0-9]/', '', $vat);
-    $len = strlen($vat);
+    $vat = preg_replace( '/[^0-9]/', '', $vat );
+    $len = strlen( $vat );
 
     // VIES: 8 dígitos (7 base + dígito de control)
-    if ($len === 8) {
-        $weights = [9, 7, 3, 1, 9, 7, 3];
+    if ( 8 === $len ) {
+        $weights = array( 9, 7, 3, 1, 9, 7, 3 );
         $sum = 0;
-        for ($i = 0; $i < 7; $i++) {
-            $sum += intval($vat[$i]) * $weights[$i];
+        for ( $i = 0; $i < 7; $i++ ) {
+            $sum += intval( $vat[ $i ] ) * $weights[ $i ];
         }
-        $check = (10 - ($sum % 10)) % 10;
-        return intval($vat[7]) === $check;
+        $check = ( 10 - ( $sum % 10 ) ) % 10;
+        return intval( substr( $vat, -1 ) ) === $check;
     }
 
     // Adószám completo: 11 dígitos (8 base + check + 2 sufijos territorio/tipo)
-    if ($len === 11) {
-        $weights = [9, 7, 3, 1, 9, 7, 3, 1];
+    if ( 11 === $len ) {
+        $weights = array( 9, 7, 3, 1, 9, 7, 3, 1 );
         $sum = 0;
-        for ($i = 0; $i < 8; $i++) {
-            $sum += intval($vat[$i]) * $weights[$i];
+        for ( $i = 0; $i < 8; $i++ ) {
+            $sum += intval( $vat[ $i ] ) * $weights[ $i ];
         }
         $check = $sum % 10;
-        if (intval($vat[8]) !== $check) {
+        if ( intval( $vat[7] ) !== $check ) {
             return false;
         }
         // No comprobamos los 2 últimos (códigos internos), estructura ya es válida
@@ -677,23 +695,23 @@ function apg_nif_valida_hu( string $vat ): bool {
  * @param string $vat VAT irlandés (con o sin 'IE').
  * @return bool       true si formato/control son válidos; false si no.
  */
-function apg_nif_valida_ie(string $vat): bool {
-    $vat = strtoupper(preg_replace('/[^A-Z0-9]/', '', $vat));
-    $vat = str_replace('IE', '', $vat);
+function apg_nif_valida_ie( string $vat ): bool {
+    $vat = strtoupper( preg_replace( '/[^A-Z0-9]/', '', $vat ) );
+    $vat = str_replace( 'IE', '', $vat );
 
     // Formato 1: 7 dígitos + 1 letra (A-W).
-    if (preg_match('/^\d{7}[A-W]$/', $vat)) {
-        $weights = [8, 7, 6, 5, 4, 3, 2];
+    if ( preg_match( '/^\\d{7}[A-W]$/', $vat ) ) {
+        $weights = array( 8, 7, 6, 5, 4, 3, 2 );
         $sum = 0;
-        for ($i = 0; $i < 7; $i++) {
-            $sum += (int)$vat[$i] * $weights[$i];
+        for ( $i = 0; $i < 7; $i++ ) {
+            $sum += (int) $vat[ $i ] * $weights[ $i ];
         }
-        $check = chr(($sum % 23) + 64); // A=65, B=66, etc.
-        return $vat[7] === $check;
+        $check = chr( ( $sum % 23 ) + 64 ); // A=65, B=66, etc.
+        return substr( $vat, -1 ) === $check;
     }
 
     // Formato 2: 1 letra (7-9) + 6 dígitos + 1 letra (A-W).
-    if (preg_match('/^[7-9][A-Z*+]\d{5}[A-W]$/', $vat)) {
+    if ( preg_match( '/^[7-9][A-Z*+]\\d{5}[A-W]$/', $vat ) ) {
         return true; // No hay checksum en este formato.
     }
 
@@ -727,7 +745,7 @@ function apg_nif_valida_it( string $vat ): bool {
 	}
 	$check = ( 10 - ( $suma % 10 ) ) % 10;
 
-    return ( int )$vat[ 10 ] === $check;
+    return (int) substr( $vat, -1 ) === $check;
 }
 
 /**
@@ -752,10 +770,12 @@ function apg_nif_valida_lt( string $vat ): bool {
                 $sum += intval( $vat[$i] ) * (1 + (($i + 2) % 9));
             }
             $check = $sum % 11;
-            if ( $check === 10 ) $check = 0;
+            if ( 10 === $check ) {
+                $check = 0;
+            }
         }
 
-        return intval( $vat[8] ) === $check;
+        return intval( substr( $vat, -1 ) ) === $check;
     }
 
     if ( strlen( $vat ) === 12 ) {
@@ -805,13 +825,13 @@ function apg_nif_valida_lv( string $vat ): bool {
 	}
 	
 	$suma = 0;
-	$mult = [1, 6, 3, 7, 9, 10, 5, 8, 4, 2];
+	$mult = array(1, 6, 3, 7, 9, 10, 5, 8, 4, 2);
 	for ( $i = 0; $i < 10; $i++ ) {
 		$suma += intval( $vat[$i] ) * $mult[$i];
 	}
 	
 	$check = ( $suma % 11 );
-	if ( $check === 4 && $vat[6] == 1 ) {
+	if ( 4 === $check && 1 === intval( substr( $vat, -1 ) ) ) {
 		$check = 4;
 	}
 	
@@ -819,7 +839,7 @@ function apg_nif_valida_lv( string $vat ): bool {
 		$check = 0;
 	}
 	
-	return intval( $vat[10] ) === $check;
+	return intval( substr( $vat, -1 ) ) === $check;
 }
 
 /**
@@ -834,7 +854,7 @@ function apg_nif_valida_mt( string $vat ): bool {
 		return false;
 	}
 
-	$mult = [3, 4, 6, 7, 8, 9, 10];
+	$mult = array(3, 4, 6, 7, 8, 9, 10);
 	$suma = 0;
 	for ( $i = 0; $i < 7; $i++ ) {
 		$suma += intval( $vat[$i] ) * $mult[$i];
@@ -842,7 +862,7 @@ function apg_nif_valida_mt( string $vat ): bool {
 
 	$check = $suma % 37;
 
-	return intval( $vat[7] ) === $check;
+	return intval( substr( $vat, -1 ) ) === $check;
 }
 
 /**
@@ -859,7 +879,7 @@ function apg_nif_valida_nl( string $vat ): bool {
         return false;
     }
 
-    $base = $matches[ 1 ];
+    $base = $matches[1];
     $sum = 0;
     for ( $i = 0; $i < 8; $i++ ) {
         $sum += ( int )$base[ $i ] * ( 9 - $i );
@@ -870,7 +890,7 @@ function apg_nif_valida_nl( string $vat ): bool {
         $check = 0;
     }
 
-    return ( int )$base[ 8 ] === $check;
+    return (int) substr( $base, -1 ) === $check;
 }
 
 /**
@@ -885,17 +905,21 @@ function apg_nif_valida_no( string $vat ): bool {
         return false;
     }
 
-    $weights = [ 3, 2, 7, 6, 5, 4, 3, 2 ];
+    $weights = array( 3, 2, 7, 6, 5, 4, 3, 2 );
     $sum = 0;
     for ( $i = 0; $i < 8; $i++ ) {
         $sum += (int) $vat[ $i ] * $weights[ $i ];
     }
 
-    $check = 11 - ($sum % 11);
-    if ($check === 11) $check = 0;
-    if ($check === 10) return false; // 10 no es un dígito de control válido.
+    $check = 11 - ( $sum % 11 );
+    if ( 11 === $check ) {
+        $check = 0;
+    }
+    if ( 10 === $check ) {
+        return false; // 10 no es un dígito de control válido.
+    }
 
-    return (int) $vat[8] === $check;
+    return (int) substr( $vat, -1 ) === $check;
 }
 
 /**
@@ -910,7 +934,7 @@ function apg_nif_valida_pl( string $vat ): bool {
 		return false;
 	}
 
-	$mult = [6, 5, 7, 2, 3, 4, 5, 6, 7];
+	$mult = array(6, 5, 7, 2, 3, 4, 5, 6, 7);
 	$suma = 0;
 	for ( $i = 0; $i < 9; $i++ ) {
 		$suma += intval( $vat[$i] ) * $mult[$i];
@@ -921,7 +945,7 @@ function apg_nif_valida_pl( string $vat ): bool {
 		return false;
 	}
 
-	return intval( $vat[9] ) === $check;
+	return intval( substr( $vat, -1 ) ) === $check;
 }
 
 /**
@@ -944,7 +968,7 @@ function apg_nif_valida_pt( string $vat ): bool {
     $resto  = $suma % 11;
     $digito = ( $resto < 2 ) ? 0 : 11 - $resto;
 
-    return intval( $vat[8] ) === $digito;
+    return intval( substr( $vat, -1 ) ) === $digito;
 }
 
 /**
@@ -957,10 +981,12 @@ function apg_nif_valida_ro( string $vat ): bool {
     $vat = preg_replace( '/[^0-9]/', '', $vat );
     $length = strlen( $vat );
 
-    if ( $length < 2 || $length > 10 ) return false;
+    if ( $length < 2 || $length > 10 ) {
+        return false;
+    }
 
     $vat = str_pad( $vat, 10, '0', STR_PAD_LEFT );
-    $mult = [ 7, 5, 3, 2, 1, 7, 5, 3, 2 ];
+    $mult = array( 7, 5, 3, 2, 1, 7, 5, 3, 2 );
     $sum = 0;
 
     for ( $i = 0; $i < 9; $i++ ) {
@@ -968,9 +994,11 @@ function apg_nif_valida_ro( string $vat ): bool {
     }
 
     $check = ( $sum * 10 ) % 11;
-    if ( $check === 10 )$check = 0;
+    if ( 10 === $check ) {
+        $check = 0;
+    }
 
-    return ( int )$vat[ 9 ] === $check;
+    return (int) substr( $vat, -1 ) === $check;
 }
 
 /**
@@ -996,7 +1024,7 @@ function apg_nif_valida_rs( string $vat ): bool {
         $check = 0;
     }
 
-    return (int) $vat[8] === $check;
+    return (int) substr( $vat, -1 ) === $check;
 }
 
 /**
@@ -1036,7 +1064,7 @@ function apg_nif_valida_si( string $vat ): bool {
 		return false;
 	}
 
-	$mult = [8, 7, 6, 5, 4, 3, 2];
+	$mult = array(8, 7, 6, 5, 4, 3, 2);
 	$suma = 0;
 	for ( $i = 0; $i < 7; $i++ ) {
 		$suma += intval( $vat[$i] ) * $mult[$i];
@@ -1049,7 +1077,7 @@ function apg_nif_valida_si( string $vat ): bool {
 		$check = 0;
 	}
 
-	return intval( $vat[7] ) === $check;
+	return intval( substr( $vat, -1 ) ) === $check;
 }
 
 /**

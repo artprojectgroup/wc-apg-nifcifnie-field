@@ -4,7 +4,7 @@ Donate link: https://artprojectgroup.es/tienda/donacion
 Tags: nif, cif, nie, eori, vies
 Requires at least: 5.0
 Tested up to: 6.9
-Stable tag: 4.8.1
+Stable tag: 4.8.2
 WC requires at least: 5.6
 WC tested up to: 10.5.0
 License: GNU General Public License v2 or later
@@ -105,7 +105,7 @@ Don’t forget to leave us your comment on:
 
 * [WC - APG NIF/CIF/NIE field](https://artprojectgroup.es/plugins-para-woocommerce/wc-apg-nifcifnie-field) on Art Project Group.
 * [Art Project Group](https://www.facebook.com/artprojectgroup) on Facebook.
-* [@artprojectgroup](https://twitter.com/artprojectgroup) on Twitter.
+* [@artprojectgroup](https://x.com/artprojectgroup) on X.
 
 = More plugins =
 Remember that you can find more [plugins for WordPress](https://artprojectgroup.es/plugins-para-wordpress) and more [plugins for WooCommerce](https://artprojectgroup.es/plugins-para-woocommerce) on [Art Project Group](https://artprojectgroup.es) and our profile on [WordPress](https://profiles.wordpress.org/artprojectgroup/).
@@ -137,6 +137,8 @@ If you need help to configuring or installing **WC - APG NIF/CIF/NIE field**, **
 3. Screenshot of WC - APG NIF/CIF/NIE field. Billing and shipping forms. Classic Shortcode.
 
 == Changelog ==
+= 4.8.2 =
+* Minor fixes.
 = 4.8.1 =
 * Added the `apg_nif_skip_validation` filter
 * Minor fixes.
@@ -389,8 +391,7 @@ If you need help to configuring or installing **WC - APG NIF/CIF/NIE field**, **
 * Initial version.
 
 == Upgrade Notice ==
-= 4.8.1 =
-* Added the `apg_nif_skip_validation` filter
+= 4.8.2 =
 * Minor fixes.
 
 == Translations ==

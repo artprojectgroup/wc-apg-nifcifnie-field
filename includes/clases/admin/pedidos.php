@@ -34,18 +34,18 @@ class APG_Campo_NIF_en_Admin_Pedidos {
 	 * @return void
 	 */
 	public function __construct() {
-        add_filter( 'woocommerce_shop_order_search_fields', [ $this, 'apg_nif_anade_campo_nif_busqueda' ] );
-		add_filter( 'woocommerce_admin_billing_fields', [ $this, 'apg_nif_anade_campo_nif_editar_direccion_pedido' ], 10, 3 );
-		add_filter( 'woocommerce_admin_shipping_fields', [ $this, 'apg_nif_anade_campo_nif_editar_direccion_pedido' ], 10, 3 );
-		if ( version_compare( WC_VERSION, '2.7', '<' ) ) { 
-			add_filter( 'woocommerce_found_customer_details', [ $this, 'apg_nif_ajax' ] );
-      	} else { 
-        	add_filter( 'woocommerce_ajax_get_customer_details', [ $this, 'apg_dame_nif_ajax' ], 10, 2 ); 
-      	} 
-		add_action( 'admin_enqueue_scripts', [ $this, 'apg_nif_carga_hoja_de_estilo_editar_direccion_pedido' ] );
+		add_filter( 'woocommerce_shop_order_search_fields', array( $this, 'apg_nif_anade_campo_nif_busqueda' ) );
+		add_filter( 'woocommerce_admin_billing_fields', array( $this, 'apg_nif_anade_campo_nif_editar_direccion_pedido' ), 10, 3 );
+		add_filter( 'woocommerce_admin_shipping_fields', array( $this, 'apg_nif_anade_campo_nif_editar_direccion_pedido' ), 10, 3 );
+		if ( version_compare( WC_VERSION, '2.7', '<' ) ) {
+			add_filter( 'woocommerce_found_customer_details', array( $this, 'apg_nif_ajax' ) );
+		} else {
+			add_filter( 'woocommerce_ajax_get_customer_details', array( $this, 'apg_dame_nif_ajax' ), 10, 2 );
+		}
+		add_action( 'admin_enqueue_scripts', array( $this, 'apg_nif_carga_hoja_de_estilo_editar_direccion_pedido' ) );
 	}
-	
-    /**
+
+	/**
 	 * Añade los metadatos NIF a los campos de búsqueda de pedidos.
 	 *
 	 * Hook: `woocommerce_shop_order_search_fields`.
@@ -53,12 +53,12 @@ class APG_Campo_NIF_en_Admin_Pedidos {
 	 * @param string[] $search_fields Lista de meta-keys por las que buscar pedidos.
 	 * @return string[] Lista con `billing_nif` y `shipping_nif` añadidos.
 	 */
-    public function apg_nif_anade_campo_nif_busqueda( $search_fields ) { 
-        $search_fields[]    = 'billing_nif';
-        $search_fields[]    = 'shipping_nif';
-        
-        return $search_fields;
-    }
+	public function apg_nif_anade_campo_nif_busqueda( $search_fields ) {
+		$search_fields[] = 'billing_nif';
+		$search_fields[] = 'shipping_nif';
+
+		return $search_fields;
+	}
 
 	/**
 	 * Añade el campo NIF y reordena campos visibles en la edición de dirección
@@ -79,11 +79,11 @@ class APG_Campo_NIF_en_Admin_Pedidos {
 	public function apg_nif_anade_campo_nif_editar_direccion_pedido( $campos, $order = null, $context = 'view' ) {
 		global $apg_nif_settings;
 
-		$etiqueta           = isset( $apg_nif_settings[ 'etiqueta' ] ) && $apg_nif_settings[ 'etiqueta' ] ? sanitize_text_field( $apg_nif_settings[ 'etiqueta' ] ) : esc_attr__( 'NIF/CIF/NIE', 'wc-apg-nifcifnie-field' );
-		$campos[ 'nif' ]    = [
-				'label' => $etiqueta,
-				'show'  => false,
-		];
+		$etiqueta     = isset( $apg_nif_settings['etiqueta'] ) && $apg_nif_settings['etiqueta'] ? sanitize_text_field( $apg_nif_settings['etiqueta'] ) : esc_attr__( 'NIF/CIF/NIE', 'wc-apg-nifcifnie-field' );
+		$campos['nif'] = array(
+			'label' => $etiqueta,
+			'show'  => false,
+		);
 
 		if ( $order instanceof WC_Order ) {
 			// Detecta si estamos en el hook de envío o de facturación usando el nombre del filtro.
@@ -105,32 +105,32 @@ class APG_Campo_NIF_en_Admin_Pedidos {
 			}
 		}
 
-		$campos[ 'phone' ]  = [
-				'label' => esc_attr__( 'Phone', 'wc-apg-nifcifnie-field' ),
-				'show'  => true
-		];
-		$campos[ 'email' ]  = [
-				'label' => esc_attr__( 'Email address', 'wc-apg-nifcifnie-field' ),
-				'show'  => true
-		];
+		$campos['phone'] = array(
+			'label' => esc_attr__( 'Phone', 'wc-apg-nifcifnie-field' ),
+			'show'  => true,
+		);
+		$campos['email'] = array(
+			'label' => esc_attr__( 'Email address', 'wc-apg-nifcifnie-field' ),
+			'show'  => true,
+		);
 
 		// Orden recomendado de campos.
-		$orden_de_campos = [
-			"first_name",
-			"last_name",
-			"company",
-			"nif",
-			"email",
-			"phone",
-			"address_1",
-			"address_2",
-			"postcode",
-			"city",
-			"state",
-			"country",
-		];
-        		
-		$campos_ordenados = [];
+		$orden_de_campos = array(
+			'first_name',
+			'last_name',
+			'company',
+			'nif',
+			'email',
+			'phone',
+			'address_1',
+			'address_2',
+			'postcode',
+			'city',
+			'state',
+			'country',
+		);
+
+		$campos_ordenados = array();
 
 		foreach ( $orden_de_campos as $campo ) {
 			if ( isset( $campos[ $campo ] ) ) {
@@ -140,12 +140,12 @@ class APG_Campo_NIF_en_Admin_Pedidos {
 
 		// Asegura que no se pierda ningún campo no contemplado en el orden anterior.
 		foreach ( $campos as $campo => $datos ) {
-			if ( ! isset( $campos_ordenados[ $campo ] ) && $datos[ 'label' ] != $etiqueta ) {
+			if ( ! isset( $campos_ordenados[ $campo ] ) && ( ! isset( $datos['label'] ) || $datos['label'] !== $etiqueta ) ) {
 				$campos_ordenados[ $campo ] = $datos;
 			}
 		}
 
-        return $campos_ordenados;
+		return $campos_ordenados;
 	}
 
 	/**
@@ -158,21 +158,21 @@ class APG_Campo_NIF_en_Admin_Pedidos {
 	 * @return array<string,mixed> Datos con `billing_nif`/`shipping_nif` añadidos cuando corresponda.
 	 */
 	public function apg_nif_ajax( $datos_cliente ) {
-        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- WooCommerce already validates nonce via 'get-customer-details'
-        if ( isset( $_POST[ 'user_id' ], $_POST[ 'type_to_load' ] ) ) {
-            // phpcs:ignore WordPress.Security.NonceVerification.Missing -- WooCommerce already validates nonce via 'get-customer-details'
-            $cliente    = absint( wp_unslash( $_POST[ 'user_id' ] ) );
-            // phpcs:ignore WordPress.Security.NonceVerification.Missing -- WooCommerce already validates nonce via 'get-customer-details'
-            $formulario = sanitize_text_field( wp_unslash( $_POST[ 'type_to_load' ] ) );
-            
-            if ( $cliente && in_array( $formulario, [ 'billing', 'shipping' ], true ) ) {
-                $datos_cliente[ $formulario . '_nif' ]  = get_user_meta( $cliente, $formulario . '_nif', true );
-            }
-        }
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- WooCommerce already validates nonce via 'get-customer-details'.
+		if ( isset( $_POST['user_id'], $_POST['type'] ) ) {
+			// phpcs:ignore WordPress.Security.NonceVerification.Missing -- WooCommerce already validates nonce via 'get-customer-details'.
+			$cliente = absint( wp_unslash( $_POST['user_id'] ) );
+			// phpcs:ignore WordPress.Security.NonceVerification.Missing -- WooCommerce already validates nonce via 'get-customer-details'.
+			$formulario = sanitize_text_field( wp_unslash( $_POST['type'] ) );
+
+			if ( $cliente && in_array( $formulario, array( 'billing', 'shipping' ), true ) ) {
+				$datos_cliente[ $formulario . '_nif' ] = get_user_meta( $cliente, $formulario . '_nif', true );
+			}
+		}
 
 		return $datos_cliente;
 	}
-	
+
 	/**
 	 * (WC >= 2.7) Añade el NIF del cliente a la respuesta AJAX
 	 * al seleccionar un usuario al crear/editar un pedido.
@@ -183,12 +183,12 @@ class APG_Campo_NIF_en_Admin_Pedidos {
 	 * @param \WC_Customer        $cliente       Objeto de cliente seleccionado.
 	 * @return array<string,mixed> Datos con `nif` en secciones de 'billing' y 'shipping'.
 	 */
-	public function apg_dame_nif_ajax( $datos_cliente, $cliente ) { 
-		$datos_cliente[ 'billing' ][ 'nif' ]  = $cliente->get_meta( 'billing_nif', true );
-		$datos_cliente[ 'shipping' ][ 'nif' ] = $cliente->get_meta( 'shipping_nif', true );
- 
-		return $datos_cliente; 
-	} 
+	public function apg_dame_nif_ajax( $datos_cliente, $cliente ) {
+		$datos_cliente['billing']['nif']  = $cliente->get_meta( 'billing_nif', true );
+		$datos_cliente['shipping']['nif'] = $cliente->get_meta( 'shipping_nif', true );
+
+		return $datos_cliente;
+	}
 
 	/**
 	 * Encola CSS inline para maquetar los campos en la pantalla de edición de pedidos
@@ -205,9 +205,9 @@ class APG_Campo_NIF_en_Admin_Pedidos {
 			return;
 		}
 
-		$is_classic_order_edit	= in_array( $screen->base, [ 'post', 'post-new' ], true ) && 'shop_order' === $screen->post_type;
+		$is_classic_order_edit = in_array( $screen->base, array( 'post', 'post-new' ), true ) && 'shop_order' === $screen->post_type;
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only access to 'action' for UI/view logic; value is sanitized and not used to change state or process form data.
-		$is_hpos_order_edit		= 'woocommerce_page_wc-orders' === $screen->id && isset( $_GET[ 'action' ] ) && 'edit' === sanitize_key( wp_unslash( $_GET[ 'action' ] ) );
+		$is_hpos_order_edit = 'woocommerce_page_wc-orders' === $screen->id && isset( $_GET['action'] ) && 'edit' === sanitize_key( wp_unslash( $_GET['action'] ) );
 		if ( ! ( $is_classic_order_edit || $is_hpos_order_edit ) ) {
 			return;
 		}
@@ -251,7 +251,7 @@ class APG_Campo_NIF_en_Admin_Pedidos {
 		if ( wp_style_is( 'woocommerce_admin_styles', 'enqueued' ) ) {
 			wp_add_inline_style( 'woocommerce_admin_styles', $css );
 		} else {
-			wp_register_style( 'apg-nif-admin-inline', false, [], VERSION_apg_nif, 'all' );
+			wp_register_style( 'apg-nif-admin-inline', false, array(), VERSION_apg_nif, 'all' );
 			wp_enqueue_style( 'apg-nif-admin-inline' );
 			wp_add_inline_style( 'apg-nif-admin-inline', $css );
 		}

@@ -6,11 +6,11 @@
  * y documentación/soporte dentro del panel de administración.
  *
  * Variables esperadas en el *scope* del include:
- * - $apg_nif['donacion']    URL para donaciones.
- * - $apg_nif['plugin']      Nombre legible del plugin.
- * - $apg_nif['plugin_url']  URL de la documentación/sitio del plugin.
- * - $apg_nif['soporte']     URL de la página de soporte.
- * - $apg_nif['plugin_uri']  URL del listado en WordPress.org.
+ * - $apg_nif['donacion']   URL para donaciones.
+ * - $apg_nif['plugin']     Nombre legible del plugin.
+ * - $apg_nif['plugin_url'] URL de la documentación/sitio del plugin.
+ * - $apg_nif['soporte']    URL de la página de soporte.
+ * - $apg_nif['puntuacion'] URL del listado en WordPress.org.
  *
  * @package   WC_APG_NIFCIFNIE_Field
  * @global    array<string,string> $apg_nif
@@ -26,7 +26,7 @@ defined( 'ABSPATH' ) || exit;
 			<p>
 				<?php esc_html_e( 'If you enjoyed and find helpful this plugin, please make a donation:', 'wc-apg-nifcifnie-field' ); ?>
 			</p>
-			<p><a href="<?php echo esc_url( $apg_nif[ 'donacion' ] ); ?>" target="_blank" title="<?php esc_attr_e( 'Make a donation by ', 'wc-apg-nifcifnie-field' ); ?>APG"><span class="genericon genericon-cart"></span></a> </p>
+			<p><a href="<?php echo esc_url( $apg_nif['donacion'] ); ?>" target="_blank" title="<?php esc_attr_e( 'Make a donation by ', 'wc-apg-nifcifnie-field' ); ?>APG"><span class="genericon genericon-cart"></span></a> </p>
 		</div>
 		<div class="columna">
 			<p>Art Project Group:</p>
@@ -40,7 +40,7 @@ defined( 'ABSPATH' ) || exit;
 			<p>
 				<?php esc_html_e( 'Follow us:', 'wc-apg-nifcifnie-field' ); ?>
 			</p>
-			<p><a href="https://www.facebook.com/artprojectgroup" title="<?php esc_attr_e( 'Follow us on ', 'wc-apg-nifcifnie-field' ); ?>Facebook" target="_blank"><span class="genericon genericon-facebook-alt"></span></a> <a href="https://twitter.com/artprojectgroup" title="<?php esc_attr_e( 'Follow us on ', 'wc-apg-nifcifnie-field' ); ?>Twitter" target="_blank"><span class="genericon genericon-twitter"></span></a> <a href="https://es.linkedin.com/in/artprojectgroup" title="<?php esc_attr_e( 'Follow us on ', 'wc-apg-nifcifnie-field' ); ?>LinkedIn" target="_blank"><span class="genericon genericon-linkedin"></span></a> </p>
+			<p><a href="https://www.facebook.com/artprojectgroup" title="<?php esc_attr_e( 'Follow us on ', 'wc-apg-nifcifnie-field' ); ?>Facebook" target="_blank"><span class="genericon genericon-facebook-alt"></span></a> <a href="https://x.com/artprojectgroup" title="<?php esc_attr_e( 'Follow us on ', 'wc-apg-nifcifnie-field' ); ?>X" target="_blank"><span class="genericon genericon-x-alt"></span></a> <a href="https://es.linkedin.com/in/artprojectgroup" title="<?php esc_attr_e( 'Follow us on ', 'wc-apg-nifcifnie-field' ); ?>LinkedIn" target="_blank"><span class="genericon genericon-linkedin"></span></a> </p>
 		</div>
 		<div class="columna">
 			<p>
@@ -62,7 +62,7 @@ defined( 'ABSPATH' ) || exit;
 			<p>
 				<?php esc_html_e( 'Documentation and Support:', 'wc-apg-nifcifnie-field' ); ?>
 			</p>
-			<p><a href="<?php echo esc_url( $apg_nif[ 'plugin_url' ] ); ?>" title="<?php echo esc_attr( $apg_nif[ 'plugin' ] ); ?>"><span class="genericon genericon-book"></span></a> <a href="<?php echo esc_url( $apg_nif[ 'soporte' ] ); ?>" title="<?php esc_attr_e( 'Support', 'wc-apg-nifcifnie-field' ); ?>"><span class="genericon genericon-cog"></span></a> </p>
+			<p><a href="<?php echo esc_url( $apg_nif['plugin_url'] ); ?>" title="<?php echo esc_attr( $apg_nif['plugin'] ); ?>"><span class="genericon genericon-book"></span></a> <a href="<?php echo esc_url( $apg_nif['soporte'] ); ?>" title="<?php esc_attr_e( 'Support', 'wc-apg-nifcifnie-field' ); ?>"><span class="genericon genericon-cog"></span></a> </p>
 		</div>
 	</div>
 
@@ -71,11 +71,11 @@ defined( 'ABSPATH' ) || exit;
 		<div class="columna">
 			<p>
 				<?php
-                // translators: %s is the plugin name (e.g., WC – APG Campo NIF/CIF/NIE)
-				echo esc_html( sprintf( __( 'Please, rate %s:', 'wc-apg-nifcifnie-field' ), $apg_nif[ 'plugin' ] ) );
+				// translators: %s is the plugin name (e.g., WC – APG Campo NIF/CIF/NIE)
+				echo esc_html( sprintf( __( 'Please, rate %s:', 'wc-apg-nifcifnie-field' ), $apg_nif['plugin'] ) );
 				?>
 			</p>
-			<?php echo wp_kses_post( apg_nif_plugin( $apg_nif[ 'plugin_uri' ] ) ); ?> </div>
+			<?php echo wp_kses_post( apg_nif_plugin( $apg_nif['plugin_uri'] ) ); ?> </div>
 		<div class="columna final"></div>
 	</div>
 </div>
