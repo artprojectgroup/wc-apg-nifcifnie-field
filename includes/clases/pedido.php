@@ -85,6 +85,18 @@ class APG_Campo_NIF_en_Pedido {
 	private static $pais_bloques = '';
 
 	/**
+	 * Determina si el campo NIF debe mostrarse en el formulario de envío.
+	 *
+	 * Se controla desde la opción `mostrar_envio` del plugin.
+	 *
+	 * @return bool
+	 */
+	private function apg_nif_mostrar_campo_envio(): bool {
+		global $apg_nif_settings;
+		return ! isset( $apg_nif_settings['mostrar_envio'] ) || '1' === $apg_nif_settings['mostrar_envio'];
+	}
+
+	/**
 	 * Inicializa hooks de campos, validación y AJAX (clásico y bloques).
 	 *
 	 * Hooks destacados:
@@ -155,7 +167,10 @@ class APG_Campo_NIF_en_Pedido {
         add_filter( 'woocommerce_default_address_fields', array( $this, 'apg_nif_campos_de_direccion' ) );
         add_filter( 'woocommerce_billing_fields', array( $this, 'apg_nif_formulario_de_facturacion' ) );
         add_filter( 'woocommerce_shipping_fields', array( $this, 'apg_nif_formulario_de_envio' ) );
+		add_filter( 'woocommerce_shipping_fields', array( $this, 'apg_nif_forzar_oculta_campo_envio' ), 9999 );
+		add_filter( 'woocommerce_checkout_fields', array( $this, 'apg_nif_forzar_oculta_campo_envio_checkout' ), 9999 );
         add_action( 'after_setup_theme', array( $this, 'apg_nif_traducciones' ) );
+		add_action( 'wp_enqueue_scripts', array( $this, 'apg_nif_forzar_oculta_campo_envio_ui' ) );
 
 		// Bloques.
         add_action( 'woocommerce_init', array( $this, 'apg_nif_formulario_bloques' ) );
@@ -319,7 +334,12 @@ class APG_Campo_NIF_en_Pedido {
     public function apg_nif_formulario_de_facturacion( $campos ) {
         global $apg_nif_settings;
 
-        $campos['billing_nif']['required'] = ( isset( $apg_nif_settings['requerido'] ) && '1' === $apg_nif_settings['requerido'] );
+		if ( isset( $campos['billing_nif'] ) && is_array( $campos['billing_nif'] ) ) {
+        	$campos['billing_nif']['label']       = $this->nombre_nif;
+        	$campos['billing_nif']['placeholder'] = $this->placeholder;
+        	$campos['billing_nif']['priority']    = (int) $this->priority;
+        	$campos['billing_nif']['required']    = ( isset( $apg_nif_settings['requerido'] ) && '1' === $apg_nif_settings['requerido'] );
+		}
 
         return $campos;
     }
@@ -345,21 +365,27 @@ class APG_Campo_NIF_en_Pedido {
     public function apg_nif_formulario_bloques() {
         global $apg_nif_settings;
 
-		
+		$requerido_facturacion = isset( $apg_nif_settings['requerido'] ) && '1' === $apg_nif_settings['requerido'];
+		$requerido_envio       = isset( $apg_nif_settings['requerido_envio'] ) && '1' === $apg_nif_settings['requerido_envio'];
+		// Solo marcar como "required" nativo cuando ambos grupos lo son.
+		$requerido_bloques     = $requerido_facturacion && $requerido_envio && $this->apg_nif_mostrar_campo_envio();
+
         if ( function_exists( 'woocommerce_register_additional_checkout_field' ) ) {
 			$etiqueta	= $this->nombre_nif;
 			$prioridad	= (int) $this->priority;
+			$index_por_defecto = defined( 'THWCFD_VERSION' ) ? $prioridad * 10 : $prioridad;
+			$index_bloques = (int) $index_por_defecto;
 			
 			woocommerce_register_additional_checkout_field( array(
                 'id'            => 'apg/nif',
                 'label'         => $etiqueta,
                 // translators: %s is the field label (e.g., NIF/CIF/NIE)
                 'optionalLabel' => sprintf( esc_attr__( '%s (optional)', 'wc-apg-nifcifnie-field' ), $etiqueta ),
-                'location'      => 'address',
-                'required'      => isset( $apg_nif_settings['requerido'] ) && '1' === $apg_nif_settings['requerido'],
+				'location'      => 'address',
+                'required'      => $requerido_bloques,
                 'type'          => 'text',
 				'priority'      => $prioridad,
-				'index'         => $prioridad * 10,
+				'index'         => $index_bloques,
                 'attributes'    => array(
                     'autocomplete'   => 'nif',
                     'data-attribute' => 'nif',
@@ -414,10 +440,17 @@ class APG_Campo_NIF_en_Pedido {
                 if ( ! isset( $locale[ $iso ]['address'] ) ) {
                     $locale[ $iso ]['address'] = array();
                 }
-                if ( ! isset( $locale[ $iso ]['address']['apg/nif'] ) ) {
-                    $locale[ $iso ]['address']['apg/nif'] = array();
-                }
-                $locale[ $iso ]['address']['apg/nif']['priority'] = (int) $this->priority;
+				$prioridad = (int) $this->priority;
+				$index_por_defecto = defined( 'THWCFD_VERSION' ) ? $prioridad * 10 : $prioridad;
+				$index_bloques = (int) $index_por_defecto;
+				// Compatibilidad entre versiones de Blocks que resuelven distintas claves.
+				foreach ( array( 'apg/nif', 'apg-nif' ) as $clave ) {
+                	if ( ! isset( $locale[ $iso ]['address'][ $clave ] ) ) {
+                    	$locale[ $iso ]['address'][ $clave ] = array();
+                	}
+                	$locale[ $iso ]['address'][ $clave ]['priority'] = (int) $this->priority;
+                	$locale[ $iso ]['address'][ $clave ]['index']    = $index_bloques;
+				}
             }
             
             return $locale;
@@ -494,6 +527,11 @@ class APG_Campo_NIF_en_Pedido {
 
         $facturacion    = WC()->countries->get_address_fields( WC()->countries->get_base_country(), 'billing_' );
 
+		if ( ! $this->apg_nif_mostrar_campo_envio() ) {
+			unset( $campos['shipping_nif'] );
+			return $campos;
+		}
+
         $campos['shipping_nif']['label']    = $this->nombre_nif;
         $campos['shipping_nif']['required'] = isset( $apg_nif_settings['requerido_envio'] ) && '1' === $apg_nif_settings['requerido_envio'];
         if ( apply_filters( 'apg_nif_add_fields', true ) ) { // Si no quieren añadirse: add_filter( 'apg_nif_add_fields', '__return_false' );
@@ -503,6 +541,58 @@ class APG_Campo_NIF_en_Pedido {
         
         return $campos;
     }
+
+	/**
+	 * Fuerza la eliminación del NIF de envío en el array de campos de envío (checkout clásico).
+	 *
+	 * @param array<string,array<string,mixed>> $campos Campos de envío.
+	 * @return array<string,array<string,mixed>>
+	 */
+	public function apg_nif_forzar_oculta_campo_envio( $campos ) {
+		if ( ! $this->apg_nif_mostrar_campo_envio() ) {
+			unset( $campos['shipping_nif'] );
+		}
+
+		return $campos;
+	}
+
+	/**
+	 * Fuerza la eliminación del NIF de envío en la estructura global de checkout.
+	 *
+	 * @param array<string,mixed> $campos Campos de checkout.
+	 * @return array<string,mixed>
+	 */
+	public function apg_nif_forzar_oculta_campo_envio_checkout( $campos ) {
+		if ( $this->apg_nif_mostrar_campo_envio() ) {
+			return $campos;
+		}
+
+		if ( isset( $campos['shipping']['shipping_nif'] ) ) {
+			unset( $campos['shipping']['shipping_nif'] );
+		}
+
+		return $campos;
+	}
+
+	/**
+	 * Fallback UI: oculta el campo de envío en checkout clásico y bloques.
+	 *
+	 * Evita que integraciones de terceros lo vuelvan a pintar en frontend.
+	 *
+	 * @return void
+	 */
+	public function apg_nif_forzar_oculta_campo_envio_ui() {
+		if ( $this->apg_nif_mostrar_campo_envio() || ! function_exists( 'is_checkout' ) || ! is_checkout() ) {
+			return;
+		}
+
+		wp_register_script( 'apg-nif-hide-shipping-field', '', array(), VERSION_apg_nif, true );
+		wp_enqueue_script( 'apg-nif-hide-shipping-field' );
+		wp_add_inline_script(
+			'apg-nif-hide-shipping-field',
+			"(function(){function hide(){var c=document.getElementById('shipping_nif_field');if(c){c.style.display='none';}var b=document.getElementById('shipping-apg-nif');if(b){var w=b.closest('.wc-block-components-address-form__apg-nif')||b.closest('.wc-block-components-text-input')||b.parentElement;if(w){w.style.display='none';}}}if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',hide);}else{hide();}if(window.MutationObserver){new MutationObserver(hide).observe(document.body,{childList:true,subtree:true});}})();"
+		);
+	}
 
 	/**
 	 * Valida un VAT/NIF internacional por país (regex o validadores específicos).
@@ -659,7 +749,12 @@ class APG_Campo_NIF_en_Pedido {
 
 		// Envío.
         // phpcs:ignore WordPress.Security.NonceVerification.Missing -- WooCommerce already validates nonce via 'get-customer-details'
-        if ( ( $shipping_nif || $es_requerido_envio ) && isset( $_POST['shipping_nif'] ) ) {
+		if ( ! $this->apg_nif_mostrar_campo_envio() ) {
+			return;
+		}
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- WooCommerce already validates nonce via 'get-customer-details'
+		$tiene_shipping_nif = isset( $_POST['shipping_nif'] );
+        if ( ( $shipping_nif || $es_requerido_envio ) && $tiene_shipping_nif ) {
             $validacion_envio   = $this->apg_nif_valida_exencion( $shipping_nif, $shipping_country, $shipping_country );
 
             // Mensaje de error.
@@ -697,9 +792,19 @@ class APG_Campo_NIF_en_Pedido {
         if ( ! WC_Blocks_Utils::has_block_in_page( wc_get_page_id( 'checkout' ), 'woocommerce/checkout' ) ) {
             return $errors;
         }
+
+		if ( 'shipping' === $group && ! $this->apg_nif_mostrar_campo_envio() ) {
+			return $errors;
+		}
         
         // Procesa los campos.
-        $nif            = isset( $fields['apg/nif'] ) ? sanitize_text_field( $fields['apg/nif'] ) : '';
+		$nif = '';
+		foreach ( array( 'apg/nif', 'apg-nif', '_wc_billing/apg/nif', '_wc_shipping/apg/nif' ) as $clave_nif ) {
+			if ( isset( $fields[ $clave_nif ] ) ) {
+				$nif = trim( sanitize_text_field( (string) $fields[ $clave_nif ] ) );
+				break;
+			}
+		}
         $pais           = isset( $fields['country'] ) ? sanitize_text_field( $fields['country'] ) : '';
         
 		// Guarda país de facturación para usarlo con shipping.
@@ -710,10 +815,31 @@ class APG_Campo_NIF_en_Pedido {
         $pais_envio     = ( $group === 'shipping' ) ? $pais : '';
 
         // Confirma si es requerido.
-        $es_requerido   = isset( $apg_nif_settings['requerido'] ) && '1' === $apg_nif_settings['requerido'];
+		$requerido_facturacion = isset( $apg_nif_settings['requerido'] ) && '1' === $apg_nif_settings['requerido'];
+		$requerido_envio       = isset( $apg_nif_settings['requerido_envio'] ) && '1' === $apg_nif_settings['requerido_envio'];
+        $es_requerido          = ( 'shipping' === $group ) ? $requerido_envio : $requerido_facturacion;
+		$requerido_bloques     = $requerido_facturacion && $requerido_envio;
+
+		// Si solo uno de los grupos es obligatorio, la API nativa de Blocks no distingue entre ambos.
+		// En ese caso hacemos la obligatoriedad por grupo aquí para preservar compatibilidad.
+		if ( $es_requerido && ! $requerido_bloques && '' === $nif ) {
+			$errors->add(
+				'required_apg_nif_' . sanitize_key( (string) $group ),
+				sprintf(
+					/* translators: %s: field label */
+						__( '%s is a required field.', 'wc-apg-nifcifnie-field' ),
+					$this->nombre_nif
+				)
+			);
+			return $errors;
+		}
+
+		if ( '' === $nif ) {
+			return $errors;
+		}
 
         // Sólo valida si el campo está relleno o es obligatorio.
-        if ( ( $nif || $es_requerido ) && isset( $apg_nif_settings['validacion'] ) && '1' === $apg_nif_settings['validacion'] ) {
+        if ( isset( $apg_nif_settings['validacion'] ) && '1' === $apg_nif_settings['validacion'] ) {
             $validacion = $this->apg_nif_valida_exencion( $nif, $pais_factura, $pais_envio );
             
             // Comprueba si es un número VAT válido.
@@ -784,6 +910,8 @@ class APG_Campo_NIF_en_Pedido {
                 'eori_error'    => $this->mensaje_eori,
                 'validacion'    => $tipo_validacion,
                 'requerido'     => ( isset( $apg_nif_settings['requerido'] ) && '1' === $apg_nif_settings['requerido'] ),
+                'requerido_envio' => ( isset( $apg_nif_settings['requerido_envio'] ) && '1' === $apg_nif_settings['requerido_envio'] ),
+                'mostrar_envio' => $this->apg_nif_mostrar_campo_envio(),
                 'nonce'         => wp_create_nonce( 'apg_nif_nonce' ),
             ) );
         }

@@ -3,10 +3,10 @@ Contributors: artprojectgroup
 Donate link: https://artprojectgroup.es/tienda/donacion
 Tags: nif, cif, nie, eori, vies
 Requires at least: 5.0
-Tested up to: 6.9
-Stable tag: 4.8.2
+Tested up to: 7.0
+Stable tag: 4.8.3
 WC requires at least: 5.6
-WC tested up to: 10.5.0
+WC tested up to: 10.6.0
 License: GNU General Public License v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -21,6 +21,7 @@ Add to WooCommerce a NIF/CIF/NIE field.
 * Fully compatible with the End Purchase block of the WordPress block editor.
 * You can require the NIF/CIF/NIE field in billing form.
 * You can require the NIF/CIF/NIE field in shipping form.
+* You can hide the NIF/CIF/NIE field from the shipping form.
 * You can customize the priority (position) of the field.
 * You can validate the NIF/CIF/NIE field.
 * You can validate the VIES VAT number field to exempt the taxes.
@@ -137,6 +138,11 @@ If you need help to configuring or installing **WC - APG NIF/CIF/NIE field**, **
 3. Screenshot of WC - APG NIF/CIF/NIE field. Billing and shipping forms. Classic Shortcode.
 
 == Changelog ==
+= 4.8.3 =
+* Added a new option to hide the shipping NIF/CIF/NIE field.
+* Improved required billing/shipping field handling in the Checkout Block.
+* Fixed compatibility with Checkout Field Editor (Checkout Manager) for WooCommerce.
+* Minor fixes.
 = 4.8.2 =
 * Minor fixes.
 = 4.8.1 =
@@ -391,7 +397,10 @@ If you need help to configuring or installing **WC - APG NIF/CIF/NIE field**, **
 * Initial version.
 
 == Upgrade Notice ==
-= 4.8.2 =
+= 4.8.3 =
+* Added a new option to hide the shipping NIF/CIF/NIE field.
+* Improved required billing/shipping field handling in the Checkout Block.
+* Fixed compatibility with Checkout Field Editor (Checkout Manager) for WooCommerce.
 * Minor fixes.
 
 == Translations ==

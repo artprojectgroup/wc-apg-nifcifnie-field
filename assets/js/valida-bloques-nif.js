@@ -3,6 +3,56 @@
  */
 jQuery(document).ready(function ($) {
     const SELECTOR_NIF = "#billing-apg-nif, #shipping-apg-nif";
+    const toBool = (value, fallback = false) => {
+        if (value === undefined || value === null) return fallback;
+        if (typeof value === "boolean") return value;
+        if (typeof value === "number") return value !== 0;
+        if (typeof value === "string") {
+            const v = value.trim().toLowerCase();
+            if (v === "" && fallback !== undefined) return fallback;
+            return v === "1" || v === "true" || v === "yes" || v === "on";
+        }
+        return !!value;
+    };
+
+    function syncShippingVisibility() {
+        const mostrarEnvio = toBool(apg_nif_ajax?.mostrar_envio, true);
+        const $shippingWrap = $("#shipping .wc-block-components-address-form__apg-nif");
+        const $shippingInput = $shippingWrap.find("input");
+
+        if (!mostrarEnvio) {
+            $shippingWrap.hide();
+            $shippingInput.removeAttr("required").attr("aria-required", "false");
+            wc.blocksCheckout?.validation?.removeError?.("shipping-apg-nif");
+            $("#error_nif_shipping, #validate-error-shipping_apg\\/nif").remove();
+        } else {
+            $shippingWrap.show();
+        }
+    }
+
+    function syncRequiredUi() {
+        const billingRequired = toBool(apg_nif_ajax?.requerido, false);
+        const shippingRequired = toBool(apg_nif_ajax?.requerido_envio, false);
+        const stripOptional = function (text) {
+            return (text || "").replace(/\s*\((optional|opcional)\)\s*$/i, "");
+        };
+
+        const $billingWrap = $("#billing .wc-block-components-address-form__apg-nif");
+        const $billingInput = $billingWrap.find("input");
+        const $billingLabel = $billingWrap.find("label");
+        if (billingRequired && !shippingRequired) {
+            $billingInput.attr("required", "required").attr("aria-required", "true");
+            if ($billingLabel.length) {
+                $billingLabel.text(stripOptional($billingLabel.text()));
+            }
+        }
+
+        const $shippingWrap = $("#shipping .wc-block-components-address-form__apg-nif");
+        const $shippingInput = $shippingWrap.find("input");
+        if (!shippingRequired) {
+            $shippingInput.removeAttr("required").attr("aria-required", "false");
+        }
+    }
     // Helper: establece el valor usando el setter nativo (React-friendly)
     function setNativeValue(el, value) {
         const proto = Object.getPrototypeOf(el);
@@ -37,6 +87,8 @@ jQuery(document).ready(function ($) {
             } catch (e) {}
         }
     });
+    syncRequiredUi();
+    syncShippingVisibility();
 
     // Forzar sólo letras y números (mayúsculas) en escritura
     $(document).on("input", SELECTOR_NIF, function () {
@@ -90,14 +142,17 @@ jQuery(document).ready(function ($) {
 
     // Sanea también en blur (por si algún re-render externo intenta restaurar el valor previo)
     $(document).on('blur', SELECTOR_NIF, function(){
-        const limpio = sanitizeNif($(this).val() || '');
-        setNativeValue(this, limpio);
-        try {
-            this.dispatchEvent(new Event('input', { bubbles: true }));
-            this.dispatchEvent(new Event('change', { bubbles: true }));
-        } catch (e) {}
-        $(this).trigger('input');
-        $(this).trigger('change');
+        const original = $(this).val() || '';
+        const limpio = sanitizeNif(original);
+        if (limpio !== original) {
+            setNativeValue(this, limpio);
+            try {
+                this.dispatchEvent(new Event('input', { bubbles: true }));
+                this.dispatchEvent(new Event('change', { bubbles: true }));
+            } catch (e) {}
+            $(this).trigger('input');
+            $(this).trigger('change');
+        }
     });
 
     const { extensionCartUpdate, validation } = wc.blocksCheckout || {};
@@ -142,6 +197,11 @@ jQuery(document).ready(function ($) {
     let muteBillingObserver = 0;
 
     function validarNIFyMostrarErrores(formulario) {
+        syncRequiredUi();
+        syncShippingVisibility();
+        if (formulario === "shipping" && !toBool(apg_nif_ajax?.mostrar_envio, true)) {
+            return;
+        }
         const campoNIF = $("#" + formulario + "-apg-nif");
         const campoPais = $("#" + formulario + "-country");
         if (!campoNIF.length || !campoPais.length) return;

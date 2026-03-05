@@ -84,12 +84,16 @@ $tab = 1;
 					<p class="description"><?php
 						esc_html_e( 'Your current values are:', 'wc-apg-nifcifnie-field' );
 						echo '<ol>';
-						$campos = WC()->countries->get_address_fields( WC()->countries->get_base_country(), 'billing_' );
-						foreach ( $campos as $campo ) {
-							$etiqueta  = ( isset( $campo['label'] ) ) ? $campo['label'] : esc_html__( 'No label exists', 'wc-apg-nifcifnie-field' );
-							$prioridad = ( isset( $campo['priority'] ) ) ? $campo['priority'] : esc_html__( 'No priority', 'wc-apg-nifcifnie-field' );
-							echo '<li>' . esc_html( $etiqueta ) . ': ' . esc_html( $prioridad ) . '.</li>';
-						}
+							$campos = WC()->countries->get_address_fields( WC()->countries->get_base_country(), 'billing_' );
+							foreach ( $campos as $campo ) {
+								// Omite entradas técnicas/sin información útil para el admin.
+								if ( empty( $campo['label'] ) ) {
+									continue;
+								}
+								$etiqueta  = $campo['label'];
+								$prioridad = isset( $campo['priority'] ) ? $campo['priority'] : esc_html__( 'No priority', 'wc-apg-nifcifnie-field' );
+								echo '<li>' . esc_html( $etiqueta ) . ': ' . esc_html( $prioridad ) . '.</li>';
+							}
 						echo '</ol>';
                         ?></p></td>
 			</tr>
@@ -110,6 +114,15 @@ $tab = 1;
 					</label>
 				</th>
 				<td class="forminp"><input id="apg_nif_settings[requerido_envio]" name="apg_nif_settings[requerido_envio]" type="checkbox" value="1" <?php checked( isset( $apg_nif_settings['requerido_envio'] ) ? $apg_nif_settings['requerido_envio'] : '', 1 ); ?> tabindex="<?php echo esc_html( $tab ); $tab++; ?>" /></td>
+			</tr>
+			<tr valign="top">
+				<th scope="row" class="titledesc">
+					<label for="apg_nif_settings[mostrar_envio]">
+						<?php esc_html_e( 'Show shipping field?', 'wc-apg-nifcifnie-field' ); ?>
+						<span class="woocommerce-help-tip" data-tip="<?php esc_attr_e( 'Check if you want to show the field in the shipping form.', 'wc-apg-nifcifnie-field' ); ?>"></span>
+					</label>
+				</th>
+				<td class="forminp"><input id="apg_nif_settings[mostrar_envio]" name="apg_nif_settings[mostrar_envio]" type="checkbox" value="1" <?php checked( isset( $apg_nif_settings['mostrar_envio'] ) ? $apg_nif_settings['mostrar_envio'] : '1', 1 ); ?> tabindex="<?php echo esc_html( $tab ); $tab++; ?>" /></td>
 			</tr>
 			<tr valign="top" id="requerido">
 				<th scope="row" class="titledesc">

@@ -7,13 +7,13 @@ Tags: nif, cif, nie, eori, vies
 
 Requires at least: 5.0
 
-Tested up to: 6.9
+Tested up to: 7.0
 
-Stable tag: 4.8.2
+Stable tag: 4.8.3
 
 WC requires at least: 5.6
 
-WC tested up to: 10.5.0
+WC tested up to: 10.6.0
 
 License: GNU General Public License v2 or later
 
@@ -30,6 +30,7 @@ Añade a WooCommerce un campo NIF/CIF/NIE.
 * Totalmente compatible con el bloque Finalizar compra del editor de bloques de WordPress.
 * Puedes hacer obligatorio el campo NIF/CIF/NIE en el formulario de facturación.
 * Puedes hacer obligatorio el campo NIF/CIF/NIE en el formulario de envío.
+* Puedes ocultar el campo NIF/CIF/NIE del formulario de envío.
 * Puedes personalizar la prioridad (posición) del campo.
 * Puedes validar el campo NIF/CIF/NIE.
 * Puedes validar el campo VIES VAT number para excluir los impuestos.
@@ -141,6 +142,12 @@ Si necesitas ayuda para configurar o instalar **WC - APG NIF/CIF/NIE Field**, **
 *En ningún caso **Art Project Group** proporciona ningún tipo de soporte técnico gratuito.*
 
 ## Changelog
+### 4.8.3
+* Añadida una nueva opción para ocultar el campo NIF/CIF/NIE del formulario de envío.
+* Mejorado el manejo de campos requeridos en facturación y envío en el bloque Finalizar compra.
+* Corregida la compatibilidad con Checkout Field Editor (Checkout Manager) for WooCommerce.
+* Arreglos menores.
+
 ### 4.8.2
 * Arreglos menores.
 
