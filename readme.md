@@ -9,7 +9,7 @@ Requires at least: 5.0
 
 Tested up to: 7.0
 
-Stable tag: 4.8.3
+Stable tag: 4.9.0
 
 WC requires at least: 5.6
 
@@ -142,6 +142,10 @@ Si necesitas ayuda para configurar o instalar **WC - APG NIF/CIF/NIE Field**, **
 *En ningún caso **Art Project Group** proporciona ningún tipo de soporte técnico gratuito.*
 
 ## Changelog
+### 4.9.0
+* Añadida la declaración de compatibilidad con `product_instance_caching`.
+* Mejorada la validación de VIES, EORI y la gestión de la exención de IVA en el checkout clásico y por bloques.
+
 ### 4.8.3
 * Añadida una nueva opción para ocultar el campo NIF/CIF/NIE del formulario de envío.
 * Mejorado el manejo de campos requeridos en facturación y envío en el bloque Finalizar compra.

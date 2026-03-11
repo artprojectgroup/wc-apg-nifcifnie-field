@@ -2,7 +2,7 @@
 /*
 Plugin Name: WC - APG NIF/CIF/NIE Field
 Requires Plugins: woocommerce
-Version: 4.8.3
+Version: 4.9.0b
 Plugin URI: https://wordpress.org/plugins/wc-apg-nifcifnie-field/
 Description: Add to WooCommerce a NIF/CIF/NIE field.
 Author URI: https://artprojectgroup.es/
@@ -37,7 +37,7 @@ define( 'DIRECCION_apg_nif', plugin_basename( __FILE__ ) );
  *
  * @var string
  */
-define( 'VERSION_apg_nif', '4.8.3' );
+define( 'VERSION_apg_nif', '4.9.0' );
 
 // Funciones generales de APG.
 include_once 'includes/admin/funciones-apg.php';
@@ -80,7 +80,8 @@ include_once ABSPATH . 'wp-admin/includes/plugin.php';
 if ( is_plugin_active( 'woocommerce/woocommerce.php' ) || is_network_only_plugin( 'woocommerce/woocommerce.php' ) ) {
 
 	/**
-	 * Declara compatibilidad con HPOS (`custom_order_tables`) y Checkout Blocks (`cart_checkout_blocks`).
+	 * Declara compatibilidad con HPOS (`custom_order_tables`), Checkout Blocks (`cart_checkout_blocks`)
+	 * y caché de instancias de producto (`product_instance_caching`).
 	 *
 	 * @return void
 	 */
@@ -88,6 +89,7 @@ if ( is_plugin_active( 'woocommerce/woocommerce.php' ) || is_network_only_plugin
 		if ( class_exists( '\\Automattic\\WooCommerce\\Utilities\\FeaturesUtil' ) ) {
 			\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', __FILE__, true );
 			\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'cart_checkout_blocks', __FILE__, true );
+			\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'product_instance_caching', __FILE__, true );
 		}
 	} );
 

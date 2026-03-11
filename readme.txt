@@ -4,7 +4,7 @@ Donate link: https://artprojectgroup.es/tienda/donacion
 Tags: nif, cif, nie, eori, vies
 Requires at least: 5.0
 Tested up to: 7.0
-Stable tag: 4.8.3
+Stable tag: 4.9.0
 WC requires at least: 5.6
 WC tested up to: 10.6.0
 License: GNU General Public License v2 or later
@@ -138,6 +138,9 @@ If you need help to configuring or installing **WC - APG NIF/CIF/NIE field**, **
 3. Screenshot of WC - APG NIF/CIF/NIE field. Billing and shipping forms. Classic Shortcode.
 
 == Changelog ==
+= 4.9.0 =
+* Added compatibility declaration for `product_instance_caching`.
+* Improved VIES, EORI and VAT exemption handling in classic and block checkout.
 = 4.8.3 =
 * Added a new option to hide the shipping NIF/CIF/NIE field.
 * Improved required billing/shipping field handling in the Checkout Block.
@@ -397,11 +400,9 @@ If you need help to configuring or installing **WC - APG NIF/CIF/NIE field**, **
 * Initial version.
 
 == Upgrade Notice ==
-= 4.8.3 =
-* Added a new option to hide the shipping NIF/CIF/NIE field.
-* Improved required billing/shipping field handling in the Checkout Block.
-* Fixed compatibility with Checkout Field Editor (Checkout Manager) for WooCommerce.
-* Minor fixes.
+= 4.9.0 =
+* Added compatibility declaration for `product_instance_caching`.
+* Improved VIES, EORI and VAT exemption handling in classic and block checkout.
 
 == Translations ==
 * *English*: by [**Art Project Group**](https://artprojectgroup.es/) (default language).

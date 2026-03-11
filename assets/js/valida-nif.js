@@ -4,6 +4,10 @@
 jQuery(function ($) {
     const EU_VIES_COUNTRIES = ['AT','BE','BG','HR','CY','CZ','DE','DK','EE','ES','FI','FR','GR','HU','IE','IT','LT','LU','LV','MT','NL','PL','PT','RO','SE','SI','SK','XI'];
     const esUE = (c) => EU_VIES_COUNTRIES.includes((c || '').toUpperCase());
+    const shouldBlockCheckout = () => {
+        const value = apg_nif_ajax?.bloquear_envio;
+        return value === true || value === 1 || value === '1' || value === 'true';
+    };
 
     $('#billing_nif, #billing_country, #shipping_nif, #shipping_country').on('change', function () {
         validarTodo('billing');
@@ -27,11 +31,13 @@ jQuery(function ($) {
         const campoPais = $(`#${tipo}_country`);
         const campoEnvio = $(`#shipping_country`);
         const wrapper = $(`#${tipo}_nif_field`);
+        const infoID = `info_vies_${tipo}`;
 
         if (!campoNIF.length || !campoPais.length) return;
 
         // Limpia errores previos
         $(`#error_vies_${tipo}, #error_eori_${tipo}, #error_vat_${tipo}`).remove();
+        $(`#${infoID}`).remove();
 
         let action = "apg_nif_valida_VAT";
         switch (apg_nif_ajax.validacion) {
@@ -89,14 +95,22 @@ jQuery(function ($) {
                         if (res.usar_eori && res.valido_eori === false && paisCliente !== paisTienda) {
                             texto   = apg_nif_ajax.eori_error;
                             errorID = `error_eori_${tipo}`;
-                        } else if (requiereVIES && res.valido_vies === false) {
-                            texto   = res.valido_vies === 44 ? apg_nif_ajax.max_error : apg_nif_ajax.vies_error;
-                            errorID = `error_vies_${tipo}`;
                         } else if (!res.vat_valido) {
                             texto   = apg_nif_ajax.vat_error;
                             errorID = `error_vat_${tipo}`;
+                        } else if (requiereVIES && res.valido_vies === 44) {
+                            wrapper.append(
+                                '<p id="' + infoID + '" class="checkout-inline-info-message" aria-live="polite" style="display:block;width:100%;margin:8px 0 0;clear:both;box-sizing:border-box;font-size:.875em;line-height:1.4;color:#666;">' +
+                                    apg_nif_ajax.vies_info +
+                                '</p>'
+                            );
                         }
-                    }                    
+                    }
+
+                    if (texto && errorID && !shouldBlockCheckout()) {
+                        texto = '';
+                        errorID = '';
+                    }
 
                     if (texto && errorID) {
                         wrapper.removeClass('woocommerce-validated')

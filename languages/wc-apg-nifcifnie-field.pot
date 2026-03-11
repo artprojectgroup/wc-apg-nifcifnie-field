@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WooCommerce - APG NIF/CIF/NIE field\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-05 20:19+0000\n"
+"POT-Creation-Date: 2026-03-11 12:52+0000\n"
 "POT-Revision-Date: Wed Aug 10 2016 13:39:45 GMT+0200 (CEST)\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: \n"
@@ -31,7 +31,7 @@ msgid "%s (optional)"
 msgstr ""
 
 #. %s: field label
-#: includes/clases/pedido.php:830
+#: includes/clases/pedido.php:835
 #, php-format
 msgid "%s is a required field."
 msgstr ""
@@ -54,7 +54,7 @@ msgstr ""
 msgid "Allow VIES VAT number?"
 msgstr ""
 
-#: apg-nif.php:133
+#: apg-nif.php:135
 msgid "APG NIF/CIF/NIE field"
 msgstr ""
 
@@ -143,7 +143,7 @@ msgstr ""
 msgid "Error message"
 msgstr ""
 
-#: apg-nif.php:208 includes/formulario.php:180
+#: apg-nif.php:210 includes/formulario.php:180
 #: includes/clases/pedido.php:247
 msgid "Error: maximum number of concurrent requests exceeded."
 msgstr ""
@@ -182,7 +182,7 @@ msgid ""
 "If you enjoyed and find helpful this plugin, please make a donation:"
 msgstr ""
 
-#: includes/clases/pedido.php:1061
+#: includes/clases/pedido.php:1085
 msgid "Invalid context."
 msgstr ""
 
@@ -203,20 +203,20 @@ msgstr ""
 msgid "NIF/CIF/NIE"
 msgstr ""
 
-#: apg-nif.php:134
+#: apg-nif.php:136
 msgid "NIF/CIF/NIE field"
 msgstr ""
 
-#: apg-nif.php:195 includes/formulario.php:67 includes/formulario.php:67
+#: apg-nif.php:197 includes/formulario.php:67 includes/formulario.php:67
 msgid "NIF/CIF/NIE number"
 msgstr ""
 
-#: apg-nif.php:212 includes/formulario.php:254 includes/formulario.php:263
+#: apg-nif.php:214 includes/formulario.php:254 includes/formulario.php:263
 #: includes/formulario.php:263 includes/clases/pedido.php:252
 msgid "NIF/CIF/NIE/EORI number"
 msgstr ""
 
-#: apg-nif.php:206 includes/formulario.php:153 includes/formulario.php:162
+#: apg-nif.php:208 includes/formulario.php:153 includes/formulario.php:162
 #: includes/formulario.php:162 includes/clases/pedido.php:244
 msgid "NIF/CIF/NIE/VAT number"
 msgstr ""
@@ -245,17 +245,17 @@ msgctxt "placeholder"
 msgid "NIF/CIF/NIE/VAT number"
 msgstr ""
 
-#: apg-nif.php:213 includes/formulario.php:272 includes/formulario.php:272
+#: apg-nif.php:215 includes/formulario.php:272 includes/formulario.php:272
 #: includes/clases/pedido.php:254
 msgid "Please enter a valid EORI number."
 msgstr ""
 
-#: apg-nif.php:196 includes/formulario.php:76 includes/formulario.php:76
+#: apg-nif.php:198 includes/formulario.php:76 includes/formulario.php:76
 #: includes/clases/pedido.php:239
 msgid "Please enter a valid NIF/CIF/NIE."
 msgstr ""
 
-#: apg-nif.php:207 includes/formulario.php:171 includes/formulario.php:171
+#: apg-nif.php:209 includes/formulario.php:171 includes/formulario.php:171
 #: includes/formulario.php:180 includes/clases/pedido.php:246
 msgid "Please enter a valid VIES VAT number."
 msgstr ""
@@ -288,7 +288,7 @@ msgstr ""
 msgid "Settings of "
 msgstr ""
 
-#: includes/clases/pedido.php:762
+#: includes/clases/pedido.php:764
 msgid "Shipping details"
 msgstr ""
 
@@ -304,13 +304,13 @@ msgstr ""
 msgid "Support of "
 msgstr ""
 
-#: apg-nif.php:280
+#: apg-nif.php:282
 msgid ""
 "This plugin requires the <a href=\"http://php.net/manual/en/class."
 "soapclient.php\">SoapClient</a> PHP class active to run!"
 msgstr ""
 
-#: apg-nif.php:267
+#: apg-nif.php:269
 msgid "This plugin requires WooCommerce active to run!"
 msgstr ""
 
@@ -380,6 +380,12 @@ msgstr ""
 
 #. Name of the plugin
 msgid "WC - APG NIF/CIF/NIE Field"
+msgstr ""
+
+#: includes/clases/pedido.php:931
+msgid ""
+"We could not validate the VAT number in VIES at this time. The order can "
+"continue with VAT applied."
 msgstr ""
 
 #: includes/formulario.php:85

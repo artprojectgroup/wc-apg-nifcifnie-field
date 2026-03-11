@@ -710,6 +710,9 @@ class APG_Campo_NIF_en_Pedido {
     public function apg_nif_validacion_de_campo() {
         global $apg_nif_settings;
 
+		$validar_formato = isset( $apg_nif_settings['validacion'] ) && '1' === $apg_nif_settings['validacion'];
+		$validar_eori    = isset( $apg_nif_settings['validacion_eori'] ) && '1' === $apg_nif_settings['validacion_eori'];
+
         // Procesa los campos.
         // phpcs:ignore WordPress.Security.NonceVerification.Missing -- WooCommerce already validates nonce via 'get-customer-details'
         $billing_nif        = isset( $_POST['billing_nif'] ) ? sanitize_text_field( wp_unslash( $_POST['billing_nif'] ) ) : '';
@@ -725,22 +728,22 @@ class APG_Campo_NIF_en_Pedido {
         $es_requerido_envio = isset( $apg_nif_settings['requerido_envio'] ) && '1' === $apg_nif_settings['requerido_envio'];
         
 		// Facturación.
-        if ( ( $billing_nif || $es_requerido ) && isset( $apg_nif_settings['validacion'] ) && '1' === $apg_nif_settings['validacion'] ) {
+        if ( ( $billing_nif || $es_requerido ) && ( $validar_formato || $validar_eori ) ) {
             $validacion     = $this->apg_nif_valida_exencion( $billing_nif, $billing_country, $shipping_country );
 
-            // Mensaje de error.
-            if ( ! $validacion['vat_valido'] && ! $validacion['valido_vies'] && ! $validacion['valido_eori'] ) {
+            // La validación estricta del campo sólo bloquea por formato inválido.
+            if ( $validar_formato && ! $validacion['vat_valido'] ) {
                 wc_add_notice( $this->mensaje_error, 'error' );
             }
 
 			// Mensaje personalizado (si así se decide por filtro).
-            if ( apply_filters( 'apg_nif_display_error_message', false, $billing_nif, $billing_country ) ) {
+            if ( $validar_formato && apply_filters( 'apg_nif_display_error_message', false, $billing_nif, $billing_country ) ) {
                 $mensaje = apply_filters( 'apg_nif_error_message', $this->mensaje_error, $billing_nif, $billing_country );
                 wc_add_notice( $mensaje, 'error' );
             }
 
 			// EORI.
-            if ( isset( $apg_nif_settings['validacion_eori'] ) && '1' === $apg_nif_settings['validacion_eori'] ) {
+            if ( $validar_eori ) {
                 if ( $validacion['usar_eori'] && ! $validacion['valido_eori'] ) {
                     wc_add_notice( $this->mensaje_eori, 'error' );
                 }
@@ -754,16 +757,15 @@ class APG_Campo_NIF_en_Pedido {
 		}
 		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- WooCommerce already validates nonce via 'get-customer-details'
 		$tiene_shipping_nif = isset( $_POST['shipping_nif'] );
-        if ( ( $shipping_nif || $es_requerido_envio ) && $tiene_shipping_nif ) {
+        if ( ( $shipping_nif || $es_requerido_envio ) && $tiene_shipping_nif && ( $validar_formato || $validar_eori ) ) {
             $validacion_envio   = $this->apg_nif_valida_exencion( $shipping_nif, $shipping_country, $shipping_country );
 
-            // Mensaje de error.
-            if ( ! $validacion_envio['vat_valido'] && ! $validacion_envio['valido_vies'] && ! $validacion_envio['valido_eori'] ) {
+            if ( $validar_formato && ! $validacion_envio['vat_valido'] ) {
                 wc_add_notice( $this->mensaje_error . ' - ' . esc_attr__( 'Shipping details', 'wc-apg-nifcifnie-field' ), 'error' );
             }
 
 			// EORI.
-            if ( isset( $apg_nif_settings['validacion_eori'] ) && '1' === $apg_nif_settings['validacion_eori'] ) {
+            if ( $validar_eori ) {
                 if ( $validacion_envio['usar_eori'] && ! $validacion_envio['valido_eori'] ) {
                     wc_add_notice( $this->mensaje_eori, 'error' );
                 }
@@ -784,6 +786,9 @@ class APG_Campo_NIF_en_Pedido {
 	 */
     public function apg_nif_validacion_de_campo_bloques( WP_Error $errors, $fields, $group ) {
         global $apg_nif_settings;
+
+		$validar_formato = isset( $apg_nif_settings['validacion'] ) && '1' === $apg_nif_settings['validacion'];
+		$validar_eori    = isset( $apg_nif_settings['validacion_eori'] ) && '1' === $apg_nif_settings['validacion_eori'];
 
         if ( ! defined( 'REST_REQUEST' ) || REST_REQUEST !== true ) {
             return $errors;
@@ -839,26 +844,26 @@ class APG_Campo_NIF_en_Pedido {
 		}
 
         // Sólo valida si el campo está relleno o es obligatorio.
-        if ( isset( $apg_nif_settings['validacion'] ) && '1' === $apg_nif_settings['validacion'] ) {
+        if ( $validar_formato || $validar_eori ) {
             $validacion = $this->apg_nif_valida_exencion( $nif, $pais_factura, $pais_envio );
             
-            // Comprueba si es un número VAT válido.
-            if ( ! $validacion['vat_valido'] && ! $validacion['valido_vies'] && ! $validacion['valido_eori'] ) {
+            if ( $validar_formato && ! $validacion['vat_valido'] ) {
                 $errors->add( 'invalid_vat', $this->mensaje_error );
             }
 
             // Muestra el mensaje de error personalizado.
-            if ( apply_filters( 'apg_nif_display_error_message', false, $nif, $pais ) ) {
+            if ( $validar_formato && apply_filters( 'apg_nif_display_error_message', false, $nif, $pais ) ) {
                 $mensaje = apply_filters( 'apg_nif_error_message', $this->mensaje_error, $nif, $pais );
                 $errors->add( 'invalid_vat', $mensaje );
             }
 
             // Validación EORI.
-            if ( isset( $apg_nif_settings['validacion_eori'] ) && '1' === $apg_nif_settings['validacion_eori'] ) {
+            if ( $validar_eori ) {
                 if ( $validacion['usar_eori'] && ! $validacion['valido_eori'] ) {
                     $errors->add( 'invalid_eori', $this->mensaje_eori );
                 }
             }
+
         }
         
         return $errors;
@@ -880,6 +885,23 @@ class APG_Campo_NIF_en_Pedido {
     
         // Detección segura del tipo de checkout.
         $is_blocks_checkout = function_exists( 'has_block' ) && has_block( 'woocommerce/checkout', wc_get_page_id( 'checkout' ) );
+		$script_dependencies = array( 'jquery' );
+
+		if ( $is_blocks_checkout ) {
+			if ( wp_script_is( 'wc-blocks-checkout', 'registered' ) ) {
+				$script_dependencies[] = 'wc-blocks-checkout';
+			}
+			if ( wp_script_is( 'wc-blocks-checkout-events', 'registered' ) ) {
+				$script_dependencies[] = 'wc-blocks-checkout-events';
+			}
+		} else {
+			if ( wp_script_is( 'wc-checkout', 'registered' ) ) {
+				$script_dependencies[] = 'wc-checkout';
+			}
+			if ( wp_script_is( 'wc-country-select', 'registered' ) ) {
+				$script_dependencies[] = 'wc-country-select';
+			}
+		}
 
         // Script y manejador unificado.
         $script_handle      = 'apg_nif_validacion';
@@ -889,7 +911,7 @@ class APG_Campo_NIF_en_Pedido {
         if ( defined( 'DIRECCION_apg_nif' ) && defined( 'VERSION_apg_nif' ) ) {
             // Evita cargar el script más de una vez.
             if ( ! wp_script_is( $script_handle, 'enqueued' ) ) {
-                wp_enqueue_script( $script_handle, plugin_dir_url( DIRECCION_apg_nif ) . 'assets/js/' . $script_file, array(), VERSION_apg_nif, true );
+                wp_enqueue_script( $script_handle, plugin_dir_url( DIRECCION_apg_nif ) . 'assets/js/' . $script_file, $script_dependencies, VERSION_apg_nif, true );
             }
             
             // Evalúa la prioridad antes de pasarla al JavaScript.
@@ -906,12 +928,14 @@ class APG_Campo_NIF_en_Pedido {
                 'url'           => admin_url( 'admin-ajax.php' ),
                 'vies_error'    => $this->mensaje_vies,
                 'max_error'     => $this->mensaje_max,
+                'vies_info'     => __( 'We could not validate the VAT number in VIES at this time. The order can continue with VAT applied.', 'wc-apg-nifcifnie-field' ),
                 'vat_error'     => $this->mensaje_error,
                 'eori_error'    => $this->mensaje_eori,
                 'validacion'    => $tipo_validacion,
                 'requerido'     => ( isset( $apg_nif_settings['requerido'] ) && '1' === $apg_nif_settings['requerido'] ),
                 'requerido_envio' => ( isset( $apg_nif_settings['requerido_envio'] ) && '1' === $apg_nif_settings['requerido_envio'] ),
                 'mostrar_envio' => $this->apg_nif_mostrar_campo_envio(),
+                'bloquear_envio' => ( isset( $apg_nif_settings['validacion'] ) && '1' === $apg_nif_settings['validacion'] ),
                 'nonce'         => wp_create_nonce( 'apg_nif_nonce' ),
             ) );
         }
@@ -975,7 +999,7 @@ class APG_Campo_NIF_en_Pedido {
             $valido_vies    = $this->apg_nif_comprobacion_vies( $nif_normalizado, $pais_cliente );
         }
 
-        $es_exento  = ( $valido_vies && $pais_cliente !== $pais_base && $prefijo_nif !== $pais_base );
+        $es_exento  = ( true === $valido_vies && $pais_cliente !== $pais_base && $prefijo_nif !== $pais_base );
         
 		// Si el envío es a país base, no hay exención.
         if ( strtoupper( $pais_envio ) === strtoupper( $pais_base ) ) {
@@ -1221,6 +1245,14 @@ class APG_Campo_NIF_en_Pedido {
         $cache_key  = 'apg_vies_' . md5( $pais . '_' . $nif );
         $cached     = get_transient( $cache_key );
         if ( $cached !== false ) {
+            if ( '1' === $cached || 1 === $cached || true === $cached ) {
+                return true;
+            }
+
+            if ( '0' === $cached || 0 === $cached || false === $cached ) {
+                return false;
+            }
+
             return $cached;
         }
 
@@ -1297,7 +1329,7 @@ class APG_Campo_NIF_en_Pedido {
         $cache_key  = 'apg_eori_' . md5( $pais . '_' . $nif );
         $cached     = get_transient( $cache_key );
         if ( $cached !== false ) {
-            return $cached;
+            return '1' === $cached || 1 === $cached || true === $cached;
         }
 
         // Listado de países para validar en https://vatapp.net (Noruega, Suiza, Tailandia).
