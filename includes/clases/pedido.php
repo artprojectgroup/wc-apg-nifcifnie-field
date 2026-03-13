@@ -97,6 +97,36 @@ class APG_Campo_NIF_en_Pedido {
 	}
 
 	/**
+	 * Detecta si el checkout activo usa la implementación nativa de WooCommerce.
+	 *
+	 * Se usa para limitar hacks de compatibilidad que pueden interferir con builders
+	 * como FunnelKit, que reconstruyen los campos a partir de sus propios esquemas.
+	 *
+	 * @return bool
+	 */
+	private function apg_nif_checkout_nativo(): bool {
+		if ( ! function_exists( 'is_checkout' ) || ! is_checkout() ) {
+			return false;
+		}
+
+		$checkout_page_id = wc_get_page_id( 'checkout' );
+		if ( $checkout_page_id <= 0 ) {
+			return false;
+		}
+
+		if ( function_exists( 'has_block' ) && has_block( 'woocommerce/checkout', $checkout_page_id ) ) {
+			return true;
+		}
+
+		$checkout_post = get_post( $checkout_page_id );
+		if ( $checkout_post instanceof WP_Post && has_shortcode( $checkout_post->post_content, 'woocommerce_checkout' ) ) {
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
 	 * Inicializa hooks de campos, validación y AJAX (clásico y bloques).
 	 *
 	 * Hooks destacados:
@@ -563,7 +593,7 @@ class APG_Campo_NIF_en_Pedido {
 	 * @return array<string,mixed>
 	 */
 	public function apg_nif_forzar_oculta_campo_envio_checkout( $campos ) {
-		if ( $this->apg_nif_mostrar_campo_envio() ) {
+		if ( $this->apg_nif_mostrar_campo_envio() || ! $this->apg_nif_checkout_nativo() ) {
 			return $campos;
 		}
 
@@ -582,7 +612,7 @@ class APG_Campo_NIF_en_Pedido {
 	 * @return void
 	 */
 	public function apg_nif_forzar_oculta_campo_envio_ui() {
-		if ( $this->apg_nif_mostrar_campo_envio() || ! function_exists( 'is_checkout' ) || ! is_checkout() ) {
+		if ( $this->apg_nif_mostrar_campo_envio() || ! $this->apg_nif_checkout_nativo() ) {
 			return;
 		}
 

@@ -9,11 +9,11 @@ Requires at least: 5.0
 
 Tested up to: 7.0
 
-Stable tag: 4.9.0
+Stable tag: 4.9.1
 
 WC requires at least: 5.6
 
-WC tested up to: 10.6.0
+WC tested up to: 10.6.1
 
 License: GNU General Public License v2 or later
 
@@ -142,6 +142,10 @@ Si necesitas ayuda para configurar o instalar **WC - APG NIF/CIF/NIE Field**, **
 *En ningún caso **Art Project Group** proporciona ningún tipo de soporte técnico gratuito.*
 
 ## Changelog
+### 4.9.1
+* Corregida la compatibilidad con la validación del checkout de FunnelKit Builder.
+* Arreglos menores.
+
 ### 4.9.0
 * Añadida declaración de compatibilidad con `product_instance_caching`.
 * Mejorada la validación de VIES, EORI y la gestión de la exención de IVA.
