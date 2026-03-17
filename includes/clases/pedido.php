@@ -321,8 +321,10 @@ class APG_Campo_NIF_en_Pedido {
             'priority'    => (int) $this->priority,
             'required'    => isset( $apg_nif_settings['requerido'] ) && '1' === $apg_nif_settings['requerido'],
         );
-        
-        if ( apply_filters( 'apg_nif_add_fields', true ) ) { // Si no quieren añadirse: add_filter( 'apg_nif_add_fields', '__return_false' );
+
+		$checkout_builder_terceros = function_exists( 'is_checkout' ) && is_checkout() && ! $this->apg_nif_checkout_nativo();
+
+        if ( ! $checkout_builder_terceros && apply_filters( 'apg_nif_add_fields', true ) ) { // Si no quieren añadirse: add_filter( 'apg_nif_add_fields', '__return_false' );
             // Añade el correo electrónico y el teléfono.
             $campos['email'] = array(
                 'label'        => esc_attr__( 'Email address', 'wc-apg-nifcifnie-field' ),
@@ -363,8 +365,14 @@ class APG_Campo_NIF_en_Pedido {
 	 */
     public function apg_nif_formulario_de_facturacion( $campos ) {
         global $apg_nif_settings;
+		$checkout_builder_terceros = function_exists( 'is_checkout' ) && is_checkout() && ! $this->apg_nif_checkout_nativo();
 
 		if ( isset( $campos['billing_nif'] ) && is_array( $campos['billing_nif'] ) ) {
+			if ( $checkout_builder_terceros ) {
+				$campos['billing_nif']['required'] = ( isset( $apg_nif_settings['requerido'] ) && '1' === $apg_nif_settings['requerido'] );
+				return $campos;
+			}
+
         	$campos['billing_nif']['label']       = $this->nombre_nif;
         	$campos['billing_nif']['placeholder'] = $this->placeholder;
         	$campos['billing_nif']['priority']    = (int) $this->priority;
@@ -556,15 +564,22 @@ class APG_Campo_NIF_en_Pedido {
         global $apg_nif_settings;
 
         $facturacion    = WC()->countries->get_address_fields( WC()->countries->get_base_country(), 'billing_' );
+		$checkout_builder_terceros = function_exists( 'is_checkout' ) && is_checkout() && ! $this->apg_nif_checkout_nativo();
 
 		if ( ! $this->apg_nif_mostrar_campo_envio() ) {
 			unset( $campos['shipping_nif'] );
 			return $campos;
 		}
 
-        $campos['shipping_nif']['label']    = $this->nombre_nif;
-        $campos['shipping_nif']['required'] = isset( $apg_nif_settings['requerido_envio'] ) && '1' === $apg_nif_settings['requerido_envio'];
-        if ( apply_filters( 'apg_nif_add_fields', true ) ) { // Si no quieren añadirse: add_filter( 'apg_nif_add_fields', '__return_false' );
+		if ( isset( $campos['shipping_nif'] ) && is_array( $campos['shipping_nif'] ) ) {
+        	$campos['shipping_nif']['required'] = isset( $apg_nif_settings['requerido_envio'] ) && '1' === $apg_nif_settings['requerido_envio'];
+
+			if ( ! $checkout_builder_terceros ) {
+        		$campos['shipping_nif']['label'] = $this->nombre_nif;
+			}
+		}
+
+        if ( ! $checkout_builder_terceros && apply_filters( 'apg_nif_add_fields', true ) ) { // Si no quieren añadirse: add_filter( 'apg_nif_add_fields', '__return_false' );
             $campos['shipping_email'] = $facturacion['billing_email'];
             $campos['shipping_phone'] = $facturacion['billing_phone'];
         }
