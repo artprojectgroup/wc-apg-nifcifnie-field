@@ -365,18 +365,9 @@ class APG_Campo_NIF_en_Pedido {
 	 */
     public function apg_nif_formulario_de_facturacion( $campos ) {
         global $apg_nif_settings;
-		$checkout_builder_terceros = function_exists( 'is_checkout' ) && is_checkout() && ! $this->apg_nif_checkout_nativo();
 
 		if ( isset( $campos['billing_nif'] ) && is_array( $campos['billing_nif'] ) ) {
-			if ( $checkout_builder_terceros ) {
-				$campos['billing_nif']['required'] = ( isset( $apg_nif_settings['requerido'] ) && '1' === $apg_nif_settings['requerido'] );
-				return $campos;
-			}
-
-        	$campos['billing_nif']['label']       = $this->nombre_nif;
-        	$campos['billing_nif']['placeholder'] = $this->placeholder;
-        	$campos['billing_nif']['priority']    = (int) $this->priority;
-        	$campos['billing_nif']['required']    = ( isset( $apg_nif_settings['requerido'] ) && '1' === $apg_nif_settings['requerido'] );
+			$campos['billing_nif']['required'] = ( isset( $apg_nif_settings['requerido'] ) && '1' === $apg_nif_settings['requerido'] );
 		}
 
         return $campos;

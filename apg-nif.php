@@ -200,7 +200,7 @@ if ( is_plugin_active( 'woocommerce/woocommerce.php' ) || is_network_only_plugin
 			// Checkboxes.
 			'requerido'        => '0',
 			'requerido_envio'  => '0',
-			'mostrar_envio'    => '0',
+			'mostrar_envio'    => '1',
 			'validacion'       => '0',
 			// VIES.
 			'validacion_vies'  => '0',
