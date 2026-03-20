@@ -143,7 +143,7 @@ Si necesitas ayuda para configurar o instalar **WC - APG NIF/CIF/NIE Field**, **
 
 ## Changelog
 ### 4.9.1
-* Corregida la compatibilidad con la validación del checkout de FunnelKit Builder.
+* Corregida la compatibilidad con la validación del checkout personalizado de FunnelKit Builder al mostrar el campo de envío.
 * Arreglos menores.
 
 ### 4.9.0

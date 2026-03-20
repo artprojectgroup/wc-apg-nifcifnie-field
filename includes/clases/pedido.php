@@ -97,36 +97,6 @@ class APG_Campo_NIF_en_Pedido {
 	}
 
 	/**
-	 * Detecta si el checkout activo usa la implementación nativa de WooCommerce.
-	 *
-	 * Se usa para limitar hacks de compatibilidad que pueden interferir con builders
-	 * como FunnelKit, que reconstruyen los campos a partir de sus propios esquemas.
-	 *
-	 * @return bool
-	 */
-	private function apg_nif_checkout_nativo(): bool {
-		if ( ! function_exists( 'is_checkout' ) || ! is_checkout() ) {
-			return false;
-		}
-
-		$checkout_page_id = wc_get_page_id( 'checkout' );
-		if ( $checkout_page_id <= 0 ) {
-			return false;
-		}
-
-		if ( function_exists( 'has_block' ) && has_block( 'woocommerce/checkout', $checkout_page_id ) ) {
-			return true;
-		}
-
-		$checkout_post = get_post( $checkout_page_id );
-		if ( $checkout_post instanceof WP_Post && has_shortcode( $checkout_post->post_content, 'woocommerce_checkout' ) ) {
-			return true;
-		}
-
-		return false;
-	}
-
-	/**
 	 * Inicializa hooks de campos, validación y AJAX (clásico y bloques).
 	 *
 	 * Hooks destacados:
@@ -322,9 +292,7 @@ class APG_Campo_NIF_en_Pedido {
             'required'    => isset( $apg_nif_settings['requerido'] ) && '1' === $apg_nif_settings['requerido'],
         );
 
-		$checkout_builder_terceros = function_exists( 'is_checkout' ) && is_checkout() && ! $this->apg_nif_checkout_nativo();
-
-        if ( ! $checkout_builder_terceros && apply_filters( 'apg_nif_add_fields', true ) ) { // Si no quieren añadirse: add_filter( 'apg_nif_add_fields', '__return_false' );
+        if ( apply_filters( 'apg_nif_add_fields', true ) ) { // Si no quieren añadirse: add_filter( 'apg_nif_add_fields', '__return_false' );
             // Añade el correo electrónico y el teléfono.
             $campos['email'] = array(
                 'label'        => esc_attr__( 'Email address', 'wc-apg-nifcifnie-field' ),
@@ -367,7 +335,10 @@ class APG_Campo_NIF_en_Pedido {
         global $apg_nif_settings;
 
 		if ( isset( $campos['billing_nif'] ) && is_array( $campos['billing_nif'] ) ) {
-			$campos['billing_nif']['required'] = ( isset( $apg_nif_settings['requerido'] ) && '1' === $apg_nif_settings['requerido'] );
+        	$campos['billing_nif']['label']       = $this->nombre_nif;
+        	$campos['billing_nif']['placeholder'] = $this->placeholder;
+        	$campos['billing_nif']['priority']    = (int) $this->priority;
+        	$campos['billing_nif']['required']    = ( isset( $apg_nif_settings['requerido'] ) && '1' === $apg_nif_settings['requerido'] );
 		}
 
         return $campos;
@@ -555,7 +526,6 @@ class APG_Campo_NIF_en_Pedido {
         global $apg_nif_settings;
 
         $facturacion    = WC()->countries->get_address_fields( WC()->countries->get_base_country(), 'billing_' );
-		$checkout_builder_terceros = function_exists( 'is_checkout' ) && is_checkout() && ! $this->apg_nif_checkout_nativo();
 
 		if ( ! $this->apg_nif_mostrar_campo_envio() ) {
 			unset( $campos['shipping_nif'] );
@@ -563,16 +533,18 @@ class APG_Campo_NIF_en_Pedido {
 		}
 
 		if ( isset( $campos['shipping_nif'] ) && is_array( $campos['shipping_nif'] ) ) {
+        	$campos['shipping_nif']['label']    = $this->nombre_nif;
         	$campos['shipping_nif']['required'] = isset( $apg_nif_settings['requerido_envio'] ) && '1' === $apg_nif_settings['requerido_envio'];
-
-			if ( ! $checkout_builder_terceros ) {
-        		$campos['shipping_nif']['label'] = $this->nombre_nif;
-			}
 		}
-
-        if ( ! $checkout_builder_terceros && apply_filters( 'apg_nif_add_fields', true ) ) { // Si no quieren añadirse: add_filter( 'apg_nif_add_fields', '__return_false' );
-            $campos['shipping_email'] = $facturacion['billing_email'];
-            $campos['shipping_phone'] = $facturacion['billing_phone'];
+        if ( apply_filters( 'apg_nif_add_fields', true ) ) { // Si no quieren añadirse: add_filter( 'apg_nif_add_fields', '__return_false' );
+			if ( isset( $campos['shipping_email'] ) && isset( $facturacion['billing_email'] ) ) {
+            	$campos['shipping_email']['priority'] = $facturacion['billing_email']['priority'];
+            	$campos['shipping_email']['label']    = $facturacion['billing_email']['label'];
+			}
+			if ( isset( $campos['shipping_phone'] ) && isset( $facturacion['billing_phone'] ) ) {
+            	$campos['shipping_phone']['priority'] = $facturacion['billing_phone']['priority'];
+            	$campos['shipping_phone']['label']    = $facturacion['billing_phone']['label'];
+			}
         }
         
         return $campos;
@@ -599,7 +571,7 @@ class APG_Campo_NIF_en_Pedido {
 	 * @return array<string,mixed>
 	 */
 	public function apg_nif_forzar_oculta_campo_envio_checkout( $campos ) {
-		if ( $this->apg_nif_mostrar_campo_envio() || ! $this->apg_nif_checkout_nativo() ) {
+		if ( $this->apg_nif_mostrar_campo_envio() ) {
 			return $campos;
 		}
 
@@ -618,7 +590,7 @@ class APG_Campo_NIF_en_Pedido {
 	 * @return void
 	 */
 	public function apg_nif_forzar_oculta_campo_envio_ui() {
-		if ( $this->apg_nif_mostrar_campo_envio() || ! $this->apg_nif_checkout_nativo() ) {
+		if ( $this->apg_nif_mostrar_campo_envio() || ! function_exists( 'is_checkout' ) || ! is_checkout() ) {
 			return;
 		}
 

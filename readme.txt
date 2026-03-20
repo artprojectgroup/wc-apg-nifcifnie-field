@@ -139,7 +139,7 @@ If you need help to configuring or installing **WC - APG NIF/CIF/NIE field**, **
 
 == Changelog ==
 = 4.9.1 =
-* Fixed compatibility with FunnelKit Builder checkout validation.
+* Fixed compatibility with FunnelKit Builder custom checkout validation when showing the shipping field.
 * Minor fixes.
 = 4.9.0 =
 * Added compatibility declaration for `product_instance_caching`.
@@ -404,7 +404,7 @@ If you need help to configuring or installing **WC - APG NIF/CIF/NIE field**, **
 
 == Upgrade Notice ==
 = 4.9.1 =
-* Fixed compatibility with FunnelKit Builder checkout validation.
+* Fixed compatibility with FunnelKit Builder custom checkout validation when showing the shipping field.
 * Minor fixes.
 
 == Translations ==
