@@ -719,17 +719,60 @@ function apg_nif_valida_ie( string $vat ): bool {
 }
 
 /**
- * Valida un Partita IVA italiano (11 dígitos, algoritmo tipo Luhn).
+ * Valida un Codice Fiscale italiano (16 caracteres) con letra de control.
  *
- * @param string $vat VAT italiano.
- * @return bool       true si el dígito de control coincide; false si no.
+ * @param string $vat Identificador italiano sin separadores.
+ * @return bool       true si el formato básico y la letra de control coinciden.
+ */
+function apg_nif_valida_it_codice_fiscale( string $vat ): bool {
+    $vat = strtoupper( preg_replace( '/[^A-Z0-9]/', '', $vat ) );
+    if ( ! preg_match( '/^[A-Z]{6}[0-9LMNPQRSTUV]{2}[ABCDEHLMPRST][0-9LMNPQRSTUV]{2}[A-Z][0-9LMNPQRSTUV]{3}[A-Z]$/', $vat ) ) {
+        return false;
+    }
+
+    $impares = array(
+        '0' => 1,  '1' => 0,  '2' => 5,  '3' => 7,  '4' => 9,  '5' => 13, '6' => 15, '7' => 17, '8' => 19, '9' => 21,
+        'A' => 1,  'B' => 0,  'C' => 5,  'D' => 7,  'E' => 9,  'F' => 13, 'G' => 15, 'H' => 17, 'I' => 19, 'J' => 21,
+        'K' => 2,  'L' => 4,  'M' => 18, 'N' => 20, 'O' => 11, 'P' => 3,  'Q' => 6,  'R' => 8,  'S' => 12, 'T' => 14,
+        'U' => 16, 'V' => 10, 'W' => 22, 'X' => 25, 'Y' => 24, 'Z' => 23,
+    );
+    $pares = array(
+        '0' => 0,  '1' => 1,  '2' => 2,  '3' => 3,  '4' => 4,  '5' => 5,  '6' => 6,  '7' => 7,  '8' => 8,  '9' => 9,
+        'A' => 0,  'B' => 1,  'C' => 2,  'D' => 3,  'E' => 4,  'F' => 5,  'G' => 6,  'H' => 7,  'I' => 8,  'J' => 9,
+        'K' => 10, 'L' => 11, 'M' => 12, 'N' => 13, 'O' => 14, 'P' => 15, 'Q' => 16, 'R' => 17, 'S' => 18, 'T' => 19,
+        'U' => 20, 'V' => 21, 'W' => 22, 'X' => 23, 'Y' => 24, 'Z' => 25,
+    );
+
+    $suma = 0;
+    for ( $i = 0; $i < 15; $i++ ) {
+        $caracter = $vat[ $i ];
+        $suma += ( 0 === $i % 2 ) ? $impares[ $caracter ] : $pares[ $caracter ];
+    }
+
+    $control = chr( 65 + ( $suma % 26 ) );
+    return substr( $vat, -1 ) === $control;
+}
+
+/**
+ * Valida un identificador italiano:
+ * - Partita IVA (11 dígitos, algoritmo tipo Luhn).
+ * - Codice Fiscale (16 caracteres con letra de control).
+ *
+ * @param string $vat Identificador italiano.
+ * @return bool       true si coincide alguno de los formatos soportados.
  */
 function apg_nif_valida_it( string $vat ): bool {
-    $vat = preg_replace( '/[^0-9]/', '', $vat );
+    $vat_alnum = strtoupper( preg_replace( '/[^A-Z0-9]/', '', $vat ) );
+    $vat_alnum = preg_replace( '/^IT/', '', $vat_alnum );
+    if ( strlen( $vat_alnum ) === 16 ) {
+        return apg_nif_valida_it_codice_fiscale( $vat_alnum );
+    }
+
+    $vat = preg_replace( '/[^0-9]/', '', $vat_alnum );
 	if ( strlen( $vat ) !== 11 ) {
 		return false;
 	}
-    
+
 	$suma = 0;
 	for ( $i = 0; $i < 10; $i++ ) {
 		$n = (int) $vat[ $i ];
@@ -1173,8 +1216,8 @@ function apg_nif_valida_regex( string $pais, string $vat_number ): bool {
                 preg_match( '/^(IE)?(\d{7}[A-W][AH])$/', $vat_number );
         case 'IS': // Islandia. 
             return ( bool ) preg_match( '/^(IS)?(\d{5,6})$/', $vat_number );
-        case 'IT': // Italia. 
-            return ( bool ) preg_match( '/^(IT)?(\d{11})$/', $vat_number );
+        case 'IT': // Italia.
+            return ( bool ) preg_match( '/^(IT)?(\d{11}|[A-Z]{6}[0-9LMNPQRSTUV]{2}[ABCDEHLMPRST][0-9LMNPQRSTUV]{2}[A-Z][0-9LMNPQRSTUV]{3}[A-Z])$/', $vat_number );
         case 'LI': // Liechtenstein. 
             return ( bool ) preg_match( '/^(LI)?(\d{5})$/', $vat_number );
         case 'LT': // Lituania. 

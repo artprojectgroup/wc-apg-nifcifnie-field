@@ -9,7 +9,7 @@ Requires at least: 5.0
 
 Tested up to: 7.0
 
-Stable tag: 4.9.1
+Stable tag: 4.10.0
 
 WC requires at least: 5.6
 
@@ -142,6 +142,11 @@ Si necesitas ayuda para configurar o instalar **WC - APG NIF/CIF/NIE Field**, **
 *En ningún caso **Art Project Group** proporciona ningún tipo de soporte técnico gratuito.*
 
 ## Changelog
+### 4.10.0
+* Añadido soporte para la validación de `Codice Fiscale` italiano.
+* Corregida la detección de prefijos internacionales para no tratar letras iniciales no ISO como prefijos de país.
+* Corregida la inicialización de la validación VIES en el bloque Finalizar compra en `valida-bloques-nif.js`.
+
 ### 4.9.1
 * Corregida la compatibilidad con la validación del checkout personalizado de FunnelKit Builder al mostrar el campo de envío.
 * Arreglos menores.

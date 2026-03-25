@@ -79,6 +79,42 @@ jQuery(document).ready(function ($) {
             .toUpperCase()
     );
 
+    const EU_VIES_COUNTRIES = ['AT','BE','BG','HR','CY','CZ','DE','DK','EE','ES','FI','FR','GR','HU','IE','IT','LT','LU','LV','MT','NL','PL','PT','RO','SE','SI','SK','XI']; // 'XI' = Irlanda del Norte
+    const esUE = (c) => EU_VIES_COUNTRIES.includes((c || '').toUpperCase());
+    const rememberedValues = { billing: "", shipping: "" };
+    const restoringValue = { billing: false, shipping: false };
+
+    function getFormFromFieldId(id = "") {
+        return id.indexOf("shipping-") === 0 ? "shipping" : "billing";
+    }
+
+    function rememberValue(formulario, value) {
+        rememberedValues[formulario] = sanitizeNif(value || "");
+    }
+
+    function restoreRememberedValue(formulario) {
+        const remembered = rememberedValues[formulario] || "";
+        const field = document.getElementById(formulario + "-apg-nif");
+
+        if (!remembered || !field || restoringValue[formulario]) {
+            return;
+        }
+
+        if (sanitizeNif(field.value || "") === remembered) {
+            return;
+        }
+
+        restoringValue[formulario] = true;
+        setNativeValue(field, remembered);
+        try {
+            field.dispatchEvent(new Event('input', { bubbles: true }));
+            field.dispatchEvent(new Event('change', { bubbles: true }));
+        } catch (e) {}
+        requestAnimationFrame(() => {
+            restoringValue[formulario] = false;
+        });
+    }
+
     // Normaliza los valores iniciales sin disparar validación
     $(SELECTOR_NIF).each(function () {
         const limpio = sanitizeNif($(this).val());
@@ -166,42 +202,6 @@ jQuery(document).ready(function ($) {
             $(this).trigger('change');
         }
     });
-
-    const EU_VIES_COUNTRIES = ['AT','BE','BG','HR','CY','CZ','DE','DK','EE','ES','FI','FR','GR','HU','IE','IT','LT','LU','LV','MT','NL','PL','PT','RO','SE','SI','SK','XI']; // 'XI' = Irlanda del Norte
-    const esUE = (c) => EU_VIES_COUNTRIES.includes((c || '').toUpperCase());
-    const rememberedValues = { billing: "", shipping: "" };
-    const restoringValue = { billing: false, shipping: false };
-
-    function getFormFromFieldId(id = "") {
-        return id.indexOf("shipping-") === 0 ? "shipping" : "billing";
-    }
-
-    function rememberValue(formulario, value) {
-        rememberedValues[formulario] = sanitizeNif(value || "");
-    }
-
-    function restoreRememberedValue(formulario) {
-        const remembered = rememberedValues[formulario] || "";
-        const field = document.getElementById(formulario + "-apg-nif");
-
-        if (!remembered || !field || restoringValue[formulario]) {
-            return;
-        }
-
-        if (sanitizeNif(field.value || "") === remembered) {
-            return;
-        }
-
-        restoringValue[formulario] = true;
-        setNativeValue(field, remembered);
-        try {
-            field.dispatchEvent(new Event('input', { bubbles: true }));
-            field.dispatchEvent(new Event('change', { bubbles: true }));
-        } catch (e) {}
-        requestAnimationFrame(() => {
-            restoringValue[formulario] = false;
-        });
-    }
 
     // Estado de validación para evitar bucles/reentradas
     const estado = {

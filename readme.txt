@@ -4,7 +4,7 @@ Donate link: https://artprojectgroup.es/tienda/donacion
 Tags: nif, cif, nie, eori, vies
 Requires at least: 5.0
 Tested up to: 7.0
-Stable tag: 4.9.1
+Stable tag: 4.10.0
 WC requires at least: 5.6
 WC tested up to: 10.6.1
 License: GNU General Public License v2 or later
@@ -138,6 +138,10 @@ If you need help to configuring or installing **WC - APG NIF/CIF/NIE field**, **
 3. Screenshot of WC - APG NIF/CIF/NIE field. Billing and shipping forms. Classic Shortcode.
 
 == Changelog ==
+= 4.10.0 =
+* Added support for Italian `Codice Fiscale` validation.
+* Fixed international prefix detection so non-ISO leading letters are not treated as country prefixes.
+* Fixed Checkout Block VIES validation initialization in `valida-bloques-nif.js`.
 = 4.9.1 =
 * Fixed compatibility with FunnelKit Builder custom checkout validation when showing the shipping field.
 * Minor fixes.
@@ -403,9 +407,10 @@ If you need help to configuring or installing **WC - APG NIF/CIF/NIE field**, **
 * Initial version.
 
 == Upgrade Notice ==
-= 4.9.1 =
-* Fixed compatibility with FunnelKit Builder custom checkout validation when showing the shipping field.
-* Minor fixes.
+= 4.10.0 =
+* Added support for Italian `Codice Fiscale` validation.
+* Fixed international prefix detection so non-ISO leading letters are not treated as country prefixes.
+* Fixed Checkout Block VIES validation initialization in `valida-bloques-nif.js`.
 
 == Translations ==
 * *English*: by [**Art Project Group**](https://artprojectgroup.es/) (default language).

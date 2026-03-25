@@ -85,6 +85,19 @@ class APG_Campo_NIF_en_Pedido {
 	private static $pais_bloques = '';
 
 	/**
+	 * Comprueba si un prefijo ISO2 puede tratarse como código de país válido.
+	 *
+	 * Acepta los países soportados por el plugin y algunos alias usados por VIES.
+	 *
+	 * @param string $prefijo Prefijo de dos letras.
+	 * @return bool
+	 */
+	private function apg_nif_es_prefijo_pais_valido( string $prefijo ): bool {
+		$prefijo = strtoupper( $prefijo );
+		return in_array( $prefijo, array_merge( $this->listado_paises, array( 'EL', 'XI' ) ), true );
+	}
+
+	/**
 	 * Determina si el campo NIF debe mostrarse en el formulario de envío.
 	 *
 	 * Se controla desde la opción `mostrar_envio` del plugin.
@@ -621,7 +634,7 @@ class APG_Campo_NIF_en_Pedido {
 
 		// Detecta prefijo de país en el número VAT.
 		$prefijo_detectado = '';
-		if ( preg_match( '/^[A-Z]{2}/', $vat_number, $match ) ) {
+		if ( preg_match( '/^[A-Z]{2}/', $vat_number, $match ) && $this->apg_nif_es_prefijo_pais_valido( $match[0] ) ) {
 			$prefijo_detectado = $match[0];
 		}
 
@@ -984,7 +997,7 @@ class APG_Campo_NIF_en_Pedido {
         $pais_cliente   = strtoupper( $pais_cliente );
 
         // Normaliza el NIF/VAT y detecta el prefijo.
-        $prefijo_valido   = preg_match( '/^[A-Z]{2}$/', $prefijo_nif ) === 1;
+        $prefijo_valido   = $this->apg_nif_es_prefijo_pais_valido( $prefijo_nif );
         $nif_normalizado  = strtoupper( preg_replace( '/[^A-Z0-9]/', '', $nif ) );
         if ( ! $prefijo_valido ) {
             $nif_normalizado = $pais_cliente . $nif_normalizado;
@@ -1117,7 +1130,7 @@ class APG_Campo_NIF_en_Pedido {
     public function apg_nif_valida_VAT() {
         list( $nif, $pais, $pais_envio ) = $this->apg_nif_recoge_datos_ajax();
         $prefijo_nif        = strtoupper( substr( $nif, 0, 2 ) );
-        if ( preg_match( '/^[0-9]{2}$/', $prefijo_nif ) ) {
+        if ( ! $this->apg_nif_es_prefijo_pais_valido( $prefijo_nif ) ) {
             $prefijo_nif = strtoupper( $pais );
         }
         $valido             = $this->apg_nif_validacion_internacional( $nif, $pais, $prefijo_nif );
