@@ -4,9 +4,9 @@ Donate link: https://artprojectgroup.es/tienda/donacion
 Tags: nif, cif, nie, eori, vies
 Requires at least: 5.0
 Tested up to: 7.0
-Stable tag: 4.10.0
+Stable tag: 4.11.0
 WC requires at least: 5.6
-WC tested up to: 10.6.1
+WC tested up to: 10.7.0
 License: GNU General Public License v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -35,6 +35,7 @@ Add to WooCommerce a NIF/CIF/NIE field.
 * You can display and customize an error message for the billing form using the `apg_nif_display_error_message` and `apg_nif_error_message` filters.
 * You can remove the Email and Phone fields from the submission form with the `apg_nif_add_fields` filter.
 * You can skip validation by country or external condition with the `apg_nif_skip_validation` filter.
+* You can override the required status for billing or shipping with the `apg_nif_skip_required` filter.
 * Adds a customer download button in WooCommerce (Customers) that includes the NIF/CIF/NIE field in the CSV.
 * It validates documents from:
  * Albania.
@@ -138,6 +139,8 @@ If you need help to configuring or installing **WC - APG NIF/CIF/NIE field**, **
 3. Screenshot of WC - APG NIF/CIF/NIE field. Billing and shipping forms. Classic Shortcode.
 
 == Changelog ==
+= 4.11.0 =
+* Added the `apg_nif_skip_required` filter to override the required status for billing or shipping via hook.
 = 4.10.0 =
 * Added support for Italian `Codice Fiscale` validation.
 * Fixed international prefix detection so non-ISO leading letters are not treated as country prefixes.
@@ -407,10 +410,8 @@ If you need help to configuring or installing **WC - APG NIF/CIF/NIE field**, **
 * Initial version.
 
 == Upgrade Notice ==
-= 4.10.0 =
-* Added support for Italian `Codice Fiscale` validation.
-* Fixed international prefix detection so non-ISO leading letters are not treated as country prefixes.
-* Fixed Checkout Block VIES validation initialization in `valida-bloques-nif.js`.
+= 4.11.0 =
+* Added the `apg_nif_skip_required` filter to override the required status for billing or shipping via hook.
 
 == Translations ==
 * *English*: by [**Art Project Group**](https://artprojectgroup.es/) (default language).

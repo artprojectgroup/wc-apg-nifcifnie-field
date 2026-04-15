@@ -106,7 +106,30 @@ class APG_Campo_NIF_en_Pedido {
 	 */
 	private function apg_nif_mostrar_campo_envio(): bool {
 		global $apg_nif_settings;
+        
 		return ! isset( $apg_nif_settings['mostrar_envio'] ) || '1' === $apg_nif_settings['mostrar_envio'];
+	}
+
+	/**
+	 * Determina si el campo NIF es obligatorio para un grupo concreto.
+	 *
+	 * Permite anular por hook la obligatoriedad configurada en ajustes,
+	 * de forma análoga a `apg_nif_skip_validation`.
+	 *
+	 * Hook: `apg_nif_skip_required`.
+	 *
+	 * @param string $group Grupo de campos: `billing` o `shipping`.
+	 * @return bool
+	 */
+	private function apg_nif_es_campo_requerido( string $group ): bool {
+		global $apg_nif_settings;
+
+		$group                 = 'shipping' === $group ? 'shipping' : 'billing';
+		$setting_key           = 'shipping' === $group ? 'requerido_envio' : 'requerido';
+		$requerido_ajustes     = isset( $apg_nif_settings[ $setting_key ] ) && '1' === $apg_nif_settings[ $setting_key ];
+		$omitir_obligatoriedad = apply_filters( 'apg_nif_skip_required', false, $group, $requerido_ajustes, $setting_key );
+
+		return $requerido_ajustes && ! $omitir_obligatoriedad;
 	}
 
 	/**
@@ -302,7 +325,7 @@ class APG_Campo_NIF_en_Pedido {
             'label'       => $this->nombre_nif,
             'placeholder' => $this->placeholder,
             'priority'    => (int) $this->priority,
-            'required'    => isset( $apg_nif_settings['requerido'] ) && '1' === $apg_nif_settings['requerido'],
+            'required'    => $this->apg_nif_es_campo_requerido( 'billing' ),
         );
 
         if ( apply_filters( 'apg_nif_add_fields', true ) ) { // Si no quieren añadirse: add_filter( 'apg_nif_add_fields', '__return_false' );
@@ -351,7 +374,7 @@ class APG_Campo_NIF_en_Pedido {
         	$campos['billing_nif']['label']       = $this->nombre_nif;
         	$campos['billing_nif']['placeholder'] = $this->placeholder;
         	$campos['billing_nif']['priority']    = (int) $this->priority;
-        	$campos['billing_nif']['required']    = ( isset( $apg_nif_settings['requerido'] ) && '1' === $apg_nif_settings['requerido'] );
+        	$campos['billing_nif']['required']    = $this->apg_nif_es_campo_requerido( 'billing' );
 		}
 
         return $campos;
@@ -378,8 +401,8 @@ class APG_Campo_NIF_en_Pedido {
     public function apg_nif_formulario_bloques() {
         global $apg_nif_settings;
 
-		$requerido_facturacion = isset( $apg_nif_settings['requerido'] ) && '1' === $apg_nif_settings['requerido'];
-		$requerido_envio       = isset( $apg_nif_settings['requerido_envio'] ) && '1' === $apg_nif_settings['requerido_envio'];
+		$requerido_facturacion = $this->apg_nif_es_campo_requerido( 'billing' );
+		$requerido_envio       = $this->apg_nif_es_campo_requerido( 'shipping' );
 		// Solo marcar como "required" nativo cuando ambos grupos lo son.
 		$requerido_bloques     = $requerido_facturacion && $requerido_envio && $this->apg_nif_mostrar_campo_envio();
 
@@ -547,7 +570,7 @@ class APG_Campo_NIF_en_Pedido {
 
 		if ( isset( $campos['shipping_nif'] ) && is_array( $campos['shipping_nif'] ) ) {
         	$campos['shipping_nif']['label']    = $this->nombre_nif;
-        	$campos['shipping_nif']['required'] = isset( $apg_nif_settings['requerido_envio'] ) && '1' === $apg_nif_settings['requerido_envio'];
+        	$campos['shipping_nif']['required'] = $this->apg_nif_es_campo_requerido( 'shipping' );
 		}
         if ( apply_filters( 'apg_nif_add_fields', true ) ) { // Si no quieren añadirse: add_filter( 'apg_nif_add_fields', '__return_false' );
 			if ( isset( $campos['shipping_email'] ) && isset( $facturacion['billing_email'] ) ) {
@@ -745,8 +768,8 @@ class APG_Campo_NIF_en_Pedido {
         $shipping_country   = isset( $_POST['shipping_country'] ) ? sanitize_text_field( wp_unslash( $_POST['shipping_country'] ) ) : '';
 
         // Confirma si es requerido.
-        $es_requerido       = isset( $apg_nif_settings['requerido'] ) && '1' === $apg_nif_settings['requerido'];
-        $es_requerido_envio = isset( $apg_nif_settings['requerido_envio'] ) && '1' === $apg_nif_settings['requerido_envio'];
+        $es_requerido       = $this->apg_nif_es_campo_requerido( 'billing' );
+        $es_requerido_envio = $this->apg_nif_es_campo_requerido( 'shipping' );
         
 		// Facturación.
         if ( ( $billing_nif || $es_requerido ) && ( $validar_formato || $validar_eori ) ) {
@@ -841,8 +864,8 @@ class APG_Campo_NIF_en_Pedido {
         $pais_envio     = ( $group === 'shipping' ) ? $pais : '';
 
         // Confirma si es requerido.
-		$requerido_facturacion = isset( $apg_nif_settings['requerido'] ) && '1' === $apg_nif_settings['requerido'];
-		$requerido_envio       = isset( $apg_nif_settings['requerido_envio'] ) && '1' === $apg_nif_settings['requerido_envio'];
+		$requerido_facturacion = $this->apg_nif_es_campo_requerido( 'billing' );
+		$requerido_envio       = $this->apg_nif_es_campo_requerido( 'shipping' );
         $es_requerido          = ( 'shipping' === $group ) ? $requerido_envio : $requerido_facturacion;
 		$requerido_bloques     = $requerido_facturacion && $requerido_envio;
 
@@ -953,8 +976,8 @@ class APG_Campo_NIF_en_Pedido {
                 'vat_error'     => $this->mensaje_error,
                 'eori_error'    => $this->mensaje_eori,
                 'validacion'    => $tipo_validacion,
-                'requerido'     => ( isset( $apg_nif_settings['requerido'] ) && '1' === $apg_nif_settings['requerido'] ),
-                'requerido_envio' => ( isset( $apg_nif_settings['requerido_envio'] ) && '1' === $apg_nif_settings['requerido_envio'] ),
+                'requerido'     => $this->apg_nif_es_campo_requerido( 'billing' ),
+                'requerido_envio' => $this->apg_nif_es_campo_requerido( 'shipping' ),
                 'mostrar_envio' => $this->apg_nif_mostrar_campo_envio(),
                 'bloquear_envio' => ( isset( $apg_nif_settings['validacion'] ) && '1' === $apg_nif_settings['validacion'] ),
                 'nonce'         => wp_create_nonce( 'apg_nif_nonce' ),

@@ -9,11 +9,11 @@ Requires at least: 5.0
 
 Tested up to: 7.0
 
-Stable tag: 4.10.0
+Stable tag: 4.11.0
 
 WC requires at least: 5.6
 
-WC tested up to: 10.6.1
+WC tested up to: 10.7.0
 
 License: GNU General Public License v2 or later
 
@@ -44,6 +44,7 @@ Añade a WooCommerce un campo NIF/CIF/NIE.
 * Puedes mostrar y personalizar un mensaje de error para el formulario de facturación utilizando los filtros `apg_nif_display_error_message` y `apg_nif_error_message`.
 * Puedes quitar los campos Correo electrónico y Teléfono del formulario de envío con el filtro `apg_nif_add_fields`.
 * Puedes omitir la validación por país o condición externca con el filtro `apg_nif_skip_validation`.
+* Puedes anular la obligatoriedad del campo en facturación o envío con el filtro `apg_nif_skip_required`.
 * Añade un botón de descarga de clientes en WooCommerce (Clientes) que incluye el campo NIF/CIF/NIE en el CSV.
 * Valida documentos de:
  * Albania.
@@ -142,6 +143,9 @@ Si necesitas ayuda para configurar o instalar **WC - APG NIF/CIF/NIE Field**, **
 *En ningún caso **Art Project Group** proporciona ningún tipo de soporte técnico gratuito.*
 
 ## Changelog
+### 4.11.0
+* Añadido el filtro `apg_nif_skip_required` para anular por hook la obligatoriedad del campo en facturación o envío.
+
 ### 4.10.0
 * Añadido soporte para la validación de `Codice Fiscale` italiano.
 * Corregida la detección de prefijos internacionales para no tratar letras iniciales no ISO como prefijos de país.
