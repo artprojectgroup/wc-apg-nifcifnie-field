@@ -133,6 +133,21 @@ class APG_Campo_NIF_en_Pedido {
 	}
 
 	/**
+	 * Detecta si el formulario clásico de envío está realmente en uso.
+	 *
+	 * Se considera activo únicamente si el cliente ha marcado
+	 * "Enviar a una dirección diferente".
+	 *
+	 * @return bool
+	 */
+	private function apg_nif_checkout_clasico_tiene_envio_activo(): bool {
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- WooCommerce already validates nonce via checkout processing.
+		$ship_to_different_address = isset( $_POST['ship_to_different_address'] ) ? sanitize_text_field( wp_unslash( $_POST['ship_to_different_address'] ) ) : '';
+
+		return '' !== $ship_to_different_address && wc_string_to_bool( $ship_to_different_address );
+	}
+
+	/**
 	 * Inicializa hooks de campos, validación y AJAX (clásico y bloques).
 	 *
 	 * Hooks destacados:
@@ -282,9 +297,9 @@ class APG_Campo_NIF_en_Pedido {
             $this->mensaje_vies = isset( $apg_nif_settings['error_vies'] ) && $apg_nif_settings['error_vies'] ? sanitize_text_field( $apg_nif_settings['error_vies'] ) : esc_attr__( 'Please enter a valid VIES VAT number.', 'wc-apg-nifcifnie-field' ); // Mensaje de error.
             $this->mensaje_max  = isset( $apg_nif_settings['error_vies_max'] ) && $apg_nif_settings['error_vies_max'] ? sanitize_text_field( $apg_nif_settings['error_vies_max'] ) : esc_attr__( 'Error: maximum number of concurrent requests exceeded.', 'wc-apg-nifcifnie-field' ); // Mensaje de error.
         }
-
+		
 		// EORI.
-		if ( isset( $apg_nif_settings['validacion_eori'] ) && '1' === $apg_nif_settings['validacion_eori'] ) {
+        if ( isset( $apg_nif_settings['validacion_eori'] ) && '1' === $apg_nif_settings['validacion_eori'] ) {
             $this->nombre_nif   = isset( $apg_nif_settings['etiqueta_eori'] ) && $apg_nif_settings['etiqueta_eori'] ? sanitize_text_field( $apg_nif_settings['etiqueta_eori'] ) : esc_attr__( 'NIF/CIF/NIE/EORI number', 'wc-apg-nifcifnie-field' ); // Nombre modificado del campo.
             $this->placeholder  = isset( $apg_nif_settings['placeholder_eori'] ) && $apg_nif_settings['placeholder_eori'] ? sanitize_text_field( $apg_nif_settings['placeholder_eori'] ) : esc_attr_x( 'NIF/CIF/NIE/EORI number', 'placeholder', 'wc-apg-nifcifnie-field' ); // Nombre modificado del placeholder.
             $this->mensaje_eori = isset( $apg_nif_settings['error_eori'] ) && $apg_nif_settings['error_eori'] ? sanitize_text_field( $apg_nif_settings['error_eori'] ) : esc_attr__( 'Please enter a valid EORI number.', 'wc-apg-nifcifnie-field' ); // Mensaje de error.
@@ -799,6 +814,12 @@ class APG_Campo_NIF_en_Pedido {
 		if ( ! $this->apg_nif_mostrar_campo_envio() ) {
 			return;
 		}
+		$formulario_envio_activo = $this->apg_nif_checkout_clasico_tiene_envio_activo();
+		// En checkout clásico sólo debe validarse el NIF de envío si el formulario de envío está realmente habilitado.
+		if ( ! $formulario_envio_activo ) {
+			return;
+		}
+
 		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- WooCommerce already validates nonce via 'get-customer-details'
 		$tiene_shipping_nif = isset( $_POST['shipping_nif'] );
         if ( ( $shipping_nif || $es_requerido_envio ) && $tiene_shipping_nif && ( $validar_formato || $validar_eori ) ) {
