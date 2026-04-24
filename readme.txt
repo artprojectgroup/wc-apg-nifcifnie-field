@@ -4,7 +4,7 @@ Donate link: https://artprojectgroup.es/tienda/donacion
 Tags: nif, cif, nie, eori, vies
 Requires at least: 5.0
 Tested up to: 7.0
-Stable tag: 4.11.1
+Stable tag: 4.11.2
 WC requires at least: 5.6
 WC tested up to: 10.7.0
 License: GNU General Public License v2 or later
@@ -139,6 +139,8 @@ If you need help to configuring or installing **WC - APG NIF/CIF/NIE field**, **
 3. Screenshot of WC - APG NIF/CIF/NIE field. Billing and shipping forms. Classic Shortcode.
 
 == Changelog ==
+= 4.11.2 =
+* Fixed order admin and formatted address NIF loading for orders created with Checkout Blocks by reading `billing_nif` and `shipping_nif` first, with fallback to legacy meta keys.
 = 4.11.1 =
 * Fixed `requerido_envio` in classic checkout so the shipping NIF/CIF/NIE field is only required when the customer checks "Ship to a different address".
 = 4.11.0 =
@@ -412,8 +414,8 @@ If you need help to configuring or installing **WC - APG NIF/CIF/NIE field**, **
 * Initial version.
 
 == Upgrade Notice ==
-= 4.11.1 =
-* Fixed `requerido_envio` in classic checkout so the shipping NIF/CIF/NIE field is only required when the customer checks "Ship to a different address".
+= 4.11.2 =
+* Fixed order admin and formatted address NIF loading for orders created with Checkout Blocks by reading `billing_nif` and `shipping_nif` first, with fallback to legacy meta keys.
 
 == Translations ==
 * *English*: by [**Art Project Group**](https://artprojectgroup.es/) (default language).

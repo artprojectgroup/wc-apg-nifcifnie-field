@@ -112,7 +112,10 @@ class APG_Campo_NIF_en_Direcciones {
 		// Detecta si es billing o shipping en función del filtro actual.
 		$tipo = ( false !== strpos( current_filter(), 'billing' ) ) ? 'billing' : 'shipping';
 
-		$meta_nif = $pedido->get_meta( "_{$tipo}_nif", true );
+		$meta_nif = $pedido->get_meta( "{$tipo}_nif", true );
+		if ( empty( $meta_nif ) ) {
+			$meta_nif = $pedido->get_meta( "_{$tipo}_nif", true );
+		}
 		if ( empty( $meta_nif ) ) {
 			$meta_nif = $pedido->get_meta( "_wc_{$tipo}/apg/nif", true );
 		}

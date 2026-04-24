@@ -89,9 +89,11 @@ class APG_Campo_NIF_en_Admin_Pedidos {
 			// Detecta si estamos en el hook de envío o de facturación usando el nombre del filtro.
 			$es_envio = ( 'woocommerce_admin_shipping_fields' === current_filter() );
 
-			// Preferimos el valor guardado en el pedido.
-			// Si está vacío, intentamos completar con el dato del CLIENTE asociado.
-			$valor_nif = $order->get_meta( $es_envio ? '_shipping_nif' : '_billing_nif' );
+			// Checkout Blocks guarda el NIF sin guion bajo; mantenemos fallback para pedidos antiguos.
+			$valor_nif = $order->get_meta( $es_envio ? 'shipping_nif' : 'billing_nif', true );
+			if ( '' === $valor_nif ) {
+				$valor_nif = $order->get_meta( $es_envio ? '_shipping_nif' : '_billing_nif', true );
+			}
 
 			$customer_id = $order->get_customer_id();
 			if ( $customer_id && '' === $valor_nif ) {

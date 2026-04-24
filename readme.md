@@ -9,7 +9,7 @@ Requires at least: 5.0
 
 Tested up to: 7.0
 
-Stable tag: 4.11.1
+Stable tag: 4.11.2
 
 WC requires at least: 5.6
 
@@ -143,6 +143,9 @@ Si necesitas ayuda para configurar o instalar **WC - APG NIF/CIF/NIE Field**, **
 *En ningún caso **Art Project Group** proporciona ningún tipo de soporte técnico gratuito.*
 
 ## Changelog
+### 4.11.2
+* Corregida la carga del NIF en la administración del pedido y en las direcciones formateadas para pedidos creados con Checkout Blocks, leyendo primero `billing_nif` y `shipping_nif` y manteniendo compatibilidad con metas heredadas.
+
 ### 4.11.1
 * Corregido `requerido_envio` en el checkout clásico para que el campo NIF/CIF/NIE de envío sólo sea obligatorio cuando el cliente marque "Enviar a una dirección diferente".
 
