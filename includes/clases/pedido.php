@@ -320,16 +320,18 @@ class APG_Campo_NIF_en_Pedido {
 	 * @param array<string,array<string,mixed>> $campos Estructura de campos de dirección por defecto.
 	 * @return array<string,array<string,mixed>> Campos ajustados.
 	 */
-    public function apg_nif_campos_de_direccion( $campos ) {
-		// Solo operativo en checkout clásico / Mi cuenta (salvo excepciones).
+	public function apg_nif_campos_de_direccion( $campos ) {
+		// En tiendas con Checkout Blocks, este filtro también se reutiliza en "Mi cuenta".
+		// Solo se omite en el checkout de bloques real, no en la edición de direcciones.
         if ( class_exists( 'WC_Blocks_Utils' ) && WC_Blocks_Utils::has_block_in_page( wc_get_page_id( 'checkout' ), 'woocommerce/checkout' ) ) {
 			// Compatibilidad con Checkout Field Editor for WooCommerce.
 			// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only access to 'page' query arg for UI/display logic; sanitized and not used to change state or process data.
 			$page = isset( $_GET['page'] ) ? sanitize_key( wp_unslash( $_GET['page'] ) ) : '';
 			// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only access to 'tab' query arg for UI/display logic; sanitized and not used to change state or process data.
 			$tab = isset( $_GET['tab'] ) ? sanitize_key( wp_unslash( $_GET['tab'] ) ) : '';
+			$es_checkout_bloques = function_exists( 'is_checkout' ) && is_checkout() && ! is_wc_endpoint_url( 'order-received' );
 
-			if ( $page !== 'checkout_form_designer' && $tab !== 'fields' ) {
+			if ( $page !== 'checkout_form_designer' && $tab !== 'fields' && $es_checkout_bloques ) {
             	return $campos;
 			}
         }

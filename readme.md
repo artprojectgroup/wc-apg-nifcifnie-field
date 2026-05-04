@@ -9,7 +9,7 @@ Requires at least: 5.0
 
 Tested up to: 7.0
 
-Stable tag: 4.11.2
+Stable tag: 4.11.3
 
 WC requires at least: 5.6
 
@@ -143,6 +143,9 @@ Si necesitas ayuda para configurar o instalar **WC - APG NIF/CIF/NIE Field**, **
 *En ningún caso **Art Project Group** proporciona ningún tipo de soporte técnico gratuito.*
 
 ## Changelog
+### 4.11.3
+* Corregido el campo NIF/CIF/NIE en la edición de direcciones de Mi cuenta cuando la página de cuenta se muestra con el shortcode `[woocommerce_my_account]` en tiendas que usan Checkout Blocks.
+
 ### 4.11.2
 * Corregida la carga del NIF en la administración del pedido y en las direcciones formateadas para pedidos creados con Checkout Blocks, leyendo primero `billing_nif` y `shipping_nif` y manteniendo compatibilidad con metas heredadas.
 
