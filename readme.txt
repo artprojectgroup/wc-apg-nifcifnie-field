@@ -4,7 +4,7 @@ Donate link: https://artprojectgroup.es/tienda/donacion
 Tags: nif, cif, nie, eori, vies
 Requires at least: 5.0
 Tested up to: 7.0
-Stable tag: 4.11.3
+Stable tag: 4.11.4
 WC requires at least: 5.6
 WC tested up to: 10.7.0
 License: GNU General Public License v2 or later
@@ -139,6 +139,9 @@ If you need help to configuring or installing **WC - APG NIF/CIF/NIE field**, **
 3. Screenshot of WC - APG NIF/CIF/NIE field. Billing and shipping forms. Classic Shortcode.
 
 == Changelog ==
+= 4.11.4 =
+* Fixed a Checkout Blocks regression introduced in 4.11.3 where the NIF/CIF/NIE field could be treated as a native address field during Store API requests and incorrectly trigger a required-field error on checkout.
+
 = 4.11.3 =
 * Fixed the NIF/CIF/NIE field in My Account address editing when the account page is rendered with the `[woocommerce_my_account]` shortcode on stores using Checkout Blocks.
 = 4.11.2 =
@@ -416,8 +419,8 @@ If you need help to configuring or installing **WC - APG NIF/CIF/NIE field**, **
 * Initial version.
 
 == Upgrade Notice ==
-= 4.11.3 =
-* Fixed the NIF/CIF/NIE field in My Account address editing when the account page is rendered with the `[woocommerce_my_account]` shortcode on stores using Checkout Blocks.
+= 4.11.4 =
+* Fixed a Checkout Blocks regression introduced in 4.11.3 where the NIF/CIF/NIE field could be treated as a native address field during Store API requests and incorrectly trigger a required-field error on checkout.
 
 == Translations ==
 * *English*: by [**Art Project Group**](https://artprojectgroup.es/) (default language).

@@ -322,7 +322,9 @@ class APG_Campo_NIF_en_Pedido {
 	 */
 	public function apg_nif_campos_de_direccion( $campos ) {
 		// En tiendas con Checkout Blocks, este filtro también se reutiliza en "Mi cuenta".
-		// Solo se omite en el checkout de bloques real, no en la edición de direcciones.
+		// Debe omitirse tanto en el checkout de bloques renderizado como en sus peticiones
+		// REST/Store API, o WooCommerce puede tratar el NIF como campo nativo de dirección
+		// y validarlo por su cuenta antes de que intervenga el plugin.
         if ( class_exists( 'WC_Blocks_Utils' ) && WC_Blocks_Utils::has_block_in_page( wc_get_page_id( 'checkout' ), 'woocommerce/checkout' ) ) {
 			// Compatibilidad con Checkout Field Editor for WooCommerce.
 			// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only access to 'page' query arg for UI/display logic; sanitized and not used to change state or process data.
@@ -330,8 +332,9 @@ class APG_Campo_NIF_en_Pedido {
 			// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only access to 'tab' query arg for UI/display logic; sanitized and not used to change state or process data.
 			$tab = isset( $_GET['tab'] ) ? sanitize_key( wp_unslash( $_GET['tab'] ) ) : '';
 			$es_checkout_bloques = function_exists( 'is_checkout' ) && is_checkout() && ! is_wc_endpoint_url( 'order-received' );
+			$es_store_api_bloques = defined( 'REST_REQUEST' ) && REST_REQUEST;
 
-			if ( $page !== 'checkout_form_designer' && $tab !== 'fields' && $es_checkout_bloques ) {
+			if ( $page !== 'checkout_form_designer' && $tab !== 'fields' && ( $es_checkout_bloques || $es_store_api_bloques ) ) {
             	return $campos;
 			}
         }
