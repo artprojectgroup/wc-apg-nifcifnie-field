@@ -139,9 +139,9 @@ La configuración del plugin es un muy simple, tan sólo debes indicar si quiere
 
 ### ¿Cómo corrijo los metadatos NIF duplicados de pedidos anteriores a la versión 4.12.0?
 
-Si tu tienda realizó pedidos con Checkout Blocks antes de actualizar a la versión 4.12.0, es posible que algunos pedidos tengan filas duplicadas de `billing_nif` / `shipping_nif` en la base de datos que impiden que el campo se actualice correctamente desde el panel de administración.
+Si tu tienda realizó pedidos con el Bloque de Finalizar compra antes de actualizar a la versión 4.12.0, es posible que algunos pedidos tengan filas duplicadas de `billing_nif` / `shipping_nif` en la base de datos que impiden que el campo se actualice correctamente desde el panel de administración.
 
-**Opción 1 – Página de ajustes (recomendado):** Ve a *WooCommerce → NIF/CIF/NIE field*. Si se detectan duplicados, aparecerá el botón "Fix duplicate NIF metadata" al final de la página. Haz clic para ejecutar la limpieza. El botón desaparece automáticamente cuando no quedan duplicados.
+**Opción 1 – Página de ajustes (recomendado):** Ve a *WooCommerce → NIF/CIF/NIE field*. Si se detectan duplicados, aparecerá el botón "Corregir los metadatos duplicados del NIF" al final de la página. Haz clic para ejecutar la limpieza. El botón desaparece automáticamente cuando no quedan duplicados.
 
 **Opción 2 – WP-CLI (tiendas grandes):** Ejecuta el siguiente comando desde la raíz de tu instalación de WordPress para evitar tiempos de espera HTTP:
 
@@ -154,17 +154,17 @@ Si necesitas ayuda para configurar o instalar **WC - APG NIF/CIF/NIE Field**, **
 
 ## Changelog
 ### 4.12.0
-* Corregida la creación de filas duplicadas de metadatos `billing_nif` / `shipping_nif` al realizar pedidos con Checkout Blocks, que impedía que el campo NIF se actualizara correctamente al editar un pedido desde el panel de administración.
-* Añadido el botón "Fix duplicate NIF metadata" en la página de ajustes del plugin para limpiar las filas duplicadas existentes en las tiendas afectadas por versiones anteriores.
+* Corregida la creación de filas duplicadas de metadatos `billing_nif` / `shipping_nif` al realizar pedidos con el Bloque de Finalizar compra, que impedía que el campo NIF se actualizara correctamente al editar un pedido desde el panel de administración.
+* Añadido el botón "Corregir los metadatos duplicados del NIF" en la página de ajustes del plugin para limpiar las filas duplicadas existentes en las tiendas afectadas por versiones anteriores.
 
 ### 4.11.4
-* Corregida una regresión en Checkout Blocks introducida en la versión 4.11.3 por la que el campo NIF/CIF/NIE podía tratarse como un campo nativo de dirección durante las peticiones Store API y lanzar incorrectamente un error de campo obligatorio al finalizar la compra.
+* Corregida una regresión en el Bloque de Finalizar compra introducida en la versión 4.11.3 por la que el campo NIF/CIF/NIE podía tratarse como un campo nativo de dirección durante las peticiones Store API y lanzar incorrectamente un error de campo obligatorio al finalizar la compra.
 
 ### 4.11.3
-* Corregido el campo NIF/CIF/NIE en la edición de direcciones de Mi cuenta cuando la página de cuenta se muestra con el shortcode `[woocommerce_my_account]` en tiendas que usan Checkout Blocks.
+* Corregido el campo NIF/CIF/NIE en la edición de direcciones de Mi cuenta cuando la página de cuenta se muestra con el shortcode `[woocommerce_my_account]` en tiendas que usan el Bloque de Finalizar compra.
 
 ### 4.11.2
-* Corregida la carga del NIF en la administración del pedido y en las direcciones formateadas para pedidos creados con Checkout Blocks, leyendo primero `billing_nif` y `shipping_nif` y manteniendo compatibilidad con metas heredadas.
+* Corregida la carga del NIF en la administración del pedido y en las direcciones formateadas para pedidos creados con el Bloque de Finalizar compra, leyendo primero `billing_nif` y `shipping_nif` y manteniendo compatibilidad con metas heredadas.
 
 ### 4.11.1
 * Corregido `requerido_envio` en el checkout clásico para que el campo NIF/CIF/NIE de envío sólo sea obligatorio cuando el cliente marque "Enviar a una dirección diferente".
