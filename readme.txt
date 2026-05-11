@@ -4,11 +4,11 @@ Donate link: https://artprojectgroup.es/tienda/donacion
 Tags: nif, cif, nie, eori, vies
 Requires at least: 5.0
 Tested up to: 7.0
-Stable tag: 4.11.4
+Stable tag: 4.12.0
 WC requires at least: 5.6
-WC tested up to: 10.7.0
-License: GNU General Public License v2 or later
-License URI: https://www.gnu.org/licenses/gpl-2.0.html
+WC tested up to: 10.8.0
+License: GNU General Public License v3 or later
+License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
 Add to WooCommerce a NIF/CIF/NIE field.
 
@@ -128,8 +128,17 @@ You can follow the development of this plugin on [Github](https://github.com/art
 = How do you set up? =
 The plugin settings is very simple, you just must indicate if you want NIF/CIF/NIE field is validated or not.
 
+= How do I fix duplicate NIF metadata from orders placed before 4.12.0? =
+If your store placed orders via Checkout Blocks before updating to 4.12.0, some orders may have duplicate `billing_nif` / `shipping_nif` rows in the database that prevent the field from updating correctly in the admin panel.
+
+**Option 1 – Settings page (recommended):** Go to *WooCommerce → NIF/CIF/NIE field*. If duplicates are detected, a "Fix duplicate NIF metadata" button will appear at the bottom of the page. Click it to run the cleanup. The button disappears automatically once there are no more duplicates.
+
+**Option 2 – WP-CLI (large stores):** Run the following command from the root of your WordPress installation to avoid HTTP timeouts:
+
+`wp eval-file wp-content/plugins/wc-apg-nifcifnie-field/includes/admin/limpieza-meta-duplicados.php`
+
 = Support =
-If you need help to configuring or installing **WC - APG NIF/CIF/NIE field**, **Art Project Group** offers its service [**Technical Support**](https://artprojectgroup.es/tienda/ticket-de-soporte). 
+If you need help to configuring or installing **WC - APG NIF/CIF/NIE field**, **Art Project Group** offers its service [**Technical Support**](https://artprojectgroup.es/tienda/ticket-de-soporte).
 
 *In any case **Art Project Group** provides any kind of free technical support.*
 
@@ -139,6 +148,10 @@ If you need help to configuring or installing **WC - APG NIF/CIF/NIE field**, **
 3. Screenshot of WC - APG NIF/CIF/NIE field. Billing and shipping forms. Classic Shortcode.
 
 == Changelog ==
+= 4.12.0 =
+* Fixed duplicate `billing_nif` / `shipping_nif` metadata rows generated when placing orders with Checkout Blocks, which caused the NIF field to appear unchanged after editing an order from the admin panel.
+* Added a "Fix duplicate NIF metadata" button in the plugin settings page to clean up existing duplicate rows in stores affected by previous versions.
+
 = 4.11.4 =
 * Fixed a Checkout Blocks regression introduced in 4.11.3 where the NIF/CIF/NIE field could be treated as a native address field during Store API requests and incorrectly trigger a required-field error on checkout.
 
@@ -419,8 +432,8 @@ If you need help to configuring or installing **WC - APG NIF/CIF/NIE field**, **
 * Initial version.
 
 == Upgrade Notice ==
-= 4.11.4 =
-* Fixed a Checkout Blocks regression introduced in 4.11.3 where the NIF/CIF/NIE field could be treated as a native address field during Store API requests and incorrectly trigger a required-field error on checkout.
+= 4.12.0 =
+* Fixed duplicate NIF metadata rows created with Checkout Blocks that prevented the field from updating correctly in the order admin panel. Use the new cleanup button in the plugin settings to fix existing affected orders.
 
 == Translations ==
 * *English*: by [**Art Project Group**](https://artprojectgroup.es/) (default language).

@@ -9,15 +9,15 @@ Requires at least: 5.0
 
 Tested up to: 7.0
 
-Stable tag: 4.11.4
+Stable tag: 4.12.0
 
 WC requires at least: 5.6
 
-WC tested up to: 10.7.0
+WC tested up to: 10.8.0
 
-License: GNU General Public License v2 or later
+License: GNU General Public License v3 or later
 
-License URI: https://www.gnu.org/licenses/gpl-2.0.html
+License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
 Añade a WooCommerce un campo NIF/CIF/NIE.
 
@@ -137,12 +137,26 @@ Puedes seguir el desarrollo de este plugin en [Github](https://github.com/artpro
 ### ¿Cómo se configura?
 La configuración del plugin es un muy simple, tan sólo debes indicar si quieres que se valide el campo NIF/CIF/NIE o no.
 
+### ¿Cómo corrijo los metadatos NIF duplicados de pedidos anteriores a la versión 4.12.0?
+
+Si tu tienda realizó pedidos con Checkout Blocks antes de actualizar a la versión 4.12.0, es posible que algunos pedidos tengan filas duplicadas de `billing_nif` / `shipping_nif` en la base de datos que impiden que el campo se actualice correctamente desde el panel de administración.
+
+**Opción 1 – Página de ajustes (recomendado):** Ve a *WooCommerce → NIF/CIF/NIE field*. Si se detectan duplicados, aparecerá el botón "Fix duplicate NIF metadata" al final de la página. Haz clic para ejecutar la limpieza. El botón desaparece automáticamente cuando no quedan duplicados.
+
+**Opción 2 – WP-CLI (tiendas grandes):** Ejecuta el siguiente comando desde la raíz de tu instalación de WordPress para evitar tiempos de espera HTTP:
+
+`wp eval-file wp-content/plugins/wc-apg-nifcifnie-field/includes/admin/limpieza-meta-duplicados.php`
+
 ### Soporte técnico
-Si necesitas ayuda para configurar o instalar **WC - APG NIF/CIF/NIE Field**, **Art Project Group** te ofrece su servicio de [**Soporte técnico**](https://artprojectgroup.es/tienda/ticket-de-soporte). 
+Si necesitas ayuda para configurar o instalar **WC - APG NIF/CIF/NIE Field**, **Art Project Group** te ofrece su servicio de [**Soporte técnico**](https://artprojectgroup.es/tienda/ticket-de-soporte).
 
 *En ningún caso **Art Project Group** proporciona ningún tipo de soporte técnico gratuito.*
 
 ## Changelog
+### 4.12.0
+* Corregida la creación de filas duplicadas de metadatos `billing_nif` / `shipping_nif` al realizar pedidos con Checkout Blocks, que impedía que el campo NIF se actualizara correctamente al editar un pedido desde el panel de administración.
+* Añadido el botón "Fix duplicate NIF metadata" en la página de ajustes del plugin para limpiar las filas duplicadas existentes en las tiendas afectadas por versiones anteriores.
+
 ### 4.11.4
 * Corregida una regresión en Checkout Blocks introducida en la versión 4.11.3 por la que el campo NIF/CIF/NIE podía tratarse como un campo nativo de dirección durante las peticiones Store API y lanzar incorrectamente un error de campo obligatorio al finalizar la compra.
 

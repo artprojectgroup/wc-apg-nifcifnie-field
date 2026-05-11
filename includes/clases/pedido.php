@@ -459,8 +459,9 @@ class APG_Campo_NIF_en_Pedido {
                         return $order->get_meta( $meta_key );
                     },
                     'setter' => function ( $order, $value, $group ) {
-                        $meta_key   = ( 'billing' === $group ) ? 'billing_nif' : 'shipping_nif';
-                        $order->update_meta_data( $meta_key, sanitize_text_field( $value ) );
+                        $meta_key = ( 'billing' === $group ) ? 'billing_nif' : 'shipping_nif';
+                        $order->delete_meta_data( $meta_key );
+                        $order->add_meta_data( $meta_key, sanitize_text_field( $value ) );
                     },
                     'schema' => array(
                         'description' => $this->nombre_nif,
@@ -547,9 +548,12 @@ class APG_Campo_NIF_en_Pedido {
 			return;
 		}
 
-		$clave    = ( 'billing' === $group ) ? 'billing_nif' : 'shipping_nif';
+		$clave = ( 'billing' === $group ) ? 'billing_nif' : 'shipping_nif';
 
-		$wc_object->update_meta_data( $clave, $value, true );
+		// Elimina entradas previas para evitar duplicados (el setter del Store API puede
+		// haber escrito ya el mismo dato en la misma solicitud).
+		$wc_object->delete_meta_data( $clave );
+		$wc_object->add_meta_data( $clave, $value );
 	}
 	
 	/**
