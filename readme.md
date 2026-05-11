@@ -9,7 +9,7 @@ Requires at least: 5.0
 
 Tested up to: 7.0
 
-Stable tag: 4.12.0
+Stable tag: 4.12.1
 
 WC requires at least: 5.6
 
@@ -153,6 +153,9 @@ Si necesitas ayuda para configurar o instalar **WC - APG NIF/CIF/NIE Field**, **
 *En ningún caso **Art Project Group** proporciona ningún tipo de soporte técnico gratuito.*
 
 ## Changelog
+### 4.12.1
+* Corregida una regresión introducida en la versión 4.12.0 que hacía que al editar el campo NIF de un pedido existente desde el panel de administración y guardar, el nuevo valor se descartara en silencio y quedara el valor anterior en la base de datos. El problema se daba en tiendas con filas duplicadas de metadatos NIF creadas por versiones anteriores del plugin. Se ha eliminado el hook de deduplicación automática; para limpiar los duplicados usa el botón en los ajustes del plugin o el script WP-CLI.
+
 ### 4.12.0
 * Corregida la creación de filas duplicadas de metadatos `billing_nif` / `shipping_nif` al realizar pedidos con el Bloque de Finalizar compra, que impedía que el campo NIF se actualizara correctamente al editar un pedido desde el panel de administración.
 * Añadido el botón "Corregir los metadatos duplicados del NIF" en la página de ajustes del plugin para limpiar las filas duplicadas existentes en las tiendas afectadas por versiones anteriores.

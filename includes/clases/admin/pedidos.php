@@ -43,7 +43,6 @@ class APG_Campo_NIF_en_Admin_Pedidos {
 			add_filter( 'woocommerce_ajax_get_customer_details', array( $this, 'apg_dame_nif_ajax' ), 10, 2 );
 		}
 		add_action( 'admin_enqueue_scripts', array( $this, 'apg_nif_carga_hoja_de_estilo_editar_direccion_pedido' ) );
-		add_action( 'woocommerce_before_order_object_save', array( $this, 'apg_nif_elimina_meta_duplicados' ) );
 		add_action( 'admin_post_apg_nif_limpieza_duplicados', array( $this, 'apg_nif_ejecuta_limpieza_duplicados' ) );
 	}
 
@@ -347,38 +346,6 @@ class APG_Campo_NIF_en_Admin_Pedidos {
 		exit;
 	}
 
-	/**
-	 * Elimina entradas duplicadas de billing_nif/shipping_nif antes de guardar el pedido.
-	 *
-	 * Pedidos creados con Checkout Blocks podían acumular varias filas con la misma
-	 * clave en wc_orders_meta. Al guardar, WooCommerce solo actualizaba la primera y
-	 * dejaba las demás con el valor antiguo, haciendo que el campo pareciera no guardarse.
-	 *
-	 * @param \WC_Order $order Pedido que va a guardarse.
-	 * @return void
-	 */
-	public function apg_nif_elimina_meta_duplicados( $order ) {
-		if ( ! $order instanceof WC_Order ) {
-			return;
-		}
-
-		foreach ( array( 'billing_nif', 'shipping_nif' ) as $key ) {
-			$metas = array_values(
-				array_filter(
-					$order->get_meta_data(),
-					function ( $m ) use ( $key ) {
-						return $m->key === $key;
-					}
-				)
-			);
-
-			if ( count( $metas ) > 1 ) {
-				$valor = $metas[0]->value;
-				$order->delete_meta_data( $key );
-				$order->add_meta_data( $key, $valor );
-			}
-		}
-	}
 }
 
 new APG_Campo_NIF_en_Admin_Pedidos();

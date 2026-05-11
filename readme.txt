@@ -4,7 +4,7 @@ Donate link: https://artprojectgroup.es/tienda/donacion
 Tags: nif, cif, nie, eori, vies
 Requires at least: 5.0
 Tested up to: 7.0
-Stable tag: 4.12.0
+Stable tag: 4.12.1
 WC requires at least: 5.6
 WC tested up to: 10.8.0
 License: GNU General Public License v3 or later
@@ -148,6 +148,9 @@ If you need help to configuring or installing **WC - APG NIF/CIF/NIE field**, **
 3. Screenshot of WC - APG NIF/CIF/NIE field. Billing and shipping forms. Classic Shortcode.
 
 == Changelog ==
+= 4.12.1 =
+* Fixed a regression introduced in 4.12.0 where editing the NIF field on an existing order from the admin panel and saving would silently discard the new value, leaving the old one in the database. This happened on stores with duplicate NIF metadata rows created by older versions of the plugin. The automatic deduplication hook has been removed; use the cleanup button in the plugin settings or the WP-CLI script instead.
+
 = 4.12.0 =
 * Fixed duplicate `billing_nif` / `shipping_nif` metadata rows generated when placing orders with Checkout Blocks, which caused the NIF field to appear unchanged after editing an order from the admin panel.
 * Added a "Fix duplicate NIF metadata" button in the plugin settings page to clean up existing duplicate rows in stores affected by previous versions.
@@ -432,8 +435,8 @@ If you need help to configuring or installing **WC - APG NIF/CIF/NIE field**, **
 * Initial version.
 
 == Upgrade Notice ==
-= 4.12.0 =
-* Fixed duplicate NIF metadata rows created with Checkout Blocks that prevented the field from updating correctly in the order admin panel. Use the new cleanup button in the plugin settings to fix existing affected orders.
+= 4.12.1 =
+* Fixes a regression in 4.12.0 where saving the NIF field on an existing order from the admin panel had no effect on stores with duplicate NIF metadata rows. Update immediately if you are on 4.12.0. Run the cleanup button in the plugin settings afterwards.
 
 == Translations ==
 * *English*: by [**Art Project Group**](https://artprojectgroup.es/) (default language).
