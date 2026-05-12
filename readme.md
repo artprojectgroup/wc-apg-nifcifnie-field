@@ -1,4 +1,5 @@
 # WC - APG NIF/CIF/NIE Field
+
 Contributors: artprojectgroup
 
 Donate link: https://artprojectgroup.es/tienda/donacion
@@ -9,7 +10,7 @@ Requires at least: 5.0
 
 Tested up to: 7.0
 
-Stable tag: 4.12.2
+Stable tag: 4.12.3
 
 WC requires at least: 5.6
 
@@ -22,568 +23,715 @@ License URI: https://www.gnu.org/licenses/gpl-3.0.html
 Añade a WooCommerce un campo NIF/CIF/NIE.
 
 ## Description
-**IMPORTANTE: *WC - APG NIF/CIF/NIE Field* requiere WooCommerce 2.4.0 o superior y la clase PHP [SoapClient](http://php.net/manual/en/class.soapclient.php).**
+
+**IMPORTANTE: _WC - APG NIF/CIF/NIE Field_ requiere WooCommerce 2.4.0 o superior y la clase PHP [SoapClient](http://php.net/manual/en/class.soapclient.php).**
 
 **WC - APG NIF/CIF/NIE Field** añade a tu tienda WooCommerce un nuevo campo NIF/CIF/NIE a todos los formularios de facturación y envío disponibles tanto para el administrador como para el cliente en WooCommerce.
 
 ### Características
-* Totalmente compatible con el bloque Finalizar compra del editor de bloques de WordPress.
-* Puedes hacer obligatorio el campo NIF/CIF/NIE en el formulario de facturación.
-* Puedes hacer obligatorio el campo NIF/CIF/NIE en el formulario de envío.
-* Puedes ocultar el campo NIF/CIF/NIE del formulario de envío.
-* Puedes personalizar la prioridad (posición) del campo.
-* Puedes validar el campo NIF/CIF/NIE.
-* Puedes validar el campo VIES VAT number para excluir los impuestos.
-* Puedes validar el campo EORI para impedir la venta si no se introduce un número válido.
-* Puedes seleccionar el/los país/es donde se validará el campo EORI.
-* Puedes personalizar la etiqueta y el marcador de posición del campo NIF/CIF/NIE, VIES VAT number o EORI.
-* Puedes personalizar el mensaje de error del campo NIF/CIF/NIE, VIES VAT number o EORI.
-* Puedes personalizar el mensaje de error si se supera el máximo de consultas a la API de comprobación del campo VIES VAT number.
-* Añade como requeridos los campos teléfono y correo electrónico al formulario de envío.
-* Puedes quitar los campos teléfono y correo electrónico de la dirección predeterminada.
-* Puedes mostrar y personalizar un mensaje de error para el formulario de facturación utilizando los filtros `apg_nif_display_error_message` y `apg_nif_error_message`.
-* Puedes quitar los campos Correo electrónico y Teléfono del formulario de envío con el filtro `apg_nif_add_fields`.
-* Puedes omitir la validación por país o condición externa con el filtro `apg_nif_skip_validation`.
-* Puedes anular la obligatoriedad del campo en facturación o envío con el filtro `apg_nif_skip_required`.
-* Añade un botón de descarga de clientes en WooCommerce (Clientes) que incluye el campo NIF/CIF/NIE en el CSV.
-* Valida documentos de:
- * Albania.
- * Andorra.
- * Austria.
- * Argentina.
- * Islas de Åland.
- * Bélgica.
- * Bulgaria.
- * Bielorusia.
- * Suiza.
- * Chile.
- * Chipre.
- * República Checa.
- * Alemania.
- * Dinamarca.
- * Estonia.
- * España.
- * Unión Europea.
- * Finlandia.
- * Islas Feroe.
- * Francia.
- * Gran Bretaña.
- * Grecia.
- * Croacia.
- * Hungría.
- * Irlanda.
- * Islandia.
- * Italia.
- * Liechtenstein.
- * Lituania.
- * Luxemburgo.
- * Letonia.
- * Mónaco.
- * Moldavia.
- * Montenegro.
- * Macedonia del Norte.
- * Malta.
- * Países Bajos.
- * Noruega.
- * Polonia.
- * Portugal.
- * Rumanía.
- * Serbia.
- * Suecia.
- * Eslovenia.
- * República Eslovaca.
- * San Marino.
- * Ucrania.
-* 100% compatible con [WooCommerce PDF Invoices & Packing Slips](https://es.wordpress.org/plugins/woocommerce-pdf-invoices-packing-slips/).
-* 100% compatible con [WPML](https://wpml.org/?aid=80296&affiliate_key=m66Ss5ps0xoS).
-* 100% compatible con [Checkout Field Editor (Checkout Manager) for WooCommerce](https://wordpress.org/plugins/woo-checkout-field-editor-pro/)
+
+- Totalmente compatible con el bloque Finalizar compra del editor de bloques de WordPress.
+- Puedes hacer obligatorio el campo NIF/CIF/NIE en el formulario de facturación.
+- Puedes hacer obligatorio el campo NIF/CIF/NIE en el formulario de envío.
+- Puedes ocultar el campo NIF/CIF/NIE del formulario de envío.
+- Puedes personalizar la prioridad (posición) del campo.
+- Puedes validar el campo NIF/CIF/NIE.
+- Puedes validar el campo VIES VAT number para excluir los impuestos.
+- Puedes validar el campo EORI para impedir la venta si no se introduce un número válido.
+- Puedes seleccionar el/los país/es donde se validará el campo EORI.
+- Puedes personalizar la etiqueta y el marcador de posición del campo NIF/CIF/NIE, VIES VAT number o EORI.
+- Puedes personalizar el mensaje de error del campo NIF/CIF/NIE, VIES VAT number o EORI.
+- Puedes personalizar el mensaje de error si se supera el máximo de consultas a la API de comprobación del campo VIES VAT number.
+- Añade como requeridos los campos teléfono y correo electrónico al formulario de envío.
+- Puedes quitar los campos teléfono y correo electrónico de la dirección predeterminada.
+- Puedes mostrar y personalizar un mensaje de error para el formulario de facturación utilizando los filtros `apg_nif_display_error_message` y `apg_nif_error_message`.
+- Puedes quitar los campos Correo electrónico y Teléfono del formulario de envío con el filtro `apg_nif_add_fields`.
+- Puedes omitir la validación por país o condición externa con el filtro `apg_nif_skip_validation`.
+- Puedes anular la obligatoriedad del campo en facturación o envío con el filtro `apg_nif_skip_required`.
+- Añade un botón de descarga de clientes en WooCommerce (Clientes) que incluye el campo NIF/CIF/NIE en el CSV.
+- Valida documentos de:
+- Albania.
+- Andorra.
+- Austria.
+- Argentina.
+- Islas de Åland.
+- Bélgica.
+- Bulgaria.
+- Bielorusia.
+- Suiza.
+- Chile.
+- Chipre.
+- República Checa.
+- Alemania.
+- Dinamarca.
+- Estonia.
+- España.
+- Unión Europea.
+- Finlandia.
+- Islas Feroe.
+- Francia.
+- Gran Bretaña.
+- Grecia.
+- Croacia.
+- Hungría.
+- Irlanda.
+- Islandia.
+- Italia.
+- Liechtenstein.
+- Lituania.
+- Luxemburgo.
+- Letonia.
+- Mónaco.
+- Moldavia.
+- Montenegro.
+- Macedonia del Norte.
+- Malta.
+- Países Bajos.
+- Noruega.
+- Polonia.
+- Portugal.
+- Rumanía.
+- Serbia.
+- Suecia.
+- Eslovenia.
+- República Eslovaca.
+- San Marino.
+- Ucrania.
+- 100% compatible con [WooCommerce PDF Invoices & Packing Slips](https://es.wordpress.org/plugins/woocommerce-pdf-invoices-packing-slips/).
+- 100% compatible con [WPML](https://wpml.org/?aid=80296&affiliate_key=m66Ss5ps0xoS).
+- 100% compatible con [Checkout Field Editor (Checkout Manager) for WooCommerce](https://wordpress.org/plugins/woo-checkout-field-editor-pro/)
 
 ### Traducciones
-* Español ([**Art Project Group**](https://artprojectgroup.es/)).
-* English ([**Art Project Group**](https://artprojectgroup.es/)).
+
+- Español ([**Art Project Group**](https://artprojectgroup.es/)).
+- English ([**Art Project Group**](https://artprojectgroup.es/)).
 
 ### Soporte técnico
-**Art Project Group** te ofrece [**Soporte técnico**](https://artprojectgroup.es/tienda/ticket-de-soporte) para configurar o instalar ***WC - APG NIF/CIF/NIE Field***.
+
+**Art Project Group** te ofrece [**Soporte técnico**](https://artprojectgroup.es/tienda/ticket-de-soporte) para configurar o instalar **_WC - APG NIF/CIF/NIE Field_**.
 
 ### Origen
-**WC - APG NIF/CIF/NIE Field** ha sido programado a partir del código publicado en [*¿Cómo añadir un campo NIF o CIF con validación a WooCommerce 2.4?*](https://artprojectgroup.es/como-anadir-un-campo-nif-o-cif-con-validacion-a-woocommerce-2-4) de [Art Project Group](https://artprojectgroup.es/).
+
+**WC - APG NIF/CIF/NIE Field** ha sido programado a partir del código publicado en [_¿Cómo añadir un campo NIF o CIF con validación a WooCommerce 2.4?_](https://artprojectgroup.es/como-anadir-un-campo-nif-o-cif-con-validacion-a-woocommerce-2-4) de [Art Project Group](https://artprojectgroup.es/).
 
 ### Más información
-En nuestro sitio web oficial puede obtener más información sobre [**WC - APG NIF/CIF/NIE Field**](https://artprojectgroup.es/plugins-para-woocommerce/wc-apg-nifcifnie-field). 
+
+En nuestro sitio web oficial puede obtener más información sobre [**WC - APG NIF/CIF/NIE Field**](https://artprojectgroup.es/plugins-para-woocommerce/wc-apg-nifcifnie-field).
 
 ### Comentarios
+
 No olvides dejarnos tu comentario en:
 
-* [WC - APG NIF/CIF/NIE Field](https://artprojectgroup.es/plugins-para-woocommerce/wc-apg-nifcifnie-field) en Art Project Group.
-* [Art Project Group](https://www.facebook.com/artprojectgroup) en Facebook.
-* [@artprojectgroup](https://x.com/artprojectgroup) en X.
+- [WC - APG NIF/CIF/NIE Field](https://artprojectgroup.es/plugins-para-woocommerce/wc-apg-nifcifnie-field) en Art Project Group.
+- [Art Project Group](https://www.facebook.com/artprojectgroup) en Facebook.
+- [@artprojectgroup](https://x.com/artprojectgroup) en X.
 
 ### Más plugins
+
 Recuerda que puedes encontrar más [plugins para WordPress](https://artprojectgroup.es/plugins-para-wordpress) y más [plugins para WooCommerce](https://artprojectgroup.es/plugins-para-woocommerce) en [Art Project Group](https://artprojectgroup.es) y en nuestro perfil en [WordPress](https://profiles.wordpress.org/artprojectgroup/).
 
 ### GitHub
+
 Puedes seguir el desarrollo de este plugin en [Github](https://github.com/artprojectgroup/wc-apg-nifcifnie-field).
 
 ## Instalación
+
 1. Puedes:
- * Subir la carpeta `wc-apg-nifcifnie-field` al directorio `/wp-content/plugins/` vía FTP. 
- * Subir el archivo ZIP completo vía *Plugins -> Añadir nuevo -> Subir* en el Panel de Administración de tu instalación de WordPress.
- * Buscar **WC - APG NIF/CIF/NIE Field** en el buscador disponible en *Plugins -> Añadir nuevo* y pulsar el botón *Instalar ahora*.
-2. Activar el plugin a través del menú *Plugins* en el Panel de Administración de WordPress.
-3. Configurar el plugin en *WooCommerce -> NIF/CIF/NIE field* o a través del botón *Ajustes*.
-4. Listo, ahora ya puedes disfrutar de él, y si te gusta y te resulta útil, hacer una [*donación*](https://artprojectgroup.es/tienda/donacion).
+
+- Subir la carpeta `wc-apg-nifcifnie-field` al directorio `/wp-content/plugins/` vía FTP.
+- Subir el archivo ZIP completo vía _Plugins -> Añadir nuevo -> Subir_ en el Panel de Administración de tu instalación de WordPress.
+- Buscar **WC - APG NIF/CIF/NIE Field** en el buscador disponible en _Plugins -> Añadir nuevo_ y pulsar el botón _Instalar ahora_.
+
+2. Activar el plugin a través del menú _Plugins_ en el Panel de Administración de WordPress.
+3. Configurar el plugin en _WooCommerce -> NIF/CIF/NIE field_ o a través del botón _Ajustes_.
+4. Listo, ahora ya puedes disfrutar de él, y si te gusta y te resulta útil, hacer una [_donación_](https://artprojectgroup.es/tienda/donacion).
 
 ## Preguntas frecuentes
+
 ### ¿Cómo se configura?
+
 La configuración del plugin es un muy simple, tan sólo debes indicar si quieres que se valide el campo NIF/CIF/NIE o no.
 
 ### ¿Cómo corrijo los metadatos NIF duplicados de pedidos anteriores a la versión 4.12.0?
 
 Si tu tienda realizó pedidos con el Bloque de Finalizar compra antes de actualizar a la versión 4.12.0, es posible que algunos pedidos tengan filas duplicadas de `billing_nif` / `shipping_nif` en la base de datos que impiden que el campo se actualice correctamente desde el panel de administración.
 
-**Opción 1 – Página de ajustes (recomendado):** Ve a *WooCommerce → NIF/CIF/NIE field*. Si se detectan duplicados, aparecerá el botón "Corregir los metadatos duplicados del NIF" al final de la página. Haz clic para ejecutar la limpieza. El botón desaparece automáticamente cuando no quedan duplicados.
+**Opción 1 – Página de ajustes (recomendado):** Ve a _WooCommerce → NIF/CIF/NIE field_. Si se detectan duplicados, aparecerá el botón "Corregir los metadatos duplicados del NIF" al final de la página. Haz clic para ejecutar la limpieza. El botón desaparece automáticamente cuando no quedan duplicados.
 
 **Opción 2 – WP-CLI (tiendas grandes):** Ejecuta el siguiente comando desde la raíz de tu instalación de WordPress para evitar tiempos de espera HTTP:
 
 `wp eval-file wp-content/plugins/wc-apg-nifcifnie-field/includes/admin/limpieza-meta-duplicados.php`
 
 ### Soporte técnico
+
 Si necesitas ayuda para configurar o instalar **WC - APG NIF/CIF/NIE Field**, **Art Project Group** te ofrece su servicio de [**Soporte técnico**](https://artprojectgroup.es/tienda/ticket-de-soporte).
 
-*En ningún caso **Art Project Group** proporciona ningún tipo de soporte técnico gratuito.*
+_En ningún caso **Art Project Group** proporciona ningún tipo de soporte técnico gratuito._
 
 ## Changelog
+
+### 4.12.3
+
+- Corregida la detección de metadatos duplicados para que identifique también los pedidos donde `billing_nif` y `_billing_nif` (o `shipping_nif` y `_shipping_nif`) coexisten. La rutina de limpieza ahora elimina las claves heredadas `_billing_nif` / `_shipping_nif` cuando ya existe la clave canónica.
+- Corregido que el botón de limpieza no apareciera en tiendas con HPOS en modo sincronización o con ciertas configuraciones de HPOS (la detección ahora comprueba tanto `postmeta` como `wc_orders_meta`).
+- Añadida una caché de transient de una hora a la consulta de detección de duplicados para evitar problemas de rendimiento en tiendas con muchos pedidos.
+
 ### 4.12.2
-* Corregida la causa raíz del problema por el que el campo NIF no se guardaba al editar un pedido existente desde el panel de administración: faltaba un `id` explícito en la definición del campo, por lo que WooCommerce escribía el valor introducido en la administración en `_billing_nif` / `_shipping_nif` en lugar de en `billing_nif` / `shipping_nif`. Como resultado, la pantalla siempre mostraba el valor original del pedido sin cambios.
-* Corregida la función de detección de metadatos duplicados para que compruebe tanto `postmeta` como `wc_orders_meta` (HPOS) independientemente del modo de almacenamiento activo. Anteriormente el botón de limpieza podía no aparecer en tiendas con HPOS en modo sincronización o con ciertas configuraciones de HPOS.
+
+- Corregida la causa raíz del problema por el que el campo NIF no se guardaba al editar un pedido existente desde el panel de administración: faltaba un `id` explícito en la definición del campo, por lo que WooCommerce escribía el valor introducido en la administración en `_billing_nif` / `_shipping_nif` en lugar de en `billing_nif` / `shipping_nif`. Como resultado, la pantalla siempre mostraba el valor original del pedido sin cambios.
+- Corregida la función de detección de metadatos duplicados para que compruebe tanto `postmeta` como `wc_orders_meta` (HPOS) independientemente del modo de almacenamiento activo. Anteriormente el botón de limpieza podía no aparecer en tiendas con HPOS en modo sincronización o con ciertas configuraciones de HPOS.
 
 ### 4.12.1
-* Corregida una regresión introducida en la versión 4.12.0 que hacía que al editar el campo NIF de un pedido existente desde el panel de administración y guardar, el nuevo valor se descartara en silencio y quedara el valor anterior en la base de datos. El problema se daba en tiendas con filas duplicadas de metadatos NIF creadas por versiones anteriores del plugin. Se ha eliminado el hook de deduplicación automática; para limpiar los duplicados usa el botón en los ajustes del plugin o el script WP-CLI.
+
+- Corregida una regresión introducida en la versión 4.12.0 que hacía que al editar el campo NIF de un pedido existente desde el panel de administración y guardar, el nuevo valor se descartara en silencio y quedara el valor anterior en la base de datos. El problema se daba en tiendas con filas duplicadas de metadatos NIF creadas por versiones anteriores del plugin. Se ha eliminado el hook de deduplicación automática; para limpiar los duplicados usa el botón en los ajustes del plugin o el script WP-CLI.
 
 ### 4.12.0
-* Corregida la creación de filas duplicadas de metadatos `billing_nif` / `shipping_nif` al realizar pedidos con el Bloque de Finalizar compra, que impedía que el campo NIF se actualizara correctamente al editar un pedido desde el panel de administración.
-* Añadido el botón "Corregir los metadatos duplicados del NIF" en la página de ajustes del plugin para limpiar las filas duplicadas existentes en las tiendas afectadas por versiones anteriores.
+
+- Corregida la creación de filas duplicadas de metadatos `billing_nif` / `shipping_nif` al realizar pedidos con el Bloque de Finalizar compra, que impedía que el campo NIF se actualizara correctamente al editar un pedido desde el panel de administración.
+- Añadido el botón "Corregir los metadatos duplicados del NIF" en la página de ajustes del plugin para limpiar las filas duplicadas existentes en las tiendas afectadas por versiones anteriores.
 
 ### 4.11.4
-* Corregida una regresión en el Bloque de Finalizar compra introducida en la versión 4.11.3 por la que el campo NIF/CIF/NIE podía tratarse como un campo nativo de dirección durante las peticiones Store API y lanzar incorrectamente un error de campo obligatorio al finalizar la compra.
+
+- Corregida una regresión en el Bloque de Finalizar compra introducida en la versión 4.11.3 por la que el campo NIF/CIF/NIE podía tratarse como un campo nativo de dirección durante las peticiones Store API y lanzar incorrectamente un error de campo obligatorio al finalizar la compra.
 
 ### 4.11.3
-* Corregido el campo NIF/CIF/NIE en la edición de direcciones de Mi cuenta cuando la página de cuenta se muestra con el shortcode `[woocommerce_my_account]` en tiendas que usan el Bloque de Finalizar compra.
+
+- Corregido el campo NIF/CIF/NIE en la edición de direcciones de Mi cuenta cuando la página de cuenta se muestra con el shortcode `[woocommerce_my_account]` en tiendas que usan el Bloque de Finalizar compra.
 
 ### 4.11.2
-* Corregida la carga del NIF en la administración del pedido y en las direcciones formateadas para pedidos creados con el Bloque de Finalizar compra, leyendo primero `billing_nif` y `shipping_nif` y manteniendo compatibilidad con metas heredadas.
+
+- Corregida la carga del NIF en la administración del pedido y en las direcciones formateadas para pedidos creados con el Bloque de Finalizar compra, leyendo primero `billing_nif` y `shipping_nif` y manteniendo compatibilidad con metas heredadas.
 
 ### 4.11.1
-* Corregido `requerido_envio` en el checkout clásico para que el campo NIF/CIF/NIE de envío sólo sea obligatorio cuando el cliente marque "Enviar a una dirección diferente".
+
+- Corregido `requerido_envio` en el checkout clásico para que el campo NIF/CIF/NIE de envío sólo sea obligatorio cuando el cliente marque "Enviar a una dirección diferente".
 
 ### 4.11.0
-* Añadido el filtro `apg_nif_skip_required` para anular por hook la obligatoriedad del campo en facturación o envío.
+
+- Añadido el filtro `apg_nif_skip_required` para anular por hook la obligatoriedad del campo en facturación o envío.
 
 ### 4.10.0
-* Añadido soporte para la validación de `Codice Fiscale` italiano.
-* Corregida la detección de prefijos internacionales para no tratar letras iniciales no ISO como prefijos de país.
-* Corregida la inicialización de la validación VIES en el bloque Finalizar compra en `valida-bloques-nif.js`.
+
+- Añadido soporte para la validación de `Codice Fiscale` italiano.
+- Corregida la detección de prefijos internacionales para no tratar letras iniciales no ISO como prefijos de país.
+- Corregida la inicialización de la validación VIES en el bloque Finalizar compra en `valida-bloques-nif.js`.
 
 ### 4.9.1
-* Corregida la compatibilidad con la validación del checkout personalizado de FunnelKit Builder al mostrar el campo de envío.
-* Arreglos menores.
+
+- Corregida la compatibilidad con la validación del checkout personalizado de FunnelKit Builder al mostrar el campo de envío.
+- Arreglos menores.
 
 ### 4.9.0
-* Añadida declaración de compatibilidad con `product_instance_caching`.
-* Mejorada la validación de VIES, EORI y la gestión de la exención de IVA.
+
+- Añadida declaración de compatibilidad con `product_instance_caching`.
+- Mejorada la validación de VIES, EORI y la gestión de la exención de IVA.
 
 ### 4.8.3
-* Añadida una nueva opción para ocultar el campo NIF/CIF/NIE del formulario de envío.
-* Mejorado el manejo de campos requeridos en facturación y envío en el bloque Finalizar compra.
-* Corregida la compatibilidad con Checkout Field Editor (Checkout Manager) for WooCommerce.
-* Arreglos menores.
+
+- Añadida una nueva opción para ocultar el campo NIF/CIF/NIE del formulario de envío.
+- Mejorado el manejo de campos requeridos en facturación y envío en el bloque Finalizar compra.
+- Corregida la compatibilidad con Checkout Field Editor (Checkout Manager) for WooCommerce.
+- Arreglos menores.
 
 ### 4.8.2
-* Arreglos menores.
+
+- Arreglos menores.
 
 ### 4.8.1
-* Añadido filtro `apg_nif_skip_validation`.
-* Arreglos menores.
+
+- Añadido filtro `apg_nif_skip_validation`.
+- Arreglos menores.
 
 ### 4.8.0
-* Corregida la validación JavaScript.
+
+- Corregida la validación JavaScript.
 
 ### 4.7.0.6
-* Arreglos menores.
+
+- Arreglos menores.
 
 ### 4.7.0.5
-* Arreglos menores.
+
+- Arreglos menores.
 
 ### 4.7.0.4
-* Arreglos menores.
+
+- Arreglos menores.
 
 ### 4.7.0.3
-* Arreglos menores.
+
+- Arreglos menores.
 
 ### 4.7.0.2
-* Arreglos menores.
+
+- Arreglos menores.
 
 ### 4.7.0.1
-* Arreglos menores.
+
+- Arreglos menores.
 
 ### 4.7
-* Adición de botón de descarga de clientes en WooCommerce (Clientes) que incluye el campo NIF/CIF/NIE en el CSV.
-* Arreglos menores.
+
+- Adición de botón de descarga de clientes en WooCommerce (Clientes) que incluye el campo NIF/CIF/NIE en el CSV.
+- Arreglos menores.
 
 ### 4.6.0.1
-* Arreglos menores.
+
+- Arreglos menores.
 
 ### 4.6
-* Adición de validación de documentos para nuevos países.
-* Arreglos menores.
- 
+
+- Adición de validación de documentos para nuevos países.
+- Arreglos menores.
+
 ### 4.5.0.2
-* Arreglos menores.
+
+- Arreglos menores.
 
 ### 4.5.0.1
-* Arreglos menores.
+
+- Arreglos menores.
 
 ### 4.5
-* Añadidos los phpDocs en el código.
-* Corregida la compatibilidad con Checkout Field Editor (Checkout Manager) for WooCommerce.
-* Arreglos menores.
+
+- Añadidos los phpDocs en el código.
+- Corregida la compatibilidad con Checkout Field Editor (Checkout Manager) for WooCommerce.
+- Arreglos menores.
 
 ### 4.4.0.1
-* Arreglos menores.
+
+- Arreglos menores.
 
 ### 4.4
-* Corregida la gestión de la excepción del impuesto.
-* Arreglos menores.
+
+- Corregida la gestión de la excepción del impuesto.
+- Arreglos menores.
 
 ### 4.3
-* Corregida la gestión de los campos requeridos en las direcciones de Mi cuenta.
-* Arreglos menores.
+
+- Corregida la gestión de los campos requeridos en las direcciones de Mi cuenta.
+- Arreglos menores.
 
 ### 4.2
-* Corregida la validación JavaScript.
-* Arreglos menores.
+
+- Corregida la validación JavaScript.
+- Arreglos menores.
 
 ### 4.1.0.1
-* Corrección y unificación de usermetas.
+
+- Corrección y unificación de usermetas.
 
 ### 4.1
-* Añadida comprobación del país de envío en la excepción del impuesto.
-* Arreglos menores.
+
+- Añadida comprobación del país de envío en la excepción del impuesto.
+- Arreglos menores.
 
 ### 4.0.0.9
-* Arreglos menores.
+
+- Arreglos menores.
 
 ### 4.0.0.8
-* Arreglos menores.
+
+- Arreglos menores.
 
 ### 4.0.0.7
-* Arreglos menores.
+
+- Arreglos menores.
 
 ### 4.0.0.6
-* Añadido el campo NIF a la dirección del bloque Finalizar compra.
+
+- Añadido el campo NIF a la dirección del bloque Finalizar compra.
 
 ### 4.0.0.5
-* Arreglos menores.
+
+- Arreglos menores.
 
 ### 4.0.0.4
-* Añadida validación al vuelo.
-* Mejora de la seguridad.
-* Arreglos menores.
+
+- Añadida validación al vuelo.
+- Mejora de la seguridad.
+- Arreglos menores.
 
 ### 4.0.0.3
-* Arreglos menores.
+
+- Arreglos menores.
 
 ### 4.0.0.2
-* Arreglos menores.
+
+- Arreglos menores.
 
 ### 4.0.0.1
-* Arreglos menores.
+
+- Arreglos menores.
 
 ### 4.0
-* Añadida compatibilidad completa de la validación VIES y EORI al Bloque de Finalizar compra.
-* Mejora de rendimiento general.
-* Adecuación completa del código a los estándares de seguridad marcadas por WordPress.
-* Adición de validación de documentos para nuevos países.
-* Arreglos menores.
+
+- Añadida compatibilidad completa de la validación VIES y EORI al Bloque de Finalizar compra.
+- Mejora de rendimiento general.
+- Adecuación completa del código a los estándares de seguridad marcadas por WordPress.
+- Adición de validación de documentos para nuevos países.
+- Arreglos menores.
 
 ### 3.2.0.1
-* Arreglos menores.
+
+- Arreglos menores.
 
 ### 3.2
-* Añadido filtro `apg_nif_add_fields`.
-* Mejora de la validación.
+
+- Añadido filtro `apg_nif_add_fields`.
+- Mejora de la validación.
 
 ### 3.1.0.2
-* Arreglos menores.
+
+- Arreglos menores.
 
 ### 3.1.0.1
-* Arreglos menores.
+
+- Arreglos menores.
 
 ### 3.1
-* Mejora de la seguridad.
-* Mejora el proceso de validación internacional.
-* Arreglos menores.
+
+- Mejora de la seguridad.
+- Mejora el proceso de validación internacional.
+- Arreglos menores.
 
 ### 3.0.15
-* Arreglos menores.
+
+- Arreglos menores.
 
 ### 3.0.14
-* Arreglos menores.
+
+- Arreglos menores.
 
 ### 3.0.13
-* Arreglos menores.
+
+- Arreglos menores.
 
 ### 3.0.12
-* Arreglos menores.
+
+- Arreglos menores.
 
 ### 3.0.11
-* Arreglos menores.
+
+- Arreglos menores.
 
 ### 3.0.10
-* Limita funcionalidades al bloque Finalizar compra.
+
+- Limita funcionalidades al bloque Finalizar compra.
 
 ### 3.0.9
-* Arreglos menores.
+
+- Arreglos menores.
 
 ### 3.0.8
-* Arreglos menores.
+
+- Arreglos menores.
 
 ### 3.0.7
-* Arreglos menores.
+
+- Arreglos menores.
 
 ### 3.0.6
-* Arreglos menores.
+
+- Arreglos menores.
 
 ### 3.0.5
-* Arreglos menores.
+
+- Arreglos menores.
 
 ### 3.0.4
-* Mejora de la compatibilidad con plugins de terceros.
+
+- Mejora de la compatibilidad con plugins de terceros.
 
 ### 3.0.3
-* Mejora de la compatibilidad con plugins de terceros.
+
+- Mejora de la compatibilidad con plugins de terceros.
 
 ### 3.0.2
-* Arreglos menores.
+
+- Arreglos menores.
 
 ### 3.0.1
-* Corregido un error que afecta a versiones anteriores a WooCommerce 8.9.
+
+- Corregido un error que afecta a versiones anteriores a WooCommerce 8.9.
 
 ### 3.0
-* Añade soporte al bloque Finalizar compra.
-* Mejora de la compatibilidad con plugins de terceros.
+
+- Añade soporte al bloque Finalizar compra.
+- Mejora de la compatibilidad con plugins de terceros.
 
 ### 2.1.0.2
-* Arreglos menores.
+
+- Arreglos menores.
 
 ### 2.1.0.1
-* Arreglos menores.
+
+- Arreglos menores.
 
 ### 2.1
-* Añadida compatibilidad con HPOS.
+
+- Añadida compatibilidad con HPOS.
 
 ### 2.0.1
-* Arreglos menores.
+
+- Arreglos menores.
 
 ### 2.0
-* Añadida opción de validación del número EORI **Actualización patrocinada por [OldWood - Ground, Oil Varnishes & Natural Colours](https://www.oldwood1700.com)**.
-* Añadida opción de selección de prioridad del campo NIF/CIF/NIE.
-* Añadidos dos filtros para mostrar y personalizar un mensaje de error para el formulario de facturación: `apg_nif_display_error_message` y `apg_nif_error_message`.
-* Actualización de captura de pantalla.
+
+- Añadida opción de validación del número EORI **Actualización patrocinada por [OldWood - Ground, Oil Varnishes & Natural Colours](https://www.oldwood1700.com)**.
+- Añadida opción de selección de prioridad del campo NIF/CIF/NIE.
+- Añadidos dos filtros para mostrar y personalizar un mensaje de error para el formulario de facturación: `apg_nif_display_error_message` y `apg_nif_error_message`.
+- Actualización de captura de pantalla.
 
 ### 1.7.4.1
-* Actualización de cabecera.
-* Actualización de hoja de estilo.
-* Actualización de captura de pantalla.
+
+- Actualización de cabecera.
+- Actualización de hoja de estilo.
+- Actualización de captura de pantalla.
 
 ### 1.7.4
-* Valida el formulario de envío sólo si se ha activado.
-* Valida el número VIES sólo para los países soportados.
+
+- Valida el formulario de envío sólo si se ha activado.
+- Valida el número VIES sólo para los países soportados.
 
 ### 1.7.3.1
-* Indica el formulario correspondiente en la validación del campo.
+
+- Indica el formulario correspondiente en la validación del campo.
 
 ### 1.7.3
-* Añade el campo NIF/CIF/NIE en la búsqueda de pedidos.
+
+- Añade el campo NIF/CIF/NIE en la búsqueda de pedidos.
 
 ### 1.7.2.6
-* Arreglos menores.
+
+- Arreglos menores.
 
 ### 1.7.2.5
-* Arreglos menores.
+
+- Arreglos menores.
 
 ### 1.7.2.3
-* Añadida compatibilidad con Polylang.
+
+- Añadida compatibilidad con Polylang.
 
 ### 1.7.2.2
-* Arreglos menores.
+
+- Arreglos menores.
 
 ### 1.7.2.1
-* Arreglos menores.
+
+- Arreglos menores.
 
 ### 1.7.2
-* Arreglo de la validación VIES para Grecia e Irlanda.
+
+- Arreglo de la validación VIES para Grecia e Irlanda.
 
 ### 1.7.1
-* Ajuste para hacer compatible la nueva opción con WooCommerce PDF Invoices & Packing Slips.
+
+- Ajuste para hacer compatible la nueva opción con WooCommerce PDF Invoices & Packing Slips.
 
 ### 1.7
-* Ahora puedes quitar los campos teléfono y correo electrónico de la dirección predeterminada.
+
+- Ahora puedes quitar los campos teléfono y correo electrónico de la dirección predeterminada.
 
 ### 1.6
-* Mensajes de error personalizables y traducibles con WPML.
-* Arreglos menores.
+
+- Mensajes de error personalizables y traducibles con WPML.
+- Arreglos menores.
 
 ### 1.5.1
-* Adición de la exclusión de impuestos en los gastos de envío.
+
+- Adición de la exclusión de impuestos en los gastos de envío.
 
 ### 1.5
-* Eliminación de la exclusión de impuestos en los gastos de envío.
-* Añadidos los campos teléfono y correo electrónico en las direcciones internacionales.
-* Arreglos menores.
+
+- Eliminación de la exclusión de impuestos en los gastos de envío.
+- Añadidos los campos teléfono y correo electrónico en las direcciones internacionales.
+- Arreglos menores.
 
 ### 1.4.2
-* Eliminación de doble teléfono y dirección de correo electrónico en la página de Gracias.
+
+- Eliminación de doble teléfono y dirección de correo electrónico en la página de Gracias.
 
 ### 1.4.1
-* Nombre de campo de texto traducible con WPML.
+
+- Nombre de campo de texto traducible con WPML.
 
 ### 1.4.0.2
-* Actualización de la plantilla de cuentas de correo electrónico.
-* Pequeños arreglos.
+
+- Actualización de la plantilla de cuentas de correo electrónico.
+- Pequeños arreglos.
 
 ### 1.4.0.1
-* Pequeños arreglos.
+
+- Pequeños arreglos.
 
 ### 1.4
-* Añadida personalización de la etiqueta y marcador de posición del campo.
-* Actualización de captura de pantalla.
+
+- Añadida personalización de la etiqueta y marcador de posición del campo.
+- Actualización de captura de pantalla.
 
 ### 1.3.0.2
-* Pequeños arreglos.
-* Eliminados todos los cambios de orden de los campos.
+
+- Pequeños arreglos.
+- Eliminados todos los cambios de orden de los campos.
 
 ### 1.3.0.1
-* Pequeños arreglos.
+
+- Pequeños arreglos.
 
 ### 1.3
-* Añadidos los campos en WooCommerce PDF Invoices & Packing Slips para facturas con direcciones fuera de España.
+
+- Añadidos los campos en WooCommerce PDF Invoices & Packing Slips para facturas con direcciones fuera de España.
 
 ### 1.2.1.3
-* Pequeños arreglos.
+
+- Pequeños arreglos.
 
 ### 1.2.1.2
-* Añadido mensaje de error y desactivación cuando la clase PHP SoapClient no existe.
+
+- Añadido mensaje de error y desactivación cuando la clase PHP SoapClient no existe.
 
 ### 1.2.1.1
-* Añadida compatibilidad con WooCommerce 3.4.
+
+- Añadida compatibilidad con WooCommerce 3.4.
 
 ### 1.2.1
-* Pequeños arreglos.
+
+- Pequeños arreglos.
 
 ### 1.2.0.4
-* Eliminación de doble teléfono y dirección de correo electrónico en el correo electrónico de pedido.
-* Arreglo de la validación del número CIF.
+
+- Eliminación de doble teléfono y dirección de correo electrónico en el correo electrónico de pedido.
+- Arreglo de la validación del número CIF.
 
 ### 1.2.0.3
-* Eliminación de doble teléfono y dirección de correo electrónico en el correo electrónico de pedido.
+
+- Eliminación de doble teléfono y dirección de correo electrónico en el correo electrónico de pedido.
 
 ### 1.2.0.2
-* Actualización de cabecera.
-* Actualización de hoja de estilo.
-* Actualización de captura de pantalla.
+
+- Actualización de cabecera.
+- Actualización de hoja de estilo.
+- Actualización de captura de pantalla.
 
 ### 1.2.0.1
-* Arreglo de la validación del número CIF.
+
+- Arreglo de la validación del número CIF.
 
 ### 1.2
-* Evita la validación del campo NIF/CIF/NIE fuera de España.
-* Arreglos menores.
+
+- Evita la validación del campo NIF/CIF/NIE fuera de España.
+- Arreglos menores.
 
 ### 1.1.0.6
-* Muestra el campo correo en los pedidos creados manualmente en WooCommerce 3.x.
-* Imposibilita la validación del campo NIF/CIF/NIE junto con la validación del número VIES.
+
+- Muestra el campo correo en los pedidos creados manualmente en WooCommerce 3.x.
+- Imposibilita la validación del campo NIF/CIF/NIE junto con la validación del número VIES.
 
 ### 1.1.0.5
-* Nombre de campo de texto traducible.
+
+- Nombre de campo de texto traducible.
 
 ### 1.1.0.4
-* Mejora del rendimiento.
+
+- Mejora del rendimiento.
 
 ### 1.1.0.3
-* Arreglo de localización.
+
+- Arreglo de localización.
 
 ### 1.1.0.2
-* Mejora de la validación del número VIES.
+
+- Mejora de la validación del número VIES.
 
 ### 1.1.0.1
-* Internacionalización de la validación del número VIES.
+
+- Internacionalización de la validación del número VIES.
 
 ### 1.1
-* Añadida opción de validación del número VIES.
+
+- Añadida opción de validación del número VIES.
 
 ### 1.0.1.3
-* Ajuste para optimizar la compatibilidad con WooCommerce 3.0.
+
+- Ajuste para optimizar la compatibilidad con WooCommerce 3.0.
 
 ### 1.0.1.2
-* Soporte para instalaciones multisitio.
+
+- Soporte para instalaciones multisitio.
 
 ### 1.0.1.1
-* Muestra todos los campos en los clientes no registrados.
+
+- Muestra todos los campos en los clientes no registrados.
 
 ### 1.0.1
-* Arreglo del formato de direcciones en los correos electrónicos.
-* Arreglo de traducciones faltantes en español.
+
+- Arreglo del formato de direcciones en los correos electrónicos.
+- Arreglo de traducciones faltantes en español.
 
 ### 1.0
-* Muestra el campo correo en los pedidos creados manualmente.
-* Muestra el correo electrónico en los datos de cliente.
-* Eliminadas todas las clases personalizadas de los campos para mejorar la compatibilidad universal con las plantillas.
-* Estructura interna del plugin totalmente reescrita para facilitar su mantenimiento.
+
+- Muestra el campo correo en los pedidos creados manualmente.
+- Muestra el correo electrónico en los datos de cliente.
+- Eliminadas todas las clases personalizadas de los campos para mejorar la compatibilidad universal con las plantillas.
+- Estructura interna del plugin totalmente reescrita para facilitar su mantenimiento.
 
 ### 0.3
-* Carga del valor del campo NIF/CIF/NIE en los pedidos creados manualmente.
+
+- Carga del valor del campo NIF/CIF/NIE en los pedidos creados manualmente.
 
 ### 0.2
-* Añadidas nuevas opciones de configuración.
-* Actualización de traducción.
-* Actualización de captura de pantalla.
+
+- Añadidas nuevas opciones de configuración.
+- Actualización de traducción.
+- Actualización de captura de pantalla.
 
 ### 0.1
-* Versión inicial.
+
+- Versión inicial.
 
 ## Traducciones
-* *English*: by [**Art Project Group**](https://artprojectgroup.es/) (default language).
-* *Español*: por [**Art Project Group**](https://artprojectgroup.es/).
+
+- _English_: by [**Art Project Group**](https://artprojectgroup.es/) (default language).
+- _Español_: por [**Art Project Group**](https://artprojectgroup.es/).
 
 ## Soporte técnico
+
 Dado que **WC - APG NIF/CIF/NIE Field** es totalmente gratuito, **Art Project Group** sólo proporciona el servicio de [**Soporte técnico**](https://artprojectgroup.es/tienda/ticket-de-soporte) previo pago. En ningún caso **Art Project Group** proporciona ningún tipo de soporte técnico gratuito.
 
 ## Donación
+
 ¿Te ha gustado y te ha resultado útil **WC - APG NIF/CIF/NIE Field** en tu sitio web? Te agradeceríamos una [pequeña donación](https://artprojectgroup.es/tienda/donacion) que nos ayudará a seguir mejorando este plugin y a crear más plugins totalmente gratuitos para toda la comunidad WordPress.
 
 ## Gracias
-* A todos los que lo usáis.
-* A todos los que ayudáis a mejorarlo.
-* A todos los que realizáis donaciones.
-* A todos los que nos animáis con vuestros comentarios.
+
+- A todos los que lo usáis.
+- A todos los que ayudáis a mejorarlo.
+- A todos los que realizáis donaciones.
+- A todos los que nos animáis con vuestros comentarios.
 
 ¡Muchas gracias a todos!
 
 ## Servicios Externos
+
 1. A la API de plugins de WordPress.org para obtener información sobre plugins.
- - Envía el slug del plugin al solicitar los datos.
- - Más información: https://wordpress.org/about/privacy/
+
+- Envía el slug del plugin al solicitar los datos.
+- Más información: https://wordpress.org/about/privacy/
 
 2. A la API de validación de números de IVA (VIES) y de números EORI de la Comisión Europea.
- - Envía el país y el número de IVA (validación VIES).
- - Envía el número EORI.
- - Más información: https://commission.europa.eu/privacy-policy-websites-managed-european-commission_es
+
+- Envía el país y el número de IVA (validación VIES).
+- Envía el número EORI.
+- Más información: https://commission.europa.eu/privacy-policy-websites-managed-european-commission_es
 
 3. A la API de validación de número EORI del Gobierno del Reino Unido.
- - Envía el número EORI.
- - Más información: https://www.gov.uk/help/privacy-notice
+
+- Envía el número EORI.
+- Más información: https://www.gov.uk/help/privacy-notice
 
 4. A la API de validación de número EORI de VatApp.
- - Envía el número EORI.
- - Más información: https://vatapp.net/privacy-policy
+
+- Envía el número EORI.
+- Más información: https://vatapp.net/privacy-policy

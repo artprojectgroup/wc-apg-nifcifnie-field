@@ -2,9 +2,9 @@
 /**
  * Script de limpieza de metadatos duplicados de NIF.
  *
- * Elimina filas duplicadas de billing_nif/shipping_nif en wc_orders_meta
- * que pudieron crearse con versiones anteriores del plugin cuando el checkout
- * estaba basado en bloques.
+ * Cubre dos casos:
+ * - Filas duplicadas con la misma clave (billing_nif×2 o shipping_nif×2).
+ * - Clave heredada (_billing_nif / _shipping_nif) coexistiendo con la canónica.
  *
  * USO CON WP-CLI (recomendado):
  *   wp eval-file wp-content/plugins/wc-apg-nifcifnie-field/includes/admin/limpieza-meta-duplicados.php
@@ -47,7 +47,7 @@ do {
 	) );
 
 	foreach ( $pedidos as $id ) {
-		$order   = wc_get_order( $id );
+		$order    = wc_get_order( $id );
 		$limpiado = false;
 
 		if ( ! $order instanceof WC_Order ) {
@@ -55,6 +55,7 @@ do {
 		}
 
 		foreach ( $claves as $key ) {
+			// Caso A: filas duplicadas con la misma clave.
 			$metas = array_values(
 				array_filter(
 					$order->get_meta_data(),
@@ -78,6 +79,19 @@ do {
 					esc_html( $valor )
 				);
 			}
+
+			// Caso B: clave heredada (_billing_nif) coexiste con la canónica.
+			$clave_heredada = '_' . $key;
+			if ( '' !== $order->get_meta( $key, true ) && '' !== $order->get_meta( $clave_heredada, true ) ) {
+				$order->delete_meta_data( $clave_heredada );
+				$limpiado = true;
+
+				echo sprintf(
+					"  Pedido #%d: eliminada clave heredada '%s'\n",
+					absint( $id ),
+					esc_html( $clave_heredada )
+				);
+			}
 		}
 
 		if ( $limpiado ) {
@@ -92,7 +106,7 @@ do {
 } while ( count( $pedidos ) === $lote );
 
 echo sprintf(
-	"\nFinalizado. Pedidos revisados: %d. Pedidos con duplicados eliminados: %d.\n",
+	"\nFinalizado. Pedidos revisados: %d. Pedidos con metadatos corregidos: %d.\n",
 	absint( $total_pedidos ),
 	absint( $total_limpios )
 );
