@@ -154,6 +154,7 @@ Si necesitas ayuda para configurar o instalar **WC - APG NIF/CIF/NIE Field**, **
 
 ## Changelog
 ### 4.12.2
+* Corregida la causa raíz del problema por el que el campo NIF no se guardaba al editar un pedido existente desde el panel de administración: faltaba un `id` explícito en la definición del campo, por lo que WooCommerce escribía el valor introducido en la administración en `_billing_nif` / `_shipping_nif` en lugar de en `billing_nif` / `shipping_nif`. Como resultado, la pantalla siempre mostraba el valor original del pedido sin cambios.
 * Corregida la función de detección de metadatos duplicados para que compruebe tanto `postmeta` como `wc_orders_meta` (HPOS) independientemente del modo de almacenamiento activo. Anteriormente el botón de limpieza podía no aparecer en tiendas con HPOS en modo sincronización o con ciertas configuraciones de HPOS.
 
 ### 4.12.1

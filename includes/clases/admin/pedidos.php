@@ -81,14 +81,14 @@ class APG_Campo_NIF_en_Admin_Pedidos {
 		global $apg_nif_settings;
 
 		$etiqueta     = isset( $apg_nif_settings['etiqueta'] ) && $apg_nif_settings['etiqueta'] ? sanitize_text_field( $apg_nif_settings['etiqueta'] ) : esc_attr__( 'NIF/CIF/NIE', 'wc-apg-nifcifnie-field' );
+		$es_envio     = ( 'woocommerce_admin_shipping_fields' === current_filter() );
 		$campos['nif'] = array(
+			'id'    => $es_envio ? 'shipping_nif' : 'billing_nif',
 			'label' => $etiqueta,
 			'show'  => false,
 		);
 
 		if ( $order instanceof WC_Order ) {
-			// Detecta si estamos en el hook de envío o de facturación usando el nombre del filtro.
-			$es_envio = ( 'woocommerce_admin_shipping_fields' === current_filter() );
 
 			// Checkout Blocks guarda el NIF sin guion bajo; mantenemos fallback para pedidos antiguos.
 			$valor_nif = $order->get_meta( $es_envio ? 'shipping_nif' : 'billing_nif', true );

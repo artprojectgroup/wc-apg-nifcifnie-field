@@ -149,6 +149,7 @@ If you need help to configuring or installing **WC - APG NIF/CIF/NIE field**, **
 
 == Changelog ==
 = 4.12.2 =
+* Fixed the root cause of the NIF field not saving when editing an existing order from the admin panel: the field definition was missing an explicit `id`, so WooCommerce was writing the admin-entered value to `_billing_nif` / `_shipping_nif` instead of `billing_nif` / `shipping_nif`. As a result, the display always showed the original checkout value unchanged.
 * Fixed the duplicate NIF metadata detection function so it checks both `postmeta` and `wc_orders_meta` (HPOS) regardless of the active storage mode. Previously the cleanup button could fail to appear on stores using HPOS sync mode or certain HPOS configurations.
 
 = 4.12.1 =
@@ -439,7 +440,7 @@ If you need help to configuring or installing **WC - APG NIF/CIF/NIE field**, **
 
 == Upgrade Notice ==
 = 4.12.2 =
-* Fixes the cleanup button not appearing in certain HPOS configurations. If you ran the WP-CLI cleanup script manually, no further action is needed.
+* Fixes the NIF field not saving when editing an existing order from the admin panel on stores using HPOS with Checkout Blocks. Update immediately if you are on 4.12.0 or 4.12.1.
 
 == Translations ==
 * *English*: by [**Art Project Group**](https://artprojectgroup.es/) (default language).
