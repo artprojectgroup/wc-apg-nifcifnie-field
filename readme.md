@@ -9,7 +9,7 @@ Requires at least: 5.0
 
 Tested up to: 7.0
 
-Stable tag: 4.12.1
+Stable tag: 4.12.2
 
 WC requires at least: 5.6
 
@@ -153,6 +153,9 @@ Si necesitas ayuda para configurar o instalar **WC - APG NIF/CIF/NIE Field**, **
 *En ningún caso **Art Project Group** proporciona ningún tipo de soporte técnico gratuito.*
 
 ## Changelog
+### 4.12.2
+* Corregida la función de detección de metadatos duplicados para que compruebe tanto `postmeta` como `wc_orders_meta` (HPOS) independientemente del modo de almacenamiento activo. Anteriormente el botón de limpieza podía no aparecer en tiendas con HPOS en modo sincronización o con ciertas configuraciones de HPOS.
+
 ### 4.12.1
 * Corregida una regresión introducida en la versión 4.12.0 que hacía que al editar el campo NIF de un pedido existente desde el panel de administración y guardar, el nuevo valor se descartara en silencio y quedara el valor anterior en la base de datos. El problema se daba en tiendas con filas duplicadas de metadatos NIF creadas por versiones anteriores del plugin. Se ha eliminado el hook de deduplicación automática; para limpiar los duplicados usa el botón en los ajustes del plugin o el script WP-CLI.
 

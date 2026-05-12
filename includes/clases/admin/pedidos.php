@@ -353,7 +353,8 @@ new APG_Campo_NIF_en_Admin_Pedidos();
 /**
  * Comprueba si existe algún pedido con filas duplicadas de billing_nif o shipping_nif.
  *
- * Soporta tanto HPOS (wc_orders_meta) como almacenamiento clásico (postmeta).
+ * Consulta postmeta y, si está disponible, wc_orders_meta (HPOS), de modo que
+ * funciona en cualquier configuración de almacenamiento de pedidos.
  *
  * @global \wpdb $wpdb
  * @return bool true si hay al menos un pedido con duplicados.
@@ -361,23 +362,19 @@ new APG_Campo_NIF_en_Admin_Pedidos();
 function apg_nif_hay_meta_duplicados() {
 	global $wpdb;
 
-	$hpos = class_exists( '\Automattic\WooCommerce\Utilities\OrderUtil' )
-		&& \Automattic\WooCommerce\Utilities\OrderUtil::custom_orders_table_usage_is_enabled();
-
 	// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-	if ( $hpos ) {
-		// WooCommerce registra $wpdb->wc_orders_meta igual que WP registra $wpdb->postmeta.
+	$resultado = $wpdb->get_var(
+		$wpdb->prepare(
+			"SELECT 1 FROM {$wpdb->postmeta} WHERE meta_key IN (%s, %s) GROUP BY post_id, meta_key HAVING COUNT(*) > 1 LIMIT 1",
+			'billing_nif',
+			'shipping_nif'
+		)
+	);
+
+	if ( is_null( $resultado ) && ! empty( $wpdb->wc_orders_meta ) ) {
 		$resultado = $wpdb->get_var(
 			$wpdb->prepare(
 				"SELECT 1 FROM {$wpdb->wc_orders_meta} WHERE meta_key IN (%s, %s) GROUP BY order_id, meta_key HAVING COUNT(*) > 1 LIMIT 1",
-				'billing_nif',
-				'shipping_nif'
-			)
-		);
-	} else {
-		$resultado = $wpdb->get_var(
-			$wpdb->prepare(
-				"SELECT 1 FROM {$wpdb->postmeta} WHERE meta_key IN (%s, %s) GROUP BY post_id, meta_key HAVING COUNT(*) > 1 LIMIT 1",
 				'billing_nif',
 				'shipping_nif'
 			)
