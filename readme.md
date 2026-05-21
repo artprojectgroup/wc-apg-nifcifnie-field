@@ -486,6 +486,10 @@ Si tu tienda realizó pedidos con el Bloque de Finalizar compra (o con el checko
 
 - Arreglos menores.
 
+### 1.7.2.4
+
+- Arreglos menores.
+
 ### 1.7.2.3
 
 - Añadida compatibilidad con Polylang.
