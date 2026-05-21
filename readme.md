@@ -10,7 +10,9 @@ Requires at least: 5.0
 
 Tested up to: 7.0
 
-Stable tag: 4.12.3
+Stable tag: 4.13.0
+
+Requires PHP: 7.4
 
 WC requires at least: 5.6
 
@@ -20,13 +22,13 @@ License: GNU General Public License v3 or later
 
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
-Añade a WooCommerce un campo NIF/CIF/NIE.
+Añade a WooCommerce un campo NIF/CIF/NIE en todos los formularios de facturación y envío, con validación y soporte para VIES/EORI.
 
 ## Description
 
-**IMPORTANTE: _WC - APG NIF/CIF/NIE Field_ requiere WooCommerce 2.4.0 o superior y la clase PHP [SoapClient](http://php.net/manual/en/class.soapclient.php).**
+**WC - APG NIF/CIF/NIE Field** añade a tu tienda WooCommerce un nuevo campo NIF/CIF/NIE en todos los formularios de facturación y envío, disponible tanto para el administrador como para el cliente.
 
-**WC - APG NIF/CIF/NIE Field** añade a tu tienda WooCommerce un nuevo campo NIF/CIF/NIE a todos los formularios de facturación y envío disponibles tanto para el administrador como para el cliente en WooCommerce.
+**Requisitos:** el plugin necesita WooCommerce 2.4.0 o superior y la clase PHP [SoapClient](http://php.net/manual/en/class.soapclient.php) para la validación VIES/EORI.
 
 ### Características
 
@@ -106,33 +108,9 @@ Añade a WooCommerce un campo NIF/CIF/NIE.
 - Español ([**Art Project Group**](https://artprojectgroup.es/)).
 - English ([**Art Project Group**](https://artprojectgroup.es/)).
 
-### Soporte técnico
-
-**Art Project Group** te ofrece [**Soporte técnico**](https://artprojectgroup.es/tienda/ticket-de-soporte) para configurar o instalar **_WC - APG NIF/CIF/NIE Field_**.
-
-### Origen
-
-**WC - APG NIF/CIF/NIE Field** ha sido programado a partir del código publicado en [_¿Cómo añadir un campo NIF o CIF con validación a WooCommerce 2.4?_](https://artprojectgroup.es/como-anadir-un-campo-nif-o-cif-con-validacion-a-woocommerce-2-4) de [Art Project Group](https://artprojectgroup.es/).
-
 ### Más información
 
-En nuestro sitio web oficial puede obtener más información sobre [**WC - APG NIF/CIF/NIE Field**](https://artprojectgroup.es/plugins-para-woocommerce/wc-apg-nifcifnie-field).
-
-### Comentarios
-
-No olvides dejarnos tu comentario en:
-
-- [WC - APG NIF/CIF/NIE Field](https://artprojectgroup.es/plugins-para-woocommerce/wc-apg-nifcifnie-field) en Art Project Group.
-- [Art Project Group](https://www.facebook.com/artprojectgroup) en Facebook.
-- [@artprojectgroup](https://x.com/artprojectgroup) en X.
-
-### Más plugins
-
-Recuerda que puedes encontrar más [plugins para WordPress](https://artprojectgroup.es/plugins-para-wordpress) y más [plugins para WooCommerce](https://artprojectgroup.es/plugins-para-woocommerce) en [Art Project Group](https://artprojectgroup.es) y en nuestro perfil en [WordPress](https://profiles.wordpress.org/artprojectgroup/).
-
-### GitHub
-
-Puedes seguir el desarrollo de este plugin en [Github](https://github.com/artprojectgroup/wc-apg-nifcifnie-field).
+Puedes obtener más información sobre **WC - APG NIF/CIF/NIE Field** en nuestro [sitio web oficial](https://artprojectgroup.es/plugins-para-woocommerce/wc-apg-nifcifnie-field) y seguir el desarrollo en [GitHub](https://github.com/artprojectgroup/wc-apg-nifcifnie-field).
 
 ## Instalación
 
@@ -142,39 +120,37 @@ Puedes seguir el desarrollo de este plugin en [Github](https://github.com/artpro
 - Subir el archivo ZIP completo vía _Plugins -> Añadir nuevo -> Subir_ en el Panel de Administración de tu instalación de WordPress.
 - Buscar **WC - APG NIF/CIF/NIE Field** en el buscador disponible en _Plugins -> Añadir nuevo_ y pulsar el botón _Instalar ahora_.
 
-2. Activar el plugin a través del menú _Plugins_ en el Panel de Administración de WordPress.
-3. Configurar el plugin en _WooCommerce -> NIF/CIF/NIE field_ o a través del botón _Ajustes_.
-4. Listo, ahora ya puedes disfrutar de él, y si te gusta y te resulta útil, hacer una [_donación_](https://artprojectgroup.es/tienda/donacion).
+2. Activa el plugin a través del menú _Plugins_ en el Panel de Administración de WordPress.
+3. Configura el plugin en _WooCommerce -> NIF/CIF/NIE field_ o a través del enlace _Ajustes_ en la página de plugins.
 
 ## Preguntas frecuentes
 
-### ¿Cómo se configura?
+### ¿Cómo se configura el plugin?
 
-La configuración del plugin es un muy simple, tan sólo debes indicar si quieres que se valide el campo NIF/CIF/NIE o no.
+La configuración del plugin es muy simple: solo debes indicar si quieres que el campo NIF/CIF/NIE se valide o no, y configurar la validación opcional de VIES y EORI si las necesitas.
 
-### ¿Cómo corrijo los metadatos NIF duplicados de pedidos anteriores a la versión 4.12.0?
+### ¿Cómo corrijo los metadatos NIF duplicados de pedidos antiguos?
 
-Si tu tienda realizó pedidos con el Bloque de Finalizar compra antes de actualizar a la versión 4.12.0, es posible que algunos pedidos tengan filas duplicadas de `billing_nif` / `shipping_nif` en la base de datos que impiden que el campo se actualice correctamente desde el panel de administración.
+Si tu tienda realizó pedidos con el Bloque de Finalizar compra (o con el checkout clásico) usando una versión anterior del plugin, es posible que algunos pedidos tengan filas de metadatos `billing_nif` / `shipping_nif` duplicadas o heredadas que impiden que el campo se actualice correctamente desde el panel de administración.
 
-**Opción 1 – Página de ajustes (recomendado):** Ve a _WooCommerce → NIF/CIF/NIE field_. Si se detectan duplicados, aparecerá el botón "Corregir los metadatos duplicados del NIF" al final de la página. Haz clic para ejecutar la limpieza. El botón desaparece automáticamente cuando no quedan duplicados.
+**Opción 1 – Página de ajustes (recomendado):** Ve a _WooCommerce -> NIF/CIF/NIE field_. Si se detectan duplicados, aparecerá el botón "Corregir los metadatos duplicados del NIF" al final de la página. Haz clic para ejecutar la limpieza. El botón desaparece automáticamente cuando no quedan duplicados.
 
 **Opción 2 – WP-CLI (tiendas grandes):** Ejecuta el siguiente comando desde la raíz de tu instalación de WordPress para evitar tiempos de espera HTTP:
 
 `wp eval-file wp-content/plugins/wc-apg-nifcifnie-field/includes/admin/limpieza-meta-duplicados.php`
 
-### Soporte técnico
+### ¿Dónde puedo obtener soporte?
 
-Si necesitas ayuda para configurar o instalar **WC - APG NIF/CIF/NIE Field**, **Art Project Group** te ofrece su servicio de [**Soporte técnico**](https://artprojectgroup.es/tienda/ticket-de-soporte).
-
-_En ningún caso **Art Project Group** proporciona ningún tipo de soporte técnico gratuito._
+**WC - APG NIF/CIF/NIE Field** es un plugin gratuito. **Art Project Group** no proporciona soporte técnico gratuito, pero ofrece un servicio de [soporte técnico](https://artprojectgroup.es/tienda/ticket-de-soporte) de pago para instalación y configuración.
 
 ## Changelog
 
-### 4.12.3
+### 4.13.0
 
-- Corregida la detección de metadatos duplicados para que identifique también los pedidos donde `billing_nif` y `_billing_nif` (o `shipping_nif` y `_shipping_nif`) coexisten. La rutina de limpieza ahora elimina las claves heredadas `_billing_nif` / `_shipping_nif` cuando ya existe la clave canónica.
-- Corregido que el botón de limpieza no apareciera en tiendas con HPOS en modo sincronización o con ciertas configuraciones de HPOS (la detección ahora comprueba tanto `postmeta` como `wc_orders_meta`).
-- Añadida una caché de transient de una hora a la consulta de detección de duplicados para evitar problemas de rendimiento en tiendas con muchos pedidos.
+- Corregido que el campo NIF/CIF/NIE no se rellenara al seleccionar un cliente al crear o editar un pedido en el panel de administración. El campo se renderiza ahora con el id que espera el script de datos de cliente de WooCommerce (`_billing_nif` / `_shipping_nif`), mientras que el valor se sigue guardando con las claves canónicas `billing_nif` / `shipping_nif`.
+- Unificada la clave de metadatos del NIF en todas las vías de guardado. El checkout clásico ya no deja una copia heredada `_billing_nif` / `_shipping_nif`, y editar un pedido desde el panel de administración ya no crea un segundo metadato.
+- Reescrita la detección y la herramienta de limpieza de metadatos duplicados del NIF. La detección identifica ahora también los pedidos donde `billing_nif` y `_billing_nif` (o `shipping_nif` y `_shipping_nif`) coexisten, actúa sobre `postmeta` y `wc_orders_meta` (HPOS, incluido el modo sincronización y las configuraciones en las que antes no aparecía el botón de limpieza) y cachea la consulta durante una hora para evitar problemas de rendimiento en tiendas grandes. La limpieza migra las claves heredadas solitarias a la canónica, elimina las heredadas cuando ya existe la canónica y deduplica filas repetidas, de modo que detección y limpieza siempre coinciden (corrigiendo el caso en que el botón aparecía pero indicaba "0 corregidos").
+- Revisados y corregidos los textos en inglés del plugin. Corregida la redacción de la descripción de los ajustes y de las ayudas de los campos (por ejemplo "validate the field before submission", "allow and validate the VIES VAT number / the EORI number") y del cuadro de información ("Contact us", "If you enjoy this plugin and find it helpful"), y renombrada la referencia "End Purchase block" al término correcto de WooCommerce "Checkout block".
 
 ### 4.12.2
 
@@ -691,47 +667,17 @@ _En ningún caso **Art Project Group** proporciona ningún tipo de soporte técn
 
 - Versión inicial.
 
-## Traducciones
-
-- _English_: by [**Art Project Group**](https://artprojectgroup.es/) (default language).
-- _Español_: por [**Art Project Group**](https://artprojectgroup.es/).
-
-## Soporte técnico
-
-Dado que **WC - APG NIF/CIF/NIE Field** es totalmente gratuito, **Art Project Group** sólo proporciona el servicio de [**Soporte técnico**](https://artprojectgroup.es/tienda/ticket-de-soporte) previo pago. En ningún caso **Art Project Group** proporciona ningún tipo de soporte técnico gratuito.
-
-## Donación
-
-¿Te ha gustado y te ha resultado útil **WC - APG NIF/CIF/NIE Field** en tu sitio web? Te agradeceríamos una [pequeña donación](https://artprojectgroup.es/tienda/donacion) que nos ayudará a seguir mejorando este plugin y a crear más plugins totalmente gratuitos para toda la comunidad WordPress.
-
 ## Gracias
 
-- A todos los que lo usáis.
-- A todos los que ayudáis a mejorarlo.
-- A todos los que realizáis donaciones.
-- A todos los que nos animáis con vuestros comentarios.
+Gracias a todos los que usáis el plugin, ayudáis a mejorarlo, hacéis donaciones o nos animáis con vuestros comentarios.
 
-¡Muchas gracias a todos!
+Si te resulta útil, puedes apoyar su desarrollo con una [pequeña donación](https://artprojectgroup.es/tienda/donacion).
 
-## Servicios Externos
+## Servicios externos
 
-1. A la API de plugins de WordPress.org para obtener información sobre plugins.
+Este plugin se conecta a los siguientes servicios externos:
 
-- Envía el slug del plugin al solicitar los datos.
-- Más información: https://wordpress.org/about/privacy/
-
-2. A la API de validación de números de IVA (VIES) y de números EORI de la Comisión Europea.
-
-- Envía el país y el número de IVA (validación VIES).
-- Envía el número EORI.
-- Más información: https://commission.europa.eu/privacy-policy-websites-managed-european-commission_es
-
-3. A la API de validación de número EORI del Gobierno del Reino Unido.
-
-- Envía el número EORI.
-- Más información: https://www.gov.uk/help/privacy-notice
-
-4. A la API de validación de número EORI de VatApp.
-
-- Envía el número EORI.
-- Más información: https://vatapp.net/privacy-policy
+1. **API de plugins de WordPress.org**: para obtener información del plugin (como la valoración). Envía el slug del plugin al solicitar los datos. Más información: https://wordpress.org/about/privacy/
+2. **API de validación VIES/EORI de la Comisión Europea**: para validar números de IVA intracomunitario y EORI. Envía el país y el número de IVA (VIES) o el número EORI. Más información: https://commission.europa.eu/privacy-policy-websites-managed-european-commission_es
+3. **API de validación EORI del Gobierno del Reino Unido**: para validar números EORI británicos. Envía el número EORI. Más información: https://www.gov.uk/help/privacy-notice
+4. **API de validación EORI de VatApp**: para validar números EORI. Envía el número EORI. Más información: https://vatapp.net/privacy-policy

@@ -82,10 +82,14 @@ class APG_Campo_NIF_en_Admin_Pedidos {
 
 		$etiqueta     = isset( $apg_nif_settings['etiqueta'] ) && $apg_nif_settings['etiqueta'] ? sanitize_text_field( $apg_nif_settings['etiqueta'] ) : esc_attr__( 'NIF/CIF/NIE', 'wc-apg-nifcifnie-field' );
 		$es_envio     = ( 'woocommerce_admin_shipping_fields' === current_filter() );
+		// El id lleva guion bajo para que el JS de WooCommerce (meta-boxes-order.js)
+		// rellene el campo al seleccionar un cliente: busca `:input#_billing_nif`.
+		// El update_callback se encarga de guardar en la clave canónica sin guion bajo.
 		$campos['nif'] = array(
-			'id'    => $es_envio ? 'shipping_nif' : 'billing_nif',
-			'label' => $etiqueta,
-			'show'  => false,
+			'id'              => $es_envio ? '_shipping_nif' : '_billing_nif',
+			'label'           => $etiqueta,
+			'show'            => false,
+			'update_callback' => array( $this, 'apg_nif_guarda_campo_nif_pedido' ),
 		);
 
 		if ( $order instanceof WC_Order ) {
@@ -149,6 +153,27 @@ class APG_Campo_NIF_en_Admin_Pedidos {
 		}
 
 		return $campos_ordenados;
+	}
+
+	/**
+	 * Guarda el NIF del pedido usando la clave de meta canónica (sin guion bajo).
+	 *
+	 * El campo se renderiza con el id `_billing_nif` / `_shipping_nif` para que el
+	 * JS de WooCommerce lo rellene al seleccionar un cliente, pero el meta debe
+	 * guardarse como `billing_nif` / `shipping_nif` (igual que el Bloque de
+	 * Finalizar compra). Se invoca desde el guardado del metabox de pedido.
+	 *
+	 * @param string   $key   Id del campo en el formulario (p.ej. `_billing_nif`).
+	 * @param string   $value Valor saneado del NIF.
+	 * @param WC_Order $order Pedido en el que se guarda el meta.
+	 * @return void
+	 */
+	public function apg_nif_guarda_campo_nif_pedido( $key, $value, $order ) {
+		$clave = ltrim( $key, '_' ); // `_billing_nif` => `billing_nif`.
+		// Elimina la clave heredada con guion bajo (la que crea el checkout clásico)
+		// para no dejar dos metadatos distintos al editar un pedido antiguo.
+		$order->delete_meta_data( '_' . $clave );
+		$order->update_meta_data( $clave, $value );
 	}
 
 	/**
@@ -260,12 +285,11 @@ class APG_Campo_NIF_en_Admin_Pedidos {
 		}
 	}
 	/**
-	 * Procesa la limpieza masiva de metadatos duplicados desde la página de ajustes.
+	 * Procesa la limpieza masiva de metadatos de NIF desde la página de ajustes.
 	 *
-	 * Recorre todos los pedidos en lotes, elimina filas duplicadas de billing_nif /
-	 * shipping_nif y borra las claves heredadas _billing_nif / _shipping_nif cuando
-	 * ya existe la clave canónica. Redirige a la página de ajustes con el resultado
-	 * guardado en un transient.
+	 * Delega en {@see apg_nif_normaliza_meta_duplicados()}, que unifica las claves
+	 * heredadas con la canónica y elimina filas duplicadas en postmeta y HPOS.
+	 * Redirige a la página de ajustes con el resultado guardado en un transient.
 	 *
 	 * Hook: `admin_post_apg_nif_limpieza_duplicados`.
 	 *
@@ -278,72 +302,13 @@ class APG_Campo_NIF_en_Admin_Pedidos {
 			wp_die( esc_html__( 'You do not have sufficient permissions.', 'wc-apg-nifcifnie-field' ) );
 		}
 
-		$claves        = array( 'billing_nif', 'shipping_nif' );
-		$lote          = 50;
-		$pagina        = 1;
-		$total_pedidos = 0;
-		$total_limpios = 0;
-
-		do {
-			$ids = wc_get_orders( array(
-				'limit'  => $lote,
-				'page'   => $pagina,
-				'return' => 'ids',
-				'status' => 'any',
-			) );
-
-			foreach ( $ids as $id ) {
-				$order    = wc_get_order( $id );
-				$limpiado = false;
-
-				if ( ! $order instanceof WC_Order ) {
-					continue;
-				}
-
-				foreach ( $claves as $key ) {
-					// Caso A: filas duplicadas con la misma clave.
-					$metas = array_values(
-						array_filter(
-							$order->get_meta_data(),
-							function ( $m ) use ( $key ) {
-								return $m->key === $key;
-							}
-						)
-					);
-
-					if ( count( $metas ) > 1 ) {
-						$valor = $metas[0]->value;
-						$order->delete_meta_data( $key );
-						$order->add_meta_data( $key, $valor );
-						$limpiado = true;
-					}
-
-					// Caso B: clave heredada (_billing_nif) coexiste con la canónica.
-					$clave_heredada = '_' . $key;
-					if ( '' !== $order->get_meta( $key, true ) && '' !== $order->get_meta( $clave_heredada, true ) ) {
-						$order->delete_meta_data( $clave_heredada );
-						$limpiado = true;
-					}
-				}
-
-				if ( $limpiado ) {
-					$order->save();
-					$total_limpios++;
-				}
-
-				$total_pedidos++;
-			}
-
-			$pagina++;
-		} while ( count( $ids ) === $lote );
-
-		delete_transient( 'apg_nif_duplicados' );
+		$resultado = apg_nif_normaliza_meta_duplicados();
 
 		set_transient(
 			'apg_nif_limpieza_resultado_' . get_current_user_id(),
 			array(
-				'pedidos' => $total_pedidos,
-				'limpios' => $total_limpios,
+				'pedidos' => (int) $resultado['pedidos'],
+				'filas'   => (int) $resultado['filas'],
 			),
 			60
 		);
@@ -362,17 +327,58 @@ class APG_Campo_NIF_en_Admin_Pedidos {
 new APG_Campo_NIF_en_Admin_Pedidos();
 
 /**
- * Comprueba si existe algún pedido con metadatos NIF que necesiten limpieza.
+ * Devuelve las tablas de metadatos de pedido a normalizar, con sus columnas.
  *
- * Detecta dos casos:
- * - Filas duplicadas con la misma clave (billing_nif×2 o shipping_nif×2).
- * - Clave heredada (_billing_nif / _shipping_nif) coexistiendo con la canónica.
- *
- * El resultado se cachea en un transient de 1 hora para evitar queries repetidas.
- * Soporta postmeta (clásico) y wc_orders_meta (HPOS).
+ * Incluye siempre `postmeta` (almacén clásico/heredado) y, si existe físicamente,
+ * la tabla HPOS `wc_orders_meta`. Operar sobre ambas evita que queden duplicados
+ * huérfanos en la tabla que no es la autoritativa (p.ej. postmeta obsoleto en una
+ * tienda ya migrada a HPOS sin sincronización).
  *
  * @global \wpdb $wpdb
- * @return bool true si hay al menos un pedido que necesite limpieza.
+ * @return array<int,array{tabla:string,id:string,pk:string}> Cada entrada con la
+ *         tabla, la columna de id de pedido y la columna de clave primaria.
+ */
+function apg_nif_tablas_meta_pedido() {
+	global $wpdb;
+
+	$tablas = array(
+		array(
+			'tabla' => $wpdb->postmeta,
+			'id'    => 'post_id',
+			'pk'    => 'meta_id',
+		),
+	);
+
+	if ( ! empty( $wpdb->wc_orders_meta ) ) {
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter
+		$existe = $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $wpdb->wc_orders_meta ) );
+		// phpcs:enable
+		if ( $existe ) {
+			$tablas[] = array(
+				'tabla' => $wpdb->wc_orders_meta,
+				'id'    => 'order_id',
+				'pk'    => 'id',
+			);
+		}
+	}
+
+	return $tablas;
+}
+
+/**
+ * Comprueba si existe algún pedido con metadatos NIF que necesiten normalización.
+ *
+ * Detecta, en postmeta y en HPOS:
+ * - Presencia de claves heredadas `_billing_nif` / `_shipping_nif` (se migrarán o
+ *   eliminarán).
+ * - Filas canónicas duplicadas (`billing_nif`×2 o `shipping_nif`×2).
+ *
+ * Usa la misma lógica que {@see apg_nif_normaliza_meta_duplicados()} para que el
+ * botón de limpieza y la limpieza real siempre coincidan. El resultado se cachea
+ * 1 hora.
+ *
+ * @global \wpdb $wpdb
+ * @return bool true si hay al menos un pedido que necesite normalización.
  */
 function apg_nif_hay_meta_duplicados() {
 	$cached = get_transient( 'apg_nif_duplicados' );
@@ -381,80 +387,143 @@ function apg_nif_hay_meta_duplicados() {
 	}
 
 	global $wpdb;
-	$encontrado = null;
+	$hay = false;
 
-	// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+	// Los nombres de tabla y columna provienen de $wpdb y de literales internos
+	// (nunca de entrada del usuario); los valores van con marcadores %s.
+	// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
+	foreach ( apg_nif_tablas_meta_pedido() as $t ) {
+		$tabla = $t['tabla'];
+		$id    = $t['id'];
 
-	// Caso A — misma clave repetida en postmeta.
-	if ( is_null( $encontrado ) ) {
-		$encontrado = $wpdb->get_var(
-			$wpdb->prepare(
-				"SELECT 1 FROM {$wpdb->postmeta} WHERE meta_key IN (%s, %s) GROUP BY post_id, meta_key HAVING COUNT(*) > 1 LIMIT 1",
-				'billing_nif',
-				'shipping_nif'
-			)
+		// Clave heredada presente (migración/eliminación pendiente).
+		$heredada = $wpdb->get_var(
+			"SELECT 1 FROM `{$tabla}` WHERE meta_key IN ( '_billing_nif', '_shipping_nif' ) LIMIT 1"
 		);
-	}
-
-	// Caso B — billing_nif y _billing_nif coexisten en postmeta.
-	if ( is_null( $encontrado ) ) {
-		$encontrado = $wpdb->get_var(
-			$wpdb->prepare(
-				"SELECT 1 FROM {$wpdb->postmeta} WHERE meta_key IN (%s, %s) GROUP BY post_id HAVING COUNT(DISTINCT meta_key) > 1 LIMIT 1",
-				'billing_nif',
-				'_billing_nif'
-			)
-		);
-	}
-
-	// Caso C — shipping_nif y _shipping_nif coexisten en postmeta.
-	if ( is_null( $encontrado ) ) {
-		$encontrado = $wpdb->get_var(
-			$wpdb->prepare(
-				"SELECT 1 FROM {$wpdb->postmeta} WHERE meta_key IN (%s, %s) GROUP BY post_id HAVING COUNT(DISTINCT meta_key) > 1 LIMIT 1",
-				'shipping_nif',
-				'_shipping_nif'
-			)
-		);
-	}
-
-	if ( is_null( $encontrado ) && ! empty( $wpdb->wc_orders_meta ) ) {
-
-		// Caso A (HPOS) — misma clave repetida.
-		$encontrado = $wpdb->get_var(
-			$wpdb->prepare(
-				"SELECT 1 FROM {$wpdb->wc_orders_meta} WHERE meta_key IN (%s, %s) GROUP BY order_id, meta_key HAVING COUNT(*) > 1 LIMIT 1",
-				'billing_nif',
-				'shipping_nif'
-			)
-		);
-
-		// Caso B (HPOS) — billing_nif y _billing_nif coexisten.
-		if ( is_null( $encontrado ) ) {
-			$encontrado = $wpdb->get_var(
-				$wpdb->prepare(
-					"SELECT 1 FROM {$wpdb->wc_orders_meta} WHERE meta_key IN (%s, %s) GROUP BY order_id HAVING COUNT(DISTINCT meta_key) > 1 LIMIT 1",
-					'billing_nif',
-					'_billing_nif'
-				)
-			);
+		if ( $heredada ) {
+			$hay = true;
+			break;
 		}
 
-		// Caso C (HPOS) — shipping_nif y _shipping_nif coexisten.
-		if ( is_null( $encontrado ) ) {
-			$encontrado = $wpdb->get_var(
-				$wpdb->prepare(
-					"SELECT 1 FROM {$wpdb->wc_orders_meta} WHERE meta_key IN (%s, %s) GROUP BY order_id HAVING COUNT(DISTINCT meta_key) > 1 LIMIT 1",
-					'shipping_nif',
-					'_shipping_nif'
-				)
-			);
+		// Filas canónicas duplicadas.
+		$duplicada = $wpdb->get_var(
+			"SELECT 1 FROM `{$tabla}` WHERE meta_key IN ( 'billing_nif', 'shipping_nif' ) GROUP BY `{$id}`, meta_key HAVING COUNT(*) > 1 LIMIT 1"
+		);
+		if ( $duplicada ) {
+			$hay = true;
+			break;
 		}
 	}
-
 	// phpcs:enable
 
-	$hay = ! is_null( $encontrado );
 	set_transient( 'apg_nif_duplicados', $hay ? '1' : '0', HOUR_IN_SECONDS );
 	return $hay;
+}
+
+/**
+ * Normaliza los metadatos de NIF de todos los pedidos en postmeta y HPOS.
+ *
+ * Por cada tabla y cada grupo (billing/shipping) ejecuta, mediante SQL directo:
+ *   1. Migra la clave heredada `_X_nif` a la canónica `X_nif` cuando esta no existe.
+ *   2. Elimina la clave heredada cuando ya existe la canónica.
+ *   3. Elimina filas canónicas duplicadas, conservando la de menor clave primaria.
+ *
+ * Tras modificar las tablas directamente, vacía las cachés de pedidos.
+ *
+ * @global \wpdb $wpdb
+ * @return array{filas:int,pedidos:int} Filas modificadas y pedidos afectados.
+ */
+function apg_nif_normaliza_meta_duplicados() {
+	global $wpdb;
+
+	$pares = array(
+		array(
+			'canonica' => 'billing_nif',
+			'heredada' => '_billing_nif',
+		),
+		array(
+			'canonica' => 'shipping_nif',
+			'heredada' => '_shipping_nif',
+		),
+	);
+
+	$filas     = 0;
+	$afectados = array();
+
+	// Los nombres de tabla y columna provienen de $wpdb y de literales internos
+	// (nunca de entrada del usuario); los valores van con marcadores %s.
+	// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
+	foreach ( apg_nif_tablas_meta_pedido() as $t ) {
+		$tabla = $t['tabla'];
+		$id    = $t['id'];
+		$pk    = $t['pk'];
+
+		// Recoge los pedidos con problemas (para el recuento) antes de modificar.
+		$ids = $wpdb->get_col(
+			"SELECT `{$id}` FROM `{$tabla}` WHERE meta_key IN ( '_billing_nif', '_shipping_nif' )
+			 UNION
+			 SELECT `{$id}` FROM `{$tabla}` WHERE meta_key IN ( 'billing_nif', 'shipping_nif' )
+			 GROUP BY `{$id}`, meta_key HAVING COUNT(*) > 1"
+		);
+		foreach ( (array) $ids as $oid ) {
+			$afectados[ (int) $oid ] = true;
+		}
+
+		foreach ( $pares as $par ) {
+			$canonica = $par['canonica'];
+			$heredada = $par['heredada'];
+
+			// 1) Migra la clave heredada a canónica cuando no existe la canónica.
+			$filas += (int) $wpdb->query(
+				$wpdb->prepare(
+					"UPDATE `{$tabla}` AS leg
+					 LEFT JOIN `{$tabla}` AS can
+					   ON can.`{$id}` = leg.`{$id}` AND can.meta_key = %s
+					 SET leg.meta_key = %s
+					 WHERE leg.meta_key = %s AND can.`{$pk}` IS NULL",
+					$canonica,
+					$canonica,
+					$heredada
+				)
+			);
+
+			// 2) Elimina la clave heredada cuando ya existe la canónica.
+			$filas += (int) $wpdb->query(
+				$wpdb->prepare(
+					"DELETE leg FROM `{$tabla}` AS leg
+					 JOIN `{$tabla}` AS can
+					   ON can.`{$id}` = leg.`{$id}` AND can.meta_key = %s
+					 WHERE leg.meta_key = %s",
+					$canonica,
+					$heredada
+				)
+			);
+
+			// 3) Elimina filas canónicas duplicadas (conserva la de menor PK).
+			$filas += (int) $wpdb->query(
+				$wpdb->prepare(
+					"DELETE dup FROM `{$tabla}` AS dup
+					 JOIN `{$tabla}` AS keep
+					   ON keep.`{$id}` = dup.`{$id}` AND keep.meta_key = dup.meta_key AND keep.`{$pk}` < dup.`{$pk}`
+					 WHERE dup.meta_key = %s",
+					$canonica
+				)
+			);
+		}
+	}
+	// phpcs:enable
+
+	// Tras la modificación directa de metadatos, invalida cachés relacionadas.
+	delete_transient( 'apg_nif_duplicados' );
+	if ( $filas > 0 ) {
+		if ( function_exists( 'wc_delete_shop_order_transients' ) ) {
+			wc_delete_shop_order_transients();
+		}
+		wp_cache_flush();
+	}
+
+	return array(
+		'filas'   => $filas,
+		'pedidos' => count( $afectados ),
+	);
 }

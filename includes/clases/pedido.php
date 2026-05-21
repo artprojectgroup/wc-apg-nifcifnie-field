@@ -222,6 +222,9 @@ class APG_Campo_NIF_en_Pedido {
 		add_filter( 'woocommerce_checkout_fields', array( $this, 'apg_nif_forzar_oculta_campo_envio_checkout' ), 9999 );
         add_action( 'after_setup_theme', array( $this, 'apg_nif_traducciones' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'apg_nif_forzar_oculta_campo_envio_ui' ) );
+		// Normaliza la clave del NIF en el checkout clásico (WooCommerce guarda los
+		// campos personalizados como `_billing_nif`; lo unificamos a `billing_nif`).
+		add_action( 'woocommerce_checkout_update_order_meta', array( $this, 'apg_nif_normaliza_nif_checkout_clasico' ), 20, 2 );
 
 		// Bloques.
         add_action( 'woocommerce_init', array( $this, 'apg_nif_formulario_bloques' ) );
@@ -571,7 +574,56 @@ class APG_Campo_NIF_en_Pedido {
 
 		return $wc_object->get_meta( $clave );
 	}
-    
+
+	/**
+	 * Normaliza la clave del NIF al finalizar un pedido en el checkout clásico.
+	 *
+	 * WooCommerce guarda los campos personalizados de facturación/envío con prefijo
+	 * de guion bajo (`_billing_nif` / `_shipping_nif`, ver WC_Checkout::create_order).
+	 * El resto del plugin (Bloque de Finalizar compra, Store API, búsqueda, panel de
+	 * pedidos) usa la clave canónica sin guion bajo. Este método elimina la copia con
+	 * guion bajo y deja únicamente `billing_nif` / `shipping_nif`, evitando metadatos
+	 * duplicados. No afecta al checkout de bloques, que no dispara este hook.
+	 *
+	 * Hook: `woocommerce_checkout_update_order_meta`.
+	 *
+	 * @param int                  $order_id Id del pedido recién creado.
+	 * @param array<string,mixed>  $data     Datos enviados en el checkout.
+	 * @return void
+	 */
+	public function apg_nif_normaliza_nif_checkout_clasico( $order_id, $data ) {
+		$order = wc_get_order( $order_id );
+		if ( ! $order instanceof WC_Order ) {
+			return;
+		}
+
+		$cambios = false;
+		foreach ( array( 'billing', 'shipping' ) as $grupo ) {
+			$clave    = $grupo . '_nif';
+			$heredada = '_' . $clave;
+
+			// Elimina la copia con guion bajo que crea WooCommerce.
+			if ( '' !== (string) $order->get_meta( $heredada, true ) ) {
+				$order->delete_meta_data( $heredada );
+				$cambios = true;
+			}
+
+			// Asegura el valor canónico a partir de los datos enviados.
+			if ( isset( $data[ $clave ] ) ) {
+				$valor = sanitize_text_field( $data[ $clave ] );
+				$order->delete_meta_data( $clave );
+				if ( '' !== $valor ) {
+					$order->add_meta_data( $clave, $valor );
+				}
+				$cambios = true;
+			}
+		}
+
+		if ( $cambios ) {
+			$order->save();
+		}
+	}
+
 	/**
 	 * Ajusta etiquetas/requerimientos en el formulario de envío (clásico).
 	 *

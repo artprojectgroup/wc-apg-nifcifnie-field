@@ -4,33 +4,34 @@ Donate link: https://artprojectgroup.es/tienda/donacion
 Tags: nif, cif, nie, eori, vies
 Requires at least: 5.0
 Tested up to: 7.0
-Stable tag: 4.12.3
+Stable tag: 4.13.0
+Requires PHP: 7.4
 WC requires at least: 5.6
 WC tested up to: 10.8.0
 License: GNU General Public License v3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
-Add to WooCommerce a NIF/CIF/NIE field.
+Add to WooCommerce a NIF/CIF/NIE field for all billing and shipping forms, with validation and VIES/EORI support.
 
 == Description ==
-**IMPORTANT: *WC - APG NIF/CIF/NIE field* required WooCommerce 2.4.0 or higher and the [SoapClient](http://php.net/manual/en/class.soapclient.php) PHP class.**
+**WC - APG NIF/CIF/NIE Field** adds to your WooCommerce store a new NIF/CIF/NIE field in all billing and shipping forms, available to both the administrator and the customer.
 
-**WC - APG NIF/CIF/NIE field** add to your WooCommerce shop a new NIF/CIF/NIE field to all billing and shipping forms available to admin and customer in WooCommerce.
+**Requirements:** the plugin needs WooCommerce 2.4.0 or higher and the [SoapClient](http://php.net/manual/en/class.soapclient.php) PHP class for VIES/EORI validation.
 
 = Features =
-* Fully compatible with the End Purchase block of the WordPress block editor.
-* You can require the NIF/CIF/NIE field in billing form.
-* You can require the NIF/CIF/NIE field in shipping form.
+* Fully compatible with the Checkout block of the WordPress block editor.
+* You can require the NIF/CIF/NIE field in the billing form.
+* You can require the NIF/CIF/NIE field in the shipping form.
 * You can hide the NIF/CIF/NIE field from the shipping form.
 * You can customize the priority (position) of the field.
 * You can validate the NIF/CIF/NIE field.
-* You can validate the VIES VAT number field to exempt the taxes.
+* You can validate the VIES VAT number field to apply a tax exemption.
 * You can validate the EORI field to prevent the sale if a valid number is not entered.
 * You can select the country(ies) where the EORI field will be validated.
 * You can customize the label and placeholder of the NIF/CIF/NIE, VIES VAT number or EORI field.
 * You can customize the error message of the field NIF/CIF/NIE, VIES VAT number or EORI.
 * You can customize the error message if the maximum number of requests to the VIES VAT number verification API is exceeded.
-* Add and require phone and email fields in shipping form.
+* Add and require phone and email fields in the shipping form.
 * You can remove the phone and email fields from the default address.
 * You can display and customize an error message for the billing form using the `apg_nif_display_error_message` and `apg_nif_error_message` filters.
 * You can remove the Email and Phone fields from the submission form with the `apg_nif_add_fields` filter.
@@ -90,57 +91,35 @@ Add to WooCommerce a NIF/CIF/NIE field.
 * 100% compatible with [Checkout Field Editor (Checkout Manager) for WooCommerce](https://wordpress.org/plugins/woo-checkout-field-editor-pro/)
 
 = Translations =
-* Español ([**Art Project Group**](https://artprojectgroup.es/)).
-* English ([**Art Project Group**](https://artprojectgroup.es/)).
-
-= Technical support =
-**Art Project Group** offers [**Technical support**](https://artprojectgroup.es/tienda/ticket-de-soporte) to configure or install ***WC - APG NIF/CIF/NIE field***.
-
-= Origin =
-**WC - APG NIF/CIF/NIE field** has been programmed from code published on [*¿Cómo añadir un campo NIF o CIF con validación a WooCommerce 2.4?*](https://artprojectgroup.es/como-anadir-un-campo-nif-o-cif-con-validacion-a-woocommerce-2-4) from [Art Project Group](https://artprojectgroup.es/).
+* English: by [**Art Project Group**](https://artprojectgroup.es/) (default language).
+* Spanish: by [**Art Project Group**](https://artprojectgroup.es/).
 
 = More information =
-On our official website you can learn more about [**WC - APG NIF/CIF/NIE field**](https://artprojectgroup.es/plugins-para-woocommerce/wc-apg-nifcifnie-field).
-
-= Comments =
-Don’t forget to leave us your comment on:
-
-* [WC - APG NIF/CIF/NIE field](https://artprojectgroup.es/plugins-para-woocommerce/wc-apg-nifcifnie-field) on Art Project Group.
-* [Art Project Group](https://www.facebook.com/artprojectgroup) on Facebook.
-* [@artprojectgroup](https://x.com/artprojectgroup) on X.
-
-= More plugins =
-Remember that you can find more [plugins for WordPress](https://artprojectgroup.es/plugins-para-wordpress) and more [plugins for WooCommerce](https://artprojectgroup.es/plugins-para-woocommerce) on [Art Project Group](https://artprojectgroup.es) and our profile on [WordPress](https://profiles.wordpress.org/artprojectgroup/).
-
-= GitHub =
-You can follow the development of this plugin on [Github](https://github.com/artprojectgroup/wc-apg-nifcifnie-field).
+You can learn more about **WC - APG NIF/CIF/NIE Field** on our [official website](https://artprojectgroup.es/plugins-para-woocommerce/wc-apg-nifcifnie-field), and follow the development on [GitHub](https://github.com/artprojectgroup/wc-apg-nifcifnie-field).
 
 == Installation ==
-1. You can:
- * Upload the `wc-apg-nifcifnie-field` folder to `/wp-content/plugins/` directory via FTP. 
- * Upload the full ZIP file via *Plugins -> Add New -> Upload* on your WordPress Administration Panel.
- * Search **WC - APG NIF/CIF/NIE field** in the search engine available on *Plugins -> Add New* and press *Install Now* button.
-2. Activate plugin through *Plugins* menu on WordPress Administration Panel.
-3. Set up plugin on *WooCommerce -> NIF/CIF/NIE field* or through *Settings* button.
-4. Ready, now you can enjoy it, and if you like it and find it useful, make a [*donation*](https://artprojectgroup.es/tienda/donacion).
+1. Install the plugin in one of the following ways:
+ * Upload the `wc-apg-nifcifnie-field` folder to the `/wp-content/plugins/` directory via FTP.
+ * Upload the full ZIP file via *Plugins -> Add New -> Upload* in the WordPress administration panel.
+ * Search for **WC - APG NIF/CIF/NIE Field** in *Plugins -> Add New* and click *Install Now*.
+2. Activate the plugin through the *Plugins* menu in the WordPress administration panel.
+3. Configure the plugin in *WooCommerce -> NIF/CIF/NIE field* or through the *Settings* link on the plugins page.
 
-== Frequently asked questions ==
-= How do you set up? =
-The plugin settings is very simple, you just must indicate if you want NIF/CIF/NIE field is validated or not.
+== Frequently Asked Questions ==
+= How do I configure the plugin? =
+The plugin settings are very simple: you only need to indicate whether you want the NIF/CIF/NIE field to be validated or not, and configure the optional VIES and EORI validation if you need them.
 
-= How do I fix duplicate NIF metadata from orders placed before 4.12.0? =
-If your store placed orders via Checkout Blocks before updating to 4.12.0, some orders may have duplicate `billing_nif` / `shipping_nif` rows in the database that prevent the field from updating correctly in the admin panel.
+= How do I fix duplicate NIF metadata from older orders? =
+If your store placed orders via the Checkout block (or the classic checkout) with an older version of the plugin, some orders may have duplicate or legacy `billing_nif` / `shipping_nif` metadata rows that prevent the field from updating correctly in the admin panel.
 
-**Option 1 – Settings page (recommended):** Go to *WooCommerce → NIF/CIF/NIE field*. If duplicates are detected, a "Fix duplicate NIF metadata" button will appear at the bottom of the page. Click it to run the cleanup. The button disappears automatically once there are no more duplicates.
+**Option 1 – Settings page (recommended):** Go to *WooCommerce -> NIF/CIF/NIE field*. If duplicates are detected, a "Fix duplicate NIF metadata" button appears at the bottom of the page. Click it to run the cleanup. The button disappears automatically once there are no more duplicates.
 
 **Option 2 – WP-CLI (large stores):** Run the following command from the root of your WordPress installation to avoid HTTP timeouts:
 
 `wp eval-file wp-content/plugins/wc-apg-nifcifnie-field/includes/admin/limpieza-meta-duplicados.php`
 
-= Support =
-If you need help to configuring or installing **WC - APG NIF/CIF/NIE field**, **Art Project Group** offers its service [**Technical Support**](https://artprojectgroup.es/tienda/ticket-de-soporte).
-
-*In any case **Art Project Group** provides any kind of free technical support.*
+= Where can I get support? =
+**WC - APG NIF/CIF/NIE Field** is a free plugin. **Art Project Group** does not provide free technical support, but offers a paid [technical support](https://artprojectgroup.es/tienda/ticket-de-soporte) service for installation and configuration.
 
 == Screenshots ==
 1. Screenshot of WC - APG NIF/CIF/NIE field.
@@ -148,10 +127,11 @@ If you need help to configuring or installing **WC - APG NIF/CIF/NIE field**, **
 3. Screenshot of WC - APG NIF/CIF/NIE field. Billing and shipping forms. Classic Shortcode.
 
 == Changelog ==
-= 4.12.3 =
-* Fixed the duplicate NIF metadata detection so it also finds orders where `billing_nif` and `_billing_nif` (or `shipping_nif` and `_shipping_nif`) coexist. The cleanup routine now removes the legacy `_billing_nif` / `_shipping_nif` entries when the canonical key is already present.
-* Fixed the cleanup button not appearing on stores using HPOS sync mode or certain HPOS configurations (detection now checks both `postmeta` and `wc_orders_meta`).
-* Added a one-hour transient cache to the duplicate detection query to avoid performance issues on large stores.
+= 4.13.0 =
+* Fixed the NIF/CIF/NIE field not being auto-filled when selecting a customer while creating or editing an order in the admin panel. The field is now rendered with the id that WooCommerce's customer-details script expects (`_billing_nif` / `_shipping_nif`), while the value is still stored under the canonical `billing_nif` / `shipping_nif` keys.
+* Unified the NIF metadata key across every save path. The classic checkout no longer leaves a legacy `_billing_nif` / `_shipping_nif` copy, and editing an order from the admin panel no longer creates a second metadata entry.
+* Rewrote the duplicate NIF metadata detection and cleanup tool. Detection now also finds orders where `billing_nif` and `_billing_nif` (or `shipping_nif` and `_shipping_nif`) coexist, works on both `postmeta` and `wc_orders_meta` (HPOS, including sync mode and configurations where the cleanup button previously failed to appear), and caches the query for one hour to avoid performance issues on large stores. The cleanup migrates lone legacy keys to the canonical key, removes legacy keys when the canonical one already exists, and deduplicates repeated rows, so detection and cleanup always agree (fixing the case where the button appeared but reported "0 fixed").
+* Reviewed and corrected the plugin's English texts. Fixed the wording of the settings description and field tooltips (e.g. "validate the field before submission", "allow and validate the VIES VAT number / the EORI number") and of the information box ("Contact us", "If you enjoy this plugin and find it helpful"), and renamed the "End Purchase block" reference to the correct WooCommerce term "Checkout block".
 
 = 4.12.2 =
 * Fixed the root cause of the NIF field not saving when editing an existing order from the admin panel: the field definition was missing an explicit `id`, so WooCommerce was writing the admin-entered value to `_billing_nif` / `_shipping_nif` instead of `billing_nif` / `shipping_nif`. As a result, the display always showed the original checkout value unchanged.
@@ -444,26 +424,13 @@ If you need help to configuring or installing **WC - APG NIF/CIF/NIE field**, **
 * Initial version.
 
 == Upgrade Notice ==
-= 4.12.3 =
-* Fixes the cleanup button not appearing on most affected stores and improves duplicate detection to cover all known cases. Recommended update if you are on 4.12.2.
-
-== Translations ==
-* *English*: by [**Art Project Group**](https://artprojectgroup.es/) (default language).
-* *Español*: por [**Art Project Group**](https://artprojectgroup.es/).
-
-== Support ==
-Since **WC - APG NIF/CIF/NIE field** is totally free, **Art Project Group** only provides payment [**Technical Support**](https://artprojectgroup.es/tienda/ticket-de-soporte) service. In any case **Art Project Group** provide any kind of free technical support.
-
-== Donation ==
-Did you like and find **WC - APG NIF/CIF/NIE field** useful on your website? We would appreciate a [small donation](https://artprojectgroup.es/tienda/donacion) that will help us to continue improving this plugin and create more plugins totally free for the entire WordPress community.
+= 4.13.0 =
+* Fixes the NIF field not auto-filling when choosing a customer in the order admin, prevents duplicate NIF metadata, makes the cleanup tool work reliably on HPOS, and reviews the plugin's English texts. Recommended update.
 
 == Thanks ==
-* To all that use it.
-* All that you help to improve it.
-* All you made donations.
-* All that you encourage us with your comments.
+Thanks to everyone who uses the plugin, helps improve it, makes a donation or encourages us with their comments.
 
-Thank you very much to all!
+If you find this plugin useful, you can support its development with a [small donation](https://artprojectgroup.es/tienda/donacion).
 
 == External Services ==
 1. To the WordPress.org Plugins API to fetch plugin information.  

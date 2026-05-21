@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WooCommerce - APG NIF/CIF/NIE field\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-11 16:42+0000\n"
+"POT-Creation-Date: 2026-05-21 15:29+0000\n"
 "POT-Revision-Date: Wed Aug 10 2016 13:39:45 GMT+0200 (CEST)\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: \n"
@@ -25,21 +25,21 @@ msgstr ""
 "X-Generator: Loco https://localise.biz/"
 
 #. %s is the field label (e.g., NIF/CIF/NIE)
-#: includes/clases/pedido.php:439
+#: includes/clases/pedido.php:442
 #, php-format
 msgid "%s (optional)"
 msgstr ""
 
 #. %s: field label
-#: includes/clases/pedido.php:909
+#: includes/clases/pedido.php:961
 #, php-format
 msgid "%s is a required field."
 msgstr ""
 
 #: includes/formulario.php:44
 msgid ""
-"Add to WooCommerce a NIF/CIF/NIE field, validate the field before submit "
-"and let to the admin configure the billing and shipping forms."
+"Add to WooCommerce a NIF/CIF/NIE field, validate the field before "
+"submission and let the admin configure the billing and shipping forms."
 msgstr ""
 
 #. Description of the plugin
@@ -71,11 +71,11 @@ msgid "Check if you need to require the field."
 msgstr ""
 
 #: includes/formulario.php:252
-msgid "Check if you want to allow and validate EORI number."
+msgid "Check if you want to allow and validate the EORI number."
 msgstr ""
 
 #: includes/formulario.php:181
-msgid "Check if you want to allow and validate VIES VAT number."
+msgid "Check if you want to allow and validate the VIES VAT number."
 msgstr ""
 
 #: includes/formulario.php:154
@@ -83,27 +83,26 @@ msgid "Check if you want to show the field in the shipping form."
 msgstr ""
 
 #: includes/formulario.php:167
-msgid "Check if you want to validate the field before submit."
+msgid "Check if you want to validate the field before submission."
 msgstr ""
 
 #: includes/formulario.php:305
 msgid "Choose countries / regions&hellip;"
 msgstr ""
 
-#. 1: number of orders reviewed, 2: number of orders fixed
+#. 1: number of orders fixed, 2: number of meta entries normalized
 #: includes/formulario.php:378
 #, php-format
 msgid ""
-"Cleanup completed. Orders reviewed: %1$d. Orders with duplicates fixed: "
-"%2$d."
+"Cleanup completed. Orders fixed: %1$d (%2$d NIF meta entries normalized)."
 msgstr ""
 
 #: includes/cuadro-informacion.php:59 includes/admin/funciones-apg.php:71
-msgid "Contact with us by "
+msgid "Contact us by "
 msgstr ""
 
 #: includes/cuadro-informacion.php:57
-msgid "Contact with us:"
+msgid "Contact us:"
 msgstr ""
 
 #: includes/formulario.php:298
@@ -122,8 +121,8 @@ msgstr ""
 msgid "Download (with NIF/CIF/NIE)"
 msgstr ""
 
-#: includes/clases/pedido.php:354 includes/clases/admin/usuario.php:60
-#: includes/clases/admin/pedidos.php:117
+#: includes/clases/pedido.php:357 includes/clases/admin/usuario.php:60
+#: includes/clases/admin/pedidos.php:120
 msgid "Email address"
 msgstr ""
 
@@ -152,7 +151,7 @@ msgid "Error message"
 msgstr ""
 
 #: apg-nif.php:210 includes/formulario.php:242
-#: includes/clases/pedido.php:298
+#: includes/clases/pedido.php:301
 msgid "Error: maximum number of concurrent requests exceeded."
 msgstr ""
 
@@ -191,10 +190,10 @@ msgstr ""
 
 #: includes/cuadro-informacion.php:27
 msgid ""
-"If you enjoyed and find helpful this plugin, please make a donation:"
+"If you enjoy this plugin and find it helpful, please make a donation:"
 msgstr ""
 
-#: includes/clases/pedido.php:1159
+#: includes/clases/pedido.php:1211
 msgid "Invalid context."
 msgstr ""
 
@@ -210,8 +209,8 @@ msgstr ""
 msgid "More plugins:"
 msgstr ""
 
-#: includes/clases/pedido.php:288 includes/clases/admin/usuario.php:49
-#: includes/clases/admin/pedidos.php:84
+#: includes/clases/pedido.php:291 includes/clases/admin/usuario.php:49
+#: includes/clases/admin/pedidos.php:83
 msgid "NIF/CIF/NIE"
 msgstr ""
 
@@ -224,12 +223,12 @@ msgid "NIF/CIF/NIE number"
 msgstr ""
 
 #: apg-nif.php:214 includes/formulario.php:332 includes/formulario.php:345
-#: includes/formulario.php:347 includes/clases/pedido.php:303
+#: includes/formulario.php:347 includes/clases/pedido.php:306
 msgid "NIF/CIF/NIE/EORI number"
 msgstr ""
 
 #: apg-nif.php:208 includes/formulario.php:201 includes/formulario.php:213
-#: includes/formulario.php:215 includes/clases/pedido.php:295
+#: includes/formulario.php:215 includes/clases/pedido.php:298
 msgid "NIF/CIF/NIE/VAT number"
 msgstr ""
 
@@ -243,38 +242,38 @@ msgid ""
 "updating the plugin. May take a while on large stores."
 msgstr ""
 
-#: includes/clases/pedido.php:364 includes/clases/admin/usuario.php:64
-#: includes/clases/admin/pedidos.php:113
+#: includes/clases/pedido.php:367 includes/clases/admin/usuario.php:64
+#: includes/clases/admin/pedidos.php:116
 msgid "Phone"
 msgstr ""
 
-#: includes/clases/pedido.php:289
+#: includes/clases/pedido.php:292
 msgctxt "placeholder"
 msgid "NIF/CIF/NIE number"
 msgstr ""
 
-#: includes/clases/pedido.php:304
+#: includes/clases/pedido.php:307
 msgctxt "placeholder"
 msgid "NIF/CIF/NIE/EORI number"
 msgstr ""
 
-#: includes/clases/pedido.php:296
+#: includes/clases/pedido.php:299
 msgctxt "placeholder"
 msgid "NIF/CIF/NIE/VAT number"
 msgstr ""
 
 #: apg-nif.php:215 includes/formulario.php:360 includes/formulario.php:362
-#: includes/clases/pedido.php:305
+#: includes/clases/pedido.php:308
 msgid "Please enter a valid EORI number."
 msgstr ""
 
 #: apg-nif.php:198 includes/formulario.php:90 includes/formulario.php:92
-#: includes/clases/pedido.php:290
+#: includes/clases/pedido.php:293
 msgid "Please enter a valid NIF/CIF/NIE."
 msgstr ""
 
 #: apg-nif.php:209 includes/formulario.php:227 includes/formulario.php:229
-#: includes/formulario.php:244 includes/clases/pedido.php:297
+#: includes/formulario.php:244 includes/clases/pedido.php:300
 msgid "Please enter a valid VIES VAT number."
 msgstr ""
 
@@ -316,7 +315,7 @@ msgstr ""
 msgid "Settings of "
 msgstr ""
 
-#: includes/clases/pedido.php:838
+#: includes/clases/pedido.php:890
 msgid "Shipping details"
 msgstr ""
 
@@ -410,13 +409,13 @@ msgstr ""
 msgid "WC - APG NIF/CIF/NIE Field"
 msgstr ""
 
-#: includes/clases/pedido.php:1005
+#: includes/clases/pedido.php:1057
 msgid ""
 "We could not validate the VAT number in VIES at this time. The order can "
 "continue with VAT applied."
 msgstr ""
 
-#: includes/clases/admin/pedidos.php:278
+#: includes/clases/admin/pedidos.php:302
 msgid "You do not have sufficient permissions."
 msgstr ""
 

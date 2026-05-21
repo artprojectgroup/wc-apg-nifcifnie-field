@@ -41,7 +41,7 @@ $tab = 1;
     <h3><a href="<?php echo esc_url( $apg_nif['plugin_url'] ); ?>"
             title="Art Project Group"><?php echo esc_attr( $apg_nif['plugin'] ); ?></a></h3>
     <p>
-        <?php esc_html_e( 'Add to WooCommerce a NIF/CIF/NIE field, validate the field before submit and let to the admin configure the billing and shipping forms.', 'wc-apg-nifcifnie-field' ); ?>
+        <?php esc_html_e( 'Add to WooCommerce a NIF/CIF/NIE field, validate the field before submission and let the admin configure the billing and shipping forms.', 'wc-apg-nifcifnie-field' ); ?>
     </p>
     <?php include 'cuadro-informacion.php'; ?>
     <form method="post" action="options.php">
@@ -164,7 +164,7 @@ $tab = 1;
                     <label for="apg_nif_settings[validacion]">
                         <?php esc_html_e( 'Validate field?', 'wc-apg-nifcifnie-field' ); ?>
                         <span class="woocommerce-help-tip"
-                            data-tip="<?php esc_attr_e( 'Check if you want to validate the field before submit.', 'wc-apg-nifcifnie-field' ); ?>"></span>
+                            data-tip="<?php esc_attr_e( 'Check if you want to validate the field before submission.', 'wc-apg-nifcifnie-field' ); ?>"></span>
                     </label>
                 </th>
                 <td class="forminp"><input id="apg_nif_settings[validacion]" name="apg_nif_settings[validacion]"
@@ -178,7 +178,7 @@ $tab = 1;
                     <label for="apg_nif_settings[validacion_vies]">
                         <?php esc_html_e( 'Allow VIES VAT number?', 'wc-apg-nifcifnie-field' ); ?>
                         <span class="woocommerce-help-tip"
-                            data-tip="<?php esc_attr_e( 'Check if you want to allow and validate VIES VAT number.', 'wc-apg-nifcifnie-field' ); ?>"></span>
+                            data-tip="<?php esc_attr_e( 'Check if you want to allow and validate the VIES VAT number.', 'wc-apg-nifcifnie-field' ); ?>"></span>
                     </label>
                 </th>
                 <td class="forminp"><input class="muestra_vies" id="apg_nif_settings[validacion_vies]"
@@ -249,7 +249,7 @@ $tab = 1;
                     <label for="apg_nif_settings[validacion_eori]">
                         <?php esc_html_e( 'Allow EORI number?', 'wc-apg-nifcifnie-field' ); ?>
                         <span class="woocommerce-help-tip"
-                            data-tip="<?php esc_attr_e( 'Check if you want to allow and validate EORI number.', 'wc-apg-nifcifnie-field' ); ?>"></span>
+                            data-tip="<?php esc_attr_e( 'Check if you want to allow and validate the EORI number.', 'wc-apg-nifcifnie-field' ); ?>"></span>
                     </label>
                 </th>
                 <td class="forminp"><input class="muestra_eori" id="apg_nif_settings[validacion_eori]"
@@ -374,10 +374,10 @@ $tab = 1;
     <div class="notice notice-success is-dismissible">
         <p><?php
 				printf(
-					/* translators: 1: number of orders reviewed, 2: number of orders fixed */
-					esc_html__( 'Cleanup completed. Orders reviewed: %1$d. Orders with duplicates fixed: %2$d.', 'wc-apg-nifcifnie-field' ),
+					/* translators: 1: number of orders fixed, 2: number of meta entries normalized */
+					esc_html__( 'Cleanup completed. Orders fixed: %1$d (%2$d NIF meta entries normalized).', 'wc-apg-nifcifnie-field' ),
 					(int) $resultado_limpieza['pedidos'],
-					(int) $resultado_limpieza['limpios']
+					isset( $resultado_limpieza['filas'] ) ? (int) $resultado_limpieza['filas'] : 0
 				);
 			?></p>
     </div>
