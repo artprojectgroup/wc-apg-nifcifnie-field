@@ -458,11 +458,16 @@ class APG_Campo_NIF_en_Pedido {
                 'apg/nif',
                 array(
                     'getter' => function ( $order, $group ) {
-                        $meta_key   = ( 'billing' === $group ) ? 'billing_nif' : 'shipping_nif';
-                        return $order->get_meta( $meta_key );
+                        $meta_key = ( 'billing' === $group ) ? '_billing_nif' : '_shipping_nif';
+                        $valor    = $order->get_meta( $meta_key );
+                        if ( '' === (string) $valor ) {
+                            $valor = $order->get_meta( ltrim( $meta_key, '_' ) ); // Retrocompatibilidad con pedidos antiguos.
+                        }
+                        return $valor;
                     },
                     'setter' => function ( $order, $value, $group ) {
-                        $meta_key = ( 'billing' === $group ) ? 'billing_nif' : 'shipping_nif';
+                        $meta_key = ( 'billing' === $group ) ? '_billing_nif' : '_shipping_nif';
+                        $order->delete_meta_data( ltrim( $meta_key, '_' ) ); // Limpia la clave heredada sin guion bajo.
                         $order->delete_meta_data( $meta_key );
                         $order->add_meta_data( $meta_key, sanitize_text_field( $value ) );
                     },
@@ -551,10 +556,11 @@ class APG_Campo_NIF_en_Pedido {
 			return;
 		}
 
-		$clave = ( 'billing' === $group ) ? 'billing_nif' : 'shipping_nif';
+		$clave = ( 'billing' === $group ) ? '_billing_nif' : '_shipping_nif';
 
 		// Elimina entradas previas para evitar duplicados (el setter del Store API puede
-		// haber escrito ya el mismo dato en la misma solicitud).
+		// haber escrito ya el mismo dato en la misma solicitud) y la copia heredada sin guion bajo.
+		$wc_object->delete_meta_data( ltrim( $clave, '_' ) );
 		$wc_object->delete_meta_data( $clave );
 		$wc_object->add_meta_data( $clave, $value );
 	}
@@ -570,20 +576,24 @@ class APG_Campo_NIF_en_Pedido {
 	 * @return string Valor a mostrar en el campo.
 	 */
     public function apg_nif_retrocompatibilidad_campo_formulario_bloques( $value, $group, $wc_object ) {
-		$clave    = ( 'billing' === $group ) ? 'billing_nif' : 'shipping_nif';
+		$clave = ( 'billing' === $group ) ? '_billing_nif' : '_shipping_nif';
+		$valor = $wc_object->get_meta( $clave );
+		if ( '' === (string) $valor ) {
+			$valor = $wc_object->get_meta( ltrim( $clave, '_' ) ); // Retrocompatibilidad con pedidos antiguos.
+		}
 
-		return $wc_object->get_meta( $clave );
+		return $valor;
 	}
 
 	/**
 	 * Normaliza la clave del NIF al finalizar un pedido en el checkout clásico.
 	 *
 	 * WooCommerce guarda los campos personalizados de facturación/envío con prefijo
-	 * de guion bajo (`_billing_nif` / `_shipping_nif`, ver WC_Checkout::create_order).
-	 * El resto del plugin (Bloque de Finalizar compra, Store API, búsqueda, panel de
-	 * pedidos) usa la clave canónica sin guion bajo. Este método elimina la copia con
-	 * guion bajo y deja únicamente `billing_nif` / `shipping_nif`, evitando metadatos
-	 * duplicados. No afecta al checkout de bloques, que no dispara este hook.
+	 * de guion bajo (`_billing_nif` / `_shipping_nif`, ver WC_Checkout::create_order),
+	 * que es la clave canónica del plugin (nativa de WooCommerce y la que leen los ERP).
+	 * Este método elimina la copia heredada sin guion bajo (`billing_nif` / `shipping_nif`)
+	 * que dejaban versiones anteriores y asegura el valor en `_billing_nif` / `_shipping_nif`,
+	 * evitando metadatos duplicados. No afecta al checkout de bloques, que no dispara este hook.
 	 *
 	 * Hook: `woocommerce_checkout_update_order_meta`.
 	 *
@@ -599,21 +609,22 @@ class APG_Campo_NIF_en_Pedido {
 
 		$cambios = false;
 		foreach ( array( 'billing', 'shipping' ) as $grupo ) {
-			$clave    = $grupo . '_nif';
-			$heredada = '_' . $clave;
+			$canonica = '_' . $grupo . '_nif'; // Clave nativa de WooCommerce (con guion bajo).
+			$heredada = $grupo . '_nif';       // Copia sin guion bajo de versiones anteriores.
 
-			// Elimina la copia con guion bajo que crea WooCommerce.
+			// Elimina la copia sin guion bajo que dejaban versiones anteriores del plugin.
 			if ( '' !== (string) $order->get_meta( $heredada, true ) ) {
 				$order->delete_meta_data( $heredada );
 				$cambios = true;
 			}
 
-			// Asegura el valor canónico a partir de los datos enviados.
-			if ( isset( $data[ $clave ] ) ) {
-				$valor = sanitize_text_field( $data[ $clave ] );
-				$order->delete_meta_data( $clave );
+			// Asegura el valor canónico (con guion bajo) a partir de los datos enviados.
+			// El campo del checkout clásico se llama `billing_nif` / `shipping_nif` (sin guion bajo).
+			if ( isset( $data[ $heredada ] ) ) {
+				$valor = sanitize_text_field( $data[ $heredada ] );
+				$order->delete_meta_data( $canonica );
 				if ( '' !== $valor ) {
-					$order->add_meta_data( $clave, $valor );
+					$order->add_meta_data( $canonica, $valor );
 				}
 				$cambios = true;
 			}

@@ -55,8 +55,10 @@ class APG_Campo_NIF_en_Admin_Pedidos {
 	 * @return string[] Lista con `billing_nif` y `shipping_nif` añadidos.
 	 */
 	public function apg_nif_anade_campo_nif_busqueda( $search_fields ) {
-		$search_fields[] = 'billing_nif';
-		$search_fields[] = 'shipping_nif';
+		$search_fields[] = '_billing_nif';
+		$search_fields[] = '_shipping_nif';
+		$search_fields[] = 'billing_nif';  // Retrocompatibilidad con pedidos antiguos.
+		$search_fields[] = 'shipping_nif'; // Retrocompatibilidad con pedidos antiguos.
 
 		return $search_fields;
 	}
@@ -84,7 +86,7 @@ class APG_Campo_NIF_en_Admin_Pedidos {
 		$es_envio     = ( 'woocommerce_admin_shipping_fields' === current_filter() );
 		// El id lleva guion bajo para que el JS de WooCommerce (meta-boxes-order.js)
 		// rellene el campo al seleccionar un cliente: busca `:input#_billing_nif`.
-		// El update_callback se encarga de guardar en la clave canónica sin guion bajo.
+		// Esa misma clave con guion bajo es la canónica del meta de pedido.
 		$campos['nif'] = array(
 			'id'              => $es_envio ? '_shipping_nif' : '_billing_nif',
 			'label'           => $etiqueta,
@@ -94,10 +96,10 @@ class APG_Campo_NIF_en_Admin_Pedidos {
 
 		if ( $order instanceof WC_Order ) {
 
-			// Checkout Blocks guarda el NIF sin guion bajo; mantenemos fallback para pedidos antiguos.
-			$valor_nif = $order->get_meta( $es_envio ? 'shipping_nif' : 'billing_nif', true );
+			// La clave canónica del pedido lleva guion bajo (`_billing_nif`); fallback sin guion bajo para pedidos antiguos.
+			$valor_nif = $order->get_meta( $es_envio ? '_shipping_nif' : '_billing_nif', true );
 			if ( '' === $valor_nif ) {
-				$valor_nif = $order->get_meta( $es_envio ? '_shipping_nif' : '_billing_nif', true );
+				$valor_nif = $order->get_meta( $es_envio ? 'shipping_nif' : 'billing_nif', true );
 			}
 
 			$customer_id = $order->get_customer_id();
@@ -156,12 +158,12 @@ class APG_Campo_NIF_en_Admin_Pedidos {
 	}
 
 	/**
-	 * Guarda el NIF del pedido usando la clave de meta canónica (sin guion bajo).
+	 * Guarda el NIF del pedido usando la clave de meta canónica (con guion bajo).
 	 *
-	 * El campo se renderiza con el id `_billing_nif` / `_shipping_nif` para que el
-	 * JS de WooCommerce lo rellene al seleccionar un cliente, pero el meta debe
-	 * guardarse como `billing_nif` / `shipping_nif` (igual que el Bloque de
-	 * Finalizar compra). Se invoca desde el guardado del metabox de pedido.
+	 * El campo se renderiza con el id `_billing_nif` / `_shipping_nif` (que el JS de
+	 * WooCommerce rellena al seleccionar un cliente) y ese mismo id es la clave canónica
+	 * del meta de pedido, nativa de WooCommerce y la que leen los ERP. Se elimina la
+	 * copia heredada sin guion bajo. Se invoca desde el guardado del metabox de pedido.
 	 *
 	 * @param string   $key   Id del campo en el formulario (p.ej. `_billing_nif`).
 	 * @param string   $value Valor saneado del NIF.
@@ -169,11 +171,11 @@ class APG_Campo_NIF_en_Admin_Pedidos {
 	 * @return void
 	 */
 	public function apg_nif_guarda_campo_nif_pedido( $key, $value, $order ) {
-		$clave = ltrim( $key, '_' ); // `_billing_nif` => `billing_nif`.
-		// Elimina la clave heredada con guion bajo (la que crea el checkout clásico)
-		// para no dejar dos metadatos distintos al editar un pedido antiguo.
-		$order->delete_meta_data( '_' . $clave );
-		$order->update_meta_data( $clave, $value );
+		// $key llega como `_billing_nif` / `_shipping_nif` (id del campo) = clave canónica.
+		$heredada = ltrim( $key, '_' ); // `_billing_nif` => `billing_nif` (copia heredada sin guion bajo).
+		// Elimina la copia heredada sin guion bajo para no dejar dos metadatos distintos.
+		$order->delete_meta_data( $heredada );
+		$order->update_meta_data( $key, $value );
 	}
 
 	/**
@@ -369,9 +371,9 @@ function apg_nif_tablas_meta_pedido() {
  * Comprueba si existe algún pedido con metadatos NIF que necesiten normalización.
  *
  * Detecta, en postmeta y en HPOS:
- * - Presencia de claves heredadas `_billing_nif` / `_shipping_nif` (se migrarán o
- *   eliminarán).
- * - Filas canónicas duplicadas (`billing_nif`×2 o `shipping_nif`×2).
+ * - Presencia de claves heredadas `billing_nif` / `shipping_nif` (sin guion bajo; se
+ *   migrarán o eliminarán).
+ * - Filas canónicas duplicadas (`_billing_nif`×2 o `_shipping_nif`×2).
  *
  * Usa la misma lógica que {@see apg_nif_normaliza_meta_duplicados()} para que el
  * botón de limpieza y la limpieza real siempre coincidan. El resultado se cachea
@@ -398,7 +400,7 @@ function apg_nif_hay_meta_duplicados() {
 
 		// Clave heredada presente (migración/eliminación pendiente).
 		$heredada = $wpdb->get_var(
-			"SELECT 1 FROM `{$tabla}` WHERE meta_key IN ( '_billing_nif', '_shipping_nif' ) LIMIT 1"
+			"SELECT 1 FROM `{$tabla}` WHERE meta_key IN ( 'billing_nif', 'shipping_nif' ) LIMIT 1"
 		);
 		if ( $heredada ) {
 			$hay = true;
@@ -407,7 +409,7 @@ function apg_nif_hay_meta_duplicados() {
 
 		// Filas canónicas duplicadas.
 		$duplicada = $wpdb->get_var(
-			"SELECT 1 FROM `{$tabla}` WHERE meta_key IN ( 'billing_nif', 'shipping_nif' ) GROUP BY `{$id}`, meta_key HAVING COUNT(*) > 1 LIMIT 1"
+			"SELECT 1 FROM `{$tabla}` WHERE meta_key IN ( '_billing_nif', '_shipping_nif' ) GROUP BY `{$id}`, meta_key HAVING COUNT(*) > 1 LIMIT 1"
 		);
 		if ( $duplicada ) {
 			$hay = true;
@@ -424,7 +426,7 @@ function apg_nif_hay_meta_duplicados() {
  * Normaliza los metadatos de NIF de todos los pedidos en postmeta y HPOS.
  *
  * Por cada tabla y cada grupo (billing/shipping) ejecuta, mediante SQL directo:
- *   1. Migra la clave heredada `_X_nif` a la canónica `X_nif` cuando esta no existe.
+ *   1. Migra la clave heredada `X_nif` (sin guion bajo) a la canónica `_X_nif` cuando esta no existe.
  *   2. Elimina la clave heredada cuando ya existe la canónica.
  *   3. Elimina filas canónicas duplicadas, conservando la de menor clave primaria.
  *
@@ -438,12 +440,12 @@ function apg_nif_normaliza_meta_duplicados() {
 
 	$pares = array(
 		array(
-			'canonica' => 'billing_nif',
-			'heredada' => '_billing_nif',
+			'canonica' => '_billing_nif',
+			'heredada' => 'billing_nif',
 		),
 		array(
-			'canonica' => 'shipping_nif',
-			'heredada' => '_shipping_nif',
+			'canonica' => '_shipping_nif',
+			'heredada' => 'shipping_nif',
 		),
 	);
 
@@ -460,9 +462,9 @@ function apg_nif_normaliza_meta_duplicados() {
 
 		// Recoge los pedidos con problemas (para el recuento) antes de modificar.
 		$ids = $wpdb->get_col(
-			"SELECT `{$id}` FROM `{$tabla}` WHERE meta_key IN ( '_billing_nif', '_shipping_nif' )
+			"SELECT `{$id}` FROM `{$tabla}` WHERE meta_key IN ( 'billing_nif', 'shipping_nif' )
 			 UNION
-			 SELECT `{$id}` FROM `{$tabla}` WHERE meta_key IN ( 'billing_nif', 'shipping_nif' )
+			 SELECT `{$id}` FROM `{$tabla}` WHERE meta_key IN ( '_billing_nif', '_shipping_nif' )
 			 GROUP BY `{$id}`, meta_key HAVING COUNT(*) > 1"
 		);
 		foreach ( (array) $ids as $oid ) {

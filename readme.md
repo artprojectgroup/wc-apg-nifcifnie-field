@@ -10,7 +10,7 @@ Requires at least: 5.0
 
 Tested up to: 7.0
 
-Stable tag: 4.13.0
+Stable tag: 4.14.0
 
 Requires PHP: 7.4
 
@@ -144,6 +144,13 @@ Si tu tienda realizó pedidos con el Bloque de Finalizar compra (o con el checko
 **WC - APG NIF/CIF/NIE Field** es un plugin gratuito. **Art Project Group** no proporciona soporte técnico gratuito, pero ofrece un servicio de [soporte técnico](https://artprojectgroup.es/tienda/ticket-de-soporte) de pago para instalación y configuración.
 
 ## Changelog
+
+### 4.14.0
+
+- La clave de metadatos del NIF/CIF/NIE en el pedido pasa a ser `_billing_nif` / `_shipping_nif` (con guion bajo inicial), siguiendo la convención nativa de WooCommerce para el meta de pedido (`_billing_*`), de modo que la leen las integraciones con ERP como Holded y otras que esperan la clave con guion bajo. La lectura mantiene compatibilidad con la clave heredada `billing_nif` / `shipping_nif` para pedidos de versiones anteriores.
+- La herramienta de limpieza de metadatos duplicados ahora migra las claves heredadas `billing_nif` / `shipping_nif` a la canónica `_billing_nif` / `_shipping_nif` (tanto en `postmeta` como en la tabla HPOS `wc_orders_meta`). Ejecútala desde los ajustes del plugin o vía WP-CLI en tiendas grandes.
+- Esta limpieza también se ejecuta automáticamente una sola vez, en el panel de administración, justo después de actualizar a esta versión, de modo que la migración ocurre sin necesidad de pulsar el botón (el botón de ajustes y el script WP-CLI siguen disponibles como alternativa para tiendas muy grandes).
+- El meta de usuario/cliente no cambia: sigue siendo `billing_nif` / `shipping_nif`, ya que WooCommerce guarda los campos de cliente sin guion bajo.
 
 ### 4.13.0
 

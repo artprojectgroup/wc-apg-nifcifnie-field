@@ -2,7 +2,7 @@
 /*
 Plugin Name: WC - APG NIF/CIF/NIE Field
 Requires Plugins: woocommerce
-Version: 4.13.0
+Version: 4.14.0
 Plugin URI: https://wordpress.org/plugins/wc-apg-nifcifnie-field/
 Description: Add to WooCommerce a NIF/CIF/NIE field.
 Author URI: https://artprojectgroup.es/
@@ -37,7 +37,7 @@ define( 'DIRECCION_apg_nif', plugin_basename( __FILE__ ) );
  *
  * @var string
  */
-define( 'VERSION_apg_nif', '4.13.0' );
+define( 'VERSION_apg_nif', '4.14.0' );
 
 // Funciones generales de APG.
 include_once 'includes/admin/funciones-apg.php';
@@ -74,6 +74,36 @@ function apg_nif_actualiza_usermeta() {
 	}
 }
 add_action( 'admin_init', 'apg_nif_actualiza_usermeta' );
+
+/**
+ * Ejecuta una sola vez la normalización de los metadatos de NIF de pedidos tras
+ * actualizar a la versión que usa `_billing_nif` / `_shipping_nif` como clave canónica.
+ *
+ * Migra las claves heredadas sin guion bajo (`billing_nif` / `shipping_nif`) a la
+ * canónica con guion bajo —en postmeta y HPOS— y deduplica, sin esperar a que el
+ * propietario pulse el botón de limpieza. Se ejecuta solo en el admin (nunca en el
+ * frontend, para no penalizar el checkout) y una única vez, gracias a la opción
+ * `apg_nif_meta_pedido_migrado`. En tiendas muy grandes el botón de ajustes y el
+ * script WP-CLI siguen disponibles como alternativa.
+ *
+ * @return void
+ */
+function apg_nif_migra_meta_pedido() {
+	if ( get_option( 'apg_nif_meta_pedido_migrado' ) ) {
+		return;
+	}
+
+	// La función vive en includes/clases/admin/pedidos.php, que se carga en el admin
+	// (apg_nif_registra_opciones, admin_init). Si todavía no está disponible, se
+	// reintentará en la siguiente carga del admin sin marcar la migración como hecha.
+	if ( ! function_exists( 'apg_nif_normaliza_meta_duplicados' ) ) {
+		return;
+	}
+
+	apg_nif_normaliza_meta_duplicados();
+	update_option( 'apg_nif_meta_pedido_migrado', VERSION_apg_nif );
+}
+add_action( 'admin_init', 'apg_nif_migra_meta_pedido', 20 );
 
 // ¿Está activo WooCommerce?
 include_once ABSPATH . 'wp-admin/includes/plugin.php';
