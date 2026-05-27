@@ -2,7 +2,7 @@
 /*
 Plugin Name: WC - APG NIF/CIF/NIE Field
 Requires Plugins: woocommerce
-Version: 4.14.0
+Version: 4.14.1
 Plugin URI: https://wordpress.org/plugins/wc-apg-nifcifnie-field/
 Description: Add to WooCommerce a NIF/CIF/NIE field.
 Author URI: https://artprojectgroup.es/
@@ -37,7 +37,7 @@ define( 'DIRECCION_apg_nif', plugin_basename( __FILE__ ) );
  *
  * @var string
  */
-define( 'VERSION_apg_nif', '4.14.0' );
+define( 'VERSION_apg_nif', '4.14.1' );
 
 // Funciones generales de APG.
 include_once 'includes/admin/funciones-apg.php';
@@ -89,7 +89,11 @@ add_action( 'admin_init', 'apg_nif_actualiza_usermeta' );
  * @return void
  */
 function apg_nif_migra_meta_pedido() {
-	if ( get_option( 'apg_nif_meta_pedido_migrado' ) ) {
+	$migrado = get_option( 'apg_nif_meta_pedido_migrado' );
+	// La 4.14.1 corrige la detección de la tabla HPOS (`wc_orders_meta`). Si una versión
+	// anterior marcó la migración como hecha (cuando solo se tocaba postmeta), se vuelve a
+	// ejecutar una vez para migrar también los pedidos guardados en HPOS.
+	if ( $migrado && version_compare( $migrado, '4.14.1', '>=' ) ) {
 		return;
 	}
 

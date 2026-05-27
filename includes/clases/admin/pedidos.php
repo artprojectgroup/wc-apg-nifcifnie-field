@@ -351,17 +351,20 @@ function apg_nif_tablas_meta_pedido() {
 		),
 	);
 
-	if ( ! empty( $wpdb->wc_orders_meta ) ) {
-		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter
-		$existe = $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $wpdb->wc_orders_meta ) );
-		// phpcs:enable
-		if ( $existe ) {
-			$tablas[] = array(
-				'tabla' => $wpdb->wc_orders_meta,
-				'id'    => 'order_id',
-				'pk'    => 'id',
-			);
-		}
+	// La tabla HPOS se nombra siempre como "{$wpdb->prefix}wc_orders_meta"; WooCommerce
+	// NO registra la propiedad `$wpdb->wc_orders_meta`, así que el nombre se construye
+	// con el prefijo. (Antes se dependía de esa propiedad inexistente y la limpieza
+	// nunca llegaba a tocar la tabla HPOS, solo postmeta.)
+	$hpos = $wpdb->prefix . 'wc_orders_meta';
+	// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter
+	$existe = $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $wpdb->esc_like( $hpos ) ) );
+	// phpcs:enable
+	if ( $existe ) {
+		$tablas[] = array(
+			'tabla' => $hpos,
+			'id'    => 'order_id',
+			'pk'    => 'id',
+		);
 	}
 
 	return $tablas;

@@ -10,7 +10,7 @@ Requires at least: 5.0
 
 Tested up to: 7.0
 
-Stable tag: 4.14.0
+Stable tag: 4.14.1
 
 Requires PHP: 7.4
 
@@ -144,6 +144,10 @@ Si tu tienda realizó pedidos con el Bloque de Finalizar compra (o con el checko
 **WC - APG NIF/CIF/NIE Field** es un plugin gratuito. **Art Project Group** no proporciona soporte técnico gratuito, pero ofrece un servicio de [soporte técnico](https://artprojectgroup.es/tienda/ticket-de-soporte) de pago para instalación y configuración.
 
 ## Changelog
+
+### 4.14.1
+
+- Corregido: la limpieza de metadatos y la migración automática (una sola vez) no llegaban a procesar la tabla de pedidos HPOS (`wc_orders_meta`); dependían de la propiedad `$wpdb->wc_orders_meta`, que WooCommerce no define, así que en tiendas con HPOS la migración de la 4.14.0 solo tocaba `postmeta` y dejaba los pedidos sin cambiar. Ahora la tabla HPOS se detecta a partir del prefijo de la base de datos, y la limpieza automática se vuelve a ejecutar al actualizar a la 4.14.1 para migrar esos pedidos a `_billing_nif` / `_shipping_nif`.
 
 ### 4.14.0
 

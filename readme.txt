@@ -4,7 +4,7 @@ Donate link: https://artprojectgroup.es/tienda/donacion
 Tags: nif, cif, nie, eori, vies
 Requires at least: 5.0
 Tested up to: 7.0
-Stable tag: 4.14.0
+Stable tag: 4.14.1
 Requires PHP: 7.4
 WC requires at least: 5.6
 WC tested up to: 10.8.0
@@ -127,6 +127,9 @@ If your store placed orders via the Checkout block (or the classic checkout) wit
 3. Screenshot of WC - APG NIF/CIF/NIE field. Billing and shipping forms. Classic Shortcode.
 
 == Changelog ==
+= 4.14.1 =
+* Fixed: the metadata cleanup and the one-time automatic migration did not actually process the HPOS order table (`wc_orders_meta`); they relied on the `$wpdb->wc_orders_meta` property, which WooCommerce does not set, so on HPOS stores the 4.14.0 migration touched only `postmeta` and left the orders untouched. The HPOS table is now detected from the database prefix, and the automatic one-time cleanup runs again on update to 4.14.1 to migrate those orders to `_billing_nif` / `_shipping_nif`.
+
 = 4.14.0 =
 * The order meta key for the NIF/CIF/NIE is now `_billing_nif` / `_shipping_nif` (with a leading underscore), matching WooCommerce's native order meta convention (`_billing_*`) so the value is read by ERP integrations such as Holded and others that expect the underscored key. Reading still falls back to the legacy `billing_nif` / `shipping_nif` for orders placed with previous versions.
 * The duplicate-metadata cleanup tool now migrates the legacy `billing_nif` / `shipping_nif` keys to the canonical `_billing_nif` / `_shipping_nif` (in both `postmeta` and HPOS `wc_orders_meta`). Run it from the plugin settings or via WP-CLI on large stores.
@@ -430,8 +433,8 @@ If your store placed orders via the Checkout block (or the classic checkout) wit
 * Initial version.
 
 == Upgrade Notice ==
-= 4.14.0 =
-* The order NIF meta key is now `_billing_nif` / `_shipping_nif` (WooCommerce-native), so ERP integrations such as Holded read it. Run the cleanup tool to migrate existing orders. Recommended update.
+= 4.14.1 =
+* Fixes the migration not reaching the HPOS order table (`wc_orders_meta`), so the NIF data on HPOS stores is actually migrated to `_billing_nif` / `_shipping_nif`. Recommended update.
 
 == Thanks ==
 Thanks to everyone who uses the plugin, helps improve it, makes a donation or encourages us with their comments.
