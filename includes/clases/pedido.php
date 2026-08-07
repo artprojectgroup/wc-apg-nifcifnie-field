@@ -111,25 +111,146 @@ class APG_Campo_NIF_en_Pedido {
 	}
 
 	/**
+	 * Devuelve el importe a partir del cual el campo NIF es obligatorio.
+	 *
+	 * Se controla desde la opción `importe_requerido` del plugin y sólo afecta
+	 * al formulario de facturación.
+	 *
+	 * @global array<string,mixed> $apg_nif_settings
+	 * @return float Importe configurado, o 0 si la opción está desactivada.
+	 */
+	private function apg_nif_importe_requerido(): float {
+		global $apg_nif_settings;
+
+		$importe = isset( $apg_nif_settings['importe_requerido'] ) ? (float) $apg_nif_settings['importe_requerido'] : 0;
+
+		return $importe > 0 ? $importe : 0;
+	}
+
+	/**
+	 * Determina si la petición actual es un contexto de compra con carrito activo.
+	 *
+	 * Evita que la obligatoriedad por importe se aplique en el Panel de Administración
+	 * o en el formulario de direcciones de "Mi cuenta", donde el carrito no es relevante.
+	 *
+	 * @return bool
+	 */
+	private function apg_nif_es_contexto_de_compra(): bool {
+		if ( ! function_exists( 'WC' ) || is_null( WC()->cart ) ) {
+			return false;
+		}
+
+		if ( is_admin() && ! wp_doing_ajax() ) {
+			return false;
+		}
+
+		// Checkout clásico por AJAX (`wc-ajax=checkout`) y Store API del Bloque de Finalizar compra.
+		if ( wp_doing_ajax() || ( defined( 'REST_REQUEST' ) && REST_REQUEST ) ) {
+			return true;
+		}
+
+		return function_exists( 'is_checkout' ) && is_checkout() && ! is_wc_endpoint_url( 'order-received' );
+	}
+
+	/**
+	 * Devuelve el importe del carrito con el que comparar el mínimo configurado.
+	 *
+	 * Si los totales todavía no se han calculado en esta petición (por ejemplo, al encolar
+	 * los scripts, antes de que se pinte la plantilla de Finalizar compra), se calculan aquí.
+	 *
+	 * @return float|null Total del carrito (impuestos incluidos) o null si no hay carrito o está vacío.
+	 */
+	private function apg_nif_total_del_carrito(): ?float {
+		// Evita reentradas si el cálculo de totales acaba llamando de nuevo a esta comprobación.
+		static $calculando = false;
+
+		$carrito = WC()->cart;
+
+		if ( is_null( $carrito ) || $carrito->is_empty() ) {
+			return null;
+		}
+
+		$total = (float) $carrito->get_total( 'edit' );
+
+		if ( $total <= 0 && ! $calculando ) {
+			$calculando = true;
+			$carrito->calculate_totals();
+			$calculando = false;
+			$total      = (float) $carrito->get_total( 'edit' );
+		}
+
+		return $total;
+	}
+
+	/**
+	 * Comprueba si el importe del pedido alcanza el mínimo configurado.
+	 *
+	 * Hook: `apg_nif_importe_del_pedido` (permite comparar otro importe, por ejemplo
+	 * el subtotal sin impuestos o sin gastos de envío).
+	 *
+	 * @return bool
+	 */
+	private function apg_nif_supera_importe_requerido(): bool {
+		$importe = $this->apg_nif_importe_requerido();
+
+		if ( $importe <= 0 || ! $this->apg_nif_es_contexto_de_compra() ) {
+			return false;
+		}
+
+		$total = $this->apg_nif_total_del_carrito();
+
+		if ( null === $total ) {
+			return false;
+		}
+
+		$total = (float) apply_filters( 'apg_nif_importe_del_pedido', $total, $importe );
+
+		// Pequeño margen para evitar falsos negativos por redondeo en coma flotante.
+		return ( $total + 0.0001 ) >= $importe;
+	}
+
+	/**
 	 * Determina si el campo NIF es obligatorio para un grupo concreto.
+	 *
+	 * Además de la obligatoriedad configurada en ajustes, el formulario de facturación
+	 * puede volverse obligatorio a partir del importe indicado en `importe_requerido`.
+	 * El formulario de envío nunca se ve afectado por ese importe.
 	 *
 	 * Permite anular por hook la obligatoriedad configurada en ajustes,
 	 * de forma análoga a `apg_nif_skip_validation`.
 	 *
 	 * Hook: `apg_nif_skip_required`.
 	 *
-	 * @param string $group Grupo de campos: `billing` o `shipping`.
+	 * @param string $group          Grupo de campos: `billing` o `shipping`.
+	 * @param bool   $aplica_importe Si se tiene en cuenta la obligatoriedad por importe.
 	 * @return bool
 	 */
-	private function apg_nif_es_campo_requerido( string $group ): bool {
+	private function apg_nif_es_campo_requerido( string $group, bool $aplica_importe = true ): bool {
 		global $apg_nif_settings;
 
 		$group                 = 'shipping' === $group ? 'shipping' : 'billing';
 		$setting_key           = 'shipping' === $group ? 'requerido_envio' : 'requerido';
 		$requerido_ajustes     = isset( $apg_nif_settings[ $setting_key ] ) && '1' === $apg_nif_settings[ $setting_key ];
+		$requerido             = $requerido_ajustes || ( $aplica_importe && 'billing' === $group && $this->apg_nif_supera_importe_requerido() );
 		$omitir_obligatoriedad = apply_filters( 'apg_nif_skip_required', false, $group, $requerido_ajustes, $setting_key );
 
-		return $requerido_ajustes && ! $omitir_obligatoriedad;
+		return $requerido && ! $omitir_obligatoriedad;
+	}
+
+	/**
+	 * Determina si el campo puede marcarse como obligatorio de forma nativa en Bloques.
+	 *
+	 * La API de campos adicionales del Bloque de Finalizar compra no distingue entre
+	 * facturación y envío, así que sólo puede usarse cuando ambos grupos son obligatorios
+	 * por ajustes (la obligatoriedad por importe se resuelve en la validación del plugin,
+	 * porque el campo se registra en `woocommerce_init`, antes de que exista el carrito).
+	 *
+	 * @return bool
+	 */
+	private function apg_nif_requerido_nativo_bloques(): bool {
+		return $this->apg_nif_es_campo_requerido( 'billing', false )
+			&& $this->apg_nif_es_campo_requerido( 'shipping', false )
+			&& $this->apg_nif_mostrar_campo_envio();
 	}
 
 	/**
@@ -222,6 +343,13 @@ class APG_Campo_NIF_en_Pedido {
 		add_filter( 'woocommerce_checkout_fields', array( $this, 'apg_nif_forzar_oculta_campo_envio_checkout' ), 9999 );
         add_action( 'after_setup_theme', array( $this, 'apg_nif_traducciones' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'apg_nif_forzar_oculta_campo_envio_ui' ) );
+		add_action( 'wp_enqueue_scripts', array( $this, 'apg_nif_carga_campo_obligatorio' ) );
+
+		// Estado de obligatoriedad en vivo: el total del pedido puede cambiar durante la compra.
+		if ( isset( $apg_nif_settings['importe_requerido'] ) && (float) $apg_nif_settings['importe_requerido'] > 0 ) {
+			add_action( 'wp_ajax_nopriv_apg_nif_estado_obligatorio', array( $this, 'apg_nif_estado_obligatorio' ) );
+			add_action( 'wp_ajax_apg_nif_estado_obligatorio', array( $this, 'apg_nif_estado_obligatorio' ) );
+		}
 		// Normaliza la clave del NIF en el checkout clásico (WooCommerce guarda los
 		// campos personalizados como `_billing_nif`; lo unificamos a `billing_nif`).
 		add_action( 'woocommerce_checkout_update_order_meta', array( $this, 'apg_nif_normaliza_nif_checkout_clasico' ), 20, 2 );
@@ -241,9 +369,12 @@ class APG_Campo_NIF_en_Pedido {
 
         if ( $valida_en_checkout ) {
             add_action( 'woocommerce_checkout_process', array( $this, 'apg_nif_validacion_de_campo' ) );
-				// Validación en Checkout Blocks.
-            add_action( 'woocommerce_blocks_validate_location_address_fields', array( $this, 'apg_nif_validacion_de_campo_bloques' ), 10, 3 );
         }
+
+		// Validación en el Bloque de Finalizar compra. Se registra siempre, porque además del
+		// formato también resuelve la obligatoriedad por grupo y por importe, que la API nativa
+		// de Bloques no puede cubrir (no distingue entre facturación y envío).
+        add_action( 'woocommerce_blocks_validate_location_address_fields', array( $this, 'apg_nif_validacion_de_campo_bloques' ), 10, 3 );
 
 		// Carga el JavaScript (cuando haya algún tipo de validación activa).
         if ( $valida_en_checkout ) {
@@ -341,9 +472,7 @@ class APG_Campo_NIF_en_Pedido {
             	return $campos;
 			}
         }
-        
-        global $apg_nif_settings;
-        
+
         $campos['nif'] = array(
             'label'       => $this->nombre_nif,
             'placeholder' => $this->placeholder,
@@ -391,8 +520,6 @@ class APG_Campo_NIF_en_Pedido {
 	 * @return array<string,array<string,mixed>>
 	 */
     public function apg_nif_formulario_de_facturacion( $campos ) {
-        global $apg_nif_settings;
-
 		if ( isset( $campos['billing_nif'] ) && is_array( $campos['billing_nif'] ) ) {
         	$campos['billing_nif']['label']       = $this->nombre_nif;
         	$campos['billing_nif']['placeholder'] = $this->placeholder;
@@ -418,23 +545,18 @@ class APG_Campo_NIF_en_Pedido {
 	 *               woocommerce_sanitize_additional_field,
 	 *               woocommerce_get_country_locale.
 	 *
-	 * @global array<string,mixed> $apg_nif_settings
 	 * @return void
 	 */
     public function apg_nif_formulario_bloques() {
-        global $apg_nif_settings;
-
-		$requerido_facturacion = $this->apg_nif_es_campo_requerido( 'billing' );
-		$requerido_envio       = $this->apg_nif_es_campo_requerido( 'shipping' );
-		// Solo marcar como "required" nativo cuando ambos grupos lo son.
-		$requerido_bloques     = $requerido_facturacion && $requerido_envio && $this->apg_nif_mostrar_campo_envio();
+		// Solo marcar como "required" nativo cuando ambos grupos lo son por ajustes.
+		$requerido_bloques = $this->apg_nif_requerido_nativo_bloques();
 
         if ( function_exists( 'woocommerce_register_additional_checkout_field' ) ) {
-			$etiqueta	= $this->nombre_nif;
-			$prioridad	= (int) $this->priority;
-			$index_por_defecto = defined( 'THWCFD_VERSION' ) ? $prioridad * 10 : $prioridad;
-			$index_bloques = (int) $index_por_defecto;
-			
+			$etiqueta      = $this->nombre_nif;
+			$prioridad     = (int) $this->priority;
+			$index_bloques = defined( 'THWCFD_VERSION' ) ? $prioridad * 10 : $prioridad;
+
+
 			woocommerce_register_additional_checkout_field( array(
                 'id'            => 'apg/nif',
                 'label'         => $etiqueta,
@@ -500,20 +622,19 @@ class APG_Campo_NIF_en_Pedido {
 				return $locale;
 			}
 			
-            $paises = WC()->countries->get_countries();
-            foreach ( $paises as $iso => $pais ) {
+			$prioridad     = (int) $this->priority;
+			$index_bloques = defined( 'THWCFD_VERSION' ) ? $prioridad * 10 : $prioridad;
+
+            foreach ( array_keys( WC()->countries->get_countries() ) as $iso ) {
                 if ( ! isset( $locale[ $iso ]['address'] ) ) {
                     $locale[ $iso ]['address'] = array();
                 }
-				$prioridad = (int) $this->priority;
-				$index_por_defecto = defined( 'THWCFD_VERSION' ) ? $prioridad * 10 : $prioridad;
-				$index_bloques = (int) $index_por_defecto;
 				// Compatibilidad entre versiones de Blocks que resuelven distintas claves.
 				foreach ( array( 'apg/nif', 'apg-nif' ) as $clave ) {
                 	if ( ! isset( $locale[ $iso ]['address'][ $clave ] ) ) {
                     	$locale[ $iso ]['address'][ $clave ] = array();
                 	}
-                	$locale[ $iso ]['address'][ $clave ]['priority'] = (int) $this->priority;
+                	$locale[ $iso ]['address'][ $clave ]['priority'] = $prioridad;
                 	$locale[ $iso ]['address'][ $clave ]['index']    = $index_bloques;
 				}
             }
@@ -646,10 +767,6 @@ class APG_Campo_NIF_en_Pedido {
 	 * @return array<string,array<string,mixed>>
 	 */
     public function apg_nif_formulario_de_envio( $campos ) {
-        global $apg_nif_settings;
-
-        $facturacion    = WC()->countries->get_address_fields( WC()->countries->get_base_country(), 'billing_' );
-
 		if ( ! $this->apg_nif_mostrar_campo_envio() ) {
 			unset( $campos['shipping_nif'] );
 			return $campos;
@@ -660,6 +777,9 @@ class APG_Campo_NIF_en_Pedido {
         	$campos['shipping_nif']['required'] = $this->apg_nif_es_campo_requerido( 'shipping' );
 		}
         if ( apply_filters( 'apg_nif_add_fields', true ) ) { // Si no quieren añadirse: add_filter( 'apg_nif_add_fields', '__return_false' );
+			// Sólo se consultan los campos de facturación si realmente van a usarse.
+			$facturacion = WC()->countries->get_address_fields( WC()->countries->get_base_country(), 'billing_' );
+
 			if ( isset( $campos['shipping_email'] ) && isset( $facturacion['billing_email'] ) ) {
             	$campos['shipping_email']['priority'] = $facturacion['billing_email']['priority'];
             	$campos['shipping_email']['label']    = $facturacion['billing_email']['label'];
@@ -722,6 +842,81 @@ class APG_Campo_NIF_en_Pedido {
 		wp_add_inline_script(
 			'apg-nif-hide-shipping-field',
 			"(function(){function hide(){var c=document.getElementById('shipping_nif_field');if(c){c.style.display='none';}var b=document.getElementById('shipping-apg-nif');if(b){var w=b.closest('.wc-block-components-address-form__apg-nif')||b.closest('.wc-block-components-text-input')||b.parentElement;if(w){w.style.display='none';}}}if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',hide);}else{hide();}if(window.MutationObserver){new MutationObserver(hide).observe(document.body,{childList:true,subtree:true});}})();"
+		);
+	}
+
+	/**
+	 * Encola el script que mantiene la etiqueta y el estado obligatorio del campo al día.
+	 *
+	 * Es necesario cuando el campo es obligatorio pero no puede registrarse como tal de forma
+	 * nativa en Bloques (obligatoriedad por importe, o sólo en uno de los dos formularios) y,
+	 * en cualquiera de los dos checkouts, cuando la obligatoriedad depende del importe: el total
+	 * puede cambiar durante el proceso de compra (cupones, gastos de envío) sin recargar la página.
+	 *
+	 * Hook: `wp_enqueue_scripts`.
+	 *
+	 * @return void
+	 */
+	public function apg_nif_carga_campo_obligatorio() {
+		if ( ! function_exists( 'is_checkout' ) || ! is_checkout() || is_wc_endpoint_url( 'order-received' ) ) {
+			return;
+		}
+
+		$es_bloques      = function_exists( 'has_block' ) && has_block( 'woocommerce/checkout', wc_get_page_id( 'checkout' ) );
+		$dinamico        = $this->apg_nif_importe_requerido() > 0;
+		$requerido       = $this->apg_nif_es_campo_requerido( 'billing' );
+		$requerido_envio = $this->apg_nif_es_campo_requerido( 'shipping' );
+
+		// En el checkout clásico WooCommerce ya pinta la etiqueta correcta al cargar la página,
+		// así que sólo hace falta el script si el importe puede cambiar durante el proceso.
+		$necesario_bloques = $es_bloques && ( $requerido || $requerido_envio ) && ! $this->apg_nif_requerido_nativo_bloques();
+
+		if ( ! $dinamico && ! $necesario_bloques ) {
+			return;
+		}
+
+		$dependencias = array( 'jquery' );
+		if ( $es_bloques && wp_script_is( 'wp-data', 'registered' ) ) {
+			$dependencias[] = 'wp-data';
+		}
+
+		wp_enqueue_script( 'apg_nif_campo_obligatorio', plugin_dir_url( DIRECCION_apg_nif ) . 'assets/js/campo-obligatorio-nif.js', $dependencias, VERSION_apg_nif, true );
+		wp_localize_script(
+			'apg_nif_campo_obligatorio',
+			'apg_nif_obligatorio',
+			array(
+				'url'             => admin_url( 'admin-ajax.php' ),
+				'nonce'           => wp_create_nonce( 'apg_nif_nonce' ),
+				'bloques'         => $es_bloques,
+				'dinamico'        => $dinamico,
+				'requerido'       => $requerido,
+				'requerido_envio' => $requerido_envio,
+				'mostrar_envio'   => $this->apg_nif_mostrar_campo_envio(),
+				'etiqueta'        => $this->nombre_nif,
+			)
+		);
+	}
+
+	/**
+	 * Endpoint AJAX: devuelve si el campo es obligatorio ahora mismo en cada formulario.
+	 *
+	 * Permite que el checkout actualice la etiqueta cuando el total del pedido cambia
+	 * (cupones, gastos de envío) sin duplicar en JavaScript las reglas del servidor.
+	 *
+	 * Actions: `wp_ajax_{apg_nif_estado_obligatorio, nopriv_apg_nif_estado_obligatorio}`.
+	 *
+	 * @return void  Finaliza con `wp_send_json_success` o `wp_send_json_error`.
+	 */
+	public function apg_nif_estado_obligatorio() {
+		if ( ! check_ajax_referer( 'apg_nif_nonce', 'nonce', false ) ) {
+			wp_send_json_error( array( 'mensaje' => __( 'Invalid nonce.', 'wc-apg-nifcifnie-field' ) ), 403 );
+		}
+
+		wp_send_json_success(
+			array(
+				'requerido'       => $this->apg_nif_es_campo_requerido( 'billing' ),
+				'requerido_envio' => $this->apg_nif_es_campo_requerido( 'shipping' ),
+			)
 		);
 	}
 
@@ -854,12 +1049,10 @@ class APG_Campo_NIF_en_Pedido {
         // phpcs:ignore WordPress.Security.NonceVerification.Missing -- WooCommerce already validates nonce via 'get-customer-details'
         $shipping_country   = isset( $_POST['shipping_country'] ) ? sanitize_text_field( wp_unslash( $_POST['shipping_country'] ) ) : '';
 
-        // Confirma si es requerido.
-        $es_requerido       = $this->apg_nif_es_campo_requerido( 'billing' );
-        $es_requerido_envio = $this->apg_nif_es_campo_requerido( 'shipping' );
-        
-		// Facturación.
-        if ( ( $billing_nif || $es_requerido ) && ( $validar_formato || $validar_eori ) ) {
+		// Facturación. Si el campo está vacío no se valida el formato: de la obligatoriedad
+		// ya se encarga WooCommerce con su propio mensaje de "campo obligatorio", y así no se
+		// muestran dos errores por lo mismo.
+        if ( '' !== $billing_nif && ( $validar_formato || $validar_eori ) ) {
             $validacion     = $this->apg_nif_valida_exencion( $billing_nif, $billing_country, $shipping_country );
 
             // La validación estricta del campo sólo bloquea por formato inválido.
@@ -881,20 +1074,13 @@ class APG_Campo_NIF_en_Pedido {
             }
         }
 
-		// Envío.
-        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- WooCommerce already validates nonce via 'get-customer-details'
-		if ( ! $this->apg_nif_mostrar_campo_envio() ) {
-			return;
-		}
-		$formulario_envio_activo = $this->apg_nif_checkout_clasico_tiene_envio_activo();
-		// En checkout clásico sólo debe validarse el NIF de envío si el formulario de envío está realmente habilitado.
-		if ( ! $formulario_envio_activo ) {
+		// Envío. En checkout clásico sólo debe validarse el NIF de envío si el campo se muestra
+		// y el cliente ha marcado "Enviar a una dirección diferente".
+		if ( ! $this->apg_nif_mostrar_campo_envio() || ! $this->apg_nif_checkout_clasico_tiene_envio_activo() ) {
 			return;
 		}
 
-		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- WooCommerce already validates nonce via 'get-customer-details'
-		$tiene_shipping_nif = isset( $_POST['shipping_nif'] );
-        if ( ( $shipping_nif || $es_requerido_envio ) && $tiene_shipping_nif && ( $validar_formato || $validar_eori ) ) {
+        if ( '' !== $shipping_nif && ( $validar_formato || $validar_eori ) ) {
             $validacion_envio   = $this->apg_nif_valida_exencion( $shipping_nif, $shipping_country, $shipping_country );
 
             if ( $validar_formato && ! $validacion_envio['vat_valido'] ) {
@@ -956,11 +1142,9 @@ class APG_Campo_NIF_en_Pedido {
         $pais_factura   = ( $group === 'billing' ) ? $pais : ( self::$pais_bloques ?: $pais );
         $pais_envio     = ( $group === 'shipping' ) ? $pais : '';
 
-        // Confirma si es requerido.
-		$requerido_facturacion = $this->apg_nif_es_campo_requerido( 'billing' );
-		$requerido_envio       = $this->apg_nif_es_campo_requerido( 'shipping' );
-        $es_requerido          = ( 'shipping' === $group ) ? $requerido_envio : $requerido_facturacion;
-		$requerido_bloques     = $requerido_facturacion && $requerido_envio;
+        // Confirma si es requerido (incluye la obligatoriedad por importe en facturación).
+        $es_requerido      = $this->apg_nif_es_campo_requerido( ( 'shipping' === $group ) ? 'shipping' : 'billing' );
+		$requerido_bloques = $this->apg_nif_requerido_nativo_bloques();
 
 		// Si solo uno de los grupos es obligatorio, la API nativa de Blocks no distingue entre ambos.
 		// En ese caso hacemos la obligatoriedad por grupo aquí para preservar compatibilidad.
@@ -1193,20 +1377,50 @@ class APG_Campo_NIF_en_Pedido {
 	/**
 	 * Endpoint (WC AJAX) para aplicar/retirar exención de IVA en Checkout Blocks.
 	 *
+	 * La exención NUNCA se aplica a partir de lo que envía el navegador: se recalcula
+	 * en el servidor con `apg_nif_valida_exencion()` a partir del NIF/VAT y del país
+	 * recibidos, de modo que sólo se retira el IVA si el número es válido en VIES y se
+	 * cumplen las reglas de operación intracomunitaria.
+	 *
 	 * Hooks: `wc_ajax_{apg_nif_quita_iva_bloques, nopriv_apg_nif_quita_iva_bloques}`.
 	 *
-	 * @return void  Finaliza con `wp_send_json_success`.
+	 * @return void  Finaliza con `wp_send_json_success` o `wp_send_json_error`.
 	 */
     public function apg_nif_quita_iva_bloques() {
-        // phpcs:ignore WordPress.Security.NonceVerification.Missing
-        $exento = ! empty( $_POST['exento'] ) && $_POST['exento'] !== '0';
-
-        if ( function_exists( 'WC' ) ) {
-            WC()->customer->set_is_vat_exempt( $exento );
+        if ( ! function_exists( 'WC' ) || is_null( WC()->customer ) ) {
+            wp_send_json_error( array( 'mensaje' => __( 'Invalid context.', 'wc-apg-nifcifnie-field' ) ), 400 );
         }
 
+        // Verifica el nonce sin cortar la ejecución, para poder responder siempre en JSON
+        // y que el checkout no se quede bloqueado si el nonce ha caducado.
+        if ( ! check_ajax_referer( 'apg_nif_nonce', 'nonce', false ) ) {
+            WC()->customer->set_is_vat_exempt( false );
+
+            wp_send_json_error( array( 'mensaje' => __( 'Invalid nonce.', 'wc-apg-nifcifnie-field' ) ), 403 );
+        }
+
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- El nonce se ha verificado justo arriba.
+        $nif        = isset( $_POST['billing_nif'] ) ? sanitize_text_field( wp_unslash( $_POST['billing_nif'] ) ) : '';
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- El nonce se ha verificado justo arriba.
+        $pais       = isset( $_POST['billing_country'] ) ? sanitize_text_field( wp_unslash( $_POST['billing_country'] ) ) : '';
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- El nonce se ha verificado justo arriba.
+        $pais_envio = isset( $_POST['shipping_country'] ) ? sanitize_text_field( wp_unslash( $_POST['shipping_country'] ) ) : '';
+
+        // Sin datos suficientes no puede haber exención.
+        if ( '' === $nif || '' === $pais ) {
+            WC()->customer->set_is_vat_exempt( false );
+
+            wp_send_json_success( array( 'exento' => false ) );
+        }
+
+        // Recalcula la exención en el servidor.
+        $resultado = $this->apg_nif_valida_exencion( $nif, $pais, $pais_envio );
+        $exento    = (bool) $resultado['es_exento'];
+
+        WC()->customer->set_is_vat_exempt( $exento );
+
         wp_send_json_success( array( 'exento' => $exento ) );
-}
+    }
     
 	/**
 	 * Recoge y sanea datos comunes de las peticiones AJAX (NIF, país y país de envío).
@@ -1244,7 +1458,7 @@ class APG_Campo_NIF_en_Pedido {
 	 * @return void  Finaliza con `wp_send_json_success`.
 	 */
     public function apg_nif_valida_VAT() {
-        list( $nif, $pais, $pais_envio ) = $this->apg_nif_recoge_datos_ajax();
+        list( $nif, $pais ) = $this->apg_nif_recoge_datos_ajax();
         $prefijo_nif        = strtoupper( substr( $nif, 0, 2 ) );
         if ( ! $this->apg_nif_es_prefijo_pais_valido( $prefijo_nif ) ) {
             $prefijo_nif = strtoupper( $pais );
@@ -1424,9 +1638,6 @@ class APG_Campo_NIF_en_Pedido {
 
             return $resultado;
         }
-        
-		// Fallback.
-        return false;
     }
     
 	/**
@@ -1491,7 +1702,7 @@ class APG_Campo_NIF_en_Pedido {
                 'headers'   => array( 'Content-Type' => 'application/json' ),
                 'body'      => json_encode( array( 'data' => $nif_clean ) ),
             ) );
-            $partes     = json_split_objects( wp_remote_retrieve_body( $response ) );
+            $partes     = apg_nif_json_split_objects( wp_remote_retrieve_body( $response ) );
             $eori       = json_decode( $partes[0] );
             $resultado  = isset( $eori->data->valid ) && $eori->data->valid == 1;
             // Guarda en caché.
@@ -1527,8 +1738,7 @@ new APG_Campo_NIF_en_Pedido();
  *
  * @see http://ryanuber.com/07-31-2012/split-and-decode-json-php.html
  */
-
-function json_split_objects( string $json ): array {
+function apg_nif_json_split_objects( string $json ): array {
     $q          = false;
     $len        = strlen( $json );
     $objects    = array();

@@ -135,6 +135,27 @@ $tab = 1;
             </tr>
             <tr valign="top">
                 <th scope="row" class="titledesc">
+                    <label for="apg_nif_settings[importe_requerido]">
+                        <?php esc_html_e( 'Require billing field from this amount', 'wc-apg-nifcifnie-field' ); ?>
+                        <span class="woocommerce-help-tip"
+                            data-tip="<?php esc_attr_e( 'Type the order amount from which the billing field becomes required, even if it is not marked as required above. Leave it empty to disable it. It never affects the shipping form.', 'wc-apg-nifcifnie-field' ); ?>"></span>
+                    </label>
+                </th>
+                <td class="forminp"><input id="apg_nif_settings[importe_requerido]"
+                        name="apg_nif_settings[importe_requerido]" type="number" min="0" step="0.01"
+                        value="<?php echo ( isset( $apg_nif_settings['importe_requerido'] ) ? esc_attr( $apg_nif_settings['importe_requerido'] ) : '' ); ?>"
+                        tabindex="<?php echo esc_html( $tab ); $tab++; ?>" placeholder="0" />
+                    <p class="description"><?php
+						printf(
+							/* translators: %s: shop currency symbol */
+							esc_html__( 'Order total, taxes included, in %s. The billing field will be required for orders equal to or greater than this amount.', 'wc-apg-nifcifnie-field' ),
+							esc_html( html_entity_decode( get_woocommerce_currency_symbol(), ENT_QUOTES, 'UTF-8' ) )
+						);
+					?></p>
+                </td>
+            </tr>
+            <tr valign="top">
+                <th scope="row" class="titledesc">
                     <label for="apg_nif_settings[requerido_envio]">
                         <?php esc_html_e( 'Require shipping field?', 'wc-apg-nifcifnie-field' ); ?>
                         <span class="woocommerce-help-tip"

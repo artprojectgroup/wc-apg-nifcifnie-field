@@ -8,15 +8,15 @@ Tags: nif, cif, nie, eori, vies
 
 Requires at least: 5.0
 
-Tested up to: 7.0
+Tested up to: 7.1
 
-Stable tag: 4.14.1
+Stable tag: 4.15.0
 
 Requires PHP: 7.4
 
 WC requires at least: 5.6
 
-WC tested up to: 10.8.0
+WC tested up to: 11.0.0
 
 License: GNU General Public License v3 or later
 
@@ -34,6 +34,7 @@ Añade a WooCommerce un campo NIF/CIF/NIE en todos los formularios de facturaci�
 
 - Totalmente compatible con el bloque Finalizar compra del editor de bloques de WordPress.
 - Puedes hacer obligatorio el campo NIF/CIF/NIE en el formulario de facturación.
+- Puedes hacer obligatorio el campo NIF/CIF/NIE en el formulario de facturación solo a partir de un importe de pedido.
 - Puedes hacer obligatorio el campo NIF/CIF/NIE en el formulario de envío.
 - Puedes ocultar el campo NIF/CIF/NIE del formulario de envío.
 - Puedes personalizar la prioridad (posición) del campo.
@@ -50,6 +51,7 @@ Añade a WooCommerce un campo NIF/CIF/NIE en todos los formularios de facturaci�
 - Puedes quitar los campos Correo electrónico y Teléfono del formulario de envío con el filtro `apg_nif_add_fields`.
 - Puedes omitir la validación por país o condición externa con el filtro `apg_nif_skip_validation`.
 - Puedes anular la obligatoriedad del campo en facturación o envío con el filtro `apg_nif_skip_required`.
+- Puedes cambiar el importe del pedido que se compara con el mínimo configurado con el filtro `apg_nif_importe_del_pedido`.
 - Añade un botón de descarga de clientes en WooCommerce (Clientes) que incluye el campo NIF/CIF/NIE en el CSV.
 - Valida documentos de:
 - Albania.
@@ -144,6 +146,19 @@ Si tu tienda realizó pedidos con el Bloque de Finalizar compra (o con el checko
 **WC - APG NIF/CIF/NIE Field** es un plugin gratuito. **Art Project Group** no proporciona soporte técnico gratuito, pero ofrece un servicio de [soporte técnico](https://artprojectgroup.es/tienda/ticket-de-soporte) de pago para instalación y configuración.
 
 ## Changelog
+
+### 4.15.0
+
+- Nueva opción «Require billing field from this amount»: el campo NIF/CIF/NIE pasa a ser obligatorio en el formulario de facturación cuando el total del pedido (impuestos incluidos) es igual o superior al importe indicado, aunque no esté marcada la opción «Require billing field?». Déjala vacía para desactivarla. Nunca afecta al formulario de envío, que se sigue comportando según lo configurado. El filtro `apg_nif_importe_del_pedido` permite comparar otro importe (por ejemplo, el subtotal sin impuestos o sin gastos de envío).
+- Corregido: en el bloque de Finalizar compra, el campo de facturación no se exigía como obligatorio cuando «Show shipping field?» estaba desmarcada y ambas opciones de obligatoriedad estaban marcadas. El campo no se registraba como obligatorio de forma nativa y la comprobación propia del plugin se saltaba, así que se podía completar el pedido con el NIF/CIF/NIE vacío.
+- Corregido: en el bloque de Finalizar compra, la comprobación de obligatoriedad por formulario solo se ejecutaba si había alguna validación activa (NIF/CIF/NIE, VIES o EORI). Hacer obligatorio el campo en un único formulario sin validación activa no tenía ningún efecto.
+- Seguridad: el endpoint AJAX que aplica la exención de IVA en el bloque de Finalizar compra (`apg_nif_quita_iva_bloques`) se fiaba del valor enviado por el navegador y no comprobaba ningún nonce, así que cualquier visitante podía quitarse el IVA de su propio pedido sin un número de IVA válido. Ahora verifica el nonce y recalcula la exención en el servidor con el número y el país recibidos.
+- La etiqueta del campo se mantiene al día con el importe del pedido en los dos checkouts: el texto «(opcional)» desaparece en cuanto el pedido alcanza el importe configurado, y vuelve si baja de él (por ejemplo, al aplicar un cupón). El estado se calcula siempre en el servidor, así que la etiqueta y la validación nunca pueden contradecirse.
+- En el bloque de Finalizar compra, con «Usar la misma dirección para facturación» marcada solo se muestra el formulario de envío, y esa dirección es también la de facturación: su campo NIF/CIF/NIE ya sigue las reglas de facturación, como debe ser.
+- Corregido: cuando el campo era obligatorio y se dejaba vacío con la validación activa, se mostraban dos mensajes de error (el de campo obligatorio y el de formato no válido). Ya no se valida el formato de un campo vacío.
+- Corregido: al desinstalar el plugin quedaban la opción `apg_nif_meta_pedido_migrado` y los transients de caché de VIES/EORI.
+- La función auxiliar `json_split_objects()` pasa a llamarse `apg_nif_json_split_objects()`. Se declaraba en el espacio global sin prefijo, lo que podía provocar un error fatal si otro plugin declaraba ese mismo nombre.
+- Limpieza interna: eliminado código inalcanzable, variables globales sin usar y una consulta innecesaria de los campos de dirección en el formulario de envío.
 
 ### 4.14.1
 

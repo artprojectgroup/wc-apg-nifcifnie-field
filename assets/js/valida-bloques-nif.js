@@ -34,29 +34,9 @@ jQuery(document).ready(function ($) {
         }
     }
 
-    function syncRequiredUi() {
-        const billingRequired = toBool(apg_nif_ajax?.requerido, false);
-        const shippingRequired = toBool(apg_nif_ajax?.requerido_envio, false);
-        const stripOptional = function (text) {
-            return (text || "").replace(/\s*\((optional|opcional)\)\s*$/i, "");
-        };
+    // La etiqueta y el estado obligatorio del campo los mantiene campo-obligatorio-nif.js,
+    // que consulta al servidor y cubre también la obligatoriedad por importe del pedido.
 
-        const $billingWrap = $("#billing .wc-block-components-address-form__apg-nif");
-        const $billingInput = $billingWrap.find("input");
-        const $billingLabel = $billingWrap.find("label");
-        if (billingRequired && !shippingRequired) {
-            $billingInput.attr("required", "required").attr("aria-required", "true");
-            if ($billingLabel.length) {
-                $billingLabel.text(stripOptional($billingLabel.text()));
-            }
-        }
-
-        const $shippingWrap = $("#shipping .wc-block-components-address-form__apg-nif");
-        const $shippingInput = $shippingWrap.find("input");
-        if (!shippingRequired) {
-            $shippingInput.removeAttr("required").attr("aria-required", "false");
-        }
-    }
     // Helper: establece el valor usando el setter nativo (React-friendly)
     function setNativeValue(el, value) {
         const proto = Object.getPrototypeOf(el);
@@ -128,7 +108,6 @@ jQuery(document).ready(function ($) {
             } catch (e) {}
         }
     });
-    syncRequiredUi();
     syncShippingVisibility();
 
     // Forzar sólo letras y números (mayúsculas) en escritura
@@ -203,6 +182,24 @@ jQuery(document).ready(function ($) {
         }
     });
 
+    // Pide al servidor que recalcule la exención de IVA. Nunca se le indica el resultado:
+    // el servidor revalida el NIF/VAT por su cuenta y decide si aplica la exención.
+    function actualizaExencionIva(datos) {
+        const cuerpo = new URLSearchParams({
+            nonce: apg_nif_ajax?.nonce || "",
+            billing_nif: datos?.nif || "",
+            billing_country: datos?.country || "",
+            shipping_country: datos?.shipCountry || "",
+        });
+
+        return fetch('/?wc-ajax=apg_nif_quita_iva_bloques', {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: cuerpo.toString(),
+        }).then(r => r.json());
+    }
+
     // Estado de validación para evitar bucles/reentradas
     const estado = {
         billing: { inFlight: false, last: null },
@@ -241,7 +238,6 @@ jQuery(document).ready(function ($) {
     let muteBillingObserver = 0;
 
     function validarNIFyMostrarErrores(formulario) {
-        syncRequiredUi();
         syncShippingVisibility();
         if (formulario === "shipping" && !toBool(apg_nif_ajax?.mostrar_envio, true)) {
             return;
@@ -282,13 +278,7 @@ jQuery(document).ready(function ($) {
             }
 
             // Asegurar que no quede exención de IVA aplicada si el usuario borró el número
-            fetch('/?wc-ajax=apg_nif_quita_iva_bloques', {
-                method: 'POST',
-                credentials: 'same-origin',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: 'exento=0',
-            })
-            .then(r => r.json())
+            actualizaExencionIva()
             .then(() => {
                 if (window.wp?.data) {
                     window.wp.data.dispatch("wc/store/cart").invalidateResolution("getCartTotals");
@@ -465,18 +455,7 @@ jQuery(document).ready(function ($) {
                         }
                     }
 
-                    const validoVIES = requiereVIES && (res.valido_vies === true || res.valido_vies === '1');
-                    const exento = (validoVIES && res.es_exento) ? '1' : '0';
-
-                    fetch('/?wc-ajax=apg_nif_quita_iva_bloques', {
-                        method: 'POST',
-                        credentials: 'same-origin',
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded',
-                        },
-                        body: 'exento=' + exento,
-                    })
-                    .then(r => r.json())
+                    actualizaExencionIva(payload)
                     .then(data => {
                         if (window.debug) {
                             console.log('VAT exception:', data);

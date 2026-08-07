@@ -3,11 +3,11 @@ Contributors: artprojectgroup
 Donate link: https://artprojectgroup.es/tienda/donacion
 Tags: nif, cif, nie, eori, vies
 Requires at least: 5.0
-Tested up to: 7.0
-Stable tag: 4.14.1
+Tested up to: 7.1
+Stable tag: 4.15.0
 Requires PHP: 7.4
 WC requires at least: 5.6
-WC tested up to: 10.8.0
+WC tested up to: 11.0.0
 License: GNU General Public License v3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -21,6 +21,7 @@ Add to WooCommerce a NIF/CIF/NIE field for all billing and shipping forms, with 
 = Features =
 * Fully compatible with the Checkout block of the WordPress block editor.
 * You can require the NIF/CIF/NIE field in the billing form.
+* You can require the NIF/CIF/NIE field in the billing form only from a given order amount.
 * You can require the NIF/CIF/NIE field in the shipping form.
 * You can hide the NIF/CIF/NIE field from the shipping form.
 * You can customize the priority (position) of the field.
@@ -37,6 +38,7 @@ Add to WooCommerce a NIF/CIF/NIE field for all billing and shipping forms, with 
 * You can remove the Email and Phone fields from the submission form with the `apg_nif_add_fields` filter.
 * You can skip validation by country or external condition with the `apg_nif_skip_validation` filter.
 * You can override the required status for billing or shipping with the `apg_nif_skip_required` filter.
+* You can change the order amount compared against the configured threshold with the `apg_nif_importe_del_pedido` filter.
 * Adds a customer download button in WooCommerce (Customers) that includes the NIF/CIF/NIE field in the CSV.
 * It validates documents from:
  * Albania.
@@ -127,6 +129,18 @@ If your store placed orders via the Checkout block (or the classic checkout) wit
 3. Screenshot of WC - APG NIF/CIF/NIE field. Billing and shipping forms. Classic Shortcode.
 
 == Changelog ==
+= 4.15.0 =
+* New setting "Require billing field from this amount": the NIF/CIF/NIE field becomes required in the billing form when the order total (taxes included) is equal to or greater than the amount entered, even if the "Require billing field?" option is not checked. Leave it empty to disable it. It never affects the shipping form, which keeps behaving as configured. The `apg_nif_importe_del_pedido` filter lets you compare a different amount (for example, the subtotal without taxes or without shipping costs).
+* Fixed: in the Checkout block, the billing field was not enforced as required when "Show shipping field?" was unchecked and both required options were checked. The field was not registered as natively required and the plugin's own check was skipped, so the order could be placed with an empty NIF/CIF/NIE.
+* Fixed: in the Checkout block, the per-form required check only ran when some validation (NIF/CIF/NIE, VIES or EORI) was enabled. Requiring the field in a single form without any validation active had no effect.
+* Security: the AJAX endpoint that applies the VAT exemption in the Checkout block (`apg_nif_quita_iva_bloques`) trusted the value sent by the browser and did not check any nonce, so any visitor could remove the VAT from their own order without a valid VAT number. It now verifies the nonce and recalculates the exemption on the server with the submitted VAT number and country.
+* The field label is now kept in sync with the order amount in both checkouts: the "(optional)" text disappears as soon as the order reaches the configured amount, and comes back if it drops below it (for example, after applying a coupon). The state is always calculated on the server, so the label and the validation can never disagree.
+* In the Checkout block, with "Use same address for billing" ticked only the shipping form is shown, and that address is also the billing one: its NIF/CIF/NIE field now follows the billing rules, as it should.
+* Fixed: when the field was required and left empty with validation enabled, two error messages were shown (the required one and the invalid format one). The format is no longer validated on an empty field.
+* Fixed: uninstalling the plugin left behind the `apg_nif_meta_pedido_migrado` option and the VIES/EORI cache transients.
+* The `json_split_objects()` helper function has been renamed to `apg_nif_json_split_objects()`. It was declared in the global namespace without a prefix, which could cause a fatal error if another plugin declared the same name.
+* Internal cleanup: removed unreachable code, unused globals and an unnecessary address-fields lookup in the shipping form.
+
 = 4.14.1 =
 * Fixed: the metadata cleanup and the one-time automatic migration did not actually process the HPOS order table (`wc_orders_meta`); they relied on the `$wpdb->wc_orders_meta` property, which WooCommerce does not set, so on HPOS stores the 4.14.0 migration touched only `postmeta` and left the orders untouched. The HPOS table is now detected from the database prefix, and the automatic one-time cleanup runs again on update to 4.14.1 to migrate those orders to `_billing_nif` / `_shipping_nif`.
 
@@ -433,6 +447,9 @@ If your store placed orders via the Checkout block (or the classic checkout) wit
 * Initial version.
 
 == Upgrade Notice ==
+= 4.15.0 =
+* Security fix: the VAT exemption endpoint used by the Checkout block trusted the browser and checked no nonce, so any visitor could remove the VAT from their own order without a valid VAT number. Also adds a new setting to require the billing field from a given order amount. Recommended update for every store, and required if you use the VIES VAT number validation.
+
 = 4.14.1 =
 * Fixes the migration not reaching the HPOS order table (`wc_orders_meta`), so the NIF data on HPOS stores is actually migrated to `_billing_nif` / `_shipping_nif`. Recommended update.
 

@@ -2,7 +2,7 @@
 /*
 Plugin Name: WC - APG NIF/CIF/NIE Field
 Requires Plugins: woocommerce
-Version: 4.14.1
+Version: 4.15.0
 Plugin URI: https://wordpress.org/plugins/wc-apg-nifcifnie-field/
 Description: Add to WooCommerce a NIF/CIF/NIE field.
 Author URI: https://artprojectgroup.es/
@@ -10,9 +10,9 @@ Author: Art Project Group
 License: GNU General Public License v3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 Requires at least: 5.0
-Tested up to: 7.0
+Tested up to: 7.1
 WC requires at least: 5.6
-WC tested up to: 10.8.0
+WC tested up to: 11.0.0
 
 Text Domain: wc-apg-nifcifnie-field
 Domain Path: /languages
@@ -37,7 +37,7 @@ define( 'DIRECCION_apg_nif', plugin_basename( __FILE__ ) );
  *
  * @var string
  */
-define( 'VERSION_apg_nif', '4.14.1' );
+define( 'VERSION_apg_nif', '4.15.0' );
 
 // Funciones generales de APG.
 include_once 'includes/admin/funciones-apg.php';
@@ -227,50 +227,58 @@ if ( is_plugin_active( 'woocommerce/woocommerce.php' ) || is_network_only_plugin
 	function apg_nif_sanitiza_opciones( $opciones ) {
 		$predeterminadas = array(
 			// Campos de texto.
-			'etiqueta'         => 'NIF/CIF/NIE',
-			'placeholder'      => __( 'NIF/CIF/NIE number', 'wc-apg-nifcifnie-field' ),
-			'error'            => __( 'Please enter a valid NIF/CIF/NIE.', 'wc-apg-nifcifnie-field' ),
-			'prioridad'        => '31',
+			'etiqueta'          => 'NIF/CIF/NIE',
+			'placeholder'       => __( 'NIF/CIF/NIE number', 'wc-apg-nifcifnie-field' ),
+			'error'             => __( 'Please enter a valid NIF/CIF/NIE.', 'wc-apg-nifcifnie-field' ),
+			'prioridad'         => '31',
+			// Importe a partir del cual el campo de facturación es obligatorio ('' = desactivado).
+			'importe_requerido' => '',
 			// Checkboxes.
-			'requerido'        => '0',
-			'requerido_envio'  => '0',
-			'mostrar_envio'    => '0',
-			'validacion'       => '0',
+			'requerido'         => '0',
+			'requerido_envio'   => '0',
+			'mostrar_envio'     => '0',
+			'validacion'        => '0',
 			// VIES.
-			'validacion_vies'  => '0',
-			'etiqueta_vies'    => 'NIF/CIF/NIE/VAT number',
-			'placeholder_vies' => __( 'NIF/CIF/NIE/VAT number', 'wc-apg-nifcifnie-field' ),
-			'error_vies'       => __( 'Please enter a valid VIES VAT number.', 'wc-apg-nifcifnie-field' ),
-			'error_vies_max'   => __( 'Error: maximum number of concurrent requests exceeded.', 'wc-apg-nifcifnie-field' ),
+			'validacion_vies'   => '0',
+			'etiqueta_vies'     => 'NIF/CIF/NIE/VAT number',
+			'placeholder_vies'  => __( 'NIF/CIF/NIE/VAT number', 'wc-apg-nifcifnie-field' ),
+			'error_vies'        => __( 'Please enter a valid VIES VAT number.', 'wc-apg-nifcifnie-field' ),
+			'error_vies_max'    => __( 'Error: maximum number of concurrent requests exceeded.', 'wc-apg-nifcifnie-field' ),
 			// EORI.
-			'validacion_eori'  => '0',
-			'etiqueta_eori'    => 'NIF/CIF/NIE/EORI number',
-			'placeholder_eori' => __( 'NIF/CIF/NIE/EORI number', 'wc-apg-nifcifnie-field' ),
-			'error_eori'       => __( 'Please enter a valid EORI number.', 'wc-apg-nifcifnie-field' ),
-			'eori_paises'      => array(),
+			'validacion_eori'   => '0',
+			'etiqueta_eori'     => 'NIF/CIF/NIE/EORI number',
+			'placeholder_eori'  => __( 'NIF/CIF/NIE/EORI number', 'wc-apg-nifcifnie-field' ),
+			'error_eori'        => __( 'Please enter a valid EORI number.', 'wc-apg-nifcifnie-field' ),
+			'eori_paises'       => array(),
 		);
 
 		$opciones = wp_parse_args( $opciones, $predeterminadas );
 
+		// Importe mínimo: el campo del formulario es de tipo `number`, así que llega con punto
+		// decimal. Se admite también la coma y se descartan los valores vacíos, negativos o cero.
+		$importe_requerido = (float) str_replace( ',', '.', wc_clean( (string) $opciones['importe_requerido'] ) );
+		$importe_requerido = $importe_requerido > 0 ? (string) $importe_requerido : '';
+
 		return array(
-			'etiqueta'         => sanitize_text_field( $opciones['etiqueta'] ),
-			'placeholder'      => sanitize_text_field( $opciones['placeholder'] ),
-			'error'            => sanitize_text_field( $opciones['error'] ),
-			'prioridad'        => strval( intval( $opciones['prioridad'] ) ),
-			'requerido'        => '1' === $opciones['requerido'] ? '1' : '0',
-			'requerido_envio'  => '1' === $opciones['requerido_envio'] ? '1' : '0',
-			'mostrar_envio'    => '1' === $opciones['mostrar_envio'] ? '1' : '0',
-			'validacion'       => '1' === $opciones['validacion'] ? '1' : '0',
-			'validacion_vies'  => '1' === $opciones['validacion_vies'] ? '1' : '0',
-			'etiqueta_vies'    => sanitize_text_field( $opciones['etiqueta_vies'] ),
-			'placeholder_vies' => sanitize_text_field( $opciones['placeholder_vies'] ),
-			'error_vies'       => sanitize_text_field( $opciones['error_vies'] ),
-			'error_vies_max'   => sanitize_text_field( $opciones['error_vies_max'] ),
-			'validacion_eori'  => '1' === $opciones['validacion_eori'] ? '1' : '0',
-			'etiqueta_eori'    => sanitize_text_field( $opciones['etiqueta_eori'] ),
-			'placeholder_eori' => sanitize_text_field( $opciones['placeholder_eori'] ),
-			'error_eori'       => sanitize_text_field( $opciones['error_eori'] ),
-			'eori_paises'      => is_array( $opciones['eori_paises'] ) ? array_map( 'sanitize_text_field', $opciones['eori_paises'] ) : array(),
+			'etiqueta'          => sanitize_text_field( $opciones['etiqueta'] ),
+			'placeholder'       => sanitize_text_field( $opciones['placeholder'] ),
+			'error'             => sanitize_text_field( $opciones['error'] ),
+			'prioridad'         => strval( intval( $opciones['prioridad'] ) ),
+			'importe_requerido' => $importe_requerido,
+			'requerido'         => '1' === $opciones['requerido'] ? '1' : '0',
+			'requerido_envio'   => '1' === $opciones['requerido_envio'] ? '1' : '0',
+			'mostrar_envio'     => '1' === $opciones['mostrar_envio'] ? '1' : '0',
+			'validacion'        => '1' === $opciones['validacion'] ? '1' : '0',
+			'validacion_vies'   => '1' === $opciones['validacion_vies'] ? '1' : '0',
+			'etiqueta_vies'     => sanitize_text_field( $opciones['etiqueta_vies'] ),
+			'placeholder_vies'  => sanitize_text_field( $opciones['placeholder_vies'] ),
+			'error_vies'        => sanitize_text_field( $opciones['error_vies'] ),
+			'error_vies_max'    => sanitize_text_field( $opciones['error_vies_max'] ),
+			'validacion_eori'   => '1' === $opciones['validacion_eori'] ? '1' : '0',
+			'etiqueta_eori'     => sanitize_text_field( $opciones['etiqueta_eori'] ),
+			'placeholder_eori'  => sanitize_text_field( $opciones['placeholder_eori'] ),
+			'error_eori'        => sanitize_text_field( $opciones['error_eori'] ),
+			'eori_paises'       => is_array( $opciones['eori_paises'] ) ? array_map( 'sanitize_text_field', $opciones['eori_paises'] ) : array(),
 		);
 	}
 
@@ -329,10 +337,37 @@ register_activation_hook( __FILE__, 'apg_nif_instalar' );
 /**
  * Elimina opciones y *transients* del plugin en su desinstalación.
  *
+ * Además de las opciones fijas, borra los *transients* con nombre dinámico:
+ * la caché de consultas a VIES (`apg_vies_*`) y EORI (`apg_eori_*`) y el
+ * resultado de la limpieza de metadatos por usuario.
+ *
+ * @global \wpdb $wpdb Objeto de base de datos de WordPress.
  * @return void
  */
 function apg_nif_desinstalar() {
+	global $wpdb;
+
+	// Transients de nombre fijo.
 	delete_transient( 'apg_nif_plugin' );
+	delete_transient( 'apg_nif_duplicados' );
+
+	// Opciones del plugin.
 	delete_option( 'apg_nif_settings' );
 	delete_option( 'apg_nif_actualizado' );
+	delete_option( 'apg_nif_meta_pedido_migrado' );
+
+	// Transients de nombre dinámico (caché de VIES/EORI y resultado de la limpieza).
+	foreach ( array( 'apg_vies_', 'apg_eori_', 'apg_nif_limpieza_resultado_' ) as $prefijo ) {
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		$wpdb->query(
+			$wpdb->prepare(
+				"DELETE FROM {$wpdb->options} WHERE option_name LIKE %s OR option_name LIKE %s",
+				$wpdb->esc_like( '_transient_' . $prefijo ) . '%',
+				$wpdb->esc_like( '_transient_timeout_' . $prefijo ) . '%'
+			)
+		);
+		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+	}
+
+	wp_cache_flush();
 }
