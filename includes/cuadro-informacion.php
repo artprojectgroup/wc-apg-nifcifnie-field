@@ -71,8 +71,7 @@ defined( 'ABSPATH' ) || exit;
 		<div class="columna">
 			<p>
 				<?php
-				// translators: %s is the plugin name (e.g., WC – APG Campo NIF/CIF/NIE)
-				echo esc_html( sprintf( __( 'Please, rate %s:', 'wc-apg-nifcifnie-field' ), $apg_nif['plugin'] ) );
+				echo esc_html( sprintf( /* translators: %s is the plugin name (e.g., WC - APG NIF/CIF/NIE Field). */ __( 'Please, rate %s:', 'wc-apg-nifcifnie-field' ), $apg_nif['plugin'] ) );
 				?>
 			</p>
 			<?php echo wp_kses_post( apg_nif_plugin( $apg_nif['plugin_uri'] ) ); ?> </div>

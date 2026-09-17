@@ -150,12 +150,18 @@
 				'billing_nif', // <— campo personalizado expuesto por tu PHP
 			];
 
+			// Neutraliza la inyección de fórmulas: un valor que empiece por = + - @ (o por
+			// tabulador/retorno de carro) lo ejecuta la hoja de cálculo al abrir el CSV, y
+			// el NIF o la ciudad los escribe el cliente en el formulario de compra.
+			const csvSeguro = (valor) =>
+				/^[=+\-@\t\r]/.test(valor) ? `'${valor}` : valor;
+
 			const headerLine = cols.join(',');
 			const lines = all.map((row) =>
 				cols
 					.map((k) => {
 						const v = row && row[k] != null ? String(row[k]) : '';
-						const s = v.replace(/"/g, '""'); // CSV-safe
+						const s = csvSeguro(v).replace(/"/g, '""'); // CSV-safe
 						return /[",\n]/.test(s) ? `"${s}"` : s;
 					})
 					.join(',')

@@ -8,15 +8,15 @@ Tags: nif, cif, nie, eori, vies
 
 Requires at least: 5.0
 
-Tested up to: 7.1
+Tested up to: 7.2
 
-Stable tag: 4.15.0
+Stable tag: 4.16.0
 
 Requires PHP: 7.4
 
 WC requires at least: 5.6
 
-WC tested up to: 11.0.0
+WC tested up to: 11.1.0
 
 License: GNU General Public License v3 or later
 
@@ -52,6 +52,7 @@ Añade a WooCommerce un campo NIF/CIF/NIE en todos los formularios de facturaci�
 - Puedes omitir la validación por país o condición externa con el filtro `apg_nif_skip_validation`.
 - Puedes anular la obligatoriedad del campo en facturación o envío con el filtro `apg_nif_skip_required`.
 - Puedes cambiar el importe del pedido que se compara con el mínimo configurado con el filtro `apg_nif_importe_del_pedido`.
+- Puedes limitar cuántas consultas a VIES/EORI puede provocar una misma IP por minuto con el filtro `apg_nif_maximo_consultas_por_minuto` (desactivado de serie).
 - Añade un botón de descarga de clientes en WooCommerce (Clientes) que incluye el campo NIF/CIF/NIE en el CSV.
 - Valida documentos de:
 - Albania.
@@ -59,11 +60,13 @@ Añade a WooCommerce un campo NIF/CIF/NIE en todos los formularios de facturaci�
 - Austria.
 - Argentina.
 - Islas de Åland.
+- Brasil.
 - Bélgica.
 - Bulgaria.
 - Bielorusia.
 - Suiza.
 - Chile.
+- Colombia.
 - Chipre.
 - República Checa.
 - Alemania.
@@ -90,7 +93,9 @@ Añade a WooCommerce un campo NIF/CIF/NIE en todos los formularios de facturaci�
 - Montenegro.
 - Macedonia del Norte.
 - Malta.
+- México.
 - Países Bajos.
+- Perú.
 - Noruega.
 - Polonia.
 - Portugal.
@@ -101,6 +106,7 @@ Añade a WooCommerce un campo NIF/CIF/NIE en todos los formularios de facturaci�
 - República Eslovaca.
 - San Marino.
 - Ucrania.
+- Uruguay.
 - 100% compatible con [WooCommerce PDF Invoices & Packing Slips](https://es.wordpress.org/plugins/woocommerce-pdf-invoices-packing-slips/).
 - 100% compatible con [WPML](https://wpml.org/?aid=80296&affiliate_key=m66Ss5ps0xoS).
 - 100% compatible con [Checkout Field Editor (Checkout Manager) for WooCommerce](https://wordpress.org/plugins/woo-checkout-field-editor-pro/)
@@ -146,6 +152,21 @@ Si tu tienda realizó pedidos con el Bloque de Finalizar compra (o con el checko
 **WC - APG NIF/CIF/NIE Field** es un plugin gratuito. **Art Project Group** no proporciona soporte técnico gratuito, pero ofrece un servicio de [soporte técnico](https://artprojectgroup.es/tienda/ticket-de-soporte) de pago para instalación y configuración.
 
 ## Changelog
+
+### 4.16.0
+
+- Seguridad: la exención de IVA se guardaba en la sesión del cliente y no se volvía a comprobar al realizar el pedido, así que se podía completar una compra sin IVA con un número que no correspondía a la dirección del pedido. Ahora se recalcula con los datos definitivos en los dos flujos de compra.
+- Corregido: el algoritmo del dígito de control del Reino Unido rechazaba números de IVA válidos (el GB220430231 de Tesco o el GB333289454 de la BBC). Ahora sigue la especificación de HMRC.
+- Corregido: una caída de VIES o EORI podía dejar guardado como no válido un número que sí lo era. Sólo se guardan las respuestas concluyentes: 30 días los válidos y 24 horas los que no.
+- Corregido: en la primera carga del Bloque de Finalizar compra no se validaba el formulario de envío, así que un NIF/CIF/NIE que viniera de la dirección guardada del cliente no aplicaba la exención hasta tocar el campo.
+- Nueva validación del dígito de control para Islandia, Brasil (CNPJ y CPF), Perú, Colombia y Uruguay. Mónaco pasa a usar el algoritmo francés y las Islas Åland el finlandés.
+- Brasil, México, Colombia, Perú y Uruguay se incorporan a los países que se validan: hasta ahora sus identificadores se aceptaban sin comprobación. Del RFC de México se comprueban la estructura y que la fecha exista.
+- El número EORI se comprueba de forma antes de consultar a HMRC o a la Comisión Europea.
+- Seguridad: las migraciones de datos ya no se ejecutan para usuarios sin la capacidad `manage_woocommerce`, la exportación CSV de clientes neutraliza la inyección de fórmulas, los scripts del proceso de compra escapan todo lo que imprimen y cada lectura de `$_POST` verifica su propio nonce.
+- Nuevo filtro `apg_nif_maximo_consultas_por_minuto` para limitar las consultas externas a VIES/EORI por dirección IP. Desactivado de serie.
+- Corregido: un campo que compartiera etiqueta con el del NIF/CIF/NIE desaparecía de la administración de pedidos, el aviso de que falta SoapClient mostraba el marcado del enlace como texto plano y era posible un error fatal en el endpoint de VIES sin sesión de WooCommerce.
+- Probado con WooCommerce 11.1.0. Se ha regenerado la plantilla de traducción: nueve cadenas que estaban en el plugin pero faltaban en ella ya son traducibles.
+
 
 ### 4.15.0
 

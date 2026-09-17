@@ -147,9 +147,16 @@ class APG_Campo_NIF_en_Admin_Pedidos {
 			}
 		}
 
-		// Asegura que no se pierda ningún campo no contemplado en el orden anterior.
+		// Asegura que no se pierda ningún campo no contemplado en el orden anterior. Se
+		// descartan únicamente las copias del propio campo NIF que pueda haber añadido otra
+		// extensión: comparar sólo por etiqueta hacía desaparecer campos ajenos cuando la
+		// etiqueta configurada coincidía con la suya (por ejemplo "Phone").
 		foreach ( $campos as $campo => $datos ) {
-			if ( ! isset( $campos_ordenados[ $campo ] ) && ( ! isset( $datos['label'] ) || $datos['label'] !== $etiqueta ) ) {
+			$es_copia_del_nif = isset( $datos['label'] )
+				&& $datos['label'] === $etiqueta
+				&& ( 'nif' === $campo || false !== strpos( $campo, '_nif' ) );
+
+			if ( ! isset( $campos_ordenados[ $campo ] ) && ! $es_copia_del_nif ) {
 				$campos_ordenados[ $campo ] = $datos;
 			}
 		}
@@ -188,11 +195,21 @@ class APG_Campo_NIF_en_Admin_Pedidos {
 	 * @return array<string,mixed> Datos con `billing_nif`/`shipping_nif` añadidos cuando corresponda.
 	 */
 	public function apg_nif_ajax( $datos_cliente ) {
-		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- WooCommerce already validates nonce via 'get-customer-details'.
+		// El filtro devuelve datos de un cliente arbitrario: se comprueban aquí tanto el
+		// nonce como el permiso, sin depender de que lo haya hecho WC_AJAX::get_customer_details().
+		if ( ! check_ajax_referer( 'get-customer-details', 'security', false ) ) {
+			return $datos_cliente;
+		}
+
+		if ( ! current_user_can( 'edit_shop_orders' ) ) {
+			return $datos_cliente;
+		}
+
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce `get-customer-details` verificado con check_ajax_referer() al principio de esta misma función.
 		if ( isset( $_POST['user_id'], $_POST['type'] ) ) {
-			// phpcs:ignore WordPress.Security.NonceVerification.Missing -- WooCommerce already validates nonce via 'get-customer-details'.
+			// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Ídem.
 			$cliente = absint( wp_unslash( $_POST['user_id'] ) );
-			// phpcs:ignore WordPress.Security.NonceVerification.Missing -- WooCommerce already validates nonce via 'get-customer-details'.
+			// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Ídem.
 			$formulario = sanitize_text_field( wp_unslash( $_POST['type'] ) );
 
 			if ( $cliente && in_array( $formulario, array( 'billing', 'shipping' ), true ) ) {
@@ -236,7 +253,7 @@ class APG_Campo_NIF_en_Admin_Pedidos {
 		}
 
 		$is_classic_order_edit = in_array( $screen->base, array( 'post', 'post-new' ), true ) && 'shop_order' === $screen->post_type;
-		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only access to 'action' for UI/view logic; value is sanitized and not used to change state or process form data.
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Lectura de sólo vista: decide si encolar CSS en la pantalla de edición de pedidos; no cambia estado ni procesa datos del formulario.
 		$is_hpos_order_edit = 'woocommerce_page_wc-orders' === $screen->id && isset( $_GET['action'] ) && 'edit' === sanitize_key( wp_unslash( $_GET['action'] ) );
 		if ( ! ( $is_classic_order_edit || $is_hpos_order_edit ) ) {
 			return;
@@ -298,11 +315,12 @@ class APG_Campo_NIF_en_Admin_Pedidos {
 	 * @return void
 	 */
 	public function apg_nif_ejecuta_limpieza_duplicados() {
-		check_admin_referer( 'apg_nif_limpieza_duplicados' );
-
+		// Primero el permiso: la pregunta «¿quién eres?» va antes que «¿vienes del formulario?».
 		if ( ! current_user_can( 'manage_woocommerce' ) ) {
 			wp_die( esc_html__( 'You do not have sufficient permissions.', 'wc-apg-nifcifnie-field' ) );
 		}
+
+		check_admin_referer( 'apg_nif_limpieza_duplicados' );
 
 		$resultado = apg_nif_normaliza_meta_duplicados();
 

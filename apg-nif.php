@@ -2,7 +2,7 @@
 /*
 Plugin Name: WC - APG NIF/CIF/NIE Field
 Requires Plugins: woocommerce
-Version: 4.15.0
+Version: 4.16.0
 Plugin URI: https://wordpress.org/plugins/wc-apg-nifcifnie-field/
 Description: Add to WooCommerce a NIF/CIF/NIE field.
 Author URI: https://artprojectgroup.es/
@@ -10,9 +10,9 @@ Author: Art Project Group
 License: GNU General Public License v3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 Requires at least: 5.0
-Tested up to: 7.1
+Tested up to: 7.2
 WC requires at least: 5.6
-WC tested up to: 11.0.0
+WC tested up to: 11.1.0
 
 Text Domain: wc-apg-nifcifnie-field
 Domain Path: /languages
@@ -37,10 +37,48 @@ define( 'DIRECCION_apg_nif', plugin_basename( __FILE__ ) );
  *
  * @var string
  */
-define( 'VERSION_apg_nif', '4.15.0' );
+define( 'VERSION_apg_nif', '4.16.0' );
 
-// Funciones generales de APG.
-include_once 'includes/admin/funciones-apg.php';
+// Funciones generales de APG. Siempre con ruta absoluta: varios plugins de APG tienen un
+// archivo con este mismo nombre, y una ruta relativa puede resolverse contra el
+// `include_path` y cargar el de otro plugin.
+include_once plugin_dir_path( __FILE__ ) . 'includes/admin/funciones-apg.php';
+
+/**
+ * Comprueba si la petición actual puede ejecutar una migración de datos del plugin.
+ *
+ * Las migraciones cuelgan de `admin_init`, que se dispara para cualquier usuario
+ * identificado que abra el Escritorio (incluido un suscriptor en su perfil). Sin esta
+ * comprobación, cualquiera de ellos lanzaría consultas masivas sobre `usermeta`,
+ * `postmeta` y la tabla de metadatos de HPOS.
+ *
+ * Además toma un bloqueo de 5 minutos para que dos peticiones simultáneas no ejecuten
+ * la misma migración a la vez.
+ *
+ * @return bool true si la petición puede migrar (y ha tomado el bloqueo).
+ */
+function apg_nif_puede_migrar() {
+	if ( ! function_exists( 'current_user_can' ) || ! current_user_can( 'manage_woocommerce' ) ) {
+		return false;
+	}
+
+	// Bloqueo simple para evitar ejecuciones solapadas.
+	if ( get_transient( 'apg_nif_migrando' ) ) {
+		return false;
+	}
+	set_transient( 'apg_nif_migrando', '1', 5 * MINUTE_IN_SECONDS );
+
+	return true;
+}
+
+/**
+ * Libera el bloqueo tomado por {@see apg_nif_puede_migrar()}.
+ *
+ * @return void
+ */
+function apg_nif_libera_migracion() {
+	delete_transient( 'apg_nif_migrando' );
+}
 
 /**
  * Migra claves de usermeta antiguas a las nuevas y registra la versión de migración.
@@ -61,16 +99,24 @@ function apg_nif_actualiza_usermeta() {
 
 	// Si la versión anterior es menor que la 4.1 ejecuta la actualización.
 	if ( version_compare( $version, '4.1', '<' ) ) {
+		// `admin_init` se ejecuta para cualquier usuario identificado que abra el
+		// Escritorio: la migración sólo puede lanzarla quien administra la tienda.
+		if ( ! apg_nif_puede_migrar() ) {
+			return;
+		}
+
 		// Migra _billing_nif a billing_nif.
 		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$wpdb->query( "UPDATE {$wpdb->usermeta} SET meta_key = 'billing_nif' WHERE meta_key = '_billing_nif'" );
 
 		// Migra _shipping_nif a shipping_nif.
-		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$wpdb->query( "UPDATE {$wpdb->usermeta} SET meta_key = 'shipping_nif' WHERE meta_key = '_shipping_nif'" );
+		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 
 		// Marcamos que ya actualizamos los usermeta.
 		update_option( 'apg_nif_actualizado', VERSION_apg_nif );
+
+		apg_nif_libera_migracion();
 	}
 }
 add_action( 'admin_init', 'apg_nif_actualiza_usermeta' );
@@ -104,8 +150,15 @@ function apg_nif_migra_meta_pedido() {
 		return;
 	}
 
+	// Sólo quien administra la tienda puede lanzar la normalización masiva de metadatos.
+	if ( ! apg_nif_puede_migrar() ) {
+		return;
+	}
+
 	apg_nif_normaliza_meta_duplicados();
 	update_option( 'apg_nif_meta_pedido_migrado', VERSION_apg_nif );
+
+	apg_nif_libera_migracion();
 }
 add_action( 'admin_init', 'apg_nif_migra_meta_pedido', 20 );
 
@@ -144,9 +197,9 @@ if ( is_plugin_active( 'woocommerce/woocommerce.php' ) || is_network_only_plugin
 			add_action( 'woocommerce_screen_ids', array( $this, 'apg_nif_screen_id' ) );
 
 			// Carga funciones externas.
-			include_once 'includes/clases/pedido.php';
-			include_once 'includes/clases/mi-cuenta.php';
-			include_once 'includes/clases/direcciones.php';
+			include_once plugin_dir_path( __FILE__ ) . 'includes/clases/pedido.php';
+			include_once plugin_dir_path( __FILE__ ) . 'includes/clases/mi-cuenta.php';
+			include_once plugin_dir_path( __FILE__ ) . 'includes/clases/direcciones.php';
 		}
 
 		/**
@@ -155,7 +208,7 @@ if ( is_plugin_active( 'woocommerce/woocommerce.php' ) || is_network_only_plugin
 		 * @return void
 		 */
 		public function apg_nif_tab() {
-			include 'includes/formulario.php';
+			include plugin_dir_path( __FILE__ ) . 'includes/formulario.php';
 		}
 
 		/**
@@ -184,8 +237,16 @@ if ( is_plugin_active( 'woocommerce/woocommerce.php' ) || is_network_only_plugin
 			$apg_nif_settings = get_option( 'apg_nif_settings' );
 			if ( isset( $apg_nif_settings['validacion_vies'] ) && '1' === $apg_nif_settings['validacion_vies'] && ! class_exists( 'SoapClient' ) ) {
 				add_action( 'admin_notices', 'apg_nif_requiere_soap' );
-				$apg_nif_settings['validacion_vies'] = 0;
-				update_option( 'apg_nif_settings', $apg_nif_settings );
+
+				// Desactiva VIES en memoria para esta petición (sin SOAP no puede validarse).
+				$apg_nif_settings['validacion_vies'] = '0';
+				$GLOBALS['apg_nif_settings']         = $apg_nif_settings;
+
+				// La opción sólo se reescribe si quien navega administra la tienda: `admin_init`
+				// también se dispara para usuarios sin permisos sobre los ajustes.
+				if ( current_user_can( 'manage_woocommerce' ) ) {
+					update_option( 'apg_nif_settings', $apg_nif_settings );
+				}
 			}
 
 			register_setting(
@@ -197,8 +258,8 @@ if ( is_plugin_active( 'woocommerce/woocommerce.php' ) || is_network_only_plugin
 			);
 
 			// Carga funciones externas exclusivas del Panel de Administración.
-			include_once 'includes/clases/admin/pedidos.php';
-			include_once 'includes/clases/admin/usuario.php';
+			include_once plugin_dir_path( __FILE__ ) . 'includes/clases/admin/pedidos.php';
+			include_once plugin_dir_path( __FILE__ ) . 'includes/clases/admin/usuario.php';
 		}
 
 		/**
@@ -308,7 +369,14 @@ if ( is_plugin_active( 'woocommerce/woocommerce.php' ) || is_network_only_plugin
 function apg_nif_requiere_wc() {
 	global $apg_nif;
 
-	echo '<div class="notice notice-error is-dismissible" id="wc-apg-nifcifnie-field"><h3>' . esc_attr( $apg_nif['plugin'] ) . '</h3><h4>' . esc_attr__( 'This plugin requires WooCommerce active to run!', 'wc-apg-nifcifnie-field' ) . '</h4></div>';
+	// El aviso sólo interesa a quien puede resolverlo.
+	if ( ! current_user_can( 'activate_plugins' ) ) {
+		return;
+	}
+
+	echo '<div class="notice notice-error is-dismissible" id="wc-apg-nifcifnie-field"><h3>' . esc_html( $apg_nif['plugin'] ) . '</h3><h4>' . esc_html__( 'This plugin requires WooCommerce active to run!', 'wc-apg-nifcifnie-field' ) . '</h4></div>';
+
+	// `deactivate_plugins()` no comprueba permisos por su cuenta.
 	deactivate_plugins( DIRECCION_apg_nif );
 }
 
@@ -321,7 +389,26 @@ function apg_nif_requiere_wc() {
 function apg_nif_requiere_soap() {
 	global $apg_nif;
 
-	echo '<div class="notice notice-error is-dismissible" id="wc-apg-nifcifnie-field"><h3>' . esc_attr( $apg_nif['plugin'] ) . '</h3><h4>' . esc_attr__( 'This plugin requires the <a href="http://php.net/manual/en/class.soapclient.php">SoapClient</a> PHP class active to run!', 'wc-apg-nifcifnie-field' ) . '</h4></div>';
+	if ( ! current_user_can( 'manage_woocommerce' ) ) {
+		return;
+	}
+
+	$enlace = '<a href="https://www.php.net/manual/en/class.soapclient.php" target="_blank" rel="noopener noreferrer">SoapClient</a>';
+
+	echo '<div class="notice notice-error is-dismissible" id="wc-apg-nifcifnie-field"><h3>' . esc_html( $apg_nif['plugin'] ) . '</h3><h4>' . wp_kses(
+		sprintf(
+			/* translators: %s: link to the SoapClient PHP class documentation. */
+			__( 'This plugin requires the %s PHP class active to run!', 'wc-apg-nifcifnie-field' ),
+			$enlace
+		),
+		array(
+			'a' => array(
+				'href'   => array(),
+				'target' => array(),
+				'rel'    => array(),
+			),
+		)
+	) . '</h4></div>';
 }
 
 /**

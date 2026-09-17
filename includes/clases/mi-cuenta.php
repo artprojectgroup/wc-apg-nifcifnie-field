@@ -124,9 +124,11 @@ class APG_Campo_NIF_en_Cuenta {
 	 *
 	 * Hook: `woocommerce_customer_save_address`.
 	 *
-	 * Esta acción puede invocarse con 2 o 4 argumentos según la versión de WooCommerce:
-	 * - (clásico) `$user_id`, `$address_type`.
-	 * - (extendido) `$user_id`, `$address_type`, `$address`, `$customer`.
+	 * Esta acción puede invocarse con 2 o 4 argumentos según el origen:
+	 * - (frontend, "Mi cuenta") `$user_id`, `$address_type`, `$address`, `$customer`
+	 *   desde WC_Form_Handler::save_address(), que verifica `woocommerce-edit_address`.
+	 * - (panel de administración) `$user_id`, `$address_type` desde
+	 *   WC_Admin_Profile::save_customer_meta_fields().
 	 *
 	 * @param int                      $user_id      ID del usuario.
 	 * @param string                   $address_type 'billing' o 'shipping'.
@@ -138,21 +140,37 @@ class APG_Campo_NIF_en_Cuenta {
 		$contador_argumentos = func_num_args();
 		$argumentos          = func_get_args();
 
+		// Verificación propia antes de tocar nada de $_POST: o el nonce del formulario de
+		// direcciones de "Mi cuenta", o permiso explícito sobre la cuenta que se edita
+		// (guardado desde el perfil de usuario en el panel de administración).
+		$nonce = '';
+		if ( isset( $_POST['woocommerce-edit-address-nonce'] ) ) {
+			$nonce = sanitize_text_field( wp_unslash( $_POST['woocommerce-edit-address-nonce'] ) );
+		} elseif ( isset( $_POST['_wpnonce'] ) ) {
+			$nonce = sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ) );
+		}
+
+		$nonce_valido = '' !== $nonce && wp_verify_nonce( $nonce, 'woocommerce-edit_address' );
+
+		if ( ! $nonce_valido && ! current_user_can( 'edit_user', (int) $user_id ) ) {
+			return;
+		}
+
 		$campo_origen  = "{$address_type}_nif";
 		$campo_destino = "_wc_{$address_type}/apg/nif";
 
-		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- WooCommerce already validates nonce via 'woocommerce_customer_save_address'
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce `woocommerce-edit_address` (o capacidad edit_user sobre $user_id) verificado unas líneas más arriba, en esta misma función.
 		if ( isset( $_POST[ $campo_origen ] ) ) {
-			// phpcs:ignore WordPress.Security.NonceVerification.Missing -- WooCommerce already validates nonce via 'woocommerce_customer_save_address'
+			// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Ídem.
 			$valor = sanitize_text_field( wp_unslash( $_POST[ $campo_origen ] ) );
 
-			if ( 4 === $contador_argumentos && isset( $argumentos[3] ) && is_object( $argumentos[3] ) ) {
-				// Caso backend: tenemos el objeto WC_Customer.
+			if ( 4 === $contador_argumentos && isset( $argumentos[3] ) && $argumentos[3] instanceof WC_Customer ) {
+				// Tenemos el objeto WC_Customer (formulario de direcciones de "Mi cuenta").
 				$customer = $argumentos[3];
 				$customer->update_meta_data( $campo_origen, $valor );
-				// phpcs:ignore WordPress.Security.NonceVerification.Missing -- WooCommerce already validates nonce via 'woocommerce_customer_save_address'
+				// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Ídem.
 				if ( isset( $_POST[ $campo_destino ] ) ) {
-					// phpcs:ignore WordPress.Security.NonceVerification.Missing -- WooCommerce already validates nonce via 'woocommerce_customer_save_address'
+					// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Ídem.
 					$_POST[ $campo_destino ] = $valor;
 					$customer->update_meta_data( $campo_destino, $valor );
 				}

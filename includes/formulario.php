@@ -43,7 +43,7 @@ $tab = 1;
     <p>
         <?php esc_html_e( 'Add to WooCommerce a NIF/CIF/NIE field, validate the field before submission and let the admin configure the billing and shipping forms.', 'wc-apg-nifcifnie-field' ); ?>
     </p>
-    <?php include 'cuadro-informacion.php'; ?>
+    <?php include plugin_dir_path( __FILE__ ) . 'cuadro-informacion.php'; ?>
     <form method="post" action="options.php">
         <?php settings_fields( 'apg_nif_settings_group' ); ?>
         <?php // phpcs:ignore PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage -- Static plugin image does not require attachment ID ?>

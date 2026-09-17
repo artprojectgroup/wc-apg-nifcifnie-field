@@ -3,11 +3,11 @@ Contributors: artprojectgroup
 Donate link: https://artprojectgroup.es/tienda/donacion
 Tags: nif, cif, nie, eori, vies
 Requires at least: 5.0
-Tested up to: 7.1
-Stable tag: 4.15.0
+Tested up to: 7.2
+Stable tag: 4.16.0
 Requires PHP: 7.4
 WC requires at least: 5.6
-WC tested up to: 11.0.0
+WC tested up to: 11.1.0
 License: GNU General Public License v3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -39,6 +39,7 @@ Add to WooCommerce a NIF/CIF/NIE field for all billing and shipping forms, with 
 * You can skip validation by country or external condition with the `apg_nif_skip_validation` filter.
 * You can override the required status for billing or shipping with the `apg_nif_skip_required` filter.
 * You can change the order amount compared against the configured threshold with the `apg_nif_importe_del_pedido` filter.
+* You can limit how many VIES/EORI lookups a single IP can trigger per minute with the `apg_nif_maximo_consultas_por_minuto` filter (off by default).
 * Adds a customer download button in WooCommerce (Customers) that includes the NIF/CIF/NIE field in the CSV.
 * It validates documents from:
  * Albania.
@@ -46,11 +47,13 @@ Add to WooCommerce a NIF/CIF/NIE field for all billing and shipping forms, with 
  * Austria.
  * Argentina.
  * Åland Islands.
+ * Brazil.
  * Belgium.
  * Bulgaria.
  * Belarus.
  * Switzerland.
  * Chile.
+ * Colombia.
  * Cyprus.
  * Czech Republic.
  * Germany.
@@ -77,7 +80,9 @@ Add to WooCommerce a NIF/CIF/NIE field for all billing and shipping forms, with 
  * Montenegro.
  * North Macedonia.
  * Malta.
+ * Mexico.
  * Netherlands.
+ * Peru.
  * Norway.
  * Poland.
  * Portugal.
@@ -88,6 +93,7 @@ Add to WooCommerce a NIF/CIF/NIE field for all billing and shipping forms, with 
  * Slovak Republic.
  * San Marino.
  * Ukraine.
+ * Uruguay.
 * 100% compatible with [WooCommerce PDF Invoices & Packing Slips](https://es.wordpress.org/plugins/woocommerce-pdf-invoices-packing-slips/).
 * 100% compatible with [WPML](https://wpml.org/?aid=80296&affiliate_key=m66Ss5ps0xoS).
 * 100% compatible with [Checkout Field Editor (Checkout Manager) for WooCommerce](https://wordpress.org/plugins/woo-checkout-field-editor-pro/)
@@ -129,6 +135,19 @@ If your store placed orders via the Checkout block (or the classic checkout) wit
 3. Screenshot of WC - APG NIF/CIF/NIE field. Billing and shipping forms. Classic Shortcode.
 
 == Changelog ==
+= 4.16.0 =
+* Security: the VAT exemption was kept in the customer session and was never rechecked when the order was placed, so an order could be completed without VAT using a number that did not match the order address. It is now recalculated from the final order data in both checkouts.
+* Fixed: the United Kingdom check digit algorithm rejected valid VAT numbers (Tesco's GB220430231 or the BBC's GB333289454). It now follows the HMRC specification.
+* Fixed: a VIES or EORI outage could leave a valid number remembered as invalid. Only conclusive answers are cached now, for 30 days if valid and 24 hours if not.
+* Fixed: on the first load of the Checkout block the shipping form was not validated, so a NIF/CIF/NIE coming from the customer's saved address did not apply the exemption until the field was touched.
+* New check digit validation for Iceland, Brazil (CNPJ and CPF), Peru, Colombia and Uruguay. Monaco now uses the French algorithm and the Åland Islands the Finnish one.
+* Brazil, Mexico, Colombia, Peru and Uruguay added to the validated countries: their identifiers used to be accepted without any checking. Mexico's RFC is checked for structure and for a real date.
+* The EORI number is checked for shape before querying HMRC or the European Commission.
+* Security: data migrations no longer run for users without the `manage_woocommerce` capability, the customer CSV export neutralizes formula injection, the checkout scripts escape everything they print, and every `$_POST` read verifies its own nonce.
+* New `apg_nif_maximo_consultas_por_minuto` filter to cap external VIES/EORI lookups per IP address. Off by default.
+* Fixed: a field sharing its label with the NIF/CIF/NIE one disappeared from the order admin, the missing SoapClient notice showed the link markup as plain text, and a fatal error was possible on the VIES endpoint without a WooCommerce session.
+* Tested with WooCommerce 11.1.0. The translation template has been regenerated: nine strings that were in the plugin but missing from it are now translatable.
+
 = 4.15.0 =
 * New setting "Require billing field from this amount": the NIF/CIF/NIE field becomes required in the billing form when the order total (taxes included) is equal to or greater than the amount entered, even if the "Require billing field?" option is not checked. Leave it empty to disable it. It never affects the shipping form, which keeps behaving as configured. The `apg_nif_importe_del_pedido` filter lets you compare a different amount (for example, the subtotal without taxes or without shipping costs).
 * Fixed: in the Checkout block, the billing field was not enforced as required when "Show shipping field?" was unchecked and both required options were checked. The field was not registered as natively required and the plugin's own check was skipped, so the order could be placed with an empty NIF/CIF/NIE.
@@ -447,8 +466,11 @@ If your store placed orders via the Checkout block (or the classic checkout) wit
 * Initial version.
 
 == Upgrade Notice ==
+= 4.16.0 =
+* Security fix: the VAT exemption stayed in the session and was never rechecked when the order was placed, so an order could be completed without VAT. Also fixes the UK check digit algorithm, which rejected valid VAT numbers. Recommended for every store, required if you validate VIES numbers.
+
 = 4.15.0 =
-* Security fix: the VAT exemption endpoint used by the Checkout block trusted the browser and checked no nonce, so any visitor could remove the VAT from their own order without a valid VAT number. Also adds a new setting to require the billing field from a given order amount. Recommended update for every store, and required if you use the VIES VAT number validation.
+* Security fix: the VAT exemption endpoint used by the Checkout block trusted the browser and checked no nonce, so any visitor could remove the VAT from their own order. Also adds a setting to require the billing field from a given order amount. Recommended for every store.
 
 = 4.14.1 =
 * Fixes the migration not reaching the HPOS order table (`wc_orders_meta`), so the NIF data on HPOS stores is actually migrated to `_billing_nif` / `_shipping_nif`. Recommended update.

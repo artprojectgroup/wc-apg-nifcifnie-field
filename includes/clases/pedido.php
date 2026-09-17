@@ -85,6 +85,15 @@ class APG_Campo_NIF_en_Pedido {
 	private static $pais_bloques = '';
 
 	/**
+	 * Marca si la petición en curso es una validación al vuelo desde los endpoints AJAX
+	 * públicos. Sólo en ese caso se limita el número de consultas a servicios externos:
+	 * la comprobación con la que se decide el IVA del pedido nunca se limita.
+	 *
+	 * @var bool
+	 */
+	private $peticion_ajax_publica = false;
+
+	/**
 	 * Comprueba si un prefijo ISO2 puede tratarse como código de país válido.
 	 *
 	 * Acepta los países soportados por el plugin y algunos alias usados por VIES.
@@ -262,7 +271,7 @@ class APG_Campo_NIF_en_Pedido {
 	 * @return bool
 	 */
 	private function apg_nif_checkout_clasico_tiene_envio_activo(): bool {
-		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- WooCommerce already validates nonce via checkout processing.
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Sólo se invoca desde apg_nif_validacion_de_campo(), que verifica el nonce del formulario de compra antes de leer nada de $_POST.
 		$ship_to_different_address = isset( $_POST['ship_to_different_address'] ) ? sanitize_text_field( wp_unslash( $_POST['ship_to_different_address'] ) ) : '';
 
 		return '' !== $ship_to_different_address && wc_string_to_bool( $ship_to_different_address );
@@ -292,11 +301,13 @@ class APG_Campo_NIF_en_Pedido {
             'AT', // Austria.
             'AR', // Argentina.
             'AX', // Islas de Åland.
+            'BR', // Brasil.
             'BE', // Bélgica. 
             'BG', // Bulgaria. 
             'BY', // Bielorusia. 
             'CH', // Suiza.
             'CL', // Chile.
+            'CO', // Colombia.
             'CY', // Chipre. 
             'CZ', // República Checa.
             'DE', // Alemania. 
@@ -323,8 +334,10 @@ class APG_Campo_NIF_en_Pedido {
             'ME', // Montenegro.
             'MK', // Macedonia del Norte.
             'MT', // Malta. 
+            'MX', // México.
             'NL', // Países Bajos. 
             'NO', // Noruega. 
+            'PE', // Perú.
             'PL', // Polonia. 
             'PT', // Portugal. 
             'RO', // Rumanía. 
@@ -334,6 +347,7 @@ class APG_Campo_NIF_en_Pedido {
             'SK', // República Eslovaca.
             'SM', // San Marino.
             'UA', // Ucrania.
+            'UY', // Uruguay.
         );
 
         add_filter( 'woocommerce_default_address_fields', array( $this, 'apg_nif_campos_de_direccion' ) );
@@ -399,6 +413,18 @@ class APG_Campo_NIF_en_Pedido {
             add_action( 'woocommerce_checkout_update_order_review', array( $this, 'apg_nif_quita_iva' ) );
             add_action( 'wc_ajax_nopriv_apg_nif_quita_iva_bloques', array( $this, 'apg_nif_quita_iva_bloques' ) );
             add_action( 'wc_ajax_apg_nif_quita_iva_bloques', array( $this, 'apg_nif_quita_iva_bloques' ) );
+
+			// La exención se recalcula con los datos definitivos justo antes de que se
+			// calculen los totales del pedido, en los dos flujos de compra. Sin esto, la
+			// marca de exención guardada en la sesión por una llamada AJAX anterior
+			// sobreviviría aunque el pedido acabe enviándose con otro NIF u otro país.
+			// Clásico: WC_Checkout::process_checkout() dispara `woocommerce_checkout_process`
+			// antes de update_session() -> WC()->cart->calculate_totals().
+			add_action( 'woocommerce_checkout_process', array( $this, 'apg_nif_revalida_exencion_clasico' ), 5 );
+			// Bloques/Store API: `woocommerce_store_api_checkout_update_customer_from_request`
+			// se dispara antes de CartController::calculate_totals(), con el cliente ya
+			// actualizado a partir de la petición.
+			add_action( 'woocommerce_store_api_checkout_update_customer_from_request', array( $this, 'apg_nif_revalida_exencion_bloques' ), 10, 2 );
         }
 		
 		// EORI.
@@ -467,8 +493,12 @@ class APG_Campo_NIF_en_Pedido {
 			$tab = isset( $_GET['tab'] ) ? sanitize_key( wp_unslash( $_GET['tab'] ) ) : '';
 			$es_checkout_bloques = function_exists( 'is_checkout' ) && is_checkout() && ! is_wc_endpoint_url( 'order-received' );
 			$es_store_api_bloques = defined( 'REST_REQUEST' ) && REST_REQUEST;
+			// El diseñador de campos de Checkout Field Editor for WooCommerce es la única
+			// pantalla en la que sí hay que devolver el campo; es `page` Y `tab` a la vez,
+			// así que la negación de esa pareja es un OR, no un AND.
+			$es_disenador_de_campos = ( 'checkout_form_designer' === $page && 'fields' === $tab );
 
-			if ( $page !== 'checkout_form_designer' && $tab !== 'fields' && ( $es_checkout_bloques || $es_store_api_bloques ) ) {
+			if ( ! $es_disenador_de_campos && ( $es_checkout_bloques || $es_store_api_bloques ) ) {
             	return $campos;
 			}
         }
@@ -921,6 +951,197 @@ class APG_Campo_NIF_en_Pedido {
 	}
 
 	/**
+	 * Aplica o retira la exención de IVA sobre el cliente actual.
+	 *
+	 * Hace exactamente lo que hacía el plugin antes de la 4.16.0: fijar el estado que
+	 * corresponde al NIF/VAT y al país en curso. La única diferencia es la comprobación
+	 * previa de que exista el objeto cliente.
+	 *
+	 * @param bool $exento Si el pedido queda exento de IVA.
+	 * @return void
+	 */
+	private function apg_nif_aplica_exencion( bool $exento ): void {
+		if ( ! function_exists( 'WC' ) || is_null( WC()->customer ) ) {
+			return;
+		}
+
+		WC()->customer->set_is_vat_exempt( $exento );
+	}
+
+	/**
+	 * Recalcula la exención de IVA al finalizar la compra en el checkout clásico.
+	 *
+	 * Hook: `woocommerce_checkout_process` (prioridad 5).
+	 *
+	 * WooCommerce ya ha verificado `woocommerce-process_checkout` antes de disparar este
+	 * hook (ver WC_Checkout::process_checkout()); se vuelve a comprobar aquí para que la
+	 * lectura de `$_POST` tenga su propia verificación y no dependa del llamador.
+	 *
+	 * @return void
+	 */
+	public function apg_nif_revalida_exencion_clasico() {
+		if ( ! $this->apg_nif_peticion_de_compra_verificada() ) {
+			return;
+		}
+
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verificado en apg_nif_peticion_de_compra_verificada(), invocada en la línea anterior.
+		$this->apg_nif_quita_iva( wp_unslash( $_POST ) );
+	}
+
+	/**
+	 * Recalcula la exención de IVA en el Bloque de Finalizar compra (Store API).
+	 *
+	 * Los datos se leen del objeto cliente, que la Store API ya ha actualizado con la
+	 * dirección y los campos adicionales de la petición, y no de lo que envíe el
+	 * navegador a los endpoints AJAX del plugin.
+	 *
+	 * Hook: `woocommerce_store_api_checkout_update_customer_from_request`.
+	 *
+	 * @param \WC_Customer      $cliente  Cliente de la petición.
+	 * @param \WP_REST_Request  $peticion Petición de la Store API.
+	 * @return void
+	 */
+	public function apg_nif_revalida_exencion_bloques( $cliente, $peticion = null ) {
+		if ( ! $cliente instanceof WC_Customer || ! $peticion instanceof WP_REST_Request ) {
+			return;
+		}
+
+		// Sólo en el POST que realiza el pedido. Mientras el cliente rellena el formulario,
+		// el Bloque envía peticiones PATCH continuamente y quien manda sobre la exención es
+		// el endpoint AJAX del plugin, que ya recalcula en cada cambio del NIF o del país.
+		// Intervenir en esas peticiones intermedias haría que un valor anterior volviese a
+		// aplicarse y el IVA no reapareciera al cambiar a un número no válido.
+		if ( 'POST' !== strtoupper( (string) $peticion->get_method() ) ) {
+			return;
+		}
+
+		// Manda el NIF de facturación, como en el checkout clásico y en el endpoint AJAX
+		// (que envía siempre `billing_nif`). Si no viaja ahí se mira el de envío, porque
+		// hay configuraciones en las que el campo sólo se muestra en el formulario de
+		// envío o se copia desde él con "usar la misma dirección para facturación": sin
+		// este respaldo, un pedido legítimo perdería la exención al finalizar la compra.
+		$nif = '';
+
+		foreach ( array( 'billing_address', 'shipping_address' ) as $grupo ) {
+			$direccion = $peticion[ $grupo ];
+
+			if ( ! is_array( $direccion ) ) {
+				continue;
+			}
+
+			foreach ( array( 'apg/nif', 'apg-nif' ) as $clave ) {
+				if ( isset( $direccion[ $clave ] ) && '' !== trim( (string) $direccion[ $clave ] ) ) {
+					$nif = trim( (string) $direccion[ $clave ] );
+					break 2;
+				}
+			}
+		}
+
+		// Y, si la petición no lo trae, el valor que la Store API acaba de guardar en el cliente.
+		if ( '' === $nif ) {
+			foreach ( array( '_wc_billing/apg/nif', '_wc_shipping/apg/nif' ) as $meta ) {
+				$valor = trim( (string) $cliente->get_meta( $meta, true ) );
+
+				if ( '' !== $valor ) {
+					$nif = $valor;
+					break;
+				}
+			}
+		}
+
+		$nif = sanitize_text_field( $nif );
+
+		if ( '' === $nif ) {
+			$this->apg_nif_aplica_exencion( false );
+
+			return;
+		}
+
+		$resultado = $this->apg_nif_valida_exencion(
+			$nif,
+			(string) $cliente->get_billing_country(),
+			(string) $cliente->get_shipping_country()
+		);
+
+		$this->apg_nif_aplica_exencion( (bool) $resultado['es_exento'] );
+	}
+
+	/**
+	 * Comprueba que la petición actual es un envío de pedido legítimo de WooCommerce.
+	 *
+	 * @return bool
+	 */
+	private function apg_nif_peticion_de_compra_verificada(): bool {
+		$nonce = '';
+		if ( isset( $_POST['woocommerce-process-checkout-nonce'] ) ) {
+			$nonce = sanitize_text_field( wp_unslash( $_POST['woocommerce-process-checkout-nonce'] ) );
+		} elseif ( isset( $_POST['_wpnonce'] ) ) {
+			$nonce = sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ) );
+		}
+
+		if ( '' !== $nonce && wp_verify_nonce( $nonce, 'woocommerce-process_checkout' ) ) {
+			return true;
+		}
+
+		// Algunas pasarelas invocan WC_Checkout::process_checkout() desde su propio flujo,
+		// sin reenviar el campo del nonce. WooCommerce define WOOCOMMERCE_CHECKOUT antes de
+		// disparar el hook, así que sigue siendo un proceso de compra real y no una
+		// petición arbitraria: la validación del NIF no debe perderse en esos casos.
+		return defined( 'WOOCOMMERCE_CHECKOUT' ) && WOOCOMMERCE_CHECKOUT;
+	}
+
+	/**
+	 * Limita las consultas a los servicios externos (VIES/EORI) por dirección IP.
+	 *
+	 * Los endpoints AJAX de validación son públicos (`nopriv`) y cada llamada puede abrir
+	 * una petición SOAP/HTTP que mantiene ocupado un proceso PHP. Aun así, **viene
+	 * desactivado**: cualquier límite puede hacer que un cliente legítimo se quede sin la
+	 * exención justo cuando más números distintos se están comprobando. Quien quiera
+	 * activarlo debe fijar un máximo con el filtro.
+	 *
+	 * Sólo se contabilizan las consultas que de verdad salen a la red: un número ya
+	 * guardado en caché no gasta cupo, de modo que rellenar el formulario de compra nunca
+	 * agota el límite (el mismo número se resuelve siempre desde la caché).
+	 *
+	 * Hook: `apg_nif_maximo_consultas_por_minuto` (0 o menos desactiva el límite).
+	 *
+	 * @return bool true si la IP ha superado el límite y debe omitirse la consulta externa.
+	 */
+	private function apg_nif_supera_limite_de_consultas(): bool {
+		// Fuera de los endpoints AJAX públicos no hay límite: la comprobación que decide
+		// el IVA del pedido tiene que consultar siempre.
+		if ( ! $this->peticion_ajax_publica ) {
+			return false;
+		}
+
+		$maximo = (int) apply_filters( 'apg_nif_maximo_consultas_por_minuto', 0 );
+
+		if ( $maximo <= 0 ) {
+			return false;
+		}
+
+		$ip = class_exists( 'WC_Geolocation' ) ? WC_Geolocation::get_ip_address() : '';
+		if ( '' === $ip && isset( $_SERVER['REMOTE_ADDR'] ) ) {
+			$ip = sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) );
+		}
+
+		if ( '' === $ip ) {
+			return false;
+		}
+
+		$clave  = 'apg_nif_consultas_' . md5( $ip );
+		$usadas = (int) get_transient( $clave );
+
+		if ( $usadas >= $maximo ) {
+			return true;
+		}
+
+		set_transient( $clave, $usadas + 1, MINUTE_IN_SECONDS );
+
+		return false;
+	}
+
+	/**
 	 * Valida un VAT/NIF internacional por país (regex o validadores específicos).
 	 *
 	 * @param string $vat_number  Número VAT/NIF (puede incluir prefijo de país).
@@ -961,10 +1182,14 @@ class APG_Campo_NIF_en_Pedido {
                 return apg_nif_valida_be( $vat_number );
             case 'BG': // Bulgaria.
                 return apg_nif_valida_bg( $vat_number );
+            case 'BR': // Brasil (CNPJ y CPF).
+                return apg_nif_valida_br( $vat_number );
             case 'CH': // Suiza.
                 return apg_nif_valida_ch( $vat_number );
             case 'CL': // Chile.
                 return apg_nif_valida_cl( $vat_number );
+            case 'CO': // Colombia (NIT).
+                return apg_nif_valida_co( $vat_number );
             case 'CY': // Chipre.
                 return apg_nif_valida_cy( $vat_number );
             case 'CZ': // República Checa.
@@ -981,8 +1206,10 @@ class APG_Campo_NIF_en_Pedido {
             case 'ES': // España.
                 return apg_nif_valida_es( $vat_number );
             case 'FI': // Finlandia.
+            case 'AX': // Islas Åland: forman parte de Finlandia a efectos de IVA.
                 return apg_nif_valida_fi( $vat_number );
             case 'FR': // Francia.
+            case 'MC': // Mónaco: sus números se emiten dentro del sistema francés.
                 return apg_nif_valida_fr( $vat_number );
             case 'GB': // Gran Bretaña.
                 return apg_nif_valida_gb( $vat_number );
@@ -992,6 +1219,8 @@ class APG_Campo_NIF_en_Pedido {
                 return apg_nif_valida_hu( $vat_number );
             case 'IE': // Irlanda.
                 return apg_nif_valida_ie( $vat_number );
+            case 'IS': // Islandia (VSK y kennitala).
+                return apg_nif_valida_is( $vat_number );
             case 'IT': // Italia.
                 return apg_nif_valida_it( $vat_number );
             case 'LT': // Lituania.
@@ -1002,10 +1231,14 @@ class APG_Campo_NIF_en_Pedido {
                 return apg_nif_valida_lv( $vat_number );
             case 'MT': // Malta.
                 return apg_nif_valida_mt( $vat_number );
+            case 'MX': // México (RFC).
+                return apg_nif_valida_mx( $vat_number );
             case 'NL': // Países Bajos.
                 return apg_nif_valida_nl( $vat_number );
             case 'NO': // Noruega.
                 return apg_nif_valida_no( $vat_number );
+            case 'PE': // Perú (RUC).
+                return apg_nif_valida_pe( $vat_number );
             case 'PL': // Polonia.
                 return apg_nif_valida_pl( $vat_number );
             case 'PT': // Portugal.
@@ -1020,6 +1253,8 @@ class APG_Campo_NIF_en_Pedido {
                 return apg_nif_valida_si( $vat_number );
             case 'SK': // Eslovaquia.
                 return apg_nif_valida_sk( $vat_number );
+            case 'UY': // Uruguay (RUT).
+                return apg_nif_valida_uy( $vat_number );
             default:
                 return apg_nif_valida_regex( $valida_pais, $vat_number );
         }
@@ -1039,14 +1274,20 @@ class APG_Campo_NIF_en_Pedido {
 		$validar_formato = isset( $apg_nif_settings['validacion'] ) && '1' === $apg_nif_settings['validacion'];
 		$validar_eori    = isset( $apg_nif_settings['validacion_eori'] ) && '1' === $apg_nif_settings['validacion_eori'];
 
+		// Verificación propia del nonce del formulario de compra, sin depender de que el
+		// llamador lo haya hecho (ver apg_nif_peticion_de_compra_verificada()).
+		if ( ! $this->apg_nif_peticion_de_compra_verificada() ) {
+			return;
+		}
+
         // Procesa los campos.
-        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- WooCommerce already validates nonce via 'get-customer-details'
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce `woocommerce-process_checkout` verificado en apg_nif_peticion_de_compra_verificada(), invocada justo encima.
         $billing_nif        = isset( $_POST['billing_nif'] ) ? sanitize_text_field( wp_unslash( $_POST['billing_nif'] ) ) : '';
-        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- WooCommerce already validates nonce via 'get-customer-details'
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Ídem.
         $billing_country    = isset( $_POST['billing_country'] ) ? sanitize_text_field( wp_unslash( $_POST['billing_country'] ) ) : '';
-        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- WooCommerce already validates nonce via 'get-customer-details'
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Ídem.
         $shipping_nif       = isset( $_POST['shipping_nif'] ) ? sanitize_text_field( wp_unslash( $_POST['shipping_nif'] ) ) : '';
-        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- WooCommerce already validates nonce via 'get-customer-details'
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Ídem.
         $shipping_country   = isset( $_POST['shipping_country'] ) ? sanitize_text_field( wp_unslash( $_POST['shipping_country'] ) ) : '';
 
 		// Facturación. Si el campo está vacío no se valida el formato: de la obligatoriedad
@@ -1276,7 +1517,7 @@ class APG_Campo_NIF_en_Pedido {
 	 * @param string $nif          Número introducido por el cliente.
 	 * @param string $pais_cliente ISO2 del país de facturación.
 	 * @param string $pais_envio   ISO2 del país de envío (opcional).
-	 * @return array{es_exento:bool,valido_vies:bool,valido_eori:bool,usar_eori:bool,vat_valido:bool}
+	 * @return array{es_exento:bool,valido_vies:bool|int,valido_eori:bool,usar_eori:bool,vat_valido:bool}
 	 */
     public function apg_nif_valida_exencion( string $nif, string $pais_cliente, string $pais_envio = '' ): array {
         global $apg_nif_settings;
@@ -1346,8 +1587,8 @@ class APG_Campo_NIF_en_Pedido {
 	 */
     public function apg_nif_quita_iva( $post_data = '' ) {
         if ( $post_data === true || empty( $post_data ) ) {
-            // phpcs:ignore WordPress.Security.NonceVerification.Missing -- WooCommerce already validates nonce in woocommerce_checkout_update_order_review
-            $data   = $_POST;
+            // phpcs:ignore WordPress.Security.NonceVerification.Missing -- WC_AJAX::update_order_review() verifica el nonce `update-order-review` antes de disparar `woocommerce_checkout_update_order_review`; los valores se sanean individualmente más abajo.
+            $data   = wp_unslash( $_POST );
         } elseif ( is_string( $post_data ) && strpos( $post_data, '&' ) !== false ) {
             parse_str( $post_data, $data );
         } elseif ( is_array( $post_data ) ) {
@@ -1363,15 +1604,15 @@ class APG_Campo_NIF_en_Pedido {
         
         // No hay datos.
         if ( empty( $nif ) || empty( $pais ) ) {
-            WC()->customer->set_is_vat_exempt( false );
+            $this->apg_nif_aplica_exencion( false );
             return;
         }
 
         // Valida y aplica la exención.
         $resultado  = $this->apg_nif_valida_exencion( $nif, $pais, $pais_envio );
-        $exento     = $resultado['es_exento'];
+        $exento     = (bool) $resultado['es_exento'];
 
-        WC()->customer->set_is_vat_exempt( $exento );
+        $this->apg_nif_aplica_exencion( $exento );
     }
     
 	/**
@@ -1394,30 +1635,33 @@ class APG_Campo_NIF_en_Pedido {
         // Verifica el nonce sin cortar la ejecución, para poder responder siempre en JSON
         // y que el checkout no se quede bloqueado si el nonce ha caducado.
         if ( ! check_ajax_referer( 'apg_nif_nonce', 'nonce', false ) ) {
-            WC()->customer->set_is_vat_exempt( false );
+            $this->apg_nif_aplica_exencion( false );
 
             wp_send_json_error( array( 'mensaje' => __( 'Invalid nonce.', 'wc-apg-nifcifnie-field' ) ), 403 );
         }
 
-        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- El nonce se ha verificado justo arriba.
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce `apg_nif_nonce` verificado con check_ajax_referer() al principio de esta misma función.
         $nif        = isset( $_POST['billing_nif'] ) ? sanitize_text_field( wp_unslash( $_POST['billing_nif'] ) ) : '';
-        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- El nonce se ha verificado justo arriba.
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Ídem.
         $pais       = isset( $_POST['billing_country'] ) ? sanitize_text_field( wp_unslash( $_POST['billing_country'] ) ) : '';
-        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- El nonce se ha verificado justo arriba.
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Ídem.
         $pais_envio = isset( $_POST['shipping_country'] ) ? sanitize_text_field( wp_unslash( $_POST['shipping_country'] ) ) : '';
 
         // Sin datos suficientes no puede haber exención.
         if ( '' === $nif || '' === $pais ) {
-            WC()->customer->set_is_vat_exempt( false );
+            $this->apg_nif_aplica_exencion( false );
 
             wp_send_json_success( array( 'exento' => false ) );
         }
 
-        // Recalcula la exención en el servidor.
-        $resultado = $this->apg_nif_valida_exencion( $nif, $pais, $pais_envio );
-        $exento    = (bool) $resultado['es_exento'];
+        // Recalcula la exención en el servidor (la definitiva se recalcula de nuevo al
+        // crear el pedido, en apg_nif_revalida_exencion_bloques()).
+        $this->peticion_ajax_publica = true;
+        $resultado                   = $this->apg_nif_valida_exencion( $nif, $pais, $pais_envio );
+        $this->peticion_ajax_publica = false;
+        $exento                      = (bool) $resultado['es_exento'];
 
-        WC()->customer->set_is_vat_exempt( $exento );
+        $this->apg_nif_aplica_exencion( $exento );
 
         wp_send_json_success( array( 'exento' => $exento ) );
     }
@@ -1440,11 +1684,11 @@ class APG_Campo_NIF_en_Pedido {
         check_ajax_referer( 'apg_nif_nonce', 'nonce' );
 
         // Procesa los campos.
-        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- WooCommerce already validates nonce via 'get-customer-details'
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce `apg_nif_nonce` verificado con check_ajax_referer() tres líneas más arriba, en esta misma función.
         $nif        = isset( $_POST['billing_nif'] ) ? sanitize_text_field( wp_unslash( $_POST['billing_nif'] ) ) : '';
-        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- WooCommerce already validates nonce via 'get-customer-details'
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Ídem.
         $pais       = isset( $_POST['billing_country'] ) ? sanitize_text_field( wp_unslash( $_POST['billing_country'] ) ) : '';
-        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- WooCommerce already validates nonce via 'get-customer-details'
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Ídem.
         $pais_envio = isset( $_POST['shipping_country'] ) ? sanitize_text_field( wp_unslash( $_POST['shipping_country'] ) ) : '';
 
         return array( $nif, $pais, $pais_envio );
@@ -1477,10 +1721,14 @@ class APG_Campo_NIF_en_Pedido {
 	 */
     public function apg_nif_valida_VIES() {
         list( $nif, $pais, $pais_envio ) = $this->apg_nif_recoge_datos_ajax();
-        $resultado  = $this->apg_nif_valida_exencion( $nif, $pais, $pais_envio );
+        $this->peticion_ajax_publica    = true;
+        $resultado                      = $this->apg_nif_valida_exencion( $nif, $pais, $pais_envio );
+        $this->peticion_ajax_publica    = false;
 		// Necesario para instalaciones personalizadas que miran sesión.
-        WC()->session->set( 'apg_nif', $resultado['es_exento'] );
-        
+		if ( function_exists( 'WC' ) && ! is_null( WC()->session ) ) {
+        	WC()->session->set( 'apg_nif', $resultado['es_exento'] );
+		}
+
         wp_send_json_success( $resultado );
     }
     
@@ -1493,8 +1741,10 @@ class APG_Campo_NIF_en_Pedido {
 	 */
     public function apg_nif_valida_EORI() {
         list( $nif, $pais, $pais_envio ) = $this->apg_nif_recoge_datos_ajax();
-        $resultado  = $this->apg_nif_valida_exencion( $nif, $pais, $pais_envio );
-        
+        $this->peticion_ajax_publica    = true;
+        $resultado                      = $this->apg_nif_valida_exencion( $nif, $pais, $pais_envio );
+        $this->peticion_ajax_publica    = false;
+
         wp_send_json_success( $resultado );
     }
     
@@ -1607,6 +1857,11 @@ class APG_Campo_NIF_en_Pedido {
             return $cached;
         }
 
+        // A partir de aquí sí hay consulta externa: es lo único que gasta cupo.
+        if ( $this->apg_nif_supera_limite_de_consultas() ) {
+            return 44; // No verificable ahora mismo: no concede exención y el JS ya muestra el aviso.
+        }
+
         // Comprueba el VIES.
         try {
             $soap       = new SoapClient( 'https://ec.europa.eu/taxation_customs/vies/checkVatService.wsdl' );
@@ -1614,9 +1869,20 @@ class APG_Campo_NIF_en_Pedido {
                 'countryCode'   => $pais,
                 'vatNumber'     => $nif,
             ] );
-            $resultado  = isset( $respuesta->valid ) && $respuesta->valid === true;
-            // Guarda en caché.
-            set_transient( $cache_key, $resultado, 30 * DAY_IN_SECONDS );
+            // Sólo se guarda en caché una respuesta concluyente del servicio (la propiedad
+            // `valid` presente). Si VIES contesta cualquier otra cosa —una caída, un error
+            // del Estado miembro, una respuesta inesperada—, no se guarda nada: dar por no
+            // válido un número que sí lo es, y recordarlo durante días, deja sin exención a
+            // un cliente legítimo hasta que caduque la caché.
+            if ( ! isset( $respuesta->valid ) ) {
+                return false;
+            }
+
+            $resultado = ( true === $respuesta->valid );
+            // Se guarda como '1'/'0': un `false` guardado tal cual es indistinguible de
+            // «no hay caché» al leerlo con get_transient(). Los no válidos caducan antes,
+            // porque un número puede darse de alta en cualquier momento.
+            set_transient( $cache_key, $resultado ? '1' : '0', $resultado ? 30 * DAY_IN_SECONDS : DAY_IN_SECONDS );
 
             return $resultado;
         } catch ( SoapFault $e ) {
@@ -1632,9 +1898,13 @@ class APG_Campo_NIF_en_Pedido {
             if ( isset( $data->userError ) && in_array( $data->userError, array( 'MS_MAX_CONCURRENT_REQ', 'MS_UNAVAILABLE' ), true ) ) {
                 return 44;
             }
-            $resultado  = isset( $data->isValid ) && $data->isValid === true;
-            // Guarda en caché.
-            set_transient( $cache_key, $resultado, 30 * DAY_IN_SECONDS );
+            // Igual que arriba: sin respuesta concluyente no se guarda nada en caché.
+            if ( ! isset( $data->isValid ) ) {
+                return false;
+            }
+
+            $resultado = ( true === $data->isValid );
+            set_transient( $cache_key, $resultado ? '1' : '0', $resultado ? 30 * DAY_IN_SECONDS : DAY_IN_SECONDS );
 
             return $resultado;
         }
@@ -1662,6 +1932,13 @@ class APG_Campo_NIF_en_Pedido {
             return true;
         }
 
+        // Un EORI es el código de país seguido de hasta quince caracteres alfanuméricos.
+        // Comprobarlo aquí evita consultar a HMRC o a la Comisión Europea con algo que no
+        // puede ser un EORI, y ahorra esas esperas al cliente.
+        if ( ! preg_match( '/^[A-Z]{2}[A-Z0-9]{1,15}$/', strtoupper( $nif ) ) ) {
+            return false;
+        }
+
         return $this->apg_nif_es_valido_eori( $nif, $pais );
     }    
     
@@ -1680,6 +1957,11 @@ class APG_Campo_NIF_en_Pedido {
             return '1' === $cached || 1 === $cached || true === $cached;
         }
 
+        // A partir de aquí sí hay consulta externa: es lo único que gasta cupo.
+        if ( $this->apg_nif_supera_limite_de_consultas() ) {
+            return true; // Sin consulta no se bloquea la venta; al finalizar la compra se comprueba de verdad.
+        }
+
         // Listado de países para validar en https://vatapp.net (Noruega, Suiza, Tailandia).
         $paises_vatapp  = array( 'NO', 'CH', 'TH' );
 
@@ -1690,10 +1972,15 @@ class APG_Campo_NIF_en_Pedido {
                 'body'      => json_encode( array( 'eoris' => array( $nif ) ) ),
             ) );
             $eori       = json_decode( wp_remote_retrieve_body( $response ) );
-            $resultado  = isset( $eori->eoris[0]->valid ) && true === $eori->eoris[0]->valid;
-            // Guarda en caché.
-            set_transient( $cache_key, $resultado, 30 * DAY_IN_SECONDS );
-            
+
+            // Sin respuesta concluyente no se guarda nada en caché.
+            if ( ! isset( $eori->eoris[0]->valid ) ) {
+                return false;
+            }
+
+            $resultado  = ( true === $eori->eoris[0]->valid );
+            set_transient( $cache_key, $resultado ? '1' : '0', $resultado ? 30 * DAY_IN_SECONDS : DAY_IN_SECONDS );
+
             return $resultado;
 		// vatapp (NO/CH/TH) o GB con XI.
         } elseif ( in_array( $pais, $paises_vatapp, true ) || ( $pais === 'GB' && strpos( $nif, 'XI' ) !== false ) ) {
@@ -1703,10 +1990,15 @@ class APG_Campo_NIF_en_Pedido {
                 'body'      => json_encode( array( 'data' => $nif_clean ) ),
             ) );
             $partes     = apg_nif_json_split_objects( wp_remote_retrieve_body( $response ) );
-            $eori       = json_decode( $partes[0] );
-            $resultado  = isset( $eori->data->valid ) && $eori->data->valid == 1;
-            // Guarda en caché.
-            set_transient( $cache_key, $resultado, 30 * DAY_IN_SECONDS );
+            $eori       = json_decode( isset( $partes[0] ) ? $partes[0] : '' );
+
+            // Sin respuesta concluyente no se guarda nada en caché.
+            if ( ! isset( $eori->data->valid ) ) {
+                return false;
+            }
+
+            $resultado  = ( 1 == $eori->data->valid );
+            set_transient( $cache_key, $resultado ? '1' : '0', $resultado ? 30 * DAY_IN_SECONDS : DAY_IN_SECONDS );
 
             return $resultado;
 		// SOAP UE.
@@ -1714,9 +2006,13 @@ class APG_Campo_NIF_en_Pedido {
             try {
                 $soap       = new SoapClient( 'https://ec.europa.eu/taxation_customs/dds2/eos/validation/services/validation?wsdl' );
                 $respuesta  = $soap->validateEORI( array( 'eori' => $nif ) );
-                $resultado  = isset( $respuesta->return->result->statusDescr ) && $respuesta->return->result->statusDescr === 'Valid';
-                // Guarda en caché.
-                set_transient( $cache_key, $resultado, 30 * DAY_IN_SECONDS );
+                // Sin respuesta concluyente no se guarda nada en caché.
+                if ( ! isset( $respuesta->return->result->statusDescr ) ) {
+                    return false;
+                }
+
+                $resultado  = ( 'Valid' === $respuesta->return->result->statusDescr );
+                set_transient( $cache_key, $resultado ? '1' : '0', $resultado ? 30 * DAY_IN_SECONDS : DAY_IN_SECONDS );
 
                 return $resultado;
             } catch ( SoapFault $e ) {

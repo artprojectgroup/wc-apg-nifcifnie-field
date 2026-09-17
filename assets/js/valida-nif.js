@@ -2,6 +2,23 @@
  * Validates customer identification numbers during classic checkout.
  */
 jQuery(function ($) {
+    /**
+     * Escapes a value for any HTML context, attributes included: a helper built on
+     * textContent/innerHTML leaves quotes untouched and is unsafe inside an attribute.
+     */
+    const escHtml = (valor) => {
+        if (valor === null || typeof valor === 'undefined') {
+            return '';
+        }
+
+        return String(valor)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    };
+
     const EU_VIES_COUNTRIES = ['AT','BE','BG','HR','CY','CZ','DE','DK','EE','ES','FI','FR','GR','HU','IE','IT','LT','LU','LV','MT','NL','PL','PT','RO','SE','SI','SK','XI'];
     const esUE = (c) => EU_VIES_COUNTRIES.includes((c || '').toUpperCase());
     const shouldBlockCheckout = () => {
@@ -100,8 +117,8 @@ jQuery(function ($) {
                             errorID = `error_vat_${tipo}`;
                         } else if (requiereVIES && res.valido_vies === 44) {
                             wrapper.append(
-                                '<p id="' + infoID + '" class="checkout-inline-info-message" aria-live="polite" style="display:block;width:100%;margin:8px 0 0;clear:both;box-sizing:border-box;font-size:.875em;line-height:1.4;color:#666;">' +
-                                    apg_nif_ajax.vies_info +
+                                '<p id="' + escHtml(infoID) + '" class="checkout-inline-info-message" aria-live="polite" style="display:block;width:100%;margin:8px 0 0;clear:both;box-sizing:border-box;font-size:.875em;line-height:1.4;color:#666;">' +
+                                    escHtml(apg_nif_ajax.vies_info) +
                                 '</p>'
                             );
                         }
@@ -118,8 +135,8 @@ jQuery(function ($) {
 
                         if (!$('#' + errorID).length) {
                             wrapper.append(
-                                '<p id="' + errorID + '" class="checkout-inline-error-message">' +
-                                    texto +
+                                '<p id="' + escHtml(errorID) + '" class="checkout-inline-error-message">' +
+                                    escHtml(texto) +
                                 '</p>'
                             );
                         }
