@@ -4,7 +4,7 @@ Donate link: https://artprojectgroup.es/tienda/donacion
 Tags: nif, cif, nie, eori, vies
 Requires at least: 5.0
 Tested up to: 7.2
-Stable tag: 4.16.0
+Stable tag: 4.16.1
 Requires PHP: 7.4
 WC requires at least: 5.6
 WC tested up to: 11.1.0
@@ -135,6 +135,9 @@ If your store placed orders via the Checkout block (or the classic checkout) wit
 3. Screenshot of WC - APG NIF/CIF/NIE field. Billing and shipping forms. Classic Shortcode.
 
 == Changelog ==
+= 4.16.1 =
+* Fixed: the plugin redefined the Phone field and always left it as optional, ignoring the setting in Customize > WooCommerce > Checkout, and brought the field back even when it was set to hidden. WooCommerce already provides it, so the plugin no longer touches it.
+
 = 4.16.0 =
 * Security: the VAT exemption was kept in the customer session and was never rechecked when the order was placed, so an order could be completed without VAT using a number that did not match the order address. It is now recalculated from the final order data in both checkouts.
 * Fixed: the United Kingdom check digit algorithm rejected valid VAT numbers (Tesco's GB220430231 or the BBC's GB333289454). It now follows the HMRC specification.
@@ -466,6 +469,9 @@ If your store placed orders via the Checkout block (or the classic checkout) wit
 * Initial version.
 
 == Upgrade Notice ==
+= 4.16.1 =
+* Fixes the Phone field being forced as optional in the checkout, ignoring the store setting. Recommended if you require or hide the phone field.
+
 = 4.16.0 =
 * Security fix: the VAT exemption stayed in the session and was never rechecked when the order was placed, so an order could be completed without VAT. Also fixes the UK check digit algorithm, which rejected valid VAT numbers. Recommended for every store, required if you validate VIES numbers.
 

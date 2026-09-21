@@ -511,27 +511,41 @@ class APG_Campo_NIF_en_Pedido {
         );
 
         if ( apply_filters( 'apg_nif_add_fields', true ) ) { // Si no quieren añadirse: add_filter( 'apg_nif_add_fields', '__return_false' );
-            // Añade el correo electrónico y el teléfono.
-            $campos['email'] = array(
-                'label'        => esc_attr__( 'Email address', 'wc-apg-nifcifnie-field' ),
-                'required'     => false,
-                'type'         => 'email',
-                'validate'     => array(
-                    'email',
-                ),
-                'autocomplete' => 'email username',
-                'priority'     => 110,
-            );
-            $campos['phone'] = array(
-                'label'        => esc_attr__( 'Phone', 'wc-apg-nifcifnie-field' ),
-                'required'     => false,
-                'type'         => 'tel',
-                'validate'     => array(
-                    'phone',
-                ),
-                'autocomplete' => 'tel',
-                'priority'     => 100,
-            );
+            // El correo electrónico no forma parte de los campos de dirección de WooCommerce:
+            // se añade para que esté también en el formulario de envío. Si ya existe, se
+            // respeta tal cual esté definido.
+            if ( ! isset( $campos['email'] ) ) {
+                $campos['email'] = array(
+                    'label'        => esc_attr__( 'Email address', 'wc-apg-nifcifnie-field' ),
+                    'required'     => false,
+                    'type'         => 'email',
+                    'validate'     => array(
+                        'email',
+                    ),
+                    'autocomplete' => 'email username',
+                    'priority'     => 110,
+                );
+            }
+
+            // El teléfono sí lo trae WooCommerce, con la obligatoriedad que haya elegido el
+            // administrador en Personalizar > WooCommerce > Finalizar compra. No se toca:
+            // sólo se añade si falta, respetando esa misma configuración. Redefinirlo lo
+            // dejaba siempre como opcional y devolvía a la vista el campo que se hubiera
+            // ocultado.
+            $telefono = $this->apg_nif_visibilidad_del_telefono();
+
+            if ( ! isset( $campos['phone'] ) && 'hidden' !== $telefono ) {
+                $campos['phone'] = array(
+                    'label'        => esc_attr__( 'Phone', 'wc-apg-nifcifnie-field' ),
+                    'required'     => 'required' === $telefono,
+                    'type'         => 'tel',
+                    'validate'     => array(
+                        'phone',
+                    ),
+                    'autocomplete' => 'tel',
+                    'priority'     => 100,
+                );
+            }
         }
 
 		// Fuerza actualización de totales al cambiar Código postal o Provincia.
@@ -540,6 +554,21 @@ class APG_Campo_NIF_en_Pedido {
 
         return $campos;
     }
+
+	/**
+	 * Devuelve cómo ha configurado el administrador el campo Teléfono.
+	 *
+	 * Hook de WooCommerce: Personalizar > WooCommerce > Finalizar compra.
+	 *
+	 * @return string `required`, `optional` o `hidden`.
+	 */
+	private function apg_nif_visibilidad_del_telefono(): string {
+		if ( is_callable( array( '\Automattic\WooCommerce\Utilities\CartCheckoutUtils', 'get_phone_field_visibility' ) ) ) {
+			return (string) \Automattic\WooCommerce\Utilities\CartCheckoutUtils::get_phone_field_visibility();
+		}
+
+		return (string) get_option( 'woocommerce_checkout_phone_field', 'required' );
+	}
 
 	/**
 	 * Ajusta requerimiento de `billing_nif` en el formulario de facturación (clásico).

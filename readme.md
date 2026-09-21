@@ -10,7 +10,7 @@ Requires at least: 5.0
 
 Tested up to: 7.2
 
-Stable tag: 4.16.0
+Stable tag: 4.16.1
 
 Requires PHP: 7.4
 
@@ -152,6 +152,10 @@ Si tu tienda realizó pedidos con el Bloque de Finalizar compra (o con el checko
 **WC - APG NIF/CIF/NIE Field** es un plugin gratuito. **Art Project Group** no proporciona soporte técnico gratuito, pero ofrece un servicio de [soporte técnico](https://artprojectgroup.es/tienda/ticket-de-soporte) de pago para instalación y configuración.
 
 ## Changelog
+
+### 4.16.1
+
+- Corregido: el plugin redefinía el campo Teléfono y lo dejaba siempre como opcional, ignorando lo configurado en Personalizar > WooCommerce > Finalizar compra, y volvía a mostrarlo aunque estuviera oculto. WooCommerce ya lo trae, así que el plugin deja de tocarlo.
 
 ### 4.16.0
 
