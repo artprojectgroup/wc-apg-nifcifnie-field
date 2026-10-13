@@ -4,7 +4,7 @@ Donate link: https://artprojectgroup.es/tienda/donacion
 Tags: nif, cif, nie, eori, vies
 Requires at least: 5.0
 Tested up to: 7.2
-Stable tag: 4.16.1
+Stable tag: 4.17.0
 Requires PHP: 7.4
 WC requires at least: 5.6
 WC tested up to: 11.1.0
@@ -41,6 +41,7 @@ Add to WooCommerce a NIF/CIF/NIE field for all billing and shipping forms, with 
 * You can change the order amount compared against the configured threshold with the `apg_nif_importe_del_pedido` filter.
 * You can limit how many VIES/EORI lookups a single IP can trigger per minute with the `apg_nif_maximo_consultas_por_minuto` filter (off by default).
 * Adds a customer download button in WooCommerce (Customers) that includes the NIF/CIF/NIE field in the CSV.
+* Each identifier is checked with the official algorithm of its country, not just its shape.
 * It validates documents from:
  * Albania.
  * Andorra.
@@ -79,6 +80,7 @@ Add to WooCommerce a NIF/CIF/NIE field for all billing and shipping forms, with 
  * Moldova.
  * Montenegro.
  * North Macedonia.
+ * Northern Ireland.
  * Malta.
  * Mexico.
  * Netherlands.
@@ -135,6 +137,15 @@ If your store placed orders via the Checkout block (or the classic checkout) wit
 3. Screenshot of WC - APG NIF/CIF/NIE field. Billing and shipping forms. Classic Shortcode.
 
 == Changelog ==
+= 4.17.0 =
+* Fixed: valid identifiers from Cyprus, Malta and Serbia were rejected, because their check digit algorithms were not the official ones.
+* Fixed: Dutch VAT numbers issued since 2020, which are not derived from the personal identification number, are accepted now.
+* Fixed: Ireland, France, Portugal, Sweden, Slovenia, Latvia and Romania rejected valid forms of their identifiers.
+* Fixed: Spanish NIF numbers from the K, L and M series were checked with the company algorithm instead of the individual one.
+* Fixed: the + and * signs, which are part of some Irish and Dutch numbers, were stripped when the field was cleaned up.
+* New: check digit validation for Albania, Andorra, Belarus, Moldova, Montenegro, North Macedonia, San Marino and Ukraine.
+* New: Northern Ireland (XI) numbers are validated, instead of always rejected, and the Brazilian CNPJ accepts the numbers with letters issued from 2026.
+
 = 4.16.1 =
 * Fixed: the plugin redefined the Phone field and always left it as optional, ignoring the setting in Customize > WooCommerce > Checkout, and brought the field back even when it was set to hidden. WooCommerce already provides it, so the plugin no longer touches it.
 
@@ -469,6 +480,9 @@ If your store placed orders via the Checkout block (or the classic checkout) wit
 * Initial version.
 
 == Upgrade Notice ==
+= 4.17.0 =
+* Fixes valid VAT numbers being rejected in twelve countries and adds validation for eight more. Recommended if you sell outside Spain.
+
 = 4.16.1 =
 * Fixes the Phone field being forced as optional in the checkout, ignoring the store setting. Recommended if you require or hide the phone field.
 

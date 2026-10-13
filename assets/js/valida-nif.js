@@ -66,7 +66,9 @@ jQuery(function ($) {
                 break;
         }
 
-        const nif = campoNIF.val().toUpperCase().replace(/[^A-Z0-9-]/g, '');
+        // Se conservan + y *: forman parte de los números irlandeses antiguos y de los
+        // neerlandeses asignados desde 2020.
+        const nif = campoNIF.val().toUpperCase().replace(/[^A-Z0-9+*-]/g, '');
         campoNIF.val(nif);
         // Si el campo está vacío, no validar ni mostrar errores. Dejamos que WooCommerce
         // se encargue de mostrar el mensaje de "campo obligatorio" si procede.

@@ -70,8 +70,9 @@ jQuery(document).ready(function ($) {
             .replace(/[\u200B-\u200D\uFEFF\u00A0]/g, "")
             // normaliza guiones raros a guion ASCII
             .replace(/[\u2010-\u2015\u2212\u2043\u00AD\u2011]/g, "-")
-            // deja solo A-Z, 0-9 y guion ASCII
-            .replace(/[^a-zA-Z0-9-]/g, "")
+            // deja solo A-Z, 0-9, guion ASCII y los signos + y *, que forman parte de los
+            // números irlandeses antiguos y de los neerlandeses asignados desde 2020
+            .replace(/[^a-zA-Z0-9+*-]/g, "")
             .toUpperCase()
     );
 

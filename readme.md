@@ -10,7 +10,7 @@ Requires at least: 5.0
 
 Tested up to: 7.2
 
-Stable tag: 4.16.1
+Stable tag: 4.17.0
 
 Requires PHP: 7.4
 
@@ -54,58 +54,60 @@ Añade a WooCommerce un campo NIF/CIF/NIE en todos los formularios de facturaci�
 - Puedes cambiar el importe del pedido que se compara con el mínimo configurado con el filtro `apg_nif_importe_del_pedido`.
 - Puedes limitar cuántas consultas a VIES/EORI puede provocar una misma IP por minuto con el filtro `apg_nif_maximo_consultas_por_minuto` (desactivado de serie).
 - Añade un botón de descarga de clientes en WooCommerce (Clientes) que incluye el campo NIF/CIF/NIE en el CSV.
+- Cada identificador se comprueba con el algoritmo oficial de su país, no sólo su forma.
 - Valida documentos de:
 - Albania.
-- Andorra.
-- Austria.
-- Argentina.
-- Islas de Åland.
-- Brasil.
-- Bélgica.
-- Bulgaria.
-- Bielorusia.
-- Suiza.
-- Chile.
-- Colombia.
-- Chipre.
-- República Checa.
 - Alemania.
+- Andorra.
+- Argentina.
+- Austria.
+- Bélgica.
+- Bielorrusia.
+- Brasil.
+- Bulgaria.
+- Chile.
+- Chipre.
+- Colombia.
+- Croacia.
 - Dinamarca.
-- Estonia.
+- Eslovenia.
 - España.
-- Unión Europea.
+- Estonia.
 - Finlandia.
-- Islas Feroe.
 - Francia.
 - Gran Bretaña.
 - Grecia.
-- Croacia.
 - Hungría.
 - Irlanda.
+- Irlanda del Norte.
 - Islandia.
+- Islas de Åland.
+- Islas Feroe.
 - Italia.
+- Letonia.
 - Liechtenstein.
 - Lituania.
 - Luxemburgo.
-- Letonia.
-- Mónaco.
-- Moldavia.
-- Montenegro.
 - Macedonia del Norte.
 - Malta.
 - México.
+- Moldavia.
+- Mónaco.
+- Montenegro.
+- Noruega.
 - Países Bajos.
 - Perú.
-- Noruega.
 - Polonia.
 - Portugal.
+- República Checa.
+- República Eslovaca.
 - Rumanía.
+- San Marino.
 - Serbia.
 - Suecia.
-- Eslovenia.
-- República Eslovaca.
-- San Marino.
+- Suiza.
 - Ucrania.
+- Unión Europea.
 - Uruguay.
 - 100% compatible con [WooCommerce PDF Invoices & Packing Slips](https://es.wordpress.org/plugins/woocommerce-pdf-invoices-packing-slips/).
 - 100% compatible con [WPML](https://wpml.org/?aid=80296&affiliate_key=m66Ss5ps0xoS).
@@ -152,6 +154,16 @@ Si tu tienda realizó pedidos con el Bloque de Finalizar compra (o con el checko
 **WC - APG NIF/CIF/NIE Field** es un plugin gratuito. **Art Project Group** no proporciona soporte técnico gratuito, pero ofrece un servicio de [soporte técnico](https://artprojectgroup.es/tienda/ticket-de-soporte) de pago para instalación y configuración.
 
 ## Changelog
+
+### 4.17.0
+
+- Corregido: se rechazaban identificadores válidos de Chipre, Malta y Serbia, cuyos algoritmos de dígito de control no eran los oficiales.
+- Corregido: se aceptan ya los números de IVA neerlandeses asignados desde 2020, que no derivan del número de identificación personal.
+- Corregido: Irlanda, Francia, Portugal, Suecia, Eslovenia, Letonia y Rumanía rechazaban formas válidas de sus identificadores.
+- Corregido: el NIF español de las series K, L y M se comprobaba con el algoritmo de empresa en vez del de persona física.
+- Corregido: los signos + y *, que forman parte de algunos números irlandeses y neerlandeses, se borraban al limpiar el campo.
+- Nuevo: validación con dígito de control para Albania, Andorra, Bielorrusia, Macedonia del Norte, Moldavia, Montenegro, San Marino y Ucrania.
+- Nuevo: se validan los números de Irlanda del Norte (XI), que antes se rechazaban siempre, y el CNPJ brasileño con letras que se asigna desde 2026.
 
 ### 4.16.1
 

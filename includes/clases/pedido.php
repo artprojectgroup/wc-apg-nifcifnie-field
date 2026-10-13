@@ -1183,7 +1183,7 @@ class APG_Campo_NIF_en_Pedido {
         require_once plugin_dir_path( __FILE__ ) . 'validador.php';
 
 		// Limpieza y normalización.
-        $vat_number     = preg_replace( '/[^A-Z0-9]/', '', strtoupper( $vat_number ) );
+        $vat_number     = preg_replace( '/[^A-Z0-9+*]/', '', strtoupper( $vat_number ) );
         $vat_country    = strtoupper( $vat_country );
         $pais           = strtoupper( $pais );
 
@@ -1191,6 +1191,13 @@ class APG_Campo_NIF_en_Pedido {
 		$prefijo_detectado = '';
 		if ( preg_match( '/^[A-Z]{2}/', $vat_number, $match ) && $this->apg_nif_es_prefijo_pais_valido( $match[0] ) ) {
 			$prefijo_detectado = $match[0];
+		}
+
+		// Un btw-id neerlandés puede empezar por dos letras que coincidan con un prefijo de
+		// país: si el número tiene su forma, manda el país y no se le quitan esas letras.
+		if ( '' !== $prefijo_detectado && 'NL' !== $prefijo_detectado && 'NL' === $vat_country
+			&& preg_match( '/^[A-Z0-9+*]{9}B\d{2}$/', $vat_number ) ) {
+			$prefijo_detectado = '';
 		}
 
 		// Prioriza prefijo detectado, luego país explícito, luego el de facturación.
@@ -1203,6 +1210,10 @@ class APG_Campo_NIF_en_Pedido {
 
 		// Validaciones específicas o regex genérica.
         switch ( $valida_pais ) {
+            case 'AD': // Andorra.
+                return apg_nif_valida_ad( $vat_number );
+            case 'AL': // Albania.
+                return apg_nif_valida_al( $vat_number );
             case 'AR': // Argentina.
                 return apg_nif_valida_ar( $vat_number );
             case 'AT': // Austria.
@@ -1211,6 +1222,8 @@ class APG_Campo_NIF_en_Pedido {
                 return apg_nif_valida_be( $vat_number );
             case 'BG': // Bulgaria.
                 return apg_nif_valida_bg( $vat_number );
+            case 'BY': // Bielorrusia (UNP).
+                return apg_nif_valida_by( $vat_number );
             case 'BR': // Brasil (CNPJ y CPF).
                 return apg_nif_valida_br( $vat_number );
             case 'CH': // Suiza.
@@ -1241,6 +1254,7 @@ class APG_Campo_NIF_en_Pedido {
             case 'MC': // Mónaco: sus números se emiten dentro del sistema francés.
                 return apg_nif_valida_fr( $vat_number );
             case 'GB': // Gran Bretaña.
+            case 'XI': // Irlanda del Norte: sus números se emiten dentro del sistema británico.
                 return apg_nif_valida_gb( $vat_number );
             case 'HR': // Croacia.
                 return apg_nif_valida_hr( $vat_number );
@@ -1260,6 +1274,12 @@ class APG_Campo_NIF_en_Pedido {
                 return apg_nif_valida_lv( $vat_number );
             case 'MT': // Malta.
                 return apg_nif_valida_mt( $vat_number );
+            case 'MD': // Moldavia (IDNO).
+                return apg_nif_valida_md( $vat_number );
+            case 'ME': // Montenegro (PIB).
+                return apg_nif_valida_me( $vat_number );
+            case 'MK': // Macedonia del Norte (EDB).
+                return apg_nif_valida_mk( $vat_number );
             case 'MX': // México (RFC).
                 return apg_nif_valida_mx( $vat_number );
             case 'NL': // Países Bajos.
@@ -1282,6 +1302,10 @@ class APG_Campo_NIF_en_Pedido {
                 return apg_nif_valida_si( $vat_number );
             case 'SK': // Eslovaquia.
                 return apg_nif_valida_sk( $vat_number );
+            case 'SM': // San Marino (COE).
+                return apg_nif_valida_sm( $vat_number );
+            case 'UA': // Ucrania (EDRPOU).
+                return apg_nif_valida_ua( $vat_number );
             case 'UY': // Uruguay (RUT).
                 return apg_nif_valida_uy( $vat_number );
             default:
