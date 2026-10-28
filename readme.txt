@@ -4,7 +4,7 @@ Donate link: https://artprojectgroup.es/tienda/donacion
 Tags: nif, cif, nie, eori, vies
 Requires at least: 5.0
 Tested up to: 7.2
-Stable tag: 4.17.0
+Stable tag: 4.18.0
 Requires PHP: 7.4
 WC requires at least: 5.6
 WC tested up to: 11.1.0
@@ -99,6 +99,7 @@ Add to WooCommerce a NIF/CIF/NIE field for all billing and shipping forms, with 
 * 100% compatible with [WooCommerce PDF Invoices & Packing Slips](https://es.wordpress.org/plugins/woocommerce-pdf-invoices-packing-slips/).
 * 100% compatible with [WPML](https://wpml.org/?aid=80296&affiliate_key=m66Ss5ps0xoS).
 * 100% compatible with [Checkout Field Editor (Checkout Manager) for WooCommerce](https://wordpress.org/plugins/woo-checkout-field-editor-pro/)
+* Contextual help on the settings page, explaining every setting without leaving the screen.
 
 = Translations =
 * English: by [**Art Project Group**](https://artprojectgroup.es/) (default language).
@@ -129,7 +130,7 @@ If your store placed orders via the Checkout block (or the classic checkout) wit
 `wp eval-file wp-content/plugins/wc-apg-nifcifnie-field/includes/admin/limpieza-meta-duplicados.php`
 
 = Where can I get support? =
-**WC - APG NIF/CIF/NIE Field** is a free plugin. **Art Project Group** does not provide free technical support, but offers a paid [technical support](https://artprojectgroup.es/tienda/ticket-de-soporte) service for installation and configuration.
+**WC - APG NIF/CIF/NIE Field** is a free plugin. **Art Project Group** does not provide free technical support, but offers a paid [technical support](https://artprojectgroup.es/tienda/soporte-tecnico) service for installation and configuration.
 
 == Screenshots ==
 1. Screenshot of WC - APG NIF/CIF/NIE field.
@@ -137,6 +138,9 @@ If your store placed orders via the Checkout block (or the classic checkout) wit
 3. Screenshot of WC - APG NIF/CIF/NIE field. Billing and shipping forms. Classic Shortcode.
 
 == Changelog ==
+= 4.18.0 =
+* Contextual help in the Help tab of the settings page, with a panel for every section and a link to the full documentation.
+
 = 4.17.0 =
 * Fixed: valid identifiers from Cyprus, Malta and Serbia were rejected, because their check digit algorithms were not the official ones.
 * Fixed: Dutch VAT numbers issued since 2020, which are not derived from the personal identification number, are accepted now.

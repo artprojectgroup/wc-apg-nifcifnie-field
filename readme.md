@@ -112,6 +112,7 @@ Añade a WooCommerce un campo NIF/CIF/NIE en todos los formularios de facturaci�
 - 100% compatible con [WooCommerce PDF Invoices & Packing Slips](https://es.wordpress.org/plugins/woocommerce-pdf-invoices-packing-slips/).
 - 100% compatible con [WPML](https://wpml.org/?aid=80296&affiliate_key=m66Ss5ps0xoS).
 - 100% compatible con [Checkout Field Editor (Checkout Manager) for WooCommerce](https://wordpress.org/plugins/woo-checkout-field-editor-pro/)
+- Ayuda contextual en la página de ajustes, que explica cada opción sin salir de la pantalla.
 
 ### Traducciones
 
@@ -151,9 +152,13 @@ Si tu tienda realizó pedidos con el Bloque de Finalizar compra (o con el checko
 
 ### ¿Dónde puedo obtener soporte?
 
-**WC - APG NIF/CIF/NIE Field** es un plugin gratuito. **Art Project Group** no proporciona soporte técnico gratuito, pero ofrece un servicio de [soporte técnico](https://artprojectgroup.es/tienda/ticket-de-soporte) de pago para instalación y configuración.
+**WC - APG NIF/CIF/NIE Field** es un plugin gratuito. **Art Project Group** no proporciona soporte técnico gratuito, pero ofrece un servicio de [soporte técnico](https://artprojectgroup.es/tienda/soporte-tecnico) de pago para instalación y configuración.
 
 ## Changelog
+
+### 4.18.0
+
+- Ayuda contextual en la pestaña Ayuda de la página de ajustes, con un panel por cada sección y enlace a la documentación completa.
 
 ### 4.17.0
 

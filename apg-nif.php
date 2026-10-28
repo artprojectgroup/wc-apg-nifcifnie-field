@@ -2,7 +2,7 @@
 /*
 Plugin Name: WC - APG NIF/CIF/NIE Field
 Requires Plugins: woocommerce
-Version: 4.17.0
+Version: 4.18.0
 Plugin URI: https://wordpress.org/plugins/wc-apg-nifcifnie-field/
 Description: Add to WooCommerce a NIF/CIF/NIE field.
 Author URI: https://artprojectgroup.es/
@@ -38,7 +38,7 @@ define( 'DIRECCION_apg_nif', plugin_basename( __FILE__ ) );
  *
  * @var string
  */
-define( 'VERSION_apg_nif', '4.17.0' );
+define( 'VERSION_apg_nif', '4.18.0' );
 
 // Funciones generales de APG. Siempre con ruta absoluta: varios plugins de APG tienen un
 // archivo con este mismo nombre, y una ruta relativa puede resolverse contra el
@@ -218,7 +218,7 @@ if ( is_plugin_active( 'woocommerce/woocommerce.php' ) || is_network_only_plugin
 		 * @return void
 		 */
 		public function apg_nif_admin_menu() {
-			add_submenu_page(
+			$apg_nif_pantalla = add_submenu_page(
 				'woocommerce',
 				esc_attr__( 'APG NIF/CIF/NIE field', 'wc-apg-nifcifnie-field' ),
 				esc_attr__( 'NIF/CIF/NIE field', 'wc-apg-nifcifnie-field' ),
@@ -226,6 +226,13 @@ if ( is_plugin_active( 'woocommerce/woocommerce.php' ) || is_network_only_plugin
 				'wc-apg-nifcifnie-field',
 				array( $this, 'apg_nif_tab' )
 			);
+
+			// Ayuda contextual. Se engancha al hook que devuelve add_submenu_page() para que sólo
+			// se cargue en esta pantalla y no en el resto del escritorio.
+			if ( $apg_nif_pantalla ) {
+				include_once plugin_dir_path( __FILE__ ) . 'includes/clases/class-apg-nif-help.php';
+				add_action( 'load-' . $apg_nif_pantalla, array( 'APG_NIF_Help', 'add_tabs' ) );
+			}
 		}
 
 		/**

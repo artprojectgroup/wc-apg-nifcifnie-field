@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-17T07:41:40+00:00\n"
+"POT-Creation-Date: 2026-10-28T13:43:36+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: wc-apg-nifcifnie-field\n"
@@ -261,6 +261,7 @@ msgid "Add to WooCommerce a NIF/CIF/NIE field, validate the field before submiss
 msgstr ""
 
 #: includes/formulario.php:58
+#: includes/clases/class-apg-nif-help.php:104
 msgid "Field label"
 msgstr ""
 
@@ -269,6 +270,7 @@ msgid "Type your own field label."
 msgstr ""
 
 #: includes/formulario.php:70
+#: includes/clases/class-apg-nif-help.php:105
 msgid "Field placeholder"
 msgstr ""
 
@@ -277,6 +279,7 @@ msgid "Type your own field placeholder."
 msgstr ""
 
 #: includes/formulario.php:84
+#: includes/clases/class-apg-nif-help.php:106
 msgid "Error message"
 msgstr ""
 
@@ -285,6 +288,7 @@ msgid "Type your own error message."
 msgstr ""
 
 #: includes/formulario.php:97
+#: includes/clases/class-apg-nif-help.php:107
 msgid "Field priority"
 msgstr ""
 
@@ -301,6 +305,7 @@ msgid "No priority"
 msgstr ""
 
 #: includes/formulario.php:126
+#: includes/clases/class-apg-nif-help.php:115
 msgid "Require billing field?"
 msgstr ""
 
@@ -310,6 +315,7 @@ msgid "Check if you need to require the field."
 msgstr ""
 
 #: includes/formulario.php:139
+#: includes/clases/class-apg-nif-help.php:116
 msgid "Require billing field from this amount"
 msgstr ""
 
@@ -324,10 +330,12 @@ msgid "Order total, taxes included, in %s. The billing field will be required fo
 msgstr ""
 
 #: includes/formulario.php:160
+#: includes/clases/class-apg-nif-help.php:117
 msgid "Require shipping field?"
 msgstr ""
 
 #: includes/formulario.php:173
+#: includes/clases/class-apg-nif-help.php:118
 msgid "Show shipping field?"
 msgstr ""
 
@@ -336,6 +344,7 @@ msgid "Check if you want to show the field in the shipping form."
 msgstr ""
 
 #: includes/formulario.php:186
+#: includes/clases/class-apg-nif-help.php:126
 msgid "Validate field?"
 msgstr ""
 
@@ -344,6 +353,7 @@ msgid "Check if you want to validate the field before submission."
 msgstr ""
 
 #: includes/formulario.php:200
+#: includes/clases/class-apg-nif-help.php:134
 msgid "Allow VIES VAT number?"
 msgstr ""
 
@@ -352,6 +362,7 @@ msgid "Check if you want to allow and validate the VIES VAT number."
 msgstr ""
 
 #: includes/formulario.php:213
+#: includes/clases/class-apg-nif-help.php:135
 msgid "VIES VAT number field label"
 msgstr ""
 
@@ -360,6 +371,7 @@ msgid "Type your own VIES VAT number field label."
 msgstr ""
 
 #: includes/formulario.php:227
+#: includes/clases/class-apg-nif-help.php:136
 msgid "VIES VAT number field placeholder"
 msgstr ""
 
@@ -368,6 +380,7 @@ msgid "Type your own VIES VAT number field placeholder."
 msgstr ""
 
 #: includes/formulario.php:241
+#: includes/clases/class-apg-nif-help.php:137
 msgid "VIES VAT number error message"
 msgstr ""
 
@@ -376,6 +389,7 @@ msgid "Type your own VIES VAT number error message."
 msgstr ""
 
 #: includes/formulario.php:256
+#: includes/clases/class-apg-nif-help.php:138
 msgid "VIES VAT number request error message"
 msgstr ""
 
@@ -384,6 +398,7 @@ msgid "Type your own VIES VAT number request error message."
 msgstr ""
 
 #: includes/formulario.php:271
+#: includes/clases/class-apg-nif-help.php:146
 msgid "Allow EORI number?"
 msgstr ""
 
@@ -392,6 +407,7 @@ msgid "Check if you want to allow and validate the EORI number."
 msgstr ""
 
 #: includes/formulario.php:319
+#: includes/clases/class-apg-nif-help.php:147
 msgid "Countries to validate EORI number"
 msgstr ""
 
@@ -408,6 +424,7 @@ msgid "Country / Region"
 msgstr ""
 
 #: includes/formulario.php:344
+#: includes/clases/class-apg-nif-help.php:148
 msgid "EORI number field label"
 msgstr ""
 
@@ -416,6 +433,7 @@ msgid "Type your own EORI number field label."
 msgstr ""
 
 #: includes/formulario.php:359
+#: includes/clases/class-apg-nif-help.php:149
 msgid "EORI number field placeholder"
 msgstr ""
 
@@ -424,6 +442,7 @@ msgid "Type your own EORI number field placeholder."
 msgstr ""
 
 #: includes/formulario.php:374
+#: includes/clases/class-apg-nif-help.php:150
 msgid "EORI number error message"
 msgstr ""
 
@@ -438,6 +457,7 @@ msgid "Cleanup completed. Orders fixed: %1$d (%2$d NIF meta entries normalized).
 msgstr ""
 
 #: includes/formulario.php:416
+#: includes/clases/class-apg-nif-help.php:158
 msgid "Fix duplicate NIF metadata"
 msgstr ""
 
@@ -452,3 +472,141 @@ msgstr ""
 #: includes/formulario.php:424
 msgid "Only needed for shops that placed orders via Checkout Blocks before updating the plugin. May take a while on large stores."
 msgstr ""
+
+
+#: includes/clases/class-apg-nif-help.php:58
+msgid "More help"
+msgstr ""
+
+#: includes/clases/class-apg-nif-help.php:59
+msgid "Full documentation"
+msgstr ""
+
+#: includes/clases/class-apg-nif-help.php:101
+msgid "The field"
+msgstr ""
+
+#: includes/clases/class-apg-nif-help.php:103
+msgid "How the NIF/CIF/NIE field looks on the billing and shipping forms. Leave any of these boxes empty and the field falls back to the default value shown in grey."
+msgstr ""
+
+#: includes/clases/class-apg-nif-help.php:104
+msgid "the name the customer reads above the field. NIF/CIF/NIE by default."
+msgstr ""
+
+#: includes/clases/class-apg-nif-help.php:105
+msgid "the hint shown inside the empty field. NIF/CIF/NIE number by default."
+msgstr ""
+
+#: includes/clases/class-apg-nif-help.php:106
+msgid "what the customer reads when the number is not valid. Please enter a valid NIF/CIF/NIE. by default."
+msgstr ""
+
+#: includes/clases/class-apg-nif-help.php:107
+msgid "where the field sits in the form: the lower the number, the higher it goes. It is 31 by default, which places it right after the company name. The screen lists the priorities your other fields are using, so you can pick a number that puts it where you want."
+msgstr ""
+
+#: includes/clases/class-apg-nif-help.php:112
+msgid "When it is required"
+msgstr ""
+
+#: includes/clases/class-apg-nif-help.php:114
+msgid "Which forms show the field and when the customer is forced to fill it in. Billing and shipping are set separately."
+msgstr ""
+
+#: includes/clases/class-apg-nif-help.php:115
+msgid "the order cannot be placed without a number on the billing form."
+msgstr ""
+
+#: includes/clases/class-apg-nif-help.php:116
+msgid "makes the billing field required only for orders of that amount or more, taxes included, even when the box above is unticked. Leave it empty to switch it off. It never affects the shipping form."
+msgstr ""
+
+#: includes/clases/class-apg-nif-help.php:117
+msgid "the same, for the shipping form. It only has an effect when the field is shown there."
+msgstr ""
+
+#: includes/clases/class-apg-nif-help.php:118
+msgid "adds the field to the shipping form as well. Unticked, the field exists only on the billing form."
+msgstr ""
+
+#: includes/clases/class-apg-nif-help.php:123
+msgid "Validation"
+msgstr ""
+
+#: includes/clases/class-apg-nif-help.php:125
+msgid "Whether the number is checked before the order goes through, or simply stored as typed."
+msgstr ""
+
+#: includes/clases/class-apg-nif-help.php:126
+msgid "checks that the number is a real NIF, CIF or NIE, letter included, and stops the order with the error message above if it is not. Unticked, anything the customer types is accepted."
+msgstr ""
+
+#: includes/clases/class-apg-nif-help.php:131
+msgid "VIES VAT number"
+msgstr ""
+
+#: includes/clases/class-apg-nif-help.php:133
+msgid "Lets customers from the rest of the European Union enter their VAT number, which is checked live against the VIES register of the European Commission. It needs the SoapClient PHP class: without it the plugin warns you and keeps this switched off."
+msgstr ""
+
+#: includes/clases/class-apg-nif-help.php:134
+msgid "switches the VAT number on. The four settings below only matter once it is ticked."
+msgstr ""
+
+#: includes/clases/class-apg-nif-help.php:135
+msgid "the label the field takes for customers outside Spain. NIF/CIF/NIE/VAT number by default."
+msgstr ""
+
+#: includes/clases/class-apg-nif-help.php:136
+msgid "the hint inside that field, also NIF/CIF/NIE/VAT number by default."
+msgstr ""
+
+#: includes/clases/class-apg-nif-help.php:137
+msgid "what the customer reads when VIES answers that the number does not exist. Please enter a valid VIES VAT number. by default."
+msgstr ""
+
+#: includes/clases/class-apg-nif-help.php:138
+msgid "what the customer reads when VIES cannot answer because the shop has made too many requests in a short time. This is not a wrong number: it is the register asking you to wait."
+msgstr ""
+
+#: includes/clases/class-apg-nif-help.php:143
+msgid "EORI number"
+msgstr ""
+
+#: includes/clases/class-apg-nif-help.php:145
+msgid "The number customs uses to identify a business that imports or exports. Useful for shops that sell to companies outside the European Union."
+msgstr ""
+
+#: includes/clases/class-apg-nif-help.php:146
+msgid "switches the EORI number on. The four settings below only matter once it is ticked."
+msgstr ""
+
+#: includes/clases/class-apg-nif-help.php:147
+msgid "the countries whose customers are asked for an EORI number. Leave the list empty and no country is asked for it."
+msgstr ""
+
+#: includes/clases/class-apg-nif-help.php:148
+msgid "the label the field takes in those countries. NIF/CIF/NIE/EORI number by default."
+msgstr ""
+
+#: includes/clases/class-apg-nif-help.php:149
+msgid "the hint inside that field, also NIF/CIF/NIE/EORI number by default."
+msgstr ""
+
+#: includes/clases/class-apg-nif-help.php:150
+msgid "what the customer reads when the EORI number is not valid. Please enter a valid EORI number. by default."
+msgstr ""
+
+#: includes/clases/class-apg-nif-help.php:155
+msgid "Tools"
+msgstr ""
+
+#: includes/clases/class-apg-nif-help.php:157
+msgid "A one-off repair for shops that come from an older version of the plugin."
+msgstr ""
+
+#: includes/clases/class-apg-nif-help.php:158
+msgid "removes the duplicated billing_nif and shipping_nif rows that older versions of the plugin left behind on orders placed through Checkout Blocks. You only need it if your shop took orders that way before updating, it can be run as many times as you like, and on a shop with many orders it takes a while."
+msgstr ""
+
