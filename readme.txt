@@ -108,7 +108,7 @@ Add to WooCommerce a NIF/CIF/NIE field for all billing and shipping forms, with 
 = More information =
 You can learn more about **WC - APG NIF/CIF/NIE Field** on our [official website](https://artprojectgroup.es/plugins-para-woocommerce/wc-apg-campo-nif-cif-nie), and follow the development on [GitHub](https://github.com/artprojectgroup/wc-apg-nifcifnie-field).
 
-The full documentation, with every setting explained one by one, is at [artprojectgroup.es/documentacion/wc-apg-campo-nif-cif-nie](https://artprojectgroup.es/documentacion/wc-apg-campo-nif-cif-nie).
+You can also read the [full documentation](https://artprojectgroup.es/documentacion/wc-apg-campo-nif-cif-nie), with every setting explained one by one.
 
 == Installation ==
 1. Install the plugin in one of the following ways:
