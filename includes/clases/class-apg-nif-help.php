@@ -17,12 +17,12 @@ class APG_NIF_Help {
 	/**
 	 * Dirección de la documentación completa, en español.
 	 */
-	const DOCS_URL = 'https://artprojectgroup.es/documentacion/wc-apg-nifcifnie-field';
+	const DOCS_URL = 'https://artprojectgroup.es/documentacion/wc-apg-campo-nif-cif-nie';
 
 	/**
 	 * Dirección de la documentación completa, en inglés.
 	 */
-	const DOCS_URL_EN = 'https://artprojectgroup.com/documentation/wc-apg-nifcifnie-field';
+	const DOCS_URL_EN = 'https://artprojectgroup.com/documentation/wc-apg-campo-nif-cif-nie';
 
 	/**
 	 * Sustituye la ayuda de la pantalla de ajustes por los paneles del plugin.
@@ -100,7 +100,7 @@ class APG_NIF_Help {
 			'field'      => array(
 				'title' => __( 'The field', 'wc-apg-nifcifnie-field' ),
 				'items' => array(
-					__( 'How the NIF/CIF/NIE field looks on the billing and shipping forms. Leave any of these boxes empty and the field falls back to the default value shown in grey.', 'wc-apg-nifcifnie-field' ),
+					__( 'How the NIF/CIF/NIE field looks on the billing and shipping forms. Leave any of these boxes empty and the field falls back to the default value shown in grey. The first two boxes leave this screen as soon as you switch the VIES VAT number or the EORI number on: from then on the label of that number is the one in use, for every customer.', 'wc-apg-nifcifnie-field' ),
 					__( 'Field label', 'wc-apg-nifcifnie-field' )       => __( 'the name the customer reads above the field. NIF/CIF/NIE by default.', 'wc-apg-nifcifnie-field' ),
 					__( 'Field placeholder', 'wc-apg-nifcifnie-field' ) => __( 'the hint shown inside the empty field. NIF/CIF/NIE number by default.', 'wc-apg-nifcifnie-field' ),
 					__( 'Error message', 'wc-apg-nifcifnie-field' )     => __( 'what the customer reads when the number is not valid. Please enter a valid NIF/CIF/NIE. by default.', 'wc-apg-nifcifnie-field' ),
@@ -130,9 +130,9 @@ class APG_NIF_Help {
 			'vies'       => array(
 				'title' => __( 'VIES VAT number', 'wc-apg-nifcifnie-field' ),
 				'items' => array(
-					__( 'Lets customers from the rest of the European Union enter their VAT number, which is checked live against the VIES register of the European Commission. It needs the SoapClient PHP class: without it the plugin warns you and keeps this switched off.', 'wc-apg-nifcifnie-field' ),
+					__( 'Lets customers from the rest of the European Union enter their VAT number, which is checked live against the VIES register of the European Commission. It needs the SoapClient PHP class: without it the plugin warns you and keeps this switched off. With the EORI number switched on as well, the two boxes that set the label leave this screen, because the EORI ones take over.', 'wc-apg-nifcifnie-field' ),
 					__( 'Allow VIES VAT number?', 'wc-apg-nifcifnie-field' )                  => __( 'switches the VAT number on. The four settings below only matter once it is ticked.', 'wc-apg-nifcifnie-field' ),
-					__( 'VIES VAT number field label', 'wc-apg-nifcifnie-field' )             => __( 'the label the field takes for customers outside Spain. NIF/CIF/NIE/VAT number by default.', 'wc-apg-nifcifnie-field' ),
+					__( 'VIES VAT number field label', 'wc-apg-nifcifnie-field' )             => __( 'the label the whole field takes, for every customer and not only those outside your country, as soon as the VIES VAT number is switched on. NIF/CIF/NIE/VAT number by default.', 'wc-apg-nifcifnie-field' ),
 					__( 'VIES VAT number field placeholder', 'wc-apg-nifcifnie-field' )       => __( 'the hint inside that field, also NIF/CIF/NIE/VAT number by default.', 'wc-apg-nifcifnie-field' ),
 					__( 'VIES VAT number error message', 'wc-apg-nifcifnie-field' )           => __( 'what the customer reads when VIES answers that the number does not exist. Please enter a valid VIES VAT number. by default.', 'wc-apg-nifcifnie-field' ),
 					__( 'VIES VAT number request error message', 'wc-apg-nifcifnie-field' )   => __( 'what the customer reads when VIES cannot answer because the shop has made too many requests in a short time. This is not a wrong number: it is the register asking you to wait.', 'wc-apg-nifcifnie-field' ),
@@ -145,7 +145,7 @@ class APG_NIF_Help {
 					__( 'The number customs uses to identify a business that imports or exports. Useful for shops that sell to companies outside the European Union.', 'wc-apg-nifcifnie-field' ),
 					__( 'Allow EORI number?', 'wc-apg-nifcifnie-field' )              => __( 'switches the EORI number on. The four settings below only matter once it is ticked.', 'wc-apg-nifcifnie-field' ),
 					__( 'Countries to validate EORI number', 'wc-apg-nifcifnie-field' ) => __( 'the countries whose customers are asked for an EORI number. Leave the list empty and no country is asked for it.', 'wc-apg-nifcifnie-field' ),
-					__( 'EORI number field label', 'wc-apg-nifcifnie-field' )          => __( 'the label the field takes in those countries. NIF/CIF/NIE/EORI number by default.', 'wc-apg-nifcifnie-field' ),
+					__( 'EORI number field label', 'wc-apg-nifcifnie-field' )          => __( 'the label the whole field takes as soon as the EORI number is switched on, over the VIES one when both are on. NIF/CIF/NIE/EORI number by default.', 'wc-apg-nifcifnie-field' ),
 					__( 'EORI number field placeholder', 'wc-apg-nifcifnie-field' )    => __( 'the hint inside that field, also NIF/CIF/NIE/EORI number by default.', 'wc-apg-nifcifnie-field' ),
 					__( 'EORI number error message', 'wc-apg-nifcifnie-field' )        => __( 'what the customer reads when the EORI number is not valid. Please enter a valid EORI number. by default.', 'wc-apg-nifcifnie-field' ),
 				),

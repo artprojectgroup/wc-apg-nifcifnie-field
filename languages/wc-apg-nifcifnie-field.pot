@@ -487,7 +487,7 @@ msgid "The field"
 msgstr ""
 
 #: includes/clases/class-apg-nif-help.php:103
-msgid "How the NIF/CIF/NIE field looks on the billing and shipping forms. Leave any of these boxes empty and the field falls back to the default value shown in grey."
+msgid "How the NIF/CIF/NIE field looks on the billing and shipping forms. Leave any of these boxes empty and the field falls back to the default value shown in grey. The first two boxes leave this screen as soon as you switch the VIES VAT number or the EORI number on: from then on the label of that number is the one in use, for every customer."
 msgstr ""
 
 #: includes/clases/class-apg-nif-help.php:104
@@ -547,7 +547,7 @@ msgid "VIES VAT number"
 msgstr ""
 
 #: includes/clases/class-apg-nif-help.php:133
-msgid "Lets customers from the rest of the European Union enter their VAT number, which is checked live against the VIES register of the European Commission. It needs the SoapClient PHP class: without it the plugin warns you and keeps this switched off."
+msgid "Lets customers from the rest of the European Union enter their VAT number, which is checked live against the VIES register of the European Commission. It needs the SoapClient PHP class: without it the plugin warns you and keeps this switched off. With the EORI number switched on as well, the two boxes that set the label leave this screen, because the EORI ones take over."
 msgstr ""
 
 #: includes/clases/class-apg-nif-help.php:134
@@ -555,7 +555,7 @@ msgid "switches the VAT number on. The four settings below only matter once it i
 msgstr ""
 
 #: includes/clases/class-apg-nif-help.php:135
-msgid "the label the field takes for customers outside Spain. NIF/CIF/NIE/VAT number by default."
+msgid "the label the whole field takes, for every customer and not only those outside your country, as soon as the VIES VAT number is switched on. NIF/CIF/NIE/VAT number by default."
 msgstr ""
 
 #: includes/clases/class-apg-nif-help.php:136
@@ -587,7 +587,7 @@ msgid "the countries whose customers are asked for an EORI number. Leave the lis
 msgstr ""
 
 #: includes/clases/class-apg-nif-help.php:148
-msgid "the label the field takes in those countries. NIF/CIF/NIE/EORI number by default."
+msgid "the label the whole field takes as soon as the EORI number is switched on, over the VIES one when both are on. NIF/CIF/NIE/EORI number by default."
 msgstr ""
 
 #: includes/clases/class-apg-nif-help.php:149
