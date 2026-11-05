@@ -15,16 +15,6 @@ defined( 'ABSPATH' ) || exit;
 class APG_NIF_Help {
 
 	/**
-	 * Dirección de la documentación completa, en español.
-	 */
-	const DOCS_URL = 'https://artprojectgroup.es/documentacion/wc-apg-campo-nif-cif-nie';
-
-	/**
-	 * Dirección de la documentación completa, en inglés.
-	 */
-	const DOCS_URL_EN = 'https://artprojectgroup.com/documentation/wc-apg-campo-nif-cif-nie';
-
-	/**
 	 * Sustituye la ayuda de la pantalla de ajustes por los paneles del plugin.
 	 *
 	 * La pantalla no tiene pestañas: es una página única con varios bloques, así que se añaden
@@ -66,7 +56,8 @@ class APG_NIF_Help {
 	 * @return string
 	 */
 	private static function documentacion() {
-		return ( 0 === strpos( get_user_locale(), 'es' ) ) ? self::DOCS_URL : self::DOCS_URL_EN;
+		//El idioma lo decide apg_nif_enlace(), que es quien guarda las dos direcciones.
+		return apg_nif_enlace( 'documentacion' );
 	}
 
 	/**

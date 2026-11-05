@@ -38,7 +38,7 @@ $tab = 1;
     <h2>
         <?php esc_html_e( 'APG NIF/CIF/NIE field Options.', 'wc-apg-nifcifnie-field' ); ?>
     </h2>
-    <h3><a href="<?php echo esc_url( $apg_nif['plugin_url'] ); ?>"
+    <h3><a href="<?php echo esc_url( apg_nif_enlace( 'plugin_url' ) ); ?>"
             title="Art Project Group"><?php echo esc_attr( $apg_nif['plugin'] ); ?></a></h3>
     <p>
         <?php esc_html_e( 'Add to WooCommerce a NIF/CIF/NIE field, validate the field before submission and let the admin configure the billing and shipping forms.', 'wc-apg-nifcifnie-field' ); ?>
@@ -47,7 +47,7 @@ $tab = 1;
     <form method="post" action="options.php">
         <?php settings_fields( 'apg_nif_settings_group' ); ?>
         <?php // phpcs:ignore PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage -- Static plugin image does not require attachment ID ?>
-        <div class="cabecera"> <a href="<?php echo esc_url( $apg_nif['plugin_url'] ); ?>"
+        <div class="cabecera"> <a href="<?php echo esc_url( apg_nif_enlace( 'plugin_url' ) ); ?>"
                 title="<?php echo esc_attr( $apg_nif['plugin'] ); ?>" target="_blank"><img
                     src="<?php echo esc_url( plugins_url( 'assets/images/cabecera.jpg', DIRECCION_apg_nif ) ); ?>"
                     class="imagen" alt="<?php echo esc_attr( $apg_nif['plugin'] ); ?>" /></a> </div>

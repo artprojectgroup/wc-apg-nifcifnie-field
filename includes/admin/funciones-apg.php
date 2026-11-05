@@ -26,12 +26,31 @@ defined( 'ABSPATH' ) || exit;
  *   puntuacion:string
  * }
  */
+/* Devuelve la direccion de la web en el idioma de quien mira la pantalla. Se resuelve al usarla y
+nunca al cargar el plugin, porque hasta que WordPress no identifica al usuario no se sabe su idioma. */
+function apg_nif_enlace( $clave ) {
+	global $apg_nif;
+
+	if ( ! isset( $apg_nif['enlaces'][ $clave ] ) ) {
+		return '';
+	}
+
+	$par = $apg_nif['enlaces'][ $clave ];
+
+	return ( 0 === strpos( get_user_locale(), 'es' ) ) ? $par[0] : $par[1];
+}
+
 $apg_nif = array(
 	'plugin'     => 'WC - APG NIF/CIF/NIE Field',
 	'plugin_uri' => 'wc-apg-nifcifnie-field',
-	'donacion'   => 'https://artprojectgroup.es/tienda/donacion',
-	'soporte'    => 'https://artprojectgroup.es/tienda/soporte-tecnico',
-	'plugin_url' => 'https://artprojectgroup.es/plugins-para-woocommerce/wc-apg-nifcifnie-field',
+	//Cada direccion de la web, en espanol y en ingles.
+	'enlaces' => array(
+		'web' => array( 'https://artprojectgroup.es/', 'https://artprojectgroup.com/' ),
+		'plugin_url' => array( 'https://artprojectgroup.es/plugins-para-woocommerce/wc-apg-campo-nif-cif-nie', 'https://artprojectgroup.com/woocommerce-plugins/wc-apg-nif-cif-nie-field' ),
+		'donacion' => array( 'https://artprojectgroup.es/tienda/donacion', 'https://artprojectgroup.com/shop/donation' ),
+		'soporte' => array( 'https://artprojectgroup.es/tienda/soporte-tecnico', 'https://artprojectgroup.com/shop/technical-support' ),
+		'documentacion' => array( 'https://artprojectgroup.es/documentacion/wc-apg-campo-nif-cif-nie', 'https://artprojectgroup.com/documentation/wc-apg-nif-cif-nie-field' ),
+		),
 	'ajustes'    => 'admin.php?page=wc-apg-nifcifnie-field',
 	'puntuacion' => 'https://www.wordpress.org/support/view/plugin-reviews/wc-apg-nifcifnie-field',
 );
@@ -64,8 +83,8 @@ function apg_nif_enlaces( $enlaces, $archivo ) {
 
 	if ( $archivo === DIRECCION_apg_nif ) {
 		$plugin    = apg_nif_plugin( $apg_nif['plugin_uri'] );
-		$enlaces[] = '<a href="' . esc_url( $apg_nif['donacion'] ) . '" target="_blank" title="' . esc_attr__( 'Make a donation by ', 'wc-apg-nifcifnie-field' ) . 'APG"><span class="genericon genericon-cart"></span></a>';
-		$enlaces[] = '<a href="' . esc_url( $apg_nif['plugin_url'] ) . '" target="_blank" title="' . esc_attr( $apg_nif['plugin'] ) . '"><strong class="artprojectgroup">APG</strong></a>';
+		$enlaces[] = '<a href="' . esc_url( apg_nif_enlace( 'donacion' ) ) . '" target="_blank" title="' . esc_attr__( 'Make a donation by ', 'wc-apg-nifcifnie-field' ) . 'APG"><span class="genericon genericon-cart"></span></a>';
+		$enlaces[] = '<a href="' . esc_url( apg_nif_enlace( 'plugin_url' ) ) . '" target="_blank" title="' . esc_attr( $apg_nif['plugin'] ) . '"><strong class="artprojectgroup">APG</strong></a>';
 		$enlaces[] = '<a href="https://www.facebook.com/artprojectgroup" title="' . esc_attr__( 'Follow us on ', 'wc-apg-nifcifnie-field' ) . 'Facebook" target="_blank"><span class="genericon genericon-facebook-alt"></span></a> <a href="https://x.com/artprojectgroup" title="' . esc_attr__( 'Follow us on ', 'wc-apg-nifcifnie-field' ) . 'X" target="_blank"><span class="genericon genericon-x-alt"></span></a> <a href="https://es.linkedin.com/in/artprojectgroup" title="' . esc_attr__( 'Follow us on ', 'wc-apg-nifcifnie-field' ) . 'LinkedIn" target="_blank"><span class="genericon genericon-linkedin"></span></a>';
 		$enlaces[] = '<a href="https://profiles.wordpress.org/artprojectgroup/" title="' . esc_attr__( 'More plugins on ', 'wc-apg-nifcifnie-field' ) . 'WordPress" target="_blank"><span class="genericon genericon-wordpress"></span></a>';
 		$enlaces[] = '<a href="mailto:info@artprojectgroup.es" title="' . esc_attr__( 'Contact us by ', 'wc-apg-nifcifnie-field' ) . 'e-mail"><span class="genericon genericon-mail"></span></a>';
@@ -91,7 +110,7 @@ function apg_nif_enlace_de_ajustes( $enlaces ) {
 
 	$enlaces_de_ajustes = array(
 		'<a href="' . esc_url( admin_url( $apg_nif['ajustes'] ) ) . '" title="' . esc_attr__( 'Settings of ', 'wc-apg-nifcifnie-field' ) . esc_attr( $apg_nif['plugin'] ) . '">' . esc_html__( 'Settings', 'wc-apg-nifcifnie-field' ) . '</a>',
-		'<a href="' . esc_url( $apg_nif['soporte'] ) . '" title="' . esc_attr__( 'Support of ', 'wc-apg-nifcifnie-field' ) . esc_attr( $apg_nif['plugin'] ) . '">' . esc_html__( 'Support', 'wc-apg-nifcifnie-field' ) . '</a>',
+		'<a href="' . esc_url( apg_nif_enlace( 'soporte' ) ) . '" title="' . esc_attr__( 'Support of ', 'wc-apg-nifcifnie-field' ) . esc_attr( $apg_nif['plugin'] ) . '">' . esc_html__( 'Support', 'wc-apg-nifcifnie-field' ) . '</a>',
 	);
 
 	foreach ( $enlaces_de_ajustes as $enlace_de_ajustes ) {

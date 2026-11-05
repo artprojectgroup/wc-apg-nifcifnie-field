@@ -6,10 +6,10 @@
  * y documentación/soporte dentro del panel de administración.
  *
  * Variables esperadas en el *scope* del include:
- * - $apg_nif['donacion']   URL para donaciones.
+ * - apg_nif_enlace( 'donacion' )   URL para donaciones.
  * - $apg_nif['plugin']     Nombre legible del plugin.
- * - $apg_nif['plugin_url'] URL de la documentación/sitio del plugin.
- * - $apg_nif['soporte']    URL de la página de soporte.
+ * - apg_nif_enlace( 'plugin_url' ) URL de la documentación/sitio del plugin.
+ * - apg_nif_enlace( 'soporte' )    URL de la página de soporte.
  * - $apg_nif['puntuacion'] URL del listado en WordPress.org.
  *
  * @package   WC_APG_NIFCIFNIE_Field
@@ -26,7 +26,7 @@ defined( 'ABSPATH' ) || exit;
 			<p>
 				<?php esc_html_e( 'If you enjoy this plugin and find it helpful, please make a donation:', 'wc-apg-nifcifnie-field' ); ?>
 			</p>
-			<p><a href="<?php echo esc_url( $apg_nif['donacion'] ); ?>" target="_blank" title="<?php esc_attr_e( 'Make a donation by ', 'wc-apg-nifcifnie-field' ); ?>APG"><span class="genericon genericon-cart"></span></a> </p>
+			<p><a href="<?php echo esc_url( apg_nif_enlace( 'donacion' ) ); ?>" target="_blank" title="<?php esc_attr_e( 'Make a donation by ', 'wc-apg-nifcifnie-field' ); ?>APG"><span class="genericon genericon-cart"></span></a> </p>
 		</div>
 		<div class="columna">
 			<p>Art Project Group:</p>
@@ -62,7 +62,7 @@ defined( 'ABSPATH' ) || exit;
 			<p>
 				<?php esc_html_e( 'Documentation and Support:', 'wc-apg-nifcifnie-field' ); ?>
 			</p>
-			<p><a href="<?php echo esc_url( $apg_nif['plugin_url'] ); ?>" title="<?php echo esc_attr( $apg_nif['plugin'] ); ?>"><span class="genericon genericon-book"></span></a> <a href="<?php echo esc_url( $apg_nif['soporte'] ); ?>" title="<?php esc_attr_e( 'Support', 'wc-apg-nifcifnie-field' ); ?>"><span class="genericon genericon-cog"></span></a> </p>
+			<p><a href="<?php echo esc_url( apg_nif_enlace( 'plugin_url' ) ); ?>" title="<?php echo esc_attr( $apg_nif['plugin'] ); ?>"><span class="genericon genericon-book"></span></a> <a href="<?php echo esc_url( apg_nif_enlace( 'soporte' ) ); ?>" title="<?php esc_attr_e( 'Support', 'wc-apg-nifcifnie-field' ); ?>"><span class="genericon genericon-cog"></span></a> </p>
 		</div>
 	</div>
 

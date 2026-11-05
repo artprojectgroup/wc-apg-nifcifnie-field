@@ -9,15 +9,13 @@ Tags: nif, cif, nie, eori, vies
 Requires at least: 5.0
 
 Tested up to: 7.2
-
-Stable tag: 4.18.0
+Stable tag: 4.18.1
 
 Requires PHP: 7.4
 
 WC requires at least: 5.6
 
-WC tested up to: 11.1.0
-
+WC tested up to: 11.2.1
 License: GNU General Public License v3 or later
 
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -157,6 +155,9 @@ Si tu tienda realizó pedidos con el Bloque de Finalizar compra (o con el checko
 **WC - APG NIF/CIF/NIE Field** es un plugin gratuito. **Art Project Group** no proporciona soporte técnico gratuito, pero ofrece un servicio de [soporte técnico](https://artprojectgroup.es/tienda/soporte-tecnico) de pago para instalación y configuración.
 
 ## Changelog
+
+### 4.18.1
+- Los enlaces a la web, a la documentación, a la donación y al soporte se abren en el idioma de quien mira la pantalla.
 
 ### 4.18.0
 

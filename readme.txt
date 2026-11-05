@@ -1,10 +1,10 @@
 === WC - APG NIF/CIF/NIE Field ===
 Contributors: artprojectgroup
-Donate link: https://artprojectgroup.es/tienda/donacion
+Donate link: https://artprojectgroup.com/shop/donation
 Tags: nif, cif, nie, eori, vies
 Requires at least: 5.0
 Tested up to: 7.2
-Stable tag: 4.18.0
+Stable tag: 4.18.1
 Requires PHP: 7.4
 WC requires at least: 5.6
 WC tested up to: 11.2.1
@@ -102,13 +102,13 @@ Add to WooCommerce a NIF/CIF/NIE field for all billing and shipping forms, with 
 * Contextual help on the settings page, explaining every setting without leaving the screen.
 
 = Translations =
-* English: by [**Art Project Group**](https://artprojectgroup.es/) (default language).
-* Spanish: by [**Art Project Group**](https://artprojectgroup.es/).
+* English: by [**Art Project Group**](https://artprojectgroup.com/) (default language).
+* Spanish: by [**Art Project Group**](https://artprojectgroup.com/).
 
 = More information =
-You can learn more about **WC - APG NIF/CIF/NIE Field** on our [official website](https://artprojectgroup.es/plugins-para-woocommerce/wc-apg-campo-nif-cif-nie), and follow the development on [GitHub](https://github.com/artprojectgroup/wc-apg-nifcifnie-field).
+You can learn more about **WC - APG NIF/CIF/NIE Field** on our [official website](https://artprojectgroup.com/woocommerce-plugins/wc-apg-nif-cif-nie-field), and follow the development on [GitHub](https://github.com/artprojectgroup/wc-apg-nifcifnie-field).
 
-You can also read the [full documentation](https://artprojectgroup.es/documentacion/wc-apg-campo-nif-cif-nie), with every setting explained one by one.
+You can also read the [full documentation](https://artprojectgroup.com/documentation/wc-apg-nif-cif-nie-field), with every setting explained one by one.
 
 == Installation ==
 1. Install the plugin in one of the following ways:
@@ -132,7 +132,7 @@ If your store placed orders via the Checkout block (or the classic checkout) wit
 `wp eval-file wp-content/plugins/wc-apg-nifcifnie-field/includes/admin/limpieza-meta-duplicados.php`
 
 = Where can I get support? =
-**WC - APG NIF/CIF/NIE Field** is a free plugin. **Art Project Group** does not provide free technical support, but offers a paid [technical support](https://artprojectgroup.es/tienda/soporte-tecnico) service for installation and configuration.
+**WC - APG NIF/CIF/NIE Field** is a free plugin. **Art Project Group** does not provide free technical support, but offers a paid [technical support](https://artprojectgroup.com/shop/technical-support) service for installation and configuration.
 
 == Screenshots ==
 1. Screenshot of WC - APG NIF/CIF/NIE field.
@@ -140,6 +140,8 @@ If your store placed orders via the Checkout block (or the classic checkout) wit
 3. Screenshot of WC - APG NIF/CIF/NIE field. Billing and shipping forms. Classic Shortcode.
 
 == Changelog ==
+= 4.18.1 =
+* The links to the website, the documentation, the donation and the support now open in the language of whoever is looking at the screen.
 = 4.18.0 =
 * Contextual help in the Help tab of the settings page, with a panel for every section and a link to the full documentation.
 
@@ -504,7 +506,7 @@ If your store placed orders via the Checkout block (or the classic checkout) wit
 == Thanks ==
 Thanks to everyone who uses the plugin, helps improve it, makes a donation or encourages us with their comments.
 
-If you find this plugin useful, you can support its development with a [small donation](https://artprojectgroup.es/tienda/donacion).
+If you find this plugin useful, you can support its development with a [small donation](https://artprojectgroup.com/shop/donation).
 
 == External Services ==
 1. To the WordPress.org Plugins API to fetch plugin information.  
